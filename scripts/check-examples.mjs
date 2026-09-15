@@ -211,9 +211,13 @@ function buildModule(example, from) {
   const selfImporting = /from 'umbra/.test(code);
   const values = selfImporting ? [] : used('value');
   const types = selfImporting ? [] : used('type');
+  // An ambient declaration is only legal at the top level of a file, so it is never wrapped —
+  // checked first because the JSX probe below reads `Promise<boolean>` inside one as an element
+  // and would bury the whole block in a function, where it fails as TS1234 rather than as itself.
+  const ambient = /^\s*declare\s+(?:module|global)\b/m.test(code);
   // Hooks and JSX only make sense inside a component; `await` only inside an async function.
-  const component = /\buse[A-Z]/.test(code) || /<[A-Za-z]/.test(code);
-  const topLevelAwait = !component && /\bawait\b/.test(code);
+  const component = !ambient && (/\buse[A-Z]/.test(code) || /<[A-Za-z]/.test(code));
+  const topLevelAwait = !ambient && !component && /\bawait\b/.test(code);
   const name = example.symbol.replace(/\W/g, '');
 
   const header = [
@@ -375,14 +379,21 @@ function lint() {
   });
 }
 
-/** `Cannot find name 'x'` — the application the snippet assumes, not a mistake in it. */
+/**
+ * The application a snippet assumes, not a mistake in it: `Cannot find name 'x'`, and the
+ * shorthand form of the same thing. `{ steps }` reports as TS18004 rather than TS2304 — a
+ * different code for an identical situation, and reading only the first leaves the stub
+ * undeclared and the example failing on scaffolding it was never showing.
+ */
 const UNKNOWN_NAME =
   /generated[/\\]([^(]+)\.tsx\(\d+,\d+\): error TS(?:2304|2552): Cannot find name '([^']+)'/;
+const UNKNOWN_SHORTHAND =
+  /generated[/\\]([^(]+)\.tsx\(\d+,\d+\): error TS18004: No value exists in scope for the shorthand property '([^']+)'/;
 
 function collectStubs(output) {
   const stubs = {};
   for (const line of output.split('\n')) {
-    const match = UNKNOWN_NAME.exec(line);
+    const match = UNKNOWN_NAME.exec(line) ?? UNKNOWN_SHORTHAND.exec(line);
     if (match) {
       stubs[match[1]] = [...new Set([...(stubs[match[1]] ?? []), match[2]])];
     }
