@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!--
+    The mascot at 16px: the eclipse reduced to what survives that size.
+
+    `AntumbraMoon` draws eight flame clusters, an engraved face and two rims. None of it reads in a
+    browser tab, and the face — the one thing that separates this mascot from umbra's — is the first
+    to go: two 11px eyes in a 200 viewBox land under a pixel. So the difference has to be carried by
+    the silhouette, and there is one already: an annular eclipse is the moon too far away to cover
+    the sun, so the disc is wide and the ring left around it is thin. Umbra's favicon is the same
+    two circles with a 22-unit corona and a crescent bitten out of it; this is a 14-unit ring and no
+    bite, because the whole point of an antumbra is that the light gets all the way around. Same
+    ambers as umbra's, so the two tabs are recognisably one product.
+  -->
+  <circle cx="100" cy="100" r="88" fill="#f59e0b" />
+  <circle cx="100" cy="100" r="74" fill="#0f172a" />
+</svg>
