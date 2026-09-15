@@ -1,3 +1,4 @@
+import { useDocumentTitle } from '@/app/useDocumentTitle';
 import { CodePaneProvider } from '@/app/providers/CodePaneProvider/CodePaneProvider';
 import { ThemeProvider } from '@/app/providers/ThemeProvider/ThemeProvider';
 import { RootLayout } from '@/widgets/root-layout';
@@ -9,6 +10,8 @@ import { RootLayout } from '@/widgets/root-layout';
  * else forces a full reload instead of a fast refresh.
  */
 export function AppRoot() {
+  useDocumentTitle();
+
   return (
     <ThemeProvider>
       <CodePaneProvider>
