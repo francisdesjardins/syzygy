@@ -21,7 +21,9 @@ import { useBootstrapContext } from './bootstrap-provider.js';
  * intents; reach for `attachIntentHost` directly if you genuinely need two and can split them.
  *
  * @example
- * const port = useMemo(() => { return { confirm: (m: string) => dialog.ask(m) }; }, []);
+ * const port = useMemo(() => {
+ *   return { confirm: (m: string) => dialog.ask(m) };
+ * }, []);
  * const pending = useIntentHost(port);
  * return pending.map(({ intent, controls }) => {
  *   return <Banner key={intent.id} intent={intent} onOk={controls.settle} />;

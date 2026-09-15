@@ -80,7 +80,9 @@ export type Bootstrap<TSteps extends readonly AnyStep[]> = {
    * const events = boot.events();
    * const running = boot.run();
    * for await (const event of events) {
-   *   if (event.kind === 'step:settle') { progress.advance(event.trace.id); }
+   *   if (event.kind === 'step:settle') {
+   *     progress.advance(event.trace.id);
+   *   }
    * }
    * const outcome = await running;
    */
@@ -113,6 +115,18 @@ export type CreateBootstrapOptions<TSteps extends readonly AnyStep[]> = Bootstra
  * cycles, the edge from preflight to mounted, and everything at all for a list built dynamically.
  * Those throw here, because a cycle reported through a status field would deliver a bug report as
  * data.
+ *
+ * @example
+ * const boot = createBootstrap({
+ *   steps: [session, access, config],
+ * });
+ *
+ * const outcome = await boot.run();
+ * if (outcome.status === 'blocked') {
+ *   showSignIn();
+ * } else {
+ *   mountTheApp(outcome.data);
+ * }
  */
 export function createBootstrap<const TSteps extends readonly AnyStep[]>(
   options: CreateBootstrapOptions<TSteps>

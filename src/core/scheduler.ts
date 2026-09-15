@@ -54,7 +54,14 @@ export type PreflightResult = {
   readonly blockedBy?: { readonly step: StepId; readonly reason: string } | undefined;
 };
 
-/** Fifteen seconds, which is well past the point where a user has decided the app is broken. */
+/**
+ * Fifteen seconds, which is well past the point where a user has decided the app is broken.
+ *
+ * @example
+ * // The whole run's deadline, not one step's. Raise it for a bootstrap that legitimately
+ * // waits on something slow; per-step `timeout` is the one to reach for otherwise.
+ * const boot = createBootstrap({ steps, deadline: DEFAULT_DEADLINE_MS * 2 });
+ */
 export const DEFAULT_DEADLINE_MS = 15_000;
 
 /**

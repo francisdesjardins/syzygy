@@ -21,14 +21,18 @@ import type { MountedContext, PreflightContext, Step, StepScope } from './types.
  * const session = defineStep({
  *   id: 'session',
  *   timeout: 3000,
- *   run: async (ctx) => { return validateToken(ctx.signal); },
+ *   run: async (ctx) => {
+ *     return validateToken(ctx.signal);
+ *   },
  * });
  *
  * const config = defineStep({
  *   id: 'config',
  *   needs: ['session'],
  *   optional: true,
- *   run: async (ctx) => { return fetchConfig(ctx.get('session').userId); },
+ *   run: async (ctx) => {
+ *     return fetchConfig(ctx.get('session').userId);
+ *   },
  * });
  */
 export function defineStep<
@@ -60,7 +64,10 @@ export function defineStep<
  *   id: 'trial-warning',
  *   needs: ['config'],
  *   run: async (ctx) => {
- *     if (ctx.get('config').daysLeft < 30) { await ctx.awaitIntent('warn:trial-expiring'); }
+ *     const { daysLeft } = ctx.get('config');
+ *     if (daysLeft < 30) {
+ *       await ctx.awaitIntent('warn:trial-expiring', { daysLeft });
+ *     }
  *   },
  * });
  */

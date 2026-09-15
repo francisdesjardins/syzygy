@@ -11,7 +11,14 @@ export type Clock = {
   readonly elapsed: () => number;
 };
 
-/** The real clocks. Anything that measures a duration takes a {@link Clock} so a test can lie. */
+/**
+ * The real clocks. Anything that measures a duration takes a {@link Clock} so a test can lie.
+ *
+ * @example
+ * // The default, named here because a test passes a fake one instead and the two have to
+ * // be the same shape.
+ * const boot = createBootstrap({ steps, clock: systemClock });
+ */
 export const systemClock: Clock = {
   wall: () => {
     return Date.now();

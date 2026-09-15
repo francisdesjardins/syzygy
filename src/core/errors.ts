@@ -1,6 +1,19 @@
 import type { StepId } from './registry.js';
 
-/** Everything this package throws, so a consumer can catch the whole family at one door. */
+/**
+ * Everything this package throws, so a consumer can catch the whole family at one door.
+ *
+ * @example
+ * try {
+ *   await boot.run();
+ * } catch (error) {
+ *   if (error instanceof BootstrapError) {
+ *     report(error);
+ *     return;
+ *   }
+ *   throw error;
+ * }
+ */
 export class BootstrapError extends Error {
   constructor(message: string, options?: ErrorOptions) {
     super(message, options);
@@ -15,6 +28,16 @@ export class BootstrapError extends Error {
  * Thrown synchronously by `createBootstrap`, never handed back through an outcome. These are
  * programming mistakes, and a status field is the wrong place to report one — the run should not
  * start at all.
+ *
+ * @example
+ * // Two steps claiming one id: the graph cannot be compiled, so nothing runs.
+ * try {
+ *   createBootstrap({ steps: [session, session] });
+ * } catch (error) {
+ *   if (error instanceof PlanError) {
+ *     console.error(error.message);
+ *   }
+ * }
  */
 export class PlanError extends BootstrapError {
   constructor(message: string) {
@@ -23,7 +46,17 @@ export class PlanError extends BootstrapError {
   }
 }
 
-/** `ctx.get` was called with an id this step did not declare in `needs`. */
+/**
+ * `ctx.get` was called with an id this step did not declare in `needs`.
+ *
+ * @example
+ * // A step read an id it did not list in `needs`. The typed `ctx.get` already refuses that at
+ * // compile time, so what reaches here came from an id the types could not see — and it is a
+ * // programming mistake, not a runtime condition: fix the `needs`, do not retry.
+ * const failed = outcome.failures.find((failure) => {
+ *   return failure.error.name === 'UndeclaredDependencyError';
+ * });
+ */
 export class UndeclaredDependencyError extends BootstrapError {
   constructor(step: StepId, dependency: StepId) {
     super(
@@ -34,7 +67,17 @@ export class UndeclaredDependencyError extends BootstrapError {
   }
 }
 
-/** `ctx.get` reached a dependency that never ran, because something upstream of it did not succeed. */
+/**
+ * `ctx.get` reached a dependency that never ran, because something upstream of it did not succeed.
+ *
+ * @example
+ * // Thrown at the read, not at the failure: the step that did not succeed is reported in the
+ * // outcome, and this is what a *downstream* step sees if it reads past it.
+ * const outcome = await boot.run();
+ * if (outcome.status === 'failed') {
+ *   console.error(outcome.failures.map((failure) => failure.id));
+ * }
+ */
 export class StepSkippedError extends BootstrapError {
   constructor(step: StepId, dependency: StepId) {
     super(

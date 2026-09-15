@@ -9,6 +9,15 @@ const BootstrapContext = createContext<RunSnapshot | undefined>(undefined);
 /**
  * Put one bootstrap's snapshot in context, so a component deep in the tree can read the data it
  * needs without every component between them carrying it.
+ *
+ * @example
+ * function App({ boot }: { boot: Bootstrap<typeof steps> }) {
+ *   return (
+ *     <BootstrapProvider boot={boot}>
+ *       <Shell />
+ *     </BootstrapProvider>
+ *   );
+ * }
  */
 export function BootstrapProvider<TSteps extends readonly AnyStep[]>(props: {
   boot: Bootstrap<TSteps>;
@@ -23,6 +32,12 @@ export function BootstrapProvider<TSteps extends readonly AnyStep[]>(props: {
  *
  * Throws outside one rather than returning a blank snapshot: an app that renders without a provider
  * would otherwise look like an app whose bootstrap had not finished, forever.
+ *
+ * @example
+ * function WorkspaceName() {
+ *   const { outcome } = useBootstrapContext();
+ *   return <h1>{readStepData(outcome, 'config')?.workspaceName}</h1>;
+ * }
  */
 export function useBootstrapContext(): RunSnapshot {
   const snapshot = use(BootstrapContext);

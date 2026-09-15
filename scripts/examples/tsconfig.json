@@ -1,0 +1,48 @@
+{
+  // The compiler contract a doc example is held to.
+  //
+  // Deliberately its own config rather than the library's: an `@example` is a snippet, not a
+  // module. It shows a call and stops, so it leaves bindings unread and leans on `declare`d
+  // stand-ins for whatever the surrounding app would provide (`store`, `fetchUser`, `api`).
+  // Holding it to `noUnusedLocals` or `noImplicitAny` would report the shape of a snippet, not
+  // a mistake in it. Everything that decides whether the example *would compile in a user's
+  // app* — strict null checks, exact optional properties, the DOM lib, `jsx: react-jsx` — is
+  // kept exactly as the library has it.
+  //
+  // Generated inputs come from `scripts/check-examples.mjs`; `generated/` is not committed.
+  "compilerOptions": {
+    "target": "ES2024",
+    "lib": ["ES2024", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "moduleDetection": "force",
+    "jsx": "react-jsx",
+    "noEmit": true,
+
+    "strict": true,
+    "exactOptionalPropertyTypes": true,
+    "noUncheckedIndexedAccess": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "skipLibCheck": true,
+
+    // Snippet allowances — see above.
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noImplicitAny": false,
+    "allowUnreachableCode": true,
+
+    // Every published specifier, mapped to source. **All of them, or the check is not hermetic:**
+    // an unmapped one falls through to node resolution, finds `node_modules/antumbra` (the workspace
+    // self-link), and resolves through `exports` into `dist/` — so the example type-checks against
+    // the last build on a machine that has one and fails with TS2307 on a machine that does not.
+    // That is a check whose answer depends on whether you happened to run `yarn build`, which is
+    // exactly how `antumbra/solid` and `antumbra/vanilla` passed locally and failed in CI.
+    "paths": {
+      "antumbra": ["../../src/index.ts"],
+      "antumbra/react": ["../../src/react.ts"],
+      "antumbra/solid": ["../../src/solid.ts"],
+      "antumbra/vanilla": ["../../src/vanilla.ts"]
+    }
+  },
+  "include": ["globals.d.ts", "generated/**/*.tsx"]
+}

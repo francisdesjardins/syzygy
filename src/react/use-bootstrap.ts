@@ -16,7 +16,11 @@ import type { AnyStep } from '../core/types.js';
  * @example
  * function Shell({ boot }: { boot: Bootstrap<typeof steps> }) {
  *   const { stage, outcome } = useBootstrap(boot);
- *   if (stage !== 'settled') { return <Splash />; }
+ *   // `outcome` is what narrows it, not `stage`: they are two independent fields on the
+ *   // snapshot, so testing the stage leaves the outcome possibly undefined.
+ *   if (outcome === undefined) {
+ *     return <Splash stage={stage} />;
+ *   }
  *   return outcome.status === 'blocked' ? <SignIn /> : <App />;
  * }
  */

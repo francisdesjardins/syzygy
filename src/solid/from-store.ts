@@ -9,6 +9,15 @@ import type { ReadableStore } from '../store/create-store.js';
  *
  * `equals: false` because the store hands back a new snapshot object on every change and Solid's
  * default referential check would be doing work that the store already did.
+ *
+ * @example
+ * // The type argument because the example has no typed bootstrap in scope; in an app the store
+ * // carries it and inference does the work.
+ * const snapshot = fromStore<RunSnapshot>(boot.observe().store);
+ * // A signal, so it is read as one — in JSX, in a memo, in an effect, and it tracks.
+ * createEffect(() => {
+ *   progress.set(snapshot().stage);
+ * });
  */
 export function fromStore<TValue>(store: ReadableStore<TValue>): () => TValue {
   const [value, setValue] = createSignal(store.get(), { equals: false });

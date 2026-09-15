@@ -60,6 +60,19 @@ export type AttachedIntentHost = {
  *
  * It forwards on every queue change rather than once, because the mounted phase can queue new
  * intents after the first pass: a step that decides to warn only once it has the configuration.
+ *
+ * @example
+ * const host = attachIntentHost(session, {
+ *   ui: { confirm: (message) => showConfirmDialog(message) },
+ *   onIntent: (intent, controls) => {
+ *     if (intent.type === 'warn:trial-expiring') {
+ *       showBanner(intent.payload);
+ *       controls.settle();
+ *     }
+ *   },
+ * });
+ *
+ * await host.mounted;
  */
 export function attachIntentHost(session: Session, options: IntentHostOptions): AttachedIntentHost {
   const seen = new Set<string>();

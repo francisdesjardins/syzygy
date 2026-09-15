@@ -22,6 +22,11 @@ function describe(value: unknown): { name: string; message: string } {
  * Two things this exists for, and neither is cosmetic. `JSON.stringify(new Error('x'))` is `{}`,
  * so a timeline that held real errors would ship empty objects; and code throws strings, numbers
  * and plain objects often enough that the runner cannot assume it caught an `Error`.
+ *
+ * @example
+ * // A step may throw anything at all; this is the shape the outcome records instead.
+ * const failure = normalizeError('the token endpoint returned 500');
+ * console.error(failure.name, failure.message);
  */
 export function normalizeError(value: unknown, depth = 0): SerializedError {
   if (value instanceof Error) {

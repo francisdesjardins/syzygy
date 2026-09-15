@@ -19,6 +19,20 @@ export type BoundBootstrap = AttachedIntentHost;
  *
  * The work is {@link attachIntentHost}'s, shared with the framework bindings. What this adds is the
  * lifetime: a caller with no component to hang one on calls `destroy` itself.
+ *
+ * @example
+ * const bound = bindBootstrap(session, {
+ *   ui: { confirm: (message) => Promise.resolve(window.confirm(message)) },
+ *   onIntent: (intent, controls) => {
+ *     banner.textContent = intent.type;
+ *     banner.hidden = false;
+ *     controls.settle();
+ *   },
+ * });
+ *
+ * await bound.mounted;
+ * // The page is going away, which is the one reading of `destroy` that disposes the session.
+ * window.addEventListener('pagehide', bound.destroy, { once: true });
  */
 export function bindBootstrap(session: Session, options: BindOptions): BoundBootstrap {
   const host = attachIntentHost(session, options);

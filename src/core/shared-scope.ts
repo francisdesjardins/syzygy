@@ -101,6 +101,13 @@ export function claimSharedStep(key: string): Claim {
  *
  * For tests, and for a demo that boots repeatedly. Not for production: clearing this between two
  * modules loading is how you get the work done twice, which is the thing this exists to stop.
+ *
+ * @example
+ * afterEach(() => {
+ *   // Each test gets a bootstrap that has never run. Without this the second one reuses the
+ *   // first one's settled values — which is the behaviour under test, not a fixture.
+ *   clearSharedScope();
+ * });
  */
 export function clearSharedScope(): void {
   registry().clear();
