@@ -3,6 +3,7 @@ import type { UiPort } from 'antumbra/solid';
 import { createComponent, createEffect } from 'solid-js';
 import { render } from 'solid-js/web';
 import { READOUT, createScenario } from '@/pages/stories/model/scenario.js';
+import styles from '@/pages/stories/ui/story-readout.module.css';
 
 const port: UiPort = {
   confirm: () => {
@@ -10,10 +11,24 @@ const port: UiPort = {
   },
 };
 
-function text(testId: string): HTMLParagraphElement {
-  const node = document.createElement('p');
-  node.dataset['testid'] = testId;
-  return node;
+/**
+ * A labelled value, returned as the `<p>` a spec reads so every caller below is unchanged; the
+ * row it is wrapped in goes into `rows`, which the host appends.
+ */
+function text(testId: string, label: string): { value: HTMLParagraphElement; row: HTMLElement } {
+  const value = document.createElement('p');
+  value.dataset['testid'] = testId;
+  value.className = styles['value'] ?? '';
+
+  const caption = document.createElement('span');
+  caption.className = styles['label'] ?? '';
+  caption.textContent = label;
+
+  const row = document.createElement('div');
+  row.className = styles['row'] ?? '';
+  row.append(caption, value);
+
+  return { value, row };
 }
 
 function button(testId: string, label: string): HTMLButtonElement {
@@ -36,14 +51,23 @@ function Readout() {
   const pending = useIntentHost(port);
 
   const host = document.createElement('div');
-  const stage = text(READOUT.stage);
-  const status = text(READOUT.status);
-  const configLine = text(READOUT.config);
-  const notices = text(READOUT.notices);
-  const intentStatus = text(READOUT.intentStatus);
+  host.className = styles['readout'] ?? '';
+  const stageRow = text(READOUT.stage, 'Stage');
+  const statusRow = text(READOUT.status, 'Outcome');
+  const configRow = text(READOUT.config, 'Config');
+  const noticesRow = text(READOUT.notices, 'Notices');
+  const intentRow = text(READOUT.intentStatus, 'Intent');
+  const stage = stageRow.value;
+  const status = statusRow.value;
+  const configLine = configRow.value;
+  const notices = noticesRow.value;
+  const intentStatus = intentRow.value;
   const settle = button(READOUT.settle, 'settle');
   const drop = button(READOUT.drop, 'drop');
-  host.append(stage, status, configLine, notices, intentStatus, settle, drop);
+  const actions = document.createElement('div');
+  actions.className = styles['actions'] ?? '';
+  actions.append(settle, drop);
+  host.append(stageRow.row, statusRow.row, configRow.row, noticesRow.row, intentRow.row, actions);
 
   createEffect(() => {
     const current = snapshot();
