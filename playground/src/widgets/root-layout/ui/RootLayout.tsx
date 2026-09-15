@@ -1,3 +1,5 @@
+import { useRouterState } from '@tanstack/react-router';
+import { PeekingMoon } from '@/shared/ui/PeekingMoon';
 import { Outlet } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 import { useCodePane } from '@/shared/lib/code-pane-context';
@@ -39,6 +41,15 @@ function MainContent() {
  * and the next widget that does it has a reason too.
  */
 export function RootLayout() {
+  // Two routes, umbra's two reasons: `/` already shows the same drawing full size in the hero, so
+  // a peeking twin beside it reads as a stray render; `/stories` renders fixtures at the card
+  // edges, where a mascot wandering among them reads as one of them misbehaving.
+  const hidesMascot = useRouterState({
+    select: (state) => {
+      return state.location.pathname === '/' || state.location.pathname === '/stories';
+    },
+  });
+
   // Below 900px — spelled out rather than read from a token, because a media query resolves before
   // the cascade and cannot see a custom property.
   const isMobile = useMediaQuery('(max-width: 899.95px)');
@@ -62,6 +73,8 @@ export function RootLayout() {
         }}
       />
       <MainContent />
+      {/* Below the top bar's z-index, so it never covers the chrome. */}
+      {!hidesMascot && <PeekingMoon />}
     </div>
   );
 }
