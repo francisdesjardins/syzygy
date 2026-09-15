@@ -1,7 +1,17 @@
 import { defineConfig, devices } from '@playwright/test';
 
 const IS_CI = Boolean(process.env['CI']);
-const PORT = 3000;
+
+/**
+ * Whether this run measures the component suite, and the two things that follow from it.
+ *
+ * A coverage run needs **its own** dev server: reusing one already on the ordinary port would
+ * serve an uninstrumented bundle and produce a green run with no counters at all — which reads as
+ * a forgotten flag rather than as a wrong answer. So it takes a port of its own and refuses to
+ * reuse anything, which also means a sibling playground sitting on 3000 cannot poison it.
+ */
+const WITH_COVERAGE = process.env['CT_COVERAGE'] === '1';
+const PORT = WITH_COVERAGE ? 3177 : 3000;
 const BASE_URL = `http://localhost:${String(PORT)}`;
 
 /**
@@ -43,6 +53,8 @@ const needsServer =
 
 export default defineConfig({
   testDir: './',
+  // Empties `.nyc_output/` before any worker writes into it, and only when coverage is on.
+  globalSetup: './scripts/ct-coverage-reset.mjs',
   fullyParallel: true,
   forbidOnly: IS_CI,
   retries: IS_CI ? 2 : 0,
@@ -61,9 +73,9 @@ export default defineConfig({
   ...(needsServer
     ? {
         webServer: {
-          command: 'yarn dev',
+          command: WITH_COVERAGE ? `yarn dev --port ${String(PORT)} --strictPort` : 'yarn dev',
           url: `${BASE_URL}/stories`,
-          reuseExistingServer: !IS_CI,
+          reuseExistingServer: !IS_CI && !WITH_COVERAGE,
           timeout: 120 * 1000,
         },
       }

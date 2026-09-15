@@ -1,4 +1,5 @@
-import { type Page, expect, test } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './ct-test.js';
 
 /**
  * One test file for both hook bindings, against one DOM contract.
@@ -9,13 +10,6 @@ import { type Page, expect, test } from '@playwright/test';
  * somebody's app.
  */
 const BINDINGS = ['react', 'solid'] as const;
-
-declare global {
-  interface Window {
-    mount: (params: { story: string }) => Promise<void>;
-    unmount: () => Promise<void>;
-  }
-}
 
 /**
  * Mounted through the gallery door rather than through the `/stories` route.

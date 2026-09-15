@@ -13,7 +13,10 @@
       "antumbra": ["../src/index.ts"],
       "antumbra/react": ["../src/react.ts"],
       "antumbra/solid": ["../src/solid.ts"],
-      "antumbra/vanilla": ["../src/vanilla.ts"]
+      "antumbra/vanilla": ["../src/vanilla.ts"],
+      // Subpaths, for the harnesses that live beside the code they exercise. Listed last so the
+      // four exact entries above still win for the entry points themselves.
+      "antumbra/*": ["../src/*"]
     }
   },
   "include": ["src/**/*", "vite-plugins/**/*", "vite.config.ts"],
