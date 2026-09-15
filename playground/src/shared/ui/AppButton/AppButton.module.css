@@ -38,7 +38,9 @@
 /* Filled primary: fire is the background, the eclipsed body the text — and hover brightens,
    never deepens, because the ink is dark. */
 .contained {
-  background: var(--app-flame);
+  /* The token, not the flame: the fill is the one thing a skin varies, and a recipe that names a
+     specific colour cannot be the same file in two projects. */
+  background: var(--app-primary);
   color: var(--app-primary-ink);
 }
 

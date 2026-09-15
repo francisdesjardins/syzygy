@@ -44,6 +44,7 @@
   --app-body-edge: #475569;
   --app-accent: #92400e;
   --app-ring: #92400e;
+  --app-primary: #d97706;
   --app-primary-ink: #0b1120;
   --app-primary-hover: #f59e0b;
 
@@ -98,6 +99,7 @@
   --app-body-edge: #334155;
   --app-accent: #fbbf24;
   --app-ring: #fbbf24;
+  --app-primary: #f59e0b;
   --app-primary-hover: #fcd34d;
 
   --app-bg: #0b1120;
