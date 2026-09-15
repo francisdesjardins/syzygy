@@ -436,7 +436,7 @@ const examples = collectExamples();
 const exported = new Map([
   ['antumbra/react', publicExports('react.ts')],
   ['antumbra/solid', publicExports('solid.ts')],
-  ['antumbra/vanilla', publicExports('vanilla.ts')],
+  ['antumbra/plain', publicExports('plain.ts')],
 ]);
 examples.forEach((example, index) => {
   example.module = moduleName(example, index);

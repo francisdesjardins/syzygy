@@ -17,7 +17,7 @@ export type {
   BootstrapOptions,
   CreateBootstrapOptions,
 } from './core/create-bootstrap.js';
-export { defineMountedStep, defineStep } from './core/define-step.js';
+export { defineHostedStep, defineStep } from './core/define-step.js';
 export type { RunEvent } from './core/events.js';
 export {
   BootstrapError,
@@ -35,7 +35,7 @@ export type {
 export { clearSharedScope } from './core/shared-scope.js';
 export { readStepData } from './core/read-data.js';
 export { DEFAULT_DEADLINE_MS } from './core/scheduler.js';
-export type { MountReport, Session, SessionState } from './core/session.js';
+export type { HostReport, Session, SessionState } from './core/session.js';
 export type { RunObserver, RunStage, RunSnapshot } from './core/run-observer.js';
 export type { ReadableStore, Store } from './store/create-store.js';
 export { normalizeError } from './utils/normalize-error.js';
@@ -51,7 +51,7 @@ export type {
   NoticeType,
   PayloadArgs,
   StepId,
-  UiPort,
+  HostCapabilities,
 } from './core/registry.js';
 
 export type {
@@ -65,7 +65,7 @@ export type {
   StepListCheck,
   Intent,
   IntentStatus,
-  MountedContext,
+  HostedContext,
   Notice,
   Outcome,
   PartialRunData,

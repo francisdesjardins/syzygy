@@ -1,8 +1,8 @@
 import { expect, test } from '@playwright/test';
-import { bindBootstrap } from '../../vanilla/bind-bootstrap.js';
+import { bindBootstrap } from '../../plain/bind-bootstrap.js';
 import { createBootstrap } from '../create-bootstrap.js';
 import { attachIntentHost } from '../intent-host.js';
-import { defineMountedStep, defineStep } from '../define-step.js';
+import { defineHostedStep, defineStep } from '../define-step.js';
 import { BootstrapError } from '../errors.js';
 import type { Intent } from '../types.js';
 
@@ -159,11 +159,11 @@ test('a mounted step reaches the UI port and waits for the app to settle its int
           return { daysLeft: 3 };
         },
       }),
-      defineMountedStep({
+      defineHostedStep({
         id: 'trial-warning',
         needs: ['config'],
         run: async (ctx) => {
-          const port: { note?: (message: string) => void } = ctx.ui;
+          const port: { note?: (message: string) => void } = ctx.host;
           port.note?.('about to warn');
           await ctx.awaitIntent('warn:trial', { daysLeft: 3 });
           answered.push('released');
@@ -176,7 +176,7 @@ test('a mounted step reaches the UI port and waits for the app to settle its int
   const session = boot.session();
 
   const bound = bindBootstrap(session, {
-    ui: {
+    host: {
       note: (message: string) => {
         answered.push(message);
       },
@@ -198,7 +198,7 @@ test('a mounted step reaches the UI port and waits for the app to settle its int
 test('a dropped intent rejects the mounted step that was waiting on it', async () => {
   const boot = createBootstrap({
     steps: [
-      defineMountedStep({
+      defineHostedStep({
         id: 'asks',
         run: async (ctx) => {
           await ctx.awaitIntent('confirm', {});
@@ -211,7 +211,7 @@ test('a dropped intent rejects the mounted step that was waiting on it', async (
   const session = boot.session();
 
   const bound = bindBootstrap(session, {
-    ui: {},
+    host: {},
     onIntent: (_intent, controls) => {
       controls.drop('the host does not do confirmations');
     },
@@ -238,14 +238,14 @@ test('mounting after dispose is refused', async () => {
   const session = boot.session();
   session.dispose();
 
-  await expect(session.mount({})).rejects.toThrow(BootstrapError);
+  await expect(session.attach({})).rejects.toThrow(BootstrapError);
 });
 
 test('mount is idempotent, so a re-attaching binding does not ask twice', async () => {
   let runs = 0;
   const boot = createBootstrap({
     steps: [
-      defineMountedStep({
+      defineHostedStep({
         id: 'asks-once',
         run: () => {
           runs += 1;
@@ -256,12 +256,12 @@ test('mount is idempotent, so a re-attaching binding does not ask twice', async 
   await boot.run();
   const session = boot.session();
 
-  const first = session.mount({});
-  const second = session.mount({});
+  const first = session.attach({});
+  const second = session.attach({});
   expect(second).toBe(first);
   await first;
 
-  await session.mount({});
+  await session.attach({});
   expect(runs).toBe(1);
 });
 
@@ -285,7 +285,7 @@ test('the two kinds of destroy differ on what nobody forwarded', async () => {
   // A host that takes nothing, so the intent is still pending when each destroy runs. That is the
   // only state the two kinds of teardown disagree about.
   const refuses = {
-    ui: {},
+    host: {},
     onIntent: () => {
       return undefined;
     },
@@ -326,7 +326,7 @@ test('attachIntentHost leaves the session alive when its host goes away', async 
   const session = boot.session();
 
   const ignore = {
-    ui: {},
+    host: {},
     onIntent: () => {
       return undefined;
     },
@@ -354,7 +354,7 @@ test('the mounted phase reaches the session state, not only the caller that awai
           return { daysLeft: 3 };
         },
       }),
-      defineMountedStep({
+      defineHostedStep({
         id: 'warn',
         needs: ['config'],
         run: () => {
@@ -376,7 +376,7 @@ test('the mounted phase reaches the session state, not only the caller that awai
   });
 
   expect(seen).toEqual([undefined]);
-  await session.mount({});
+  await session.attach({});
 
   // The graph a binding draws needs this half: without it the mounted step stays unresolved on
   // screen for ever, whatever it actually did.
@@ -411,7 +411,7 @@ test('settling an intent nobody emitted says so rather than going quiet', async 
 test('the same intent type twice in the mounted phase is one record that counts occurrences', async () => {
   const boot = createBootstrap({
     steps: [
-      defineMountedStep({
+      defineHostedStep({
         id: 'warns-twice',
         run: (ctx) => {
           ctx.intent('warn', { why: 'first' });
@@ -425,7 +425,7 @@ test('the same intent type twice in the mounted phase is one record that counts 
   const session = boot.session();
 
   const bound = bindBootstrap(session, {
-    ui: {},
+    host: {},
     onIntent: (_intent, controls) => {
       controls.settle();
     },
@@ -455,7 +455,7 @@ test('a mounted step whose dependency failed never runs', async () => {
           throw new Error('503');
         },
       }),
-      defineMountedStep({
+      defineHostedStep({
         id: 'needs-config',
         needs: ['config'],
         run: () => {
@@ -469,7 +469,7 @@ test('a mounted step whose dependency failed never runs', async () => {
   const session = boot.session();
 
   const bound = bindBootstrap(session, {
-    ui: {},
+    host: {},
     onIntent: (_intent, controls) => {
       controls.settle();
     },

@@ -19,7 +19,7 @@ import { RouterLink } from './RouterLink';
 const START_HERE: readonly { readonly specifier: string; readonly name: string }[] = [
   { specifier: 'antumbra', name: 'createBootstrap' },
   { specifier: 'antumbra', name: 'defineStep' },
-  { specifier: 'antumbra', name: 'defineMountedStep' },
+  { specifier: 'antumbra', name: 'defineHostedStep' },
   { specifier: 'antumbra', name: 'Outcome' },
 ];
 
@@ -31,7 +31,7 @@ const ENTRY_BLURB: Record<string, string> = {
     'Five hooks over the core, which this entry re-exports whole, so a React app imports from this path only.',
   'antumbra/solid':
     'The same five names for Solid, plus `fromStore`. Live values are accessors over signals, so do not destructure what these return.',
-  'antumbra/vanilla':
+  'antumbra/plain':
     'A controller for markup you wrote yourself: no provider, no hooks, no rendering — and no framework, optional or otherwise.',
 };
 
@@ -39,7 +39,7 @@ const ENTRY_TITLE: Record<string, string> = {
   antumbra: 'Core',
   'antumbra/react': 'React binding',
   'antumbra/solid': 'Solid binding',
-  'antumbra/vanilla': 'Controller binding',
+  'antumbra/plain': 'Controller binding',
 };
 
 const CategoryCard = ({ category }: { readonly category: ApiCategory }) => {

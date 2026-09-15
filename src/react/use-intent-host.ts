@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { type ForwardedIntent, attachIntentHost } from '../core/intent-host.js';
-import type { UiPort } from '../core/registry.js';
+import type { HostCapabilities } from '../core/registry.js';
 import { useBootstrapContext } from './bootstrap-provider.js';
 
 /**
@@ -13,7 +13,7 @@ import { useBootstrapContext } from './bootstrap-provider.js';
  * warning for the next dependency somebody adds too. Rendering the queue has neither problem: the
  * effect depends on the session and the port, and both are honestly reactive.
  *
- * `ui` must therefore be stable — module scope, or `useMemo` — for the same reason the subscribe
+ * `host` must therefore be stable — module scope, or `useMemo` — for the same reason the subscribe
  * function handed to `useSyncExternalStore` must be. A fresh port every render is a fresh mounted
  * phase every render.
  *
@@ -29,7 +29,7 @@ import { useBootstrapContext } from './bootstrap-provider.js';
  *   return <Banner key={intent.id} intent={intent} onOk={controls.settle} />;
  * });
  */
-export function useIntentHost(ui: UiPort): readonly ForwardedIntent[] {
+export function useIntentHost(host: HostCapabilities): readonly ForwardedIntent[] {
   const { session } = useBootstrapContext();
   const [forwarded, setForwarded] = useState<readonly ForwardedIntent[]>([]);
 
@@ -37,8 +37,8 @@ export function useIntentHost(ui: UiPort): readonly ForwardedIntent[] {
     if (session === undefined) {
       return;
     }
-    const host = attachIntentHost(session, {
-      ui,
+    const attached = attachIntentHost(session, {
+      host,
       onIntent: (intent, controls) => {
         setForwarded((previous) => {
           return [...previous, { intent, controls }];
@@ -46,9 +46,9 @@ export function useIntentHost(ui: UiPort): readonly ForwardedIntent[] {
       },
     });
     return () => {
-      host.destroy();
+      attached.destroy();
     };
-  }, [session, ui]);
+  }, [session, host]);
 
   return forwarded;
 }

@@ -37,7 +37,7 @@ const SHARED_ENTRIES = [
   'antumbra',
   'antumbra-react',
   'antumbra-solid',
-  'antumbra-vanilla',
+  'antumbra-plain',
   'react',
   'react-dom-client',
   'solid-js',

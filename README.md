@@ -116,10 +116,10 @@ A mounted step runs after a binding has taken over, with a UI port in hand. It c
 wait for the answer. It cannot refuse a mount that already happened.
 
 That split is in the types, not in a comment: the two phases get two different context types, so a
-preflight step has no `ctx.ui` to reach for and a mounted step has no `ctx.block` to call.
+preflight step has no `ctx.host` to reach for and a mounted step has no `ctx.block` to call.
 
 ```ts
-const trialWarning = defineMountedStep({
+const trialWarning = defineHostedStep({
   id: 'trial-warning',
   needs: ['config'],
   run: async (ctx) => {
@@ -145,7 +145,7 @@ dropped with a reason rather than lost.
 ```ts
 const session = boot.session();
 const bound = bindBootstrap(session, {
-  ui: {
+  host: {
     confirm: (message) => {
       return myDialog.ask(message);
     },
@@ -196,7 +196,7 @@ declare module 'antumbra' {
   interface IntentRegistry {
     'warn:trial-expiring': { daysLeft: number };
   }
-  interface UiPort {
+  interface HostCapabilities {
     confirm: (message: string) => Promise<boolean>;
   }
 }
@@ -311,7 +311,7 @@ yarn add antumbra
 
 Four entry points. `antumbra` is the core and resolves with no framework installed. `antumbra/react`
 and `antumbra/solid` are the hook bindings, each reaching only its own framework.
-`antumbra/vanilla` is a controller that connects the intent queue to markup you already wrote, with
+`antumbra/plain` is a controller that connects the intent queue to markup you already wrote, with
 no framework at all.
 
 ## Development

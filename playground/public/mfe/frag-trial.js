@@ -11,7 +11,7 @@
 // It also owns the only intent on the page: `config` finds a trial about to expire, queues a
 // warning, and a mounted step waits for the answer before this panel considers itself started.
 
-import { createBootstrap, defineMountedStep, defineStep } from 'antumbra-copy';
+import { createBootstrap, defineHostedStep, defineStep } from 'antumbra-copy';
 
 const boot = createBootstrap({
   steps: [
@@ -36,7 +36,7 @@ const boot = createBootstrap({
         return config;
       },
     }),
-    defineMountedStep({
+    defineHostedStep({
       id: 'trial-warning',
       needs: ['config'],
       run: async (ctx) => {
@@ -124,7 +124,7 @@ class TrialPanel extends HTMLElement {
       }
     });
 
-    await session.mount({});
+    await session.attach({});
   }
 }
 

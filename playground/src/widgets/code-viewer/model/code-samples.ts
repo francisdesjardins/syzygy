@@ -8,7 +8,7 @@
 import stepsSource from '@/pages/getting-started/examples/steps.ts?raw';
 import fakeApiSource from '@/pages/getting-started/examples/fake-api.ts?raw';
 import registrySource from '@/pages/getting-started/examples/registry.d.ts?raw';
-import uiPortSource from '@/pages/getting-started/examples/ui-port.ts?raw';
+import hostSource from '@/pages/getting-started/examples/ui-port.ts?raw';
 import scenarioSource from '@/pages/stories/model/scenario.ts?raw';
 // The harnesses themselves, so a card on the Test Harnesses page can show the fixture it is
 // running rather than only describing it. The two under `antumbra/` live beside the binding they
@@ -37,7 +37,7 @@ export const codeSamples: Readonly<Record<string, CodeSample>> = {
   'boot-steps': { source: stepsSource, language: 'tsx' },
   'boot-api': { source: fakeApiSource, language: 'tsx' },
   'boot-registry': { source: registrySource, language: 'tsx' },
-  'boot-ui-port': { source: uiPortSource, language: 'tsx' },
+  'boot-host': { source: hostSource, language: 'tsx' },
   'story-scenario': { source: scenarioSource, language: 'tsx' },
   'story-react-bootstrap': { source: reactStorySource, language: 'tsx' },
   'story-solid-bootstrap': { source: solidStorySource, language: 'tsx' },

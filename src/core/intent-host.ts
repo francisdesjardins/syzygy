@@ -1,4 +1,4 @@
-import type { UiPort } from './registry.js';
+import type { HostCapabilities } from './registry.js';
 import type { Session } from './session.js';
 import type { Intent } from './types.js';
 
@@ -26,13 +26,13 @@ export type IntentHostOptions = {
   /** Called once per newly forwarded intent, in queue order. */
   readonly onIntent: (intent: Intent, controls: IntentControls) => void;
   /**
-   * Handed to mounted steps as `ctx.ui`.
+   * Handed to mounted steps as `ctx.host`.
    *
    * Required, not defaulted. A default of `{}` would satisfy an app that declared nothing and
    * silently fail one that declared a port and forgot to pass it — the second is the case worth
    * catching, and a project with an empty port writes `{}` itself at no cost.
    */
-  readonly ui: UiPort;
+  readonly host: HostCapabilities;
 };
 
 /** A host that is listening. Its lifetime is the caller's to manage. */
@@ -63,7 +63,7 @@ export type AttachedIntentHost = {
  *
  * @example
  * const host = attachIntentHost(session, {
- *   ui: { confirm: (message) => showConfirmDialog(message) },
+ *   host: { confirm: (message) => showConfirmDialog(message) },
  *   onIntent: (intent, controls) => {
  *     if (intent.type === 'warn:trial-expiring') {
  *       showBanner(intent.payload);
@@ -98,7 +98,7 @@ export function attachIntentHost(session: Session, options: IntentHostOptions): 
     drain();
   });
 
-  const mounted = session.mount(options.ui).then(() => {
+  const mounted = session.attach(options.host).then(() => {
     return undefined;
   });
 

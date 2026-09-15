@@ -1,11 +1,11 @@
 import { BootstrapProvider, useStepData, useBootstrapContext, useIntentHost } from 'antumbra/solid';
-import type { UiPort } from 'antumbra/solid';
+import type { HostCapabilities } from 'antumbra/solid';
 import { createComponent, createEffect } from 'solid-js';
 import { render } from 'solid-js/web';
 import { READOUT, createScenario } from '@/pages/stories/model/scenario.js';
 import styles from '@/pages/stories/ui/story-readout.module.css';
 
-const port: UiPort = {
+const port: HostCapabilities = {
   confirm: () => {
     return Promise.resolve(true);
   },

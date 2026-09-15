@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { createBootstrap } from '../create-bootstrap.js';
-import { defineMountedStep, defineStep } from '../define-step.js';
+import { defineHostedStep, defineStep } from '../define-step.js';
 import { PlanError } from '../errors.js';
 import type { AnyStep } from '../types.js';
 
@@ -68,7 +68,7 @@ test('a duplicate id is rejected at construction', () => {
 });
 
 test('a preflight step cannot depend on a mounted one', () => {
-  const mounted = defineMountedStep({
+  const mounted = defineHostedStep({
     id: 'warn',
     run: () => {
       return undefined;
@@ -83,7 +83,7 @@ test('mounted levels are numbered after the preflight ones', () => {
   const boot = createBootstrap({
     steps: [
       inert('session'),
-      defineMountedStep({
+      defineHostedStep({
         id: 'warn',
         needs: ['session'],
         run: () => {
@@ -99,6 +99,6 @@ test('mounted levels are numbered after the preflight ones', () => {
     })
   ).toEqual([
     { level: 0, phase: 'preflight', ids: ['session'] },
-    { level: 1, phase: 'mounted', ids: ['warn'] },
+    { level: 1, phase: 'hosted', ids: ['warn'] },
   ]);
 });

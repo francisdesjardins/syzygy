@@ -35,7 +35,7 @@ declare module 'antumbra' {
     'confirm:continue-degraded': { missing: string };
   }
 
-  interface UiPort {
+  interface HostCapabilities {
     /** Opens the app's own dialog and resolves with the answer. */
     confirm: (message: string) => Promise<boolean>;
   }

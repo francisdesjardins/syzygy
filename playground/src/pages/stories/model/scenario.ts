@@ -1,4 +1,4 @@
-import { createBootstrap, defineMountedStep, defineStep } from 'antumbra';
+import { createBootstrap, defineHostedStep, defineStep } from 'antumbra';
 
 /**
  * The one scenario both bindings' stories boot.
@@ -46,7 +46,7 @@ export function createScenario() {
     },
   });
 
-  const warning = defineMountedStep({
+  const warning = defineHostedStep({
     id: 'trial-warning',
     needs: ['config'],
     run: async (ctx) => {

@@ -146,7 +146,7 @@ export function PlanGraph(props: {
                 {node.id}
               </text>
               <text x={12} y={35} className="node-meta">
-                {node.phase === 'mounted' ? 'mounted' : (props.scopeOf[node.id] ?? 'instance')}
+                {node.phase === 'hosted' ? 'hosted' : (props.scopeOf[node.id] ?? 'instance')}
                 {status === undefined ? '' : ` · ${status}`}
               </text>
             </g>

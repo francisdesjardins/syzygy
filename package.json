@@ -41,10 +41,10 @@
       "import": "./dist/esm/solid.js",
       "default": "./dist/esm/solid.js"
     },
-    "./vanilla": {
-      "types": "./dist/esm/vanilla.d.ts",
-      "import": "./dist/esm/vanilla.js",
-      "default": "./dist/esm/vanilla.js"
+    "./plain": {
+      "types": "./dist/esm/plain.d.ts",
+      "import": "./dist/esm/plain.js",
+      "default": "./dist/esm/plain.js"
     }
   },
   "scripts": {

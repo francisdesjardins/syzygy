@@ -72,7 +72,7 @@ const ENTRIES = [
   { entry: 'index.ts', packages: [] as string[], mustReach: 'core/create-bootstrap' },
   { entry: 'react.ts', packages: ['react'], mustReach: 'react/use-bootstrap' },
   { entry: 'solid.ts', packages: ['solid-js'], mustReach: 'solid/use-bootstrap' },
-  { entry: 'vanilla.ts', packages: [] as string[], mustReach: 'vanilla/bind-bootstrap' },
+  { entry: 'plain.ts', packages: [] as string[], mustReach: 'plain/bind-bootstrap' },
 ];
 
 for (const { entry, packages, mustReach } of ENTRIES) {
@@ -92,16 +92,16 @@ test('the root reaches no binding', () => {
   const { files } = graphFrom('index.ts');
   expect(
     [...files].filter((file) => {
-      return /^(react|solid|vanilla)\//.test(file);
+      return /^(react|solid|plain)\//.test(file);
     })
   ).toEqual([]);
 });
 
 test('no binding reaches another binding', () => {
-  for (const binding of ['react', 'solid', 'vanilla']) {
+  for (const binding of ['react', 'solid', 'plain']) {
     const { files } = graphFrom(`${binding}.ts`);
     const foreign = [...files].filter((file) => {
-      return /^(react|solid|vanilla)\//.test(file) && !file.startsWith(`${binding}/`);
+      return /^(react|solid|plain)\//.test(file) && !file.startsWith(`${binding}/`);
     });
     expect(foreign, `${binding}.ts reaches another binding`).toEqual([]);
   }

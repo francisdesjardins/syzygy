@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { createBootstrap } from '../create-bootstrap.js';
-import { defineMountedStep, defineStep } from '../define-step.js';
+import { defineHostedStep, defineStep } from '../define-step.js';
 import type { RunObserver, RunSnapshot } from '../run-observer.js';
 import type { AnyStep } from '../types.js';
 
@@ -118,7 +118,7 @@ test('intents queued by the mounted phase reach the snapshot', async () => {
           return { daysLeft: 3 };
         },
       }),
-      defineMountedStep({
+      defineHostedStep({
         id: 'warn',
         needs: ['config'],
         run: async (ctx) => {
@@ -133,7 +133,7 @@ test('intents queued by the mounted phase reach the snapshot', async () => {
 
   expect(snapshot.intents).toHaveLength(0);
 
-  const mounting = snapshot.session?.mount({});
+  const mounting = snapshot.session?.attach({});
   await sleep(5);
   expect(observer.store.get().intents[0]?.type).toBe('warn:trial');
 

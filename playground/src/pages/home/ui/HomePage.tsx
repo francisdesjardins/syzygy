@@ -101,7 +101,7 @@ export function HomePage() {
           <div className={styles['chipRow']}>
             <span className={styles['chip']}>0 runtime dependencies</span>
             <span className={styles['chip']}>no framework in the core</span>
-            <span className={styles['chip']}>React · Solid · vanilla</span>
+            <span className={styles['chip']}>React · Solid · plain</span>
             <span className={styles['chip']}>parallelism derived, never declared</span>
             <span className={styles['chip']}>typed outcome by augmentation</span>
             <span className={styles['chip']}>two phases, typed apart</span>

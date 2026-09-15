@@ -8,23 +8,23 @@ over it, no UI and no runtime dependencies.
 The package root is plain TypeScript and **must resolve with no framework installed**. Bindings are
 the optional layer.
 
-| Specifier          | Contents                                                                                                                                                               |
-| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `antumbra`         | `createBootstrap`, `defineStep`, `defineMountedStep`, the four registries, the event stream, `attachIntentHost`, the errors. No framework; `src/index.ts` is the list. |
-| `antumbra/react`   | `BootstrapProvider`, `useBootstrap`, `useBootstrapContext`, `useStepData`, `useIntentHost` — **plus a wholesale re-export of the root**.                               |
-| `antumbra/solid`   | The same five names, for Solid, plus `fromStore` — and the same wholesale re-export.                                                                                   |
-| `antumbra/vanilla` | `bindBootstrap` — a _controller_ over markup the caller wrote — and the same wholesale re-export.                                                                      |
+| Specifier        | Contents                                                                                                                                                              |
+| ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `antumbra`       | `createBootstrap`, `defineStep`, `defineHostedStep`, the four registries, the event stream, `attachIntentHost`, the errors. No framework; `src/index.ts` is the list. |
+| `antumbra/react` | `BootstrapProvider`, `useBootstrap`, `useBootstrapContext`, `useStepData`, `useIntentHost` — **plus a wholesale re-export of the root**.                              |
+| `antumbra/solid` | The same five names, for Solid, plus `fromStore` — and the same wholesale re-export.                                                                                  |
+| `antumbra/plain` | `bindBootstrap` — a _controller_ over markup the caller wrote — and the same wholesale re-export.                                                                     |
 
 **There are two kinds of binding.** The _hook_ bindings, `./react` and `./solid`, share a surface
 down to the file names, so a team running both writes the same bootstrap twice with the same words.
 One difference, and it is the renderer's: Solid's values are accessors, so **do not destructure what
-its hooks return**. The _controller_ binding, `./vanilla`, has no hooks and no provider; it connects
+its hooks return**. The _controller_ binding, `./plain`, has no hooks and no provider; it connects
 the queue to markup the caller already wrote. `src/__tests__/binding-parity.test.ts` knows the
 difference and asserts each kind's own shape.
 
 `src/__tests__/entry-isolation.test.ts` walks the real import graph from each entry and asserts that
 the root reaches no package at all, that each hook binding reaches its own framework and only its
-own, and that `./vanilla` reaches none. The positive halves are what stop the root's assertion from
+own, and that `./plain` reaches none. The positive halves are what stop the root's assertion from
 passing because the walker resolved nothing. `verify:package` re-checks all of it against the built
 artefact — and that check shipped broken for a day, matching only single-quoted imports while the
 bundler emitted double, until a `mustReach` assertion caught it. That is why both patterns accept
@@ -209,7 +209,7 @@ exit that only asked whether the run had ended would drop the very event that en
 
 ## Types
 
-The four registries — `StepRegistry`, `NoticeRegistry`, `IntentRegistry`, `UiPort` — are filled by
+The four registries — `StepRegistry`, `NoticeRegistry`, `IntentRegistry`, `HostCapabilities` — are filled by
 declaration merging and ship empty. Two consequences worth knowing before touching them:
 
 - **`keyof` an empty interface is `never`, not `string`.** The open id space comes from

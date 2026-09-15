@@ -41,7 +41,7 @@ declare module 'antumbra' {
   interface IntentRegistry {
     'warn:trial-expiring': { daysLeft: number };
   }
-  interface UiPort {
+  interface HostCapabilities {
     confirm: (message: string) => Promise<boolean>;
   }
 }

@@ -22,7 +22,7 @@ export type BoundBootstrap = AttachedIntentHost;
  *
  * @example
  * const bound = bindBootstrap(session, {
- *   ui: { confirm: (message) => Promise.resolve(window.confirm(message)) },
+ *   host: { confirm: (message) => Promise.resolve(window.confirm(message)) },
  *   onIntent: (intent, controls) => {
  *     banner.textContent = intent.type;
  *     banner.hidden = false;

@@ -6,7 +6,7 @@
  */
 
 import { createBootstrap } from '../src/core/create-bootstrap.js';
-import { defineMountedStep, defineStep } from '../src/core/define-step.js';
+import { defineHostedStep, defineStep } from '../src/core/define-step.js';
 import type { DataOf, StepId } from '../src/core/registry.js';
 import type { AnyStep } from '../src/core/types.js';
 
@@ -22,7 +22,7 @@ declare module '../src/core/registry.js' {
   interface IntentRegistry {
     'warn:trial': { daysLeft: number };
   }
-  interface UiPort {
+  interface HostCapabilities {
     confirm: (message: string) => Promise<boolean>;
   }
 }
@@ -103,16 +103,16 @@ export function _phasesHaveDifferentContexts() {
     id: 'guard',
     run: (ctx) => {
       // @ts-expect-error a preflight step has no UI port; nothing is mounted yet
-      ctx.ui;
+      ctx.host;
       return ctx.block('no session');
     },
   });
 
-  defineMountedStep({
+  defineHostedStep({
     id: 'warn',
     run: async (ctx) => {
       // The declared port is what the framework layer said it could do.
-      await ctx.ui.confirm('carry on?');
+      await ctx.host.confirm('carry on?');
       await ctx.awaitIntent('warn:trial', { daysLeft: 3 });
 
       // @ts-expect-error a mounted step cannot refuse a mount that already happened

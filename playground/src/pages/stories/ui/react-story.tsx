@@ -1,5 +1,5 @@
 import { BootstrapProvider, useStepData, useBootstrapContext, useIntentHost } from 'antumbra/react';
-import type { UiPort } from 'antumbra/react';
+import type { HostCapabilities } from 'antumbra/react';
 import { createRoot } from 'react-dom/client';
 import { READOUT, createScenario } from '@/pages/stories/model/scenario.js';
 import styles from '@/pages/stories/ui/story-readout.module.css';
@@ -17,7 +17,7 @@ function Row({ label, testId, children }: { label: string; testId: string; child
 }
 
 /** No dialog in the harness: a story answers through buttons the test can click. */
-const port: UiPort = {
+const port: HostCapabilities = {
   confirm: () => {
     return Promise.resolve(true);
   },

@@ -8,7 +8,7 @@
  * **Declare as few or as many as you like.** An id a registry does not name still works, which is
  * what lets a project adopt this one step at a time and host steps it does not own. What a declared
  * entry buys is its contract: the runner reads a step's data type off its id, `notice` and `intent`
- * read their payload off their type, and a mounted step reads the UI port off {@link UiPort}.
+ * read their payload off their type, and a mounted step reads the UI port off {@link HostCapabilities}.
  *
  * The trade is that a mistyped id is **not** an error, because an unknown id is a supported one.
  * The editor still completes the declared names, and the list is still the index.
@@ -26,7 +26,7 @@
  *   interface IntentRegistry {
  *     'warn:trial-expiring': { daysLeft: number };
  *   }
- *   interface UiPort {
+ *   interface HostCapabilities {
  *     confirm: (message: string) => Promise<boolean>;
  *   }
  * }
@@ -65,7 +65,7 @@ export interface IntentRegistry {}
  * object. Declare here only what the framework layer can genuinely do.
  */
 // oxlint-disable-next-line typescript/no-empty-object-type -- see StepRegistry
-export interface UiPort {}
+export interface HostCapabilities {}
 
 /**
  * The id every door accepts: the declared names **and** any other string, so declaring one step

@@ -4,14 +4,14 @@ import { BootstrapError, StepSkippedError } from './errors.js';
 import type { IntentEntry, IntentSink } from './intent-queue.js';
 import { createNoticeLog } from './notice-log.js';
 import type { CompiledPlan, PlannedStep } from './plan.js';
-import type { StepId, UiPort } from './registry.js';
+import type { StepId, HostCapabilities } from './registry.js';
 import { attemptStep } from './run-step.js';
 import type { PreflightResult } from './scheduler.js';
-import { createMountedContext } from './step-context.js';
+import { createHostedContext } from './step-context.js';
 import type { Intent, Notice, StepFailure, StepStatus, StepTrace } from './types.js';
 
 /** What the mounted phase did, since the outcome was frozen before it ran. */
-export type MountReport = {
+export type HostReport = {
   readonly notices: readonly Notice[];
   readonly errors: readonly StepFailure[];
   readonly timeline: readonly StepTrace[];
@@ -32,7 +32,7 @@ export type MountReport = {
 export type SessionState = {
   readonly intents: readonly Intent[];
   /** Undefined until the mounted phase has run. Its timeline is the other half of the graph. */
-  readonly mount: MountReport | undefined;
+  readonly mount: HostReport | undefined;
 };
 
 export type Session = {
@@ -56,10 +56,10 @@ export type Session = {
    * Run the mounted phase with the framework's port in hand.
    *
    * This is the half of the bootstrap that descends into the framework: a mounted step can open a
-   * dialog through `ctx.ui` and wait for the answer through `ctx.awaitIntent`, neither of which a
+   * dialog through `ctx.host` and wait for the answer through `ctx.awaitIntent`, neither of which a
    * preflight step has any way to do.
    */
-  mount: (ui: UiPort) => Promise<MountReport>;
+  attach: (host: HostCapabilities) => Promise<HostReport>;
   /**
    * Close the session. Every intent still pending becomes `dropped('not-forwarded')`.
    *
@@ -101,7 +101,7 @@ export function createSession(deps: SessionDeps): Session {
   // waiter exists. Without this the step would wait forever on a question already answered.
   const early = new Map<string, Error | undefined>();
   let disposed = false;
-  let mounting: Promise<MountReport> | undefined;
+  let mounting: Promise<HostReport> | undefined;
 
   const find = (intentId: string): Intent => {
     const intent = store.get().intents.find((candidate) => {
@@ -206,7 +206,7 @@ export function createSession(deps: SessionDeps): Session {
       return store.subscribe(listener);
     },
 
-    mount: (ui) => {
+    attach: (host) => {
       // A rejected promise rather than a synchronous throw: this door returns a promise, and a
       // caller that only wrote `.catch` would otherwise see the error blow past it.
       if (disposed) {
@@ -216,7 +216,7 @@ export function createSession(deps: SessionDeps): Session {
       // an author expects — StrictMode doubles effects, and a reactive effect re-runs whenever
       // anything it read changed — and a mounted phase that ran twice would ask the user the same
       // question twice.
-      mounting ??= runMounted({ deps, ui, sink: liveSink, awaitIntent }).then((report) => {
+      mounting ??= runHosted({ deps, host, sink: liveSink, awaitIntent }).then((report) => {
         // Published, not just returned: the graph a binding draws needs the mounted half too, and
         // only the caller that happened to await `mount` would otherwise ever see it.
         store.set({ ...store.get(), mount: report });
@@ -240,13 +240,13 @@ export function createSession(deps: SessionDeps): Session {
 
 type MountArgs = {
   readonly deps: SessionDeps;
-  readonly ui: UiPort;
+  readonly host: HostCapabilities;
   readonly sink: IntentSink;
   readonly awaitIntent: (intentId: string) => Promise<void>;
 };
 
-async function runMounted(args: MountArgs): Promise<MountReport> {
-  const { deps, ui, sink, awaitIntent } = args;
+async function runHosted(args: MountArgs): Promise<HostReport> {
+  const { deps, host, sink, awaitIntent } = args;
   const notices = createNoticeLog({ clock: deps.clock });
   const timeline: StepTrace[] = [];
   const errors: StepFailure[] = [];
@@ -274,7 +274,7 @@ async function runMounted(args: MountArgs): Promise<MountReport> {
         timeline.push({
           id: planned.id,
           level: planned.level,
-          phase: 'mounted',
+          phase: 'hosted',
           status: 'skipped',
           startedAt: deps.clock.wall(),
           durationMs: 0,
@@ -289,12 +289,12 @@ async function runMounted(args: MountArgs): Promise<MountReport> {
           clock: deps.clock,
           rootSignal: controller.signal,
           withContext: (signal) => {
-            const handle = createMountedContext({
+            const handle = createHostedContext({
               planned,
               signal,
               notices,
               intents: sink,
-              ui,
+              host,
               readData: readData(planned),
               awaitIntent,
             });
@@ -315,7 +315,7 @@ async function runMounted(args: MountArgs): Promise<MountReport> {
       timeline.push({
         id: planned.id,
         level: planned.level,
-        phase: 'mounted',
+        phase: 'hosted',
         status: attempt.status,
         startedAt: attempt.startedAt,
         durationMs: attempt.durationMs,

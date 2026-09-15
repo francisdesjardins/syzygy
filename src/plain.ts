@@ -1,5 +1,5 @@
 /**
- * antumbra/vanilla — the controller binding.
+ * antumbra/plain — the controller binding.
  *
  * A wholesale re-export of the root plus `bindBootstrap`, so a plain-DOM app imports from this path
  * only. Framework-free like the core, but a binding rather than a primitive: it composes what the
@@ -9,5 +9,5 @@
  */
 
 export * from './index.js';
-export { bindBootstrap } from './vanilla/bind-bootstrap.js';
-export type { BindOptions, BoundBootstrap } from './vanilla/bind-bootstrap.js';
+export { bindBootstrap } from './plain/bind-bootstrap.js';
+export type { BindOptions, BoundBootstrap } from './plain/bind-bootstrap.js';

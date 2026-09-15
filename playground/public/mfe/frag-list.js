@@ -6,7 +6,7 @@
 // run four times if you flip the switch.
 
 import { createBootstrap, defineStep } from 'antumbra';
-import { bindBootstrap } from 'antumbra/vanilla';
+import { bindBootstrap } from 'antumbra/plain';
 
 const boot = createBootstrap({
   steps: [
@@ -51,7 +51,7 @@ const outcome = await boot.run();
 const session = boot.session();
 
 bindBootstrap(session, {
-  ui: {},
+  host: {},
   onIntent: (intent, controls) => {
     // This fragment shows no dialogs, and says so instead of leaving the intent to rot.
     controls.drop('the project list has nowhere to show this');

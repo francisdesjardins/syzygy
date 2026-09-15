@@ -1,6 +1,6 @@
 import { createEffect, createMemo, createSignal, onCleanup } from 'solid-js';
 import { type ForwardedIntent, attachIntentHost } from '../core/intent-host.js';
-import type { UiPort } from '../core/registry.js';
+import type { HostCapabilities } from '../core/registry.js';
 import { useBootstrapContext } from './bootstrap-provider.js';
 
 /**
@@ -16,7 +16,7 @@ import { useBootstrapContext } from './bootstrap-provider.js';
  * const pending = useIntentHost({ confirm: (message) => dialog.ask(message) });
  * return <For each={pending()}>{(entry) => <Banner intent={entry.intent} />}</For>;
  */
-export function useIntentHost(ui: UiPort): () => readonly ForwardedIntent[] {
+export function useIntentHost(host: HostCapabilities): () => readonly ForwardedIntent[] {
   const snapshot = useBootstrapContext();
   const [forwarded, setForwarded] = createSignal<readonly ForwardedIntent[]>([]);
 
@@ -33,8 +33,8 @@ export function useIntentHost(ui: UiPort): () => readonly ForwardedIntent[] {
     if (current === undefined) {
       return;
     }
-    const host = attachIntentHost(current, {
-      ui,
+    const attached = attachIntentHost(current, {
+      host,
       onIntent: (intent, controls) => {
         setForwarded((previous) => {
           return [...previous, { intent, controls }];
@@ -42,7 +42,7 @@ export function useIntentHost(ui: UiPort): () => readonly ForwardedIntent[] {
       },
     });
     onCleanup(() => {
-      host.destroy();
+      attached.destroy();
     });
   });
 

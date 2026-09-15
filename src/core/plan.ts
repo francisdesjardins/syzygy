@@ -103,7 +103,7 @@ export function compilePlan(steps: readonly AnyStep[]): CompiledPlan {
           `Step "${String(step.id)}" needs "${String(need)}", which no step declares.`
         );
       }
-      if (phaseOf(step) === 'preflight' && needPhase === 'mounted') {
+      if (phaseOf(step) === 'preflight' && needPhase === 'hosted') {
         throw new PlanError(
           `Step "${String(step.id)}" is preflight but needs "${String(need)}", which is mounted. ` +
             `Preflight finishes before anything mounts, so that edge can never be satisfied.`
@@ -142,7 +142,7 @@ export function compilePlan(steps: readonly AnyStep[]): CompiledPlan {
   };
 
   const preflightLevels = levelize(idsOf('preflight'), edgesFor('preflight'));
-  const mountedLevels = levelize(idsOf('mounted'), edgesFor('mounted'));
+  const mountedLevels = levelize(idsOf('hosted'), edgesFor('hosted'));
 
   const dependents = new Map<StepId, StepId[]>(
     steps.map((step) => {
@@ -187,7 +187,7 @@ export function compilePlan(steps: readonly AnyStep[]): CompiledPlan {
         return { level: index, phase: 'preflight', ids };
       }),
       ...mountedLevels.map((ids, index): PlanLevel => {
-        return { level: preflightLevels.length + index, phase: 'mounted', ids };
+        return { level: preflightLevels.length + index, phase: 'hosted', ids };
       }),
     ],
   };

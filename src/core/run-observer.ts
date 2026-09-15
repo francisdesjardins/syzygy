@@ -1,6 +1,6 @@
 import { type ReadableStore, createStore } from '../store/create-store.js';
 import type { RunEvent, EventHub } from './events.js';
-import type { MountReport, Session } from './session.js';
+import type { HostReport, Session } from './session.js';
 import type { AnyStep, Intent, Outcome } from './types.js';
 
 /**
@@ -26,7 +26,7 @@ export type RunSnapshot<TSteps extends readonly AnyStep[] = readonly []> = {
    * is missing its last column without it — the mounted step showed as permanently unresolved, and
    * somebody noticed.
    */
-  readonly mount: MountReport | undefined;
+  readonly mount: HostReport | undefined;
   readonly session: Session | undefined;
 };
 

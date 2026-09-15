@@ -1,6 +1,6 @@
 import type { StepId } from './registry.js';
 import type { DataOf } from './registry.js';
-import type { MountedContext, PreflightContext, Step, StepScope } from './types.js';
+import type { HostedContext, PreflightContext, Step, StepScope } from './types.js';
 
 /**
  * One preflight step: work that runs before anything mounts.
@@ -60,7 +60,7 @@ export function defineStep<
  * after the outcome was handed over.
  *
  * @example
- * const trialWarning = defineMountedStep({
+ * const trialWarning = defineHostedStep({
  *   id: 'trial-warning',
  *   needs: ['config'],
  *   run: async (ctx) => {
@@ -71,7 +71,7 @@ export function defineStep<
  *   },
  * });
  */
-export function defineMountedStep<
+export function defineHostedStep<
   const TId extends StepId,
   const TNeeds extends readonly StepId[] = readonly [],
 >(step: {
@@ -79,7 +79,7 @@ export function defineMountedStep<
   readonly needs?: TNeeds | undefined;
   readonly optional?: boolean | undefined;
   readonly timeout?: number | undefined;
-  run(ctx: MountedContext<TNeeds>): void | Promise<void>;
-}): Step<TId, TNeeds, 'mounted'> {
-  return { ...step, phase: 'mounted' };
+  run(ctx: HostedContext<TNeeds>): void | Promise<void>;
+}): Step<TId, TNeeds, 'hosted'> {
+  return { ...step, phase: 'hosted' };
 }

@@ -2,7 +2,7 @@
   "$schema": "https://typedoc.app/schema.json",
   // Validation only, no HTML output: `docs:check` runs the two validations below and nothing
   // renders a site yet.
-  "entryPoints": ["src/index.ts", "src/react.ts", "src/solid.ts", "src/vanilla.ts"],
+  "entryPoints": ["src/index.ts", "src/react.ts", "src/solid.ts", "src/plain.ts"],
   "name": "antumbra",
   "excludePrivate": true,
   "excludeInternal": true,

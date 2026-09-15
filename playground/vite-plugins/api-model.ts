@@ -18,13 +18,13 @@ const RESOLVED_ID = `\0${VIRTUAL_ID}`;
 const CORE = 'antumbra';
 const REACT = 'antumbra/react';
 const SOLID = 'antumbra/solid';
-const VANILLA = 'antumbra/vanilla';
+const PLAIN = 'antumbra/plain';
 
 const ENTRY_LABEL: Record<string, string> = {
   index: CORE,
   react: REACT,
   solid: SOLID,
-  vanilla: VANILLA,
+  plain: PLAIN,
 };
 
 /**
@@ -66,7 +66,7 @@ export const CATEGORIES: readonly CategoryDef[] = [
     symbols: [
       'createBootstrap',
       'defineStep',
-      'defineMountedStep',
+      'defineHostedStep',
       'Bootstrap',
       'BootstrapOptions',
       'CreateBootstrapOptions',
@@ -85,7 +85,7 @@ export const CATEGORIES: readonly CategoryDef[] = [
       'StepReturn',
       'StepContext',
       'PreflightContext',
-      'MountedContext',
+      'HostedContext',
       'StepStatus',
       'StepTrace',
       'StepFailure',
@@ -103,7 +103,7 @@ export const CATEGORIES: readonly CategoryDef[] = [
       'StepRegistry',
       'NoticeRegistry',
       'IntentRegistry',
-      'UiPort',
+      'HostCapabilities',
       'StepId',
       'NoticeType',
       'IntentType',
@@ -142,7 +142,7 @@ export const CATEGORIES: readonly CategoryDef[] = [
     symbols: [
       'Session',
       'SessionState',
-      'MountReport',
+      'HostReport',
       'attachIntentHost',
       'AttachedIntentHost',
       'IntentHostOptions',
@@ -215,9 +215,9 @@ export const CATEGORIES: readonly CategoryDef[] = [
     ],
   },
   {
-    id: 'vanilla',
+    id: 'plain',
     label: 'Controller binding',
-    specifier: VANILLA,
+    specifier: PLAIN,
     blurb:
       'No hooks, no provider, no rendering: it connects the queue to markup you already wrote, with no framework optional or otherwise.',
     symbols: ['bindBootstrap', 'BindOptions', 'BoundBootstrap'],
@@ -903,7 +903,7 @@ async function buildModel(
         '--entryPoints',
         'src/solid.ts',
         '--entryPoints',
-        'src/vanilla.ts',
+        'src/plain.ts',
         '--json',
         jsonPath,
         '--out',

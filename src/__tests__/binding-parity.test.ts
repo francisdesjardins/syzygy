@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 import * as core from '../index.js';
 import * as react from '../react.js';
 import * as solid from '../solid.js';
-import * as vanilla from '../vanilla.js';
+import * as plain from '../plain.js';
 
 /**
  * The names a hook binding owns. A team running both writes the same bootstrap twice with the same
@@ -27,7 +27,7 @@ function ownNames(binding: Record<string, unknown>): string[] {
 }
 
 test('every binding re-exports the root wholesale', () => {
-  for (const [name, binding] of Object.entries({ react, solid, vanilla })) {
+  for (const [name, binding] of Object.entries({ react, solid, plain })) {
     const missing = Object.keys(core).filter((exported) => {
       return !(exported in binding);
     });
@@ -45,5 +45,5 @@ test('the two hook bindings have the same surface', () => {
 test('the controller binding is a different kind, and adds one function', () => {
   // Not a hook binding: it does not render, so it has no provider and no hooks. Asserting its own
   // shape rather than exempting it is what keeps a hook from being added here by accident.
-  expect(ownNames(vanilla)).toEqual(['bindBootstrap']);
+  expect(ownNames(plain)).toEqual(['bindBootstrap']);
 });

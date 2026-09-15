@@ -2,8 +2,8 @@ import { UndeclaredDependencyError } from './errors.js';
 import type { IntentSink } from './intent-queue.js';
 import type { NoticeLog } from './notice-log.js';
 import type { PlannedStep } from './plan.js';
-import type { IntentType, NoticeType, StepId, UiPort } from './registry.js';
-import type { MountedContext, PreflightContext } from './types.js';
+import type { IntentType, NoticeType, StepId, HostCapabilities } from './registry.js';
+import type { HostedContext, PreflightContext } from './types.js';
 
 export type ContextDeps = {
   readonly planned: PlannedStep;
@@ -96,17 +96,17 @@ export function createPreflightContext(
 }
 
 /** The mounted context, which has the UI port and can wait on an intent it queued. */
-export function createMountedContext(
+export function createHostedContext(
   deps: ContextDeps & {
-    readonly ui: UiPort;
+    readonly host: HostCapabilities;
     readonly awaitIntent: (intentId: string) => Promise<void>;
   }
-): ContextHandle<MountedContext> {
+): ContextHandle<HostedContext> {
   const { base, settle } = createBase(deps);
-  const context: MountedContext = {
+  const context: HostedContext = {
     ...base,
-    get: base.get as MountedContext['get'],
-    ui: deps.ui,
+    get: base.get as HostedContext['get'],
+    host: deps.host,
     awaitIntent: (type, ...rest) => {
       const intentId = deps.intents.emit({ type, payload: rest[0], step: deps.planned.id });
       return deps.awaitIntent(intentId);

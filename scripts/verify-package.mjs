@@ -56,7 +56,7 @@ const ENTRY_RULES = [
   { entry: 'index.js', allowed: [], mustReach: [] },
   { entry: 'react.js', allowed: ['react', 'react-dom', 'react/jsx-runtime'], mustReach: ['react'] },
   { entry: 'solid.js', allowed: ['solid-js'], mustReach: ['solid-js'] },
-  { entry: 'vanilla.js', allowed: [], mustReach: [] },
+  { entry: 'plain.js', allowed: [], mustReach: [] },
 ];
 
 function graphOf(entryFile) {
@@ -107,7 +107,7 @@ for (const rule of ENTRY_RULES) {
   if (rule.entry !== 'index.js') continue;
   for (const file of reached) {
     const folder = relative(DIST, file).split(/[\\/]/)[0];
-    if (['react', 'solid', 'vanilla'].includes(folder)) {
+    if (['react', 'solid', 'plain'].includes(folder)) {
       fail(`The root entry reaches ${relative('.', file)}, which belongs to a binding.`);
     }
   }

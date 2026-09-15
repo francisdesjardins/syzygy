@@ -1,4 +1,4 @@
-import { defineMountedStep, defineStep } from 'antumbra';
+import { defineHostedStep, defineStep } from 'antumbra';
 import type { Api } from './fake-api.js';
 
 /**
@@ -91,10 +91,10 @@ export function createSteps(api: Api) {
   /**
    * The half that descends into the framework.
    *
-   * It cannot run during preflight and the type says so: it reads `ctx.ui`, which only exists once
+   * It cannot run during preflight and the type says so: it reads `ctx.host`, which only exists once
    * a binding has handed one over, and it waits for an answer that only a mounted UI can give.
    */
-  const trialWarning = defineMountedStep({
+  const trialWarning = defineHostedStep({
     id: 'trial-warning',
     needs: ['config'],
     run: async (ctx) => {

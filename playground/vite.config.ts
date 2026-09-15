@@ -46,8 +46,8 @@ export default defineConfig({
       { find: /^antumbra\/react$/, replacement: resolve(import.meta.dirname, '../src/react.ts') },
       { find: /^antumbra\/solid$/, replacement: resolve(import.meta.dirname, '../src/solid.ts') },
       {
-        find: /^antumbra\/vanilla$/,
-        replacement: resolve(import.meta.dirname, '../src/vanilla.ts'),
+        find: /^antumbra\/plain$/,
+        replacement: resolve(import.meta.dirname, '../src/plain.ts'),
       },
       { find: /^antumbra$/, replacement: resolve(import.meta.dirname, '../src/index.ts') },
       { find: /^antumbra\//, replacement: `${resolve(import.meta.dirname, '../src')}/` },

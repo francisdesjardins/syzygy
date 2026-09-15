@@ -1,4 +1,4 @@
-import type { UiPort } from 'antumbra';
+import type { HostCapabilities } from 'antumbra';
 
 type Ask = { message: string; answer: (accepted: boolean) => void };
 
@@ -58,8 +58,8 @@ function createDialogController() {
 
 export const dialog = createDialogController();
 
-/** What mounted steps get as `ctx.ui`. Declared in `registry.d.ts`. */
-export const uiPort: UiPort = {
+/** What mounted steps get as `ctx.host`. Declared in `registry.d.ts`. */
+export const uiPort: HostCapabilities = {
   confirm: (message: string) => {
     return dialog.ask(message);
   },

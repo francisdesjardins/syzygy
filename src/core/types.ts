@@ -6,7 +6,7 @@ import type {
   NoticeType,
   PayloadArgs,
   StepId,
-  UiPort,
+  HostCapabilities,
 } from './registry.js';
 
 /**
@@ -16,11 +16,11 @@ import type {
  * `preflight` runs before anything is mounted. It has no framework, so it cannot ask a user
  * anything, and it is the only phase that may refuse the mount outright.
  *
- * `mounted` runs after a binding has taken over. It is handed a {@link UiPort}, so it can open a
+ * `mounted` runs after a binding has taken over. It is handed a {@link HostCapabilities}, so it can open a
  * dialog and wait for the answer — and it cannot refuse the mount, because the mount already
  * happened.
  */
-export type StepPhase = 'preflight' | 'mounted';
+export type StepPhase = 'preflight' | 'hosted';
 
 /**
  * Whether a step's work belongs to this bootstrap alone or to everything running beside it.
@@ -154,13 +154,13 @@ export type PreflightContext<TNeeds extends readonly StepId[] = readonly StepId[
 /**
  * The context a mounted step gets.
  *
- * It has the {@link UiPort} the binding supplied and can await an intent's resolution. It has no
+ * It has the {@link HostCapabilities} the binding supplied and can await an intent's resolution. It has no
  * `block`, because by the time it runs the mount has already happened.
  */
-export type MountedContext<TNeeds extends readonly StepId[] = readonly StepId[]> =
+export type HostedContext<TNeeds extends readonly StepId[] = readonly StepId[]> =
   BaseContext<TNeeds> & {
-    /** Whatever the framework layer declared it can do. Empty until a project augments it. */
-    readonly ui: UiPort;
+    /** Whatever the host declared it can do. Empty until a project augments it. */
+    readonly host: HostCapabilities;
     /**
      * Queue an intent and wait for the app to settle it.
      *
@@ -177,7 +177,7 @@ export type MountedContext<TNeeds extends readonly StepId[] = readonly StepId[]>
 export type StepContext<
   TNeeds extends readonly StepId[],
   TPhase extends StepPhase,
-> = TPhase extends 'mounted' ? MountedContext<TNeeds> : PreflightContext<TNeeds>;
+> = TPhase extends 'hosted' ? HostedContext<TNeeds> : PreflightContext<TNeeds>;
 
 /**
  * What a step's `run` may return.
@@ -186,7 +186,7 @@ export type StepContext<
  * step's data would arrive after the outcome was already handed over — the value would have nowhere
  * to live and `data` would have to admit it might not be there yet.
  */
-export type StepReturn<TId extends StepId, TPhase extends StepPhase> = TPhase extends 'mounted'
+export type StepReturn<TId extends StepId, TPhase extends StepPhase> = TPhase extends 'hosted'
   ? void | Promise<void>
   : DataOf<TId> | Promise<DataOf<TId>>;
 

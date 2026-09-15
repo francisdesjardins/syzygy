@@ -9,7 +9,7 @@
     "src/index.ts",
     "src/react.ts",
     "src/solid.ts",
-    "src/vanilla.ts",
+    "src/plain.ts",
     "src/react/**",
     "src/solid/**"
   ],

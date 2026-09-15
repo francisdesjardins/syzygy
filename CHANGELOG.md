@@ -188,7 +188,7 @@ larger call than these.
 
 ### Fixed
 
-- The graph left its mounted step permanently unresolved. Its traces were in the `MountReport`,
+- The graph left its mounted step permanently unresolved. Its traces were in the `HostReport`,
   which `attachIntentHost` threw away.
 - The scope control on the micro-frontend page is in the URL now. There were two controls for one
   setting, and the one inside the frame did not move the one outside it.
@@ -298,10 +298,10 @@ demonstrates both.
 
 ### Added
 
-- `createBootstrap`, `defineStep` and `defineMountedStep`. Steps declare what they read in `needs`;
+- `createBootstrap`, `defineStep` and `defineHostedStep`. Steps declare what they read in `needs`;
   the planner turns that into topological levels and everything on a level goes out together.
 - Four registries filled by declaration merging — `BootRegistry`, `NoticeRegistry`, `IntentRegistry`
-  and `UiPort`. Declaring none leaves every id open and every payload `unknown`.
+  and `HostCapabilities`. Declaring none leaves every id open and every payload `unknown`.
 - Five statuses: `ready`, `degraded`, `blocked`, `failed`, `aborted`. `run()` never rejects for
   anything a step did, and calling it twice returns the same outcome.
 - Notices (facts recorded during the run) and intents (UI work the core cannot do itself, with a
@@ -311,7 +311,7 @@ demonstrates both.
   mounted step has the port and can wait for an intent to be settled, and cannot refuse.
 - `boot.events()` and `createBootstrap({ onEvent })`: the run as it happens, as an async iterable or
   a callback. The outcome stays the only answer to whether the app may mount.
-- `antumbra/vanilla` with `bindBootstrap`, a controller over markup the caller already wrote.
+- `antumbra/plain` with `bindBootstrap`, a controller over markup the caller already wrote.
 - A playground demonstrating one modular application, with switches for every interesting failure:
   no session, a required service down, an optional one down, a step that hangs past its own timeout.
 
