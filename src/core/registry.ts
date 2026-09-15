@@ -74,6 +74,13 @@ export interface UiPort {}
  * **`(string & {})` is what keeps both halves.** A plain `keyof StepRegistry | string` collapses to
  * `string` and the editor stops completing the names; the branded member survives that reduction
  * long enough to be suggested.
+ *
+ * It is also why the generated reference shows every signature that takes an id as `string & {}`
+ * rather than as this alias. Those pages are built from *this* package, where nothing has been
+ * augmented, so `keyof StepRegistry` is `never` and TypeScript reduces the union to its surviving
+ * half before the documenter ever sees a node. In a project that has declared its steps the same
+ * signature reads `'session' | 'config' | (string & {})`: the declared names first, then the
+ * escape hatch that keeps the undeclared ones legal.
  */
 // oxlint-disable-next-line typescript/no-redundant-type-constituents -- `never` only while nobody has augmented; it becomes the union of declared ids, which is the whole mechanism
 export type StepId = keyof StepRegistry | (string & {});

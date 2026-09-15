@@ -436,6 +436,12 @@ type PrintContext = {
   readonly warn: (message: string) => void;
   /** Every reflection id in the project, so an inline `{@link}`'s numeric target resolves. */
   readonly names: Map<number, string>;
+  /**
+   * How many anonymous objects deep this print already is. One level is expanded field by field;
+   * below that the placeholder comes back, because a step's `run` would otherwise drag its whole
+   * context type into a signature line.
+   */
+  readonly depth?: number | undefined;
 };
 
 /**
@@ -444,7 +450,12 @@ type PrintContext = {
  */
 type Printer = PrintContext & { readonly out: Tokens };
 
-/** An object literal type prints as a placeholder; its shape is the members table below it. */
+/**
+ * An object literal type prints as a placeholder **where a members table follows it** — which is
+ * true of a symbol's own declaration line and false of a parameter's type, so the two are no longer
+ * printed the same way. A parameter that said `step: { … }` promised a table that is never rendered
+ * for it, and `defineStep`'s object is the most important shape in the package.
+ */
 const OBJECT_PLACEHOLDER = '{ … }';
 
 function printCallSignature(signature: Node, printer: Printer): void {
@@ -627,7 +638,27 @@ function printType(node: TypeNode | undefined, printer: Printer): void {
         printCallSignature(signature, printer);
         return;
       }
-      out.push(OBJECT_PLACEHOLDER);
+      const fields = declaration?.children ?? [];
+      // `string & {}` is the branding idiom behind `StepId`: an object with no members at all.
+      // Printed as the placeholder it advertised a table with nothing in it, on ten rows.
+      if (fields.length === 0) {
+        out.push('{}');
+        return;
+      }
+      const depth = printer.depth ?? 0;
+      if (depth > 0) {
+        out.push(OBJECT_PLACEHOLDER);
+        return;
+      }
+      out.push('{ ');
+      fields.forEach((field, index) => {
+        if (index > 0) {
+          out.push('; ');
+        }
+        out.push(`${field.name}${field.flags?.isOptional === true ? '?' : ''}: `);
+        printType(field.type, { ...printer, depth: depth + 1 });
+      });
+      out.push(' }');
       return;
     }
     default: {
