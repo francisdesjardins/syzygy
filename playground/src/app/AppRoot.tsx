@@ -1,3 +1,4 @@
+import { useDocumentTitle } from '@/app/useDocumentTitle';
 import { CodePaneProvider } from '@/app/providers/CodePaneProvider/CodePaneProvider';
 import { ThemeProvider } from '@/app/providers/ThemeProvider/ThemeProvider';
 import { RootLayout } from '@/widgets/root-layout';
@@ -8,6 +9,8 @@ import { RootLayout } from '@/widgets/root-layout';
  * module exporting a component *and* anything else forces a full reload (`only-export-components`).
  */
 export const AppRoot = () => {
+  useDocumentTitle();
+
   return (
     <ThemeProvider>
       <CodePaneProvider>
