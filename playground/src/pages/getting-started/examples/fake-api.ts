@@ -24,7 +24,10 @@ export const defaultFaults: Faults = {
   configDown: false,
   tagsHang: false,
   accessBroken: false,
-  trialExpiring: true,
+  // Off, like the rest. This one queues an intent that a mounted step waits on, and the app's
+  // answer to that is a modal dialog — so leaving it on greeted every reader with a question over
+  // a page they had not read yet. The demonstration is better as something they switch on.
+  trialExpiring: false,
 };
 
 function wait(ms: number, signal: AbortSignal): Promise<void> {

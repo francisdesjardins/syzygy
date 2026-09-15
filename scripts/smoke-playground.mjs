@@ -38,6 +38,16 @@ try {
 
   browser = await chromium.launch();
   const page = await browser.newPage();
+  /**
+   * What the page throws on purpose.
+   *
+   * The Test Harnesses route renders fixtures that prove a *refusal*, and a refusal is a throw:
+   * React and Solid each log one on the way to the boundary that renders the message the assertion
+   * reads. Muting console errors wholesale would hide a real one, so the deliberate text is named
+   * here and everything else still fails the run.
+   */
+  const DELIBERATE = ['useBootstrapContext was called outside a <BootstrapProvider>.'];
+
   const consoleErrors = [];
   page.on('console', (message) => {
     if (message.type() === 'error') consoleErrors.push(message.text());
@@ -60,6 +70,11 @@ try {
   // nothing at all.
   await page.locator('.run-chart .bar').first().waitFor({ timeout: 15_000 });
   await page.locator('.verdict .status').first().waitFor({ timeout: 15_000 });
+
+  // The trial warning is off by default — the page has to be readable before it asks anything — so
+  // the run that raises it is asked for here the way a reader would ask for it.
+  await page.getByRole('checkbox', { name: 'Trial nearly expired' }).check();
+  await page.getByTestId('boot-again').click();
 
   // Two bootstraps share this page, and the steps that produce the warning are page-scoped, so the
   // page has to ask once. Asking twice is the bug this scope exists to fix, and it came back once.
@@ -90,8 +105,13 @@ try {
     await page.getByRole('heading', { level: 1 }).first().waitFor({ timeout: 15_000 });
   }
 
-  if (consoleErrors.length > 0) {
-    failures.push(`Console errors: ${consoleErrors.join(' | ')}`);
+  const unexpected = consoleErrors.filter((text) => {
+    return !DELIBERATE.some((allowed) => {
+      return text.includes(allowed);
+    });
+  });
+  if (unexpected.length > 0) {
+    failures.push(`Console errors: ${unexpected.join(' | ')}`);
   }
 
   // The frame, which the page above never touches. It shipped once with a React fragment that threw

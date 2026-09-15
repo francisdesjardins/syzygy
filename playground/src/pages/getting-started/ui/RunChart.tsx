@@ -36,7 +36,7 @@ export function RunChart(props: { events: readonly RunEvent[]; timeline: readonl
   };
 
   return (
-    <div className="graph-scroll">
+    <div className="graph-scroll" tabIndex={0} role="group" aria-label="Run timeline, scrollable">
       <svg
         className="run-chart"
         width={LABEL_W + width + 52}

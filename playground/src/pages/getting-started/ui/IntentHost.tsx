@@ -94,6 +94,7 @@ export function IntentHost() {
       </p>
       <div className={styles['actions']}>
         <AppButton
+          variant="outlined"
           onClick={() => {
             answer(false);
           }}
@@ -101,7 +102,7 @@ export function IntentHost() {
           Dismiss
         </AppButton>
         <AppButton
-          variant="primary"
+          variant="contained"
           data-testid="dialog-acknowledge"
           onClick={() => {
             answer(true);

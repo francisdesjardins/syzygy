@@ -2,7 +2,7 @@ import { Link, useSearch } from '@tanstack/react-router';
 import { useState } from 'react';
 import { ExampleCard, ExampleGrid, ExampleSection } from '@/entities/example';
 import { AppButton } from '@/shared/ui/AppButton';
-import { buttonClass } from '@/shared/ui/button-class';
+import { appButtonClass } from '@/shared/ui/button-recipe';
 import { DemoControls, DemoFrame } from '@/shared/ui/DemoFrame';
 import { PageLayout } from '@/shared/ui/PageLayout';
 import { SectionNav } from '@/shared/ui/SectionNav';
@@ -27,6 +27,7 @@ export function MicrofrontendsPage() {
       description="A top bar on the React binding, navigation on Solid, a list on the controller binding, and a panel that is a web component behind a shadow root. None of them imports another; what they agree on is three step ids."
       actions={
         <AppButton
+          variant="outlined"
           onClick={() => {
             setReloadKey((previous) => {
               return previous + 1;
@@ -48,14 +49,14 @@ export function MicrofrontendsPage() {
           <Link
             to="/microfrontends"
             search={{ scope: 'page' }}
-            className={buttonClass(scope === 'page' ? 'primary' : 'default')}
+            className={appButtonClass({ variant: scope === 'page' ? 'contained' : 'outlined' })}
           >
             Share what the page has in common
           </Link>
           <Link
             to="/microfrontends"
             search={{ scope: 'app' }}
-            className={buttonClass(scope === 'app' ? 'primary' : 'default')}
+            className={appButtonClass({ variant: scope === 'app' ? 'contained' : 'outlined' })}
           >
             Every fragment does its own
           </Link>

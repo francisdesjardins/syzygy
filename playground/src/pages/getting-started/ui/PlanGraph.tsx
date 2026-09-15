@@ -83,7 +83,7 @@ export function PlanGraph(props: {
   };
 
   return (
-    <div className="graph-scroll">
+    <div className="graph-scroll" tabIndex={0} role="group" aria-label="Step graph, scrollable">
       <svg
         className="plan-graph"
         width={width}

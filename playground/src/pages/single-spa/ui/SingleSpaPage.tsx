@@ -31,6 +31,7 @@ export function SingleSpaPage() {
       description="A root config loads two applications through single-spa 6. The bootstrap runs to completion before start(), because its answer is what decides whether starting is the right thing to do at all."
       actions={
         <AppButton
+          variant="outlined"
           onClick={() => {
             setReloadKey((previous) => {
               return previous + 1;
@@ -50,7 +51,7 @@ export function SingleSpaPage() {
       >
         <DemoControls label="Session">
           <AppButton
-            variant={signedOut ? 'default' : 'primary'}
+            variant={signedOut ? 'outlined' : 'contained'}
             onClick={() => {
               setSignedOut(false);
               setReloadKey((previous) => {
@@ -61,7 +62,7 @@ export function SingleSpaPage() {
             Signed in
           </AppButton>
           <AppButton
-            variant={signedOut ? 'primary' : 'default'}
+            variant={signedOut ? 'contained' : 'outlined'}
             onClick={() => {
               setSignedOut(true);
               setReloadKey((previous) => {

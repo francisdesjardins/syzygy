@@ -8,9 +8,11 @@
 /* ── The teaching widgets ─────────────────────────────────────────────────── */
 
 .glossary dl {
-  margin: 0;
+  /* The list sat flush on its own heading. Every other block on the site gets a step of the
+     scale between a heading and what it introduces; this one was the exception. */
+  margin: var(--app-space-4) 0 0;
   display: grid;
-  gap: 10px;
+  gap: var(--app-space-3);
 }
 
 .glossary dl > div {
@@ -343,4 +345,42 @@ details.panel[open] summary {
   font-size: var(--app-text-xs);
   letter-spacing: var(--app-tracking-label);
   text-transform: uppercase;
+}
+
+/* The boot control, beside the switches it acts on. Wraps rather than truncates: on a phone the
+   hint goes under the button instead of squeezing it. */
+.switches-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--app-space-3);
+  margin-top: var(--app-space-4);
+}
+
+.switches-hint {
+  color: var(--app-text-secondary);
+  font-size: var(--app-text-sm);
+}
+
+/*
+ * The card every block on this page sits in.
+ *
+ * `Glossary` and `SolidPanel` both ask for `className="panel"`, but the only `.panel` rule in the
+ * project lives in a CSS *module*, where the name is hashed — so the class matched nothing and the
+ * markup rendered as bare text on the page ground with no padding, no edge and no separation from
+ * what came before it. Same surface the cards use, so a page of panels and a page of cards read as
+ * one page.
+ */
+.panel {
+  padding: var(--app-space-5);
+  background: var(--app-paper);
+  border: 1px solid var(--app-divider);
+  border-radius: var(--app-radius-lg);
+}
+
+/* The heading a panel opens with owns the space under it, the way a card's title does. */
+.panel > h2:first-child,
+.panel > h3:first-child {
+  margin-top: 0;
+  margin-bottom: var(--app-space-4);
 }

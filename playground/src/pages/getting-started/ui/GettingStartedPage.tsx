@@ -1,6 +1,6 @@
 import { type AnyStep, type Bootstrap, clearPageScope, createBootstrap } from 'antumbra';
 import { BootstrapProvider, useBootstrapContext } from 'antumbra/react';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { ExampleCard, ExampleGrid, ExampleSection } from '@/entities/example';
 import { AppButton } from '@/shared/ui/AppButton';
 import { PageLayout } from '@/shared/ui/PageLayout';
@@ -124,27 +124,23 @@ export function GettingStartedPage() {
   });
   const [runId, setRunId] = useState(0);
 
+  // The only boot control, and it lives beside the switches: flipping one and booting again is a
+  // single move, and a second copy in the page header was the same action a page away from its
+  // cause.
+  const bootAgain = useCallback(() => {
+    // The page remembers what it has already done, which is the whole point of `scope: 'page'` —
+    // and exactly why a demo that boots repeatedly has to forget.
+    clearPageScope();
+    setBoot(bootFor(faults));
+    setRunId((previous) => {
+      return previous + 1;
+    });
+  }, [faults]);
+
   return (
     <PageLayout
       title="One application"
       description="Five steps, two of them optional, one that only runs once a framework has mounted. Flip a switch, boot it again, and watch what changes."
-      actions={
-        <AppButton
-          variant="primary"
-          data-testid="boot-again"
-          onClick={() => {
-            // The page remembers what it has already done, which is the whole point of
-            // `scope: 'page'` — and exactly why a demo that boots repeatedly has to forget.
-            clearPageScope();
-            setBoot(bootFor(faults));
-            setRunId((previous) => {
-              return previous + 1;
-            });
-          }}
-        >
-          Boot again
-        </AppButton>
-      }
     >
       <SectionNav sections={SECTIONS} />
 
@@ -158,7 +154,7 @@ export function GettingStartedPage() {
 
       <ExampleSection
         title="Break something on purpose"
-        description="Each switch names what to watch change, not only what it breaks."
+        description="Each switch names what to watch change, not only what it breaks. Flip one, then boot again from right here."
         id="break-something"
       >
         <FaultSwitches
@@ -167,6 +163,14 @@ export function GettingStartedPage() {
             setFaults(next);
           }}
         />
+        <div className="switches-actions">
+          <AppButton variant="contained" data-testid="boot-again" onClick={bootAgain}>
+            Boot again
+          </AppButton>
+          <span className="switches-hint">
+            The graph, the timeline and the outcome below all redraw from the new run.
+          </span>
+        </div>
       </ExampleSection>
 
       <BootstrapProvider key={runId} boot={boot}>

@@ -11,8 +11,10 @@ export function TimelineView(props: { events: readonly RunEvent[]; stage: string
     return <p className="empty">{props.stage === 'idle' ? 'Not started.' : 'Nothing yet.'}</p>;
   }
 
+  // Focusable because it scrolls: a region a mouse can pan and a keyboard cannot is what axe
+  // calls `scrollable-region-focusable`.
   return (
-    <ol className="events">
+    <ol className="events" tabIndex={0} aria-label="Run events, in order">
       {props.events.map((event, index) => {
         return (
           <li key={index} className={`event event-${event.kind.replace(':', '-')}`}>

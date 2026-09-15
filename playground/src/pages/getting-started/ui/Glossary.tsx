@@ -28,7 +28,7 @@ const WORDS: ReadonlyArray<{ term: string; what: string }> = [
 /** The five words the rest of the page uses. Defined once, before anything uses them. */
 export function Glossary() {
   return (
-    <section className="panel glossary">
+    <div className="panel glossary">
       <h2>The words on this page</h2>
       <dl>
         {WORDS.map((word) => {
@@ -42,6 +42,6 @@ export function Glossary() {
           );
         })}
       </dl>
-    </section>
+    </div>
   );
 }

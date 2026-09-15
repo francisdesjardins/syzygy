@@ -23,7 +23,7 @@ export function SolidPanel({ faults, runId }: { faults: Faults; runId: number })
   }, [faults, runId]);
 
   return (
-    <section className="panel">
+    <div className="panel">
       <h2>The same thing, in Solid</h2>
       <p className="prose">
         Rendered by <code>antumbra/solid</code>, mounted into this React page. Two bootstraps, one
@@ -32,6 +32,6 @@ export function SolidPanel({ faults, runId }: { faults: Faults; runId: number })
         there is one trial warning on this page rather than two.
       </p>
       <div ref={hostRef} data-testid="solid-host" />
-    </section>
+    </div>
   );
 }
