@@ -39,7 +39,8 @@ type CodeBlockProps = {
 
 export const CodeBlock = ({ code, language = 'tsx', wrap = false }: CodeBlockProps) => {
   const [copied, setCopied] = useState(false);
-  const { isDarkMode } = useTheme();
+  const { scheme } = useTheme();
+  const isDarkMode = scheme === 'dark';
   const surface = CODE_SURFACE[isDarkMode ? 'dark' : 'light'];
 
   const handleCopy = async () => {

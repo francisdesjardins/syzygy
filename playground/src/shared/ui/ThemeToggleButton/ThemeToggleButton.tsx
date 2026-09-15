@@ -4,11 +4,12 @@ import styles from '@/shared/ui/ThemeToggleButton/ThemeToggleButton.module.css';
 import { useTheme } from '@/shared/lib/theme-context';
 
 export const ThemeToggleButton = () => {
-  const { isDarkMode, toggleTheme } = useTheme();
+  const { scheme, toggle } = useTheme();
+  const isDarkMode = scheme === 'dark';
 
   return (
     <AppIconButton
-      onClick={toggleTheme}
+      onClick={toggle}
       size="small"
       aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
       className={styles['toggle']}

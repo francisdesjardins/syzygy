@@ -110,7 +110,8 @@ const distanceToRect = (rect: DOMRect, point: { readonly x: number; readonly y: 
 };
 
 export const PeekingMoon = () => {
-  const { isDarkMode } = useTheme();
+  const { scheme } = useTheme();
+  const isDarkMode = scheme === 'dark';
 
   const [size, setSize] = useState(() => {
     return typeof window === 'undefined' ? 180 : responsiveSize(window.innerWidth);

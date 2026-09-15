@@ -80,7 +80,7 @@ const EASINGS = ['--app-ease', '--app-ease-out', '--app-ease-in'];
 
 /** Reads the live custom properties, and again whenever the scheme flips. */
 function useTokens(): (name: string) => string {
-  const { isDarkMode } = useTheme();
+  const { scheme } = useTheme();
   const [read, setRead] = useState<Record<string, string>>({});
 
   useEffect(() => {
@@ -114,7 +114,7 @@ function useTokens(): (name: string) => string {
     // DOM is committed, so this cannot be derived during render.
     // oxlint-disable-next-line react/set-state-in-effect
     setRead(next);
-  }, [isDarkMode]);
+  }, [scheme]);
 
   return (name: string) => {
     return read[name] ?? '';

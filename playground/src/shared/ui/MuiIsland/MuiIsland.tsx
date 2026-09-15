@@ -9,10 +9,6 @@ import type { ReactNode } from 'react';
  * keeping the provider here is what lets everything else render without the vendor chunk's help.
  */
 export const MuiIsland = ({ children }: { readonly children: ReactNode }) => {
-  const { isDarkMode } = useTheme();
-  return (
-    <MuiThemeProvider theme={createAppTheme(isDarkMode ? 'dark' : 'light')}>
-      {children}
-    </MuiThemeProvider>
-  );
+  const { scheme } = useTheme();
+  return <MuiThemeProvider theme={createAppTheme(scheme)}>{children}</MuiThemeProvider>;
 };

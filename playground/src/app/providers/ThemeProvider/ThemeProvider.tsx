@@ -90,13 +90,15 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     };
   }, [mode]);
 
-  const toggleTheme = useCallback(() => {
+  const toggle = useCallback(() => {
     const next: Mode = mode === 'light' ? 'dark' : 'light';
     setUserOverride(next);
     writeStoredMode(next);
   }, [mode]);
 
   return (
-    <ThemeContext value={{ isDarkMode: mode === 'dark', toggleTheme }}>{children}</ThemeContext>
+    <ThemeContext value={{ scheme: mode === 'dark' ? 'dark' : 'light', toggle }}>
+      {children}
+    </ThemeContext>
   );
 };

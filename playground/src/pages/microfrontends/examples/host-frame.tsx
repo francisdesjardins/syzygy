@@ -29,7 +29,7 @@ export function HostFrame() {
   const [reloadKey, setReloadKey] = useState(0);
   const [height, setHeight] = useState(INITIAL_HEIGHT);
   const frameRef = useRef<HTMLIFrameElement>(null);
-  const { isDarkMode } = useTheme();
+  const { scheme } = useTheme();
 
   /**
    * Take the height from the document inside, not from breakpoints: breakpoints key off the
@@ -72,7 +72,7 @@ export function HostFrame() {
     const applyTheme = () => {
       const root = frame.contentDocument?.documentElement;
       if (root) {
-        root.dataset['theme'] = isDarkMode ? 'dark' : 'light';
+        root.dataset['theme'] = scheme;
       }
     };
 
@@ -97,7 +97,7 @@ export function HostFrame() {
       frame.removeEventListener('load', attach);
       observer?.disconnect();
     };
-  }, [reloadKey, isDarkMode]);
+  }, [reloadKey, scheme]);
 
   return (
     <div className={styles['stack']}>

@@ -5,12 +5,14 @@ import { createContext, use } from 'react';
  * not who provides it: the provider is `app`'s, but `ThemeToggleButton` is `shared/ui` and the
  * microfrontend frame is a page, and Feature-Sliced Design imports run downward only.
  */
-export type ThemeContextValue = {
-  isDarkMode: boolean;
-  toggleTheme: () => void;
+export type Scheme = 'light' | 'dark';
+
+export type ThemeValue = {
+  readonly scheme: Scheme;
+  readonly toggle: () => void;
 };
 
-export const ThemeContext = createContext<ThemeContextValue | null>(null);
+export const ThemeContext = createContext<ThemeValue | null>(null);
 
 export const useTheme = () => {
   const context = use(ThemeContext);

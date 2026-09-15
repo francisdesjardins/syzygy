@@ -56,7 +56,7 @@ const dialog = useDialog<{ remember: boolean }, 'confirm' | 'cancel'>({
 
 /** What the site says before it starts explaining: what this is, how to get it, and one live dialog. */
 export const HomePage = () => {
-  const { isDarkMode } = useTheme();
+  const { scheme } = useTheme();
 
   const [lastClose, setLastClose] = useState<string | null>(null);
   // The value the dialog produces, which is the whole reason a close carries a payload: `reason`
@@ -140,7 +140,7 @@ export const HomePage = () => {
         {/* The corona clipping arrangement is explained beside the classes in the CSS module. */}
         <div className={styles['heroArt']}>
           <div className={styles['heroArtDisc']}>
-            <UmbraMoon isDark={isDarkMode} breathing />
+            <UmbraMoon isDark={scheme === 'dark'} breathing />
           </div>
         </div>
 
