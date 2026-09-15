@@ -23,7 +23,7 @@ export function MicrofrontendsPage() {
 
   return (
     <PageLayout
-      title="Four fragments"
+      title="Four Fragments"
       description="A top bar on the React binding, navigation on Solid, a list on the controller binding, and a panel that is a web component behind a shadow root. None of them imports another; what they agree on is three step ids."
       actions={
         <AppButton

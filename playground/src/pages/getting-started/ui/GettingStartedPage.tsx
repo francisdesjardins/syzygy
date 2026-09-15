@@ -139,7 +139,7 @@ export function GettingStartedPage() {
 
   return (
     <PageLayout
-      title="One application"
+      title="One Application"
       description="Five steps, two of them optional, one that only runs once a framework has mounted. Flip a switch, boot it again, and watch what changes."
     >
       <SectionNav sections={SECTIONS} />
