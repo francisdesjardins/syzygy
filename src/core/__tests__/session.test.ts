@@ -383,3 +383,99 @@ test('the mounted phase reaches the session state, not only the caller that awai
   expect(seen.at(-1)).toBe('success');
   unsubscribe();
 });
+
+test('settling an intent nobody emitted says so rather than going quiet', async () => {
+  const boot = createBootstrap({
+    steps: [
+      defineStep({
+        id: 'a',
+        run: () => {
+          return 1;
+        },
+      }),
+    ],
+  });
+  await boot.run();
+  const session = boot.session();
+
+  // `settle` and `drop` take a bare string off the host, so this is host misuse rather than an
+  // internal invariant — it has to be an error the host can catch and not a silent no-op.
+  expect(() => {
+    session.settle('no-such-intent');
+  }).toThrow(BootstrapError);
+  expect(() => {
+    session.drop('no-such-intent', 'whatever');
+  }).toThrow(BootstrapError);
+});
+
+test('the same intent type twice in the mounted phase is one record that counts occurrences', async () => {
+  const boot = createBootstrap({
+    steps: [
+      defineMountedStep({
+        id: 'warns-twice',
+        run: (ctx) => {
+          ctx.intent('warn', { why: 'first' });
+          ctx.intent('warn', { why: 'second' });
+        },
+      }),
+    ],
+  });
+
+  await boot.run();
+  const session = boot.session();
+
+  const bound = bindBootstrap(session, {
+    ui: {},
+    onIntent: (_intent, controls) => {
+      controls.settle();
+    },
+  });
+  await bound.mounted;
+
+  // One record, not two: the second emit of a type already queued is folded into the first so a
+  // host that renders one dialog per intent does not get a second one for the same thing.
+  const warnings = session.list().filter((intent) => {
+    return intent.type === 'warn';
+  });
+  expect(warnings).toHaveLength(1);
+  expect(warnings[0]?.occurrences).toBe(2);
+  bound.destroy();
+});
+
+test('a mounted step whose dependency failed never runs', async () => {
+  const ran: string[] = [];
+  const boot = createBootstrap({
+    steps: [
+      defineStep({
+        id: 'config',
+        // Optional, so the run reaches the mounted phase at all rather than failing outright —
+        // which is what makes the skip below observable.
+        optional: true,
+        run: () => {
+          throw new Error('503');
+        },
+      }),
+      defineMountedStep({
+        id: 'needs-config',
+        needs: ['config'],
+        run: () => {
+          ran.push('needs-config');
+        },
+      }),
+    ],
+  });
+
+  await boot.run();
+  const session = boot.session();
+
+  const bound = bindBootstrap(session, {
+    ui: {},
+    onIntent: (_intent, controls) => {
+      controls.settle();
+    },
+  });
+  await bound.mounted;
+
+  expect(ran).toEqual([]);
+  bound.destroy();
+});

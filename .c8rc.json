@@ -11,8 +11,7 @@
     "src/solid.ts",
     "src/vanilla.ts",
     "src/react/**",
-    "src/solid/**",
-    "src/vanilla/**"
+    "src/solid/**"
   ],
   "reporter": ["text-summary", "html", "lcov", "json"],
   "reportsDir": "coverage",
