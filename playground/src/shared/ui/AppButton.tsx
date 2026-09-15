@@ -1,9 +1,26 @@
-import type { ComponentProps } from 'react';
-import { type ButtonVariant, buttonClass } from '@/shared/ui/button-class';
+import { appButtonClass, type AppButtonLook } from '@/shared/ui/button-recipe';
+import type { ButtonHTMLAttributes } from 'react';
 
+/**
+ * Everything a `<button>` takes, plus the three knobs the shell uses. **Spread, not
+ * enumerated**: a wrapper listing `onClick`/`disabled` drops `aria-*` and `data-*` silently —
+ * the same trap the templates' own button documents.
+ */
+type AppButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & AppButtonLook;
+
+/** The shell's own button — app tokens, no component library. Dialog interiors never use it;
+ * they have the templates' buttons. */
 export function AppButton({
-  variant = 'default',
+  variant = 'text',
+  color = 'primary',
+  size = 'medium',
+  className,
+  type = 'button',
   ...rest
-}: ComponentProps<'button'> & { readonly variant?: ButtonVariant }) {
-  return <button type="button" {...rest} className={buttonClass(variant, rest.className)} />;
+}: AppButtonProps) {
+  const classes = [appButtonClass({ variant, color, size }), className ?? '']
+    .filter(Boolean)
+    .join(' ');
+
+  return <button type={type} className={classes} {...rest} />;
 }

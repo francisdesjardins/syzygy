@@ -51,7 +51,9 @@ export function CodeDialog({
         <HighlightedCode source={body} language={language} />
       </div>
       <div className={styles['foot']}>
-        <AppButton onClick={onClose}>Close</AppButton>
+        <AppButton variant="outlined" onClick={onClose}>
+          Close
+        </AppButton>
       </div>
     </dialog>
   );

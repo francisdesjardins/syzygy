@@ -4,6 +4,7 @@ import { readableSyntaxStyle } from '@/shared/lib/readable-syntax';
 // grammar refractor ships) and `styles/prism` re-exports all 47 themes, and Vite serves modules
 // unbundled in dev — so a barrel import pays for all of it whatever the named import says.
 import SyntaxHighlighter from 'react-syntax-highlighter/dist/esm/prism-light';
+import bash from 'react-syntax-highlighter/dist/esm/languages/prism/bash';
 import markup from 'react-syntax-highlighter/dist/esm/languages/prism/markup';
 import tsx from 'react-syntax-highlighter/dist/esm/languages/prism/tsx';
 import oneDark from 'react-syntax-highlighter/dist/esm/styles/prism/one-dark';
@@ -14,8 +15,10 @@ import oneLight from 'react-syntax-highlighter/dist/esm/styles/prism/one-light';
 // commit. Free: refractor's `tsx` pulls `jsx`, `typescript`, `markup`, `javascript`, `clike`.
 SyntaxHighlighter.registerLanguage('tsx', tsx);
 SyntaxHighlighter.registerLanguage('markup', markup);
+// Shell, for the "getting it" block on the landing page — the one sample that is not source.
+SyntaxHighlighter.registerLanguage('bash', bash);
 
-export type CodeLanguage = 'tsx' | 'markup';
+export type CodeLanguage = 'tsx' | 'markup' | 'bash';
 
 // `--app-paper`, spelled out: the block paints it *and* `readableSyntaxStyle` measures every token
 // colour against it, and a `var()` cannot be measured. Keep it equal to the token — a surface this
@@ -55,6 +58,10 @@ export function HighlightedCode({
         // The token, not a stack of its own: code is the largest mono surface here, and a second
         // opinion about the mono face shows up as two monos on one page.
         fontFamily: 'var(--app-font-mono)',
+        // The theme puts `overflow: auto` on the `pre`, which makes two nested scrollers out of
+        // one block: the wrapper in `CodeBlock` is the one that scrolls and the one that carries
+        // the keyboard stop and the label, so this one must not compete for either.
+        overflow: 'visible',
       }}
       // The theme paints its own near-grey on the `<code>`, which shows through wherever no token
       // covers it — every run of indentation, as a ladder of grey blocks down the left.

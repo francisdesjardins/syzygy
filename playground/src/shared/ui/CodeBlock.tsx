@@ -17,7 +17,9 @@ export function CodeBlock({
   return (
     <div className={styles['frame']}>
       <CopyButton text={body} className={styles['copy']} />
-      <div className={styles['scroll']}>
+      {/* Focusable because it scrolls: a region a mouse can pan and a keyboard cannot is the
+          failure axe calls `scrollable-region-focusable`. The group role gives the stop a name. */}
+      <div className={styles['scroll']} tabIndex={0} role="group" aria-label="Source, scrollable">
         <HighlightedCode source={body} language={language} wrap={wrap} />
       </div>
     </div>

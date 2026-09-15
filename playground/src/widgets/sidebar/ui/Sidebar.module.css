@@ -1,8 +1,17 @@
+/*
+ * The fixed rail sits on the page ground, not on paper.
+ *
+ * umbra draws the distinction and it is the one that matters in dark: with the rail on paper it is
+ * the same tone as the bar above it *and* as the cards beside it, so nothing has a step — measured
+ * 1.00:1 against both. On the ground it recedes, the bar reads as the one lifted piece of chrome,
+ * and a card gets a real 1.08:1 lift off what surrounds it. The mobile drawer keeps paper, because
+ * that one genuinely floats over the content.
+ */
 .sidebar {
   width: var(--app-sidebar-width);
   flex-shrink: 0;
   border-right: 1px solid var(--app-divider);
-  background: var(--app-paper);
+  background: var(--app-bg);
 }
 
 .fixed {
@@ -10,15 +19,23 @@
   inset: var(--app-topbar-height) auto 0 0;
   width: var(--app-sidebar-width);
   overflow-y: auto;
-  padding: var(--app-space-5) var(--app-space-3);
+  padding: 0;
   z-index: var(--app-z-sidebar);
 }
 
+.toolbarSpacer {
+  height: var(--app-topbar-height);
+  flex-shrink: 0;
+}
+
+/* The one that floats: off-canvas and kept mounted, over the content rather than beside it, so
+   this is where paper belongs — umbra draws the same line between its rail and its drawer. */
 .drawer {
   position: fixed;
   inset: 0 auto 0 0;
   transform: translateX(-100%);
   transition: transform var(--app-duration) var(--app-ease);
+  background: var(--app-paper);
 }
 
 .drawerOpen {
@@ -33,18 +50,23 @@
 }
 
 .nav {
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: var(--app-space-4) 0;
   display: flex;
   flex-direction: column;
   gap: var(--app-space-5);
 }
 
 .groupLabel {
+  padding: 0 var(--app-space-4);
   display: block;
-  padding: 0 var(--app-space-3) var(--app-space-2);
+  margin: 0 0 var(--app-space-2);
   font-family: var(--app-font-mono);
-  font-size: var(--app-text-xs);
   text-transform: uppercase;
   letter-spacing: var(--app-tracking-label);
+  font-weight: 500;
+  font-size: var(--app-text-xs);
   color: var(--app-text-tertiary);
 }
 
@@ -57,12 +79,16 @@
 }
 
 .item {
-  display: block;
-  padding: var(--app-space-2) var(--app-space-3);
-  border-radius: var(--app-radius);
-  color: var(--app-text-secondary);
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin: 0 var(--app-space-2) 2px;
+  padding: var(--app-space-2) var(--app-space-4);
+  border-radius: var(--app-radius-md);
   text-decoration: none;
-  font-size: var(--app-text-sm);
+  color: var(--app-text-secondary);
+  font-size: var(--app-text-md);
+  line-height: var(--app-lh-snug);
 }
 
 .item:hover {
@@ -70,8 +96,40 @@
   color: var(--app-text);
 }
 
-.current {
-  background: var(--app-selected);
+/* Selected is a lit edge, not a filled slab: the entry is marked and the label stays in the page's
+   own ink, which is also what keeps the label's contrast off a coloured fill. */
+.current,
+.current:hover {
+  background: var(--app-flame-wash);
   color: var(--app-text);
-  font-weight: 600;
+  font-weight: 500;
+}
+
+.current::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 6px;
+  bottom: 6px;
+  width: 2px;
+  border-radius: 0 var(--app-radius-sm) var(--app-radius-sm) 0;
+  background: var(--app-flame);
+}
+
+/* The icon slot: fixed so the labels align down the rail whatever the glyph. */
+.icon {
+  flex: none;
+  min-width: 30px;
+  display: inline-flex;
+  align-items: center;
+  color: var(--app-text-tertiary);
+}
+
+.icon svg {
+  width: var(--app-icon-sm);
+  height: var(--app-icon-sm);
+}
+
+.current .icon {
+  color: var(--app-accent);
 }

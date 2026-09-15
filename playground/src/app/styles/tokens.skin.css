@@ -24,15 +24,15 @@
      System stacks, deliberately: a playground that ships no font files has nothing to wait for and
      nothing to lay out twice. The serif carries display, the grotesque carries text, and the mono
      carries anything with an identifier or a digit column in it. */
-  --app-font-display: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
-  --app-font-body: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
-  --app-font-mono: ui-monospace, 'Cascadia Code', 'SF Mono', Menlo, monospace;
+  --app-font-display: 'Newsreader', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+  --app-font-body: 'Geist', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+  --app-font-mono: 'Geist Mono', ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, monospace;
 
   /* How far a mark rises onto the cap band of the word beside it. Skin, because it is this face's
      asymmetry rather than a rule of the system. */
   /* Only for a mark standing alone with type. In a row, leave the mark on the shared midline and
      trim the text with `text-box: trim-both cap alphabetic` instead — see the top bar. */
-  --app-lockup-rise: 0.1em;
+  --app-lockup-rise: 0.11em;
 
   /* ── Light — the ring, seen in daylight ──────────────────────────────────────────────
      Neutrals carry a slate bias rather than being black at an opacity: a grey mixed toward the
@@ -49,17 +49,17 @@
   --app-bg: #f4f6fa;
   --app-paper: #ffffff;
   --app-text: #0b1120;
-  --app-text-secondary: #475569;
+  --app-text-secondary: #4a5568;
   /* Tertiary is spent on *text* — counts, hints, placeholders — so it clears 4.5:1 rather than
      sitting at the inactive-control tone a component library would give it. */
-  --app-text-tertiary: #5b6779;
+  --app-text-tertiary: #5f6b7e;
   --app-divider: rgb(15 23 42 / 0.1);
   /* A control's edge says where the control is, so 1.4.11 asks 3:1 of it. The divider above is a
      layout hairline and owes nothing. */
   --app-control-border: #6b788c;
 
   --app-hover: rgb(15 23 42 / 0.05);
-  --app-selected: rgb(67 56 202 / 0.09);
+  --app-selected: rgb(15 23 42 / 0.09);
   --app-flame-wash: rgb(180 83 9 / 0.1);
 
   --app-error: #b91c1c;
@@ -106,7 +106,7 @@
   --app-control-border: #7d8ba1;
 
   --app-hover: rgb(238 242 248 / 0.07);
-  --app-selected: rgb(165 180 252 / 0.14);
+  --app-selected: rgb(238 242 248 / 0.12);
   --app-flame-wash: rgb(245 158 11 / 0.13);
 
   /* The bright red cannot carry white, so it takes a dark ink — the same fill/ink split the ring

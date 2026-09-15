@@ -1,4 +1,5 @@
 import { AppIconButton } from '@/shared/ui/AppIconButton';
+import styles from '@/shared/ui/ThemeToggleButton.module.css';
 import { DarkModeIcon, LightModeIcon } from '@/shared/ui/icons';
 import { useTheme } from '@/shared/lib/theme-context';
 
@@ -9,6 +10,7 @@ export function ThemeToggleButton() {
 
   return (
     <AppIconButton
+      className={styles['toggle']}
       onClick={toggle}
       size="small"
       // The glyph shows what a click gets you, so the name has to say the same thing — otherwise a

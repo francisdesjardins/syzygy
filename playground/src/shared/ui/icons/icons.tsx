@@ -103,3 +103,83 @@ export function LightModeIcon(props: IconProps) {
     </svg>
   );
 }
+
+export function MenuIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M4 7h16M4 12h16M4 17h10" />
+    </svg>
+  );
+}
+
+/*
+ * The six the sidebar names, lifted from umbra’s set unchanged.
+ *
+ * They are drawn to the rules stated at the top of this file because that is where those rules
+ * came from — the two sets are one set with two copies, and the day the playgrounds share a
+ * monorepo these collapse rather than being reconciled.
+ */
+
+export function PlayArrowIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M7.5 5.4v13.2L18.8 12Z" />
+    </svg>
+  );
+}
+export function HubIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      {/* Spokes first, so the nodes sit on top of the line ends rather than beside them. */}
+      <path d="M12 9.4V6.6M10 13.6 7.3 15.5M14 13.6l2.7 1.9" />
+      <circle cx="12" cy="12" r="2.6" />
+      <circle cx="12" cy="4.6" r="2" />
+      <circle cx="5.6" cy="17" r="2" />
+      <circle cx="18.4" cy="17" r="2" />
+    </svg>
+  );
+}
+export function WidgetsIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      {/* Three squares and a diamond: the rotated one is what keeps this from reading as a
+          four-up grid, which is a different idea. */}
+      <rect x="3.4" y="3.4" width="7.2" height="7.2" rx="1.4" />
+      <rect x="3.4" y="13.4" width="7.2" height="7.2" rx="1.4" />
+      <rect x="13.4" y="13.4" width="7.2" height="7.2" rx="1.4" />
+      <path d="M17 2.6 21.4 7 17 11.4 12.6 7Z" />
+    </svg>
+  );
+}
+export function PaletteIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M12 3.4c-4.9 0-8.9 3.9-8.9 8.6s4 8.6 8.9 8.6c1.2 0 2.1-.9 2.1-2.1 0-.6-.2-1.1-.6-1.5a1.85 1.85 0 0 1 1.4-3.1h1.8c2.4 0 4.3-1.9 4.3-4.3 0-3.4-3.6-6.2-9-6.2Z" />
+      {/* The wells are filled: a stroked 2px ring turns to a smudge at 20px. */}
+      <circle cx="7.4" cy="12.4" r="1.05" fill="currentColor" stroke="none" />
+      <circle cx="9.5" cy="8.4" r="1.05" fill="currentColor" stroke="none" />
+      <circle cx="14.4" cy="8.2" r="1.05" fill="currentColor" stroke="none" />
+      <circle cx="17.2" cy="11.4" r="1.05" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+export function MenuBookIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M12 6.6v13" />
+      <path d="M12 6.6C10.4 5.2 8.3 4.5 5.9 4.5c-1 0-1.9.1-2.9.4v13c1-.3 1.9-.4 2.9-.4 2.4 0 4.5.7 6.1 2" />
+      <path d="M12 6.6c1.6-1.4 3.7-2.1 6.1-2.1 1 0 1.9.1 2.9.4v13c-1-.3-1.9-.4-2.9-.4-2.4 0-4.5.7-6.1 2" />
+    </svg>
+  );
+}
+export function ScienceIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M9.8 3.4h4.4" />
+      <path d="M10.6 3.4v6.3l-5.3 8.1a1.7 1.7 0 0 0 1.4 2.6h10.6a1.7 1.7 0 0 0 1.4-2.6l-5.3-8.1V3.4" />
+      {/* The fill line: what makes a flask a flask rather than a funnel. Held 1px inside each wall
+          (which is at x=7.34 / 16.66 at this height) so the round cap does not poke through. */}
+      <path d="M8.3 14.8h7.4" />
+    </svg>
+  );
+}

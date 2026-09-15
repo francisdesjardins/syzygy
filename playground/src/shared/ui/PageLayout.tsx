@@ -18,11 +18,11 @@ export function PageLayout({
   return (
     <div className={styles['root']}>
       <div className={styles['header']}>
-        <div>
+        <div className={styles['heading']}>
           <h1 className={styles['title']}>{title}</h1>
           <p className={styles['description']}>{description}</p>
         </div>
-        {actions === undefined ? null : <div>{actions}</div>}
+        {actions === undefined ? null : <div className={styles['actions']}>{actions}</div>}
       </div>
       {children}
     </div>

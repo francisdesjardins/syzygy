@@ -74,7 +74,8 @@ export const MemberList = ({
       </dl>
       {collapsible && (
         <AppButton
-          variant="ghost"
+          variant="text"
+          size="small"
           className={styles['toggle']}
           onClick={() => {
             setExpanded((previous) => {

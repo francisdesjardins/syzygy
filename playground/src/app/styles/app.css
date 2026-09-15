@@ -5,6 +5,7 @@
  * person to need it invents a second one.
  */
 
+@import './fonts.css';
 @import './tokens.system.css';
 @import './tokens.skin.css';
 
