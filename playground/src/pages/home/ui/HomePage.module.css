@@ -1,0 +1,253 @@
+/*
+ * The landing page's own layout, on umbra's rules.
+ *
+ * Same hero, same chip row, same stacked snippets, same "where to go next" column — the two
+ * playgrounds are siblings, so a reader arriving at either should recognise the second from the
+ * first. What differs is the drawing in the hero and the words beside it.
+ */
+
+.page {
+  max-width: 1040px;
+  margin: 0 auto;
+}
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--app-space-6);
+  padding-top: var(--app-space-8);
+  padding-bottom: var(--app-space-8);
+  min-width: 0;
+}
+
+/* The corona paints past the SVG's box, so the art is inset in a square that clips nothing: the
+   wrapper bounds the layout and the disc sits at 78% of it. */
+.heroArt {
+  width: 176px;
+  aspect-ratio: 1;
+  flex-shrink: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.heroArtDisc {
+  width: 78%;
+  aspect-ratio: 1;
+}
+
+.heroText {
+  min-width: 0;
+}
+
+.heroTitle {
+  margin: 0;
+  font-family: var(--app-font-display);
+  font-size: var(--app-text-2xl);
+  line-height: var(--app-lh-tight);
+  /* 500, not a heavier grade: the display serif's bold is heavier than the drawing wants beside
+     the mascot, and the size is already carrying the emphasis. */
+  font-weight: 500;
+  letter-spacing: var(--app-tracking-tight);
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-3);
+}
+
+/* The mark is part of the lockup, not a bullet — and it rises onto the word's optical centre,
+   since "Antumbra" carries no descender to balance its ascent. */
+.mark {
+  flex: none;
+  border-radius: var(--app-radius-pill);
+  background: var(--app-body);
+  transform: translateY(calc(-1 * var(--app-lockup-rise)));
+}
+
+.markWide {
+  display: none;
+  width: 40px;
+  height: 40px;
+  border: 7px solid var(--app-flame);
+}
+
+.markNarrow {
+  display: block;
+  width: 28px;
+  height: 28px;
+  border: 5px solid var(--app-flame);
+}
+
+.heroSubtitle {
+  margin: var(--app-space-2) 0 0;
+  font-size: var(--app-text-lg);
+  line-height: 1.6;
+  font-weight: 500;
+  color: var(--app-text-secondary);
+}
+
+.heroBody {
+  margin: var(--app-space-4) 0 0;
+  font-size: var(--app-text-base);
+  line-height: 1.5;
+  color: var(--app-text-secondary);
+  max-width: 560px;
+}
+
+.chipRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--app-space-2);
+  margin-top: var(--app-space-4);
+}
+
+.chip {
+  padding: 3px var(--app-space-2);
+  /* Off-scale 12px: the chip's own rounding, half its height — not a step of the radius scale. */
+  border-radius: 12px;
+  font-size: var(--app-text-sm);
+  background: var(--app-hover);
+  color: var(--app-text);
+}
+
+/* The asterisk the floor chip carries. Secondary rather than an opacity: a shade of the text
+   colour measures, a transparency of it does not. */
+.floorNote {
+  margin: var(--app-space-2) 0 0;
+  font-size: var(--app-text-xs);
+  line-height: var(--app-lh-body);
+  color: var(--app-text-secondary);
+}
+
+.ctaRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--app-space-3);
+  margin-top: var(--app-space-6);
+}
+
+/* Stacked, not side by side: at half width both snippets get a horizontal scrollbar. */
+.snippets {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-6);
+  margin-bottom: var(--app-space-10);
+  min-width: 0;
+}
+
+.snippet {
+  min-width: 0;
+}
+
+/* The eyebrow owns its breathing room as margin, and reads at its own size. */
+.overline {
+  margin: 0 0 var(--app-space-3);
+  font-family: var(--app-font-mono);
+  font-size: var(--app-text-xs);
+  line-height: var(--app-lh-snug);
+  font-weight: 500;
+  letter-spacing: var(--app-tracking-label);
+  text-transform: uppercase;
+  color: var(--app-text-tertiary);
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-2);
+}
+
+.overlineMark {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  border-radius: var(--app-radius-pill);
+  border: 3px solid var(--app-flame);
+  background: var(--app-body);
+}
+
+.nextRow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-4);
+  padding-bottom: var(--app-space-12);
+}
+
+.nextCard {
+  flex: 1;
+  padding: var(--app-space-5);
+  border-radius: var(--app-radius-lg);
+  border: 1px solid var(--app-divider);
+  text-decoration: none;
+  color: inherit;
+  transition:
+    border-color 120ms,
+    transform 120ms;
+}
+
+.nextCard:hover {
+  border-color: var(--app-flame);
+  transform: translateY(-2px);
+}
+
+.nextTitle {
+  margin: 0;
+  font-size: var(--app-text-base);
+  line-height: var(--app-lh-relaxed);
+  font-weight: 700;
+  display: flex;
+  /* Not centred: a title that wraps to two lines leaves a centred mark floating beside the break
+     instead of reading as the bullet of the first line. */
+  align-items: flex-start;
+  gap: var(--app-space-2);
+}
+
+/* The mark, put back on the first line's own centre. Half the difference between the line box and
+   the mark, derived rather than measured once. */
+.nextMark {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  border-radius: var(--app-radius-pill);
+  border: 3px solid var(--app-flame);
+  background: var(--app-body);
+  margin-top: calc((var(--app-text-base) * var(--app-lh-relaxed) - 16px) / 2);
+}
+
+.nextBody {
+  margin: var(--app-space-1) 0 0;
+  font-size: var(--app-text-md);
+  line-height: var(--app-lh-body);
+  color: var(--app-text-secondary);
+}
+
+@media (min-width: 600px) {
+  .nextRow {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 900px) {
+  .hero {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--app-space-12);
+    padding-top: var(--app-space-14);
+    padding-bottom: var(--app-space-14);
+  }
+
+  .heroArt {
+    width: 220px;
+  }
+
+  .heroTitle {
+    font-size: var(--app-text-3xl);
+  }
+
+  .markWide {
+    display: block;
+  }
+
+  .markNarrow {
+    display: none;
+  }
+}
