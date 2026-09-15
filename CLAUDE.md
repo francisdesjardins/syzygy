@@ -188,18 +188,18 @@ the whole snapshot inside the effect subscribes it to every event and every queu
 host is torn down and rebuilt dozens of times during one boot. It is the reactive twin of listing an
 unstable callback in a dependency array, and it produced the same bug.
 
-**`scope: 'page'` shares work across bootstraps through a `Symbol.for` registry on `globalThis`.**
+**`scope: 'shared'` shares work across bootstraps through a `Symbol.for` registry on `globalThis`.**
 Module scope would give each separately built copy of this file its own map and share nothing, which
 is the whole difficulty: two modules on a page have no way to import each other. The symbol is
 versioned, so a future shape simply does not share with the old one — not sharing is slower, sharing
 something misread is wrong.
 
 **The claim is taken synchronously, and that is what makes it a lock.** Two bootstraps reaching the
-same level in the same tick both call `claimPageStep`; an `await` anywhere before the registration
+same level in the same tick both call `claimSharedStep`; an `await` anywhere before the registration
 would open a window where both decide they own it.
 
-**A shared step is attempted once and its ending is the page's answer**, refusal and timeout
-included — so a page-scoped step's `timeout` belongs to the page rather than to whichever module got
+**A shared step is attempted once and its ending is everyone's answer**, refusal and timeout
+included — so a shared step's `timeout` belongs to all of them rather than to whichever module got
 there first. **Its notices and intents stay with the run that did the work**, because replaying them
 would put the same warning on the screen once per module, which is the bug that prompted the feature.
 
@@ -319,7 +319,7 @@ whether or not its branch does.
 
 ## The one piece of global state
 
-`src/core/page-scope.ts`, and it is deliberate: a registry two independently built modules can find
+`src/core/shared-scope.ts`, and it is deliberate: a registry two independently built modules can find
 without importing each other has to live somewhere they both already look. Everything else in this
 package is per-bootstrap, and it should stay that way — a second global needs an argument as good as
 this one.

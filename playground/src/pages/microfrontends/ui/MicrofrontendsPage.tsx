@@ -43,20 +43,20 @@ export function MicrofrontendsPage() {
       <ExampleSection
         id="the-demo"
         title="The demo"
-        description="Four fragments all need the session, and three need what the user may reach. With page scope the first one to ask does it and the rest adopt the answer. Flip it and every fragment does its own."
+        description="Four fragments all need the session, and three need what the user may reach. With shared scope the first one to ask does it and the rest adopt the answer. Flip it and every fragment does its own."
       >
         <DemoControls label="Step scope">
           <Link
             to="/microfrontends"
-            search={{ scope: 'page' }}
-            className={appButtonClass({ variant: scope === 'page' ? 'contained' : 'outlined' })}
+            search={{ scope: 'shared' }}
+            className={appButtonClass({ variant: scope === 'shared' ? 'contained' : 'outlined' })}
           >
             Share what the page has in common
           </Link>
           <Link
             to="/microfrontends"
-            search={{ scope: 'app' }}
-            className={appButtonClass({ variant: scope === 'app' ? 'contained' : 'outlined' })}
+            search={{ scope: 'instance' }}
+            className={appButtonClass({ variant: scope === 'instance' ? 'contained' : 'outlined' })}
           >
             Every fragment does its own
           </Link>
@@ -77,7 +77,7 @@ export function MicrofrontendsPage() {
         <ExampleGrid columns={2}>
           <ExampleCard
             title="frag-trial.js — a web component on its own build"
-            description="Page scope lives in a registry keyed by Symbol.for on globalThis rather than by module identity, which is why a second copy of the library still finds the page's work."
+            description="Shared scope lives in a registry keyed by Symbol.for on globalThis rather than by module identity, which is why a second compiled copy of the library still finds the work the first one did."
             codeKey="mfe-trial"
           />
           <ExampleCard

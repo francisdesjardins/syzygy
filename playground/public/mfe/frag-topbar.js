@@ -1,6 +1,6 @@
 // The top bar, on the React binding.
 //
-// It needs one thing — who is signed in — and declares it as a page-scoped step. Nothing here knows
+// It needs one thing — who is signed in — and declares it as a shared step. Nothing here knows
 // the other three fragments exist; what they agree on is the id `session`, which is the whole
 // contract.
 //

@@ -4,7 +4,7 @@ import { BlockSignal, StepSkippedError } from './errors.js';
 import type { EventHub } from './events.js';
 import { createIntentQueue } from './intent-queue.js';
 import { createNoticeLog } from './notice-log.js';
-import { claimPageStep } from './page-scope.js';
+import { claimSharedStep } from './shared-scope.js';
 import type { CompiledPlan, PlannedStep } from './plan.js';
 import type { StepId } from './registry.js';
 import { attemptStep } from './run-step.js';
@@ -139,11 +139,11 @@ export async function runPreflight(
     events?.emit({ kind: 'step:settle', trace });
   };
 
-  // Which steps adopted somebody else's page-scoped result rather than doing the work.
+  // Which steps adopted somebody else's shared result rather than doing the work.
   const sharedIds = new Set<StepId>();
 
   /**
-   * What a step actually calls, which for a page-scoped step is not always its own body.
+   * What a step actually calls, which for a shared step is not always its own body.
    *
    * The claim is taken **synchronously**, before any await: every step on a level claims in one
    * sweep, so two bootstraps racing for the same key cannot both decide they own it.
@@ -154,13 +154,13 @@ export async function runPreflight(
    * replaying them would put the same warning on the screen once per module.
    */
   const invokeFor = (planned: PlannedStep, context: PreflightContext): (() => unknown) => {
-    if (planned.scope !== 'page') {
+    if (planned.scope !== 'shared') {
       return () => {
         return planned.step.run(context);
       };
     }
 
-    const claim = claimPageStep(String(planned.id));
+    const claim = claimSharedStep(String(planned.id));
 
     if (!claim.owned) {
       sharedIds.add(planned.id);

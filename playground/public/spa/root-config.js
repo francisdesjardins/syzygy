@@ -15,7 +15,7 @@ const boot = createBootstrap({
   steps: [
     defineStep({
       id: 'session',
-      scope: 'page',
+      scope: 'shared',
       run: async (ctx) => {
         demo.log('root', 'validating the session before anything mounts');
         const session = await demo.api.session();
@@ -29,7 +29,7 @@ const boot = createBootstrap({
     defineStep({
       id: 'access',
       needs: ['session'],
-      scope: 'page',
+      scope: 'shared',
       run: () => {
         demo.log('root', 'asking what this user may reach');
         return demo.api.access();
@@ -38,7 +38,7 @@ const boot = createBootstrap({
     defineStep({
       id: 'config',
       needs: ['session'],
-      scope: 'page',
+      scope: 'shared',
       optional: true,
       run: () => {
         demo.log('root', 'loading the workspace configuration');
@@ -81,7 +81,7 @@ if (outcome.status === 'blocked') {
     activeWhen: (url) => {
       return url.hash.startsWith('#/reports');
     },
-    // Deliberately given nothing. It declares the same page-scoped steps itself and adopts what the
+    // Deliberately given nothing. It declares the same shared steps itself and adopts what the
     // root already did — which is the point of the second half of this demo.
     customProps: {},
   });

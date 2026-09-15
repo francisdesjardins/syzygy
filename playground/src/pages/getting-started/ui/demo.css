@@ -1,7 +1,7 @@
 /*
  * What the one-application page draws: the graph, the time chart, the outcome table.
  *
- * Page-scoped rather than global, and every colour is a token — the version of this file that lived
+ * Owned by this route rather than global, and every colour is a token — the version that lived
  * at the root carried its own palette, which is how the site came to have two.
  */
 

@@ -85,13 +85,13 @@ property of the shape rather than the reason for it.
 
 Two modules booting independently — a monorepo where each domain owns its startup, or two
 micro-frontends built separately — will each validate the same token and fetch the same
-configuration. Mark the step `scope: 'page'` and the first one to reach it does the work; the rest
+configuration. Mark the step `scope: 'shared'` and the first one to reach it does the work; the rest
 adopt the result.
 
 ```ts
 defineStep({
   id: 'session',
-  scope: 'page',
+  scope: 'shared',
   run: async (ctx) => {
     return validateToken(ctx.signal);
   },
@@ -102,7 +102,7 @@ The step id is the sharing key: two modules that declare `session` are declaring
 Nothing needs to import anything else, which is the point — the registry lives on a versioned
 `Symbol.for` so two separately built copies of the library find each other.
 
-A shared step is attempted once and its ending is the page's answer, refusal and timeout included,
+A shared step is attempted once and its ending is everyone's answer, refusal and timeout included,
 so modules that share a step should agree on its `timeout`. Its notices and intents stay with the
 run that did the work: replaying them would put the same warning on the screen once per module.
 `outcome.timeline` marks an adopted step `shared: true`.

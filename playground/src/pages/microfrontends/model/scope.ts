@@ -1,5 +1,5 @@
 /** Which scope the frame boots under. */
-export type DemoScope = 'page' | 'app';
+export type DemoScope = 'shared' | 'instance';
 
 /**
  * The one reader of `?scope`, used by the route to validate it and by the page to read it back.
@@ -9,5 +9,5 @@ export type DemoScope = 'page' | 'app';
  * in one and `undefined` in the other.
  */
 export function readScope(search: Record<string, unknown>): { scope: DemoScope } {
-  return { scope: search['scope'] === 'app' ? 'app' : 'page' };
+  return { scope: search['scope'] === 'instance' ? 'instance' : 'shared' };
 }

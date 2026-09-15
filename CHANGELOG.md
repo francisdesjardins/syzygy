@@ -3,6 +3,38 @@
 Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No semver: names change
 between commits when a better one shows up, and the entry says which and why.
 
+## 2026-09-15, a scope that does not name a browser
+
+### Changed
+
+`StepScope` said `'page'` and `'app'`. Neither survives leaving a document: the core has no
+framework and no DOM, and it runs in a worker and in Node, where "page" names nothing and "app" is
+whatever the reader already thought it meant. The sharing boundary is one `globalThis` — a browsing
+context, a worker, a process — so the names now describe the _sharing_ and leave the boundary to the
+file that implements it.
+
+| Was                      | Is                         | Why                                                                                   |
+| ------------------------ | -------------------------- | ------------------------------------------------------------------------------------- |
+| `scope: 'page'`          | `scope: 'shared'`          | says what it does rather than where it happens to run; `SharedResult` already said it |
+| `scope: 'app'`           | `scope: 'instance'`        | the work belongs to this bootstrap instance, and a second one does it again           |
+| `clearPageScope`         | `clearSharedScope`         | follows                                                                               |
+| `claimPageStep`          | `claimSharedStep`          | follows, internal                                                                     |
+| `core/page-scope.ts`     | `core/shared-scope.ts`     | follows                                                                               |
+| `antumbra.page-scope.v1` | `antumbra.shared-scope.v1` | the registry symbol; a copy on the old key simply does not share with a new one       |
+
+The playground's microfrontend demo carries `?scope=` in links it hands out, so its values moved
+with the API rather than translating at the edge — a demo that spelled the old names would be
+teaching them.
+
+`'shared'` was preferred over `'realm'`, which is the precise ECMAScript word for what a
+`globalThis` bounds: the boundary is the mechanism, and a public API reads better naming the
+intent. It is documented on `StepScope` and again in `core/shared-scope.ts`.
+
+### Fixed
+
+- A comment in the scope module read "Not for tagion" — a word left behind when the history was
+  rewritten to remove domain vocabulary, and one that had been sitting in the file since.
+
 ## 2026-09-14, the words on screen
 
 ### Fixed
@@ -192,7 +224,7 @@ Page scope, so more than one module on a page stops doing the same work twice.
 - `scope: 'page'` on a step. The first bootstrap to reach it does the work and the rest adopt the
   result, through a registry on a versioned `Symbol.for` — which is the only thing two separately
   built modules can agree on without importing each other. The step id is the sharing key.
-- `clearPageScope()`, for tests and for a demo that boots repeatedly.
+- `clearSharedScope()`, for tests and for a demo that boots repeatedly.
 - `StepTrace.shared`, true when a step adopted a result somebody else produced.
 - The playground now runs two bootstraps on one page, React and Solid, with the session, access and
   configuration steps page-scoped. The Solid panel reports what it adopted.

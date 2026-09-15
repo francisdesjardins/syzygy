@@ -111,7 +111,7 @@ export function HomePage() {
           <p className={styles['floorNote']}>
             * The floor is the toolchain's, not the library's: the published bundle is plain ES
             modules with no runtime dependency to pin anyone to a version.{' '}
-            <code>scope: 'page'</code> keys its registry off <code>Symbol.for</code> on{' '}
+            <code>scope: 'shared'</code> keys its registry off <code>Symbol.for</code> on{' '}
             <code>globalThis</code>, which is the one global this package uses and the reason a
             second compiled copy still shares.
           </p>

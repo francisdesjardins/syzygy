@@ -2,7 +2,7 @@
 //
 // **This is the fragment the demo exists for.** It imports `antumbra-copy`, which the host resolves
 // to a second, separately built bundle — a genuinely different module instance from the one the
-// other three share. It still adopts the page's session, because page scope lives in a registry
+// other three share. It still adopts the session the others share, because shared scope lives in a registry
 // keyed by `Symbol.for` on `globalThis` rather than by module identity.
 //
 // A library that shares through a module singleton cannot do this. Its host has to deduplicate the

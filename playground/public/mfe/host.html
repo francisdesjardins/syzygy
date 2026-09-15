@@ -10,7 +10,7 @@
 
       Three fragments resolve `antumbra` to one build. The fourth resolves `antumbra-copy` to a
       second, separately built copy of the same library — its own module instance, its own closures.
-      It still adopts the page's work, because page scope lives in a registry keyed by `Symbol.for`
+      It still adopts the work the others did, because shared scope lives in a registry keyed by `Symbol.for`
       on `globalThis` rather than by module identity. A library whose sharing is a module singleton
       cannot do that, and fails silently when a host forgets to deduplicate it.
 
@@ -284,10 +284,10 @@
        * The page's own plumbing, shared by all four fragments because they share a document.
        *
        * `api` is here rather than in each fragment so the counter is honest: it counts calls that
-       * actually left, which is the only number that says whether page scope did anything.
+       * actually left, which is the only number that says whether shared scope did anything.
        */
       const params = new URLSearchParams(location.search);
-      const scope = params.get('scope') === 'app' ? 'app' : 'page';
+      const scope = params.get('scope') === 'instance' ? 'instance' : 'shared';
 
       let calls = 0;
       const bump = (what) => {
@@ -386,7 +386,7 @@
        * panel needs the session and the configuration. Sharing what is the same answer for everybody
        * leaves four distinct pieces of work.
        */
-      const EXPECTED = { page: 4, app: 8 };
+      const EXPECTED = { shared: 4, instance: 8 };
 
       /*
        * The link back out, rebuilt from the page above rather than written down.
@@ -411,9 +411,9 @@
 
       const note = document.getElementById('scope-note');
       note.innerHTML =
-        scope === 'page'
-          ? `Steps that are the same answer for the whole page are shared, so the page does <b>${EXPECTED.page}</b> pieces of work instead of <b>${EXPECTED.app}</b>. <a href="${scopeHref('app')}" target="_parent">See it without sharing</a>.`
-          : `Each fragment is doing its own, so the same session is fetched four times over: <b>${EXPECTED.app}</b> pieces of work instead of <b>${EXPECTED.page}</b>. <a href="${scopeHref('page')}" target="_parent">Turn sharing back on</a>.`;
+        scope === 'shared'
+          ? `Steps that are the same answer for everyone are shared, so the four of them do <b>${EXPECTED.shared}</b> pieces of work instead of <b>${EXPECTED.instance}</b>. <a href="${scopeHref('instance')}" target="_parent">See it without sharing</a>.`
+          : `Each fragment is doing its own, so the same session is fetched four times over: <b>${EXPECTED.instance}</b> pieces of work instead of <b>${EXPECTED.shared}</b>. <a href="${scopeHref('shared')}" target="_parent">Turn sharing back on</a>.`;
     </script>
 
     <script type="module" src="./frag-topbar.js"></script>

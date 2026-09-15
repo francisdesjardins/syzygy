@@ -32,7 +32,7 @@ export type {
   IntentControls,
   IntentHostOptions,
 } from './core/intent-host.js';
-export { clearPageScope } from './core/page-scope.js';
+export { clearSharedScope } from './core/shared-scope.js';
 export { readStepData } from './core/read-data.js';
 export { DEFAULT_DEADLINE_MS } from './core/scheduler.js';
 export type { MountReport, Session, SessionState } from './core/session.js';

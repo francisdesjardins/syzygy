@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { createBootstrap } from '../create-bootstrap.js';
 import { defineStep } from '../define-step.js';
-import { clearPageScope } from '../page-scope.js';
+import { clearSharedScope } from '../shared-scope.js';
 import type { AnyStep, StepTrace } from '../types.js';
 
 function sleep(ms: number): Promise<void> {
@@ -27,16 +27,16 @@ function twoModules(steps: () => readonly AnyStep[]) {
 }
 
 test.beforeEach(() => {
-  clearPageScope();
+  clearSharedScope();
 });
 
-test('a page-scoped step runs once for the whole page', async () => {
+test('a shared step runs once for everyone that declared it', async () => {
   let calls = 0;
   const steps = () => {
     return [
       defineStep({
         id: 'session',
-        scope: 'page',
+        scope: 'shared',
         run: async () => {
           calls += 1;
           await sleep(10);
@@ -85,7 +85,7 @@ test('a module arriving late adopts a result that is already settled', async () 
     return [
       defineStep({
         id: 'config',
-        scope: 'page',
+        scope: 'shared',
         run: () => {
           calls += 1;
           return { workspaceName: 'Shared' };
@@ -111,7 +111,7 @@ test('a refusal blocks every module, not only the one that looked', async () => 
     return [
       defineStep({
         id: 'session',
-        scope: 'page',
+        scope: 'shared',
         run: (ctx) => {
           return ctx.block('No session.');
         },
@@ -134,7 +134,7 @@ test('a failure is adopted too, so a sharer does not mount on data nobody has', 
     return [
       defineStep({
         id: 'session',
-        scope: 'page',
+        scope: 'shared',
         run: () => {
           throw new Error('401');
         },
@@ -155,7 +155,7 @@ test('the notices and intents of a shared step belong to the run that did the wo
     return [
       defineStep({
         id: 'config',
-        scope: 'page',
+        scope: 'shared',
         run: (ctx) => {
           ctx.notice('config:from-cache', { ageSeconds: 1 });
           ctx.intent('warn:trial-expiring', { daysLeft: 5 });
@@ -182,7 +182,7 @@ test('dependents of a shared step read it exactly like any other dependency', as
     return [
       defineStep({
         id: 'session',
-        scope: 'page',
+        scope: 'shared',
         run: () => {
           return { userId: 'u-1' };
         },
@@ -208,13 +208,13 @@ test('dependents of a shared step read it exactly like any other dependency', as
   expect(b.data['access']).toEqual({ readFrom: { userId: 'u-1' } });
 });
 
-test('clearing the page scope makes the next module do the work again', async () => {
+test('clearing the shared scope makes the next module do the work again', async () => {
   let calls = 0;
   const steps = () => {
     return [
       defineStep({
         id: 'session',
-        scope: 'page',
+        scope: 'shared',
         run: () => {
           calls += 1;
           return { userId: 'u-1' };
@@ -224,7 +224,7 @@ test('clearing the page scope makes the next module do the work again', async ()
   };
 
   await createBootstrap({ steps: steps() }).run();
-  clearPageScope();
+  clearSharedScope();
   await createBootstrap({ steps: steps() }).run();
 
   expect(calls).toBe(2);

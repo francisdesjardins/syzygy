@@ -2,7 +2,7 @@
 //
 // It is loaded when its route first matches, long after the root config ran, so `customProps` could
 // not have reached it without the root knowing in advance what it would want. It declares the same
-// page-scoped steps instead — `session` and `access`, by the same ids — and adopts the answers the
+// shared steps instead — `session` and `access`, by the same ids — and adopts the answers the
 // root already produced. The request counter does not move.
 //
 // That is the integration worth showing: single-spa keeps loading and routing, and the application
@@ -14,7 +14,7 @@ const boot = createBootstrap({
   steps: [
     defineStep({
       id: 'session',
-      scope: 'page',
+      scope: 'shared',
       run: () => {
         demo.log('reports', 'asking for the session — nobody handed it one');
         return demo.api.session();
@@ -23,7 +23,7 @@ const boot = createBootstrap({
     defineStep({
       id: 'access',
       needs: ['session'],
-      scope: 'page',
+      scope: 'shared',
       run: () => {
         demo.log('reports', 'asking what this user may reach');
         return demo.api.access();

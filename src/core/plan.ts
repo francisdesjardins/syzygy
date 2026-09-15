@@ -175,7 +175,7 @@ export function compilePlan(steps: readonly AnyStep[]): CompiledPlan {
       needs: step.needs ?? [],
       optional: step.optional ?? false,
       timeout: step.timeout,
-      scope: step.scope ?? 'app',
+      scope: step.scope ?? 'instance',
       level: mustGet(levelOf, step.id),
       dependents: mustGet(dependents, step.id),
     });

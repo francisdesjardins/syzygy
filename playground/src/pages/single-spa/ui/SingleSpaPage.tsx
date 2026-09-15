@@ -121,7 +121,7 @@ export function SingleSpaPage() {
           />
           <ExampleCard
             title="app-reports.js — declares and adopts"
-            description="Loaded when its route first matched, so no props could have reached it. It declares the same page-scoped steps by the same ids and adopts the answers the root already produced."
+            description="Loaded when its route first matched, so no props could have reached it. It declares the same shared steps by the same ids and adopts the answers the root already produced."
             codeKey="spa-reports"
           />
           <ExampleCard

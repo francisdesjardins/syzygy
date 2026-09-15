@@ -163,11 +163,11 @@ export const CATEGORIES: readonly CategoryDef[] = [
     symbols: ['RunEvent'],
   },
   {
-    id: 'page',
-    label: 'More than one module on a page',
+    id: 'shared',
+    label: 'More than one module beside each other',
     specifier: CORE,
     blurb: 'Work that is the same answer for everybody, done once.',
-    symbols: ['clearPageScope'],
+    symbols: ['clearSharedScope'],
   },
   {
     id: 'errors',

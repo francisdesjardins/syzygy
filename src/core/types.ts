@@ -23,27 +23,34 @@ import type {
 export type StepPhase = 'preflight' | 'mounted';
 
 /**
- * Whether a step's work belongs to this bootstrap or to the page.
+ * Whether a step's work belongs to this bootstrap alone or to everything running beside it.
  *
- * `app` is the default and means what it says: this bootstrap does it. `page` means the work is the
- * same for every module on the page, so the first bootstrap to reach it does it and the rest adopt
- * the result — a token validated once, a configuration fetched once, however many modules asked.
+ * `instance` is the default and means what it says: this bootstrap does it, and a second bootstrap
+ * declaring the same step does it again. `shared` means the work is the same answer for everyone,
+ * so the first bootstrap to reach it does it and the rest adopt the result — a token validated once,
+ * a configuration fetched once, however many modules asked.
+ *
+ * **How far "everyone" reaches is one `globalThis`,** which is a browsing context, a worker, or a
+ * Node process. Two documents do not share, and neither do a page and its worker: each has a
+ * registry of its own. The word is `shared` rather than a name for that boundary because the
+ * boundary is the mechanism, and the mechanism is documented where it lives — see
+ * `core/shared-scope.ts`.
  *
  * **The step id is the sharing key.** Two modules that declare `session` are declaring the same
  * thing, which is the contract; a module that means something different should name it differently.
  *
  * Three consequences worth knowing before reaching for it:
  *
- * - **A page-scoped step is attempted once, and its ending is the page's answer** — including a
- *   refusal, a failure, and a timeout. Its `timeout` therefore belongs to the page rather than to
- *   the module that happened to get there first, so modules sharing a step should agree on it.
+ * - **A shared step is attempted once, and its ending is everyone's answer** — including a refusal,
+ *   a failure, and a timeout. Its `timeout` therefore belongs to all of them rather than to the
+ *   module that happened to get there first, so modules sharing a step should agree on it.
  * - **Its notices and intents belong to the run that did the work.** They were emitted once, and
  *   replaying them would put the same warning on the screen once per module — which is the thing
  *   somebody noticed and the reason this exists.
- * - **Sharing is per page, not per bootstrap**, so a test or a demo that boots repeatedly has to
- *   call `clearPageScope` on purpose.
+ * - **Sharing outlives a bootstrap**, so a test or a demo that boots repeatedly has to call
+ *   `clearSharedScope` on purpose.
  */
-export type StepScope = 'app' | 'page';
+export type StepScope = 'instance' | 'shared';
 
 /**
  * How the run as a whole ended.
@@ -363,7 +370,7 @@ export type StepTrace = {
   readonly startedAt: number;
   readonly durationMs: number;
   readonly error?: SerializedError | undefined;
-  /** True when this step adopted a page-scoped result somebody else had already produced. */
+  /** True when this step adopted a shared result somebody else had already produced. */
   readonly shared?: boolean | undefined;
   /**
    * Writes attempted after the step settled.

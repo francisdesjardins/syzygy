@@ -12,7 +12,7 @@ import type { Api } from './fake-api.js';
  * The same graph works unchanged when those modules are deployed separately. That is a property of
  * the shape, not the reason for it.
  *
- * **Three steps are `scope: 'page'`.** The session, the access check and the configuration are the
+ * **Three steps are `scope: 'shared'`.** The session, the access check and the configuration are the
  * same answer for every module on the page, so the first bootstrap to reach one does the work and
  * the rest adopt it. The two reference lists stay app-scoped, because each module owns its own —
  * which is also what makes the contrast visible in the timeline.
@@ -20,7 +20,7 @@ import type { Api } from './fake-api.js';
 export function createSteps(api: Api) {
   const session = defineStep({
     id: 'session',
-    scope: 'page',
+    scope: 'shared',
     timeout: 3000,
     run: async (ctx) => {
       const found = await api.session(ctx.signal);
@@ -37,7 +37,7 @@ export function createSteps(api: Api) {
   const access = defineStep({
     id: 'access',
     needs: ['session'],
-    scope: 'page',
+    scope: 'shared',
     timeout: 3000,
     run: async (ctx) => {
       return new Set(await api.access(ctx.signal));
@@ -47,7 +47,7 @@ export function createSteps(api: Api) {
   const config = defineStep({
     id: 'config',
     needs: ['session'],
-    scope: 'page',
+    scope: 'shared',
     optional: true,
     timeout: 3000,
     run: async (ctx) => {

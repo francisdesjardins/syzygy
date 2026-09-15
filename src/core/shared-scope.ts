@@ -18,19 +18,22 @@ type Registry = Map<string, Promise<SharedResult>>;
 type Settlers = Map<string, (result: SharedResult) => void>;
 
 /**
- * Where the page keeps what has already been done.
+ * Where a `globalThis` keeps what has already been done.
  *
  * `Symbol.for` rather than a module-level constant, and that is the entire mechanism: two separately
- * built modules on one page have two copies of this file, so a module-scoped map would give each of
- * them their own and share nothing. The registry symbol is the one thing they can agree on without
- * importing each other.
+ * built modules loaded beside each other have two copies of this file, so a module-scoped map would
+ * give each of them their own and share nothing. The registry symbol is the one thing they can agree
+ * on without importing each other.
+ *
+ * This is also what bounds the sharing: one `globalThis` is one registry, so a document, a worker
+ * and a second document each get their own. Nothing here reaches across those.
  *
  * **Versioned**, because the agreement is about the shape of what is stored. A future version that
  * changes {@link SharedResult} takes a new symbol and simply does not share with the old one, which
  * is the right outcome: not sharing is slower, and sharing something misread is wrong.
  */
-const REGISTRY_KEY = Symbol.for('antumbra.page-scope.v1');
-const SETTLERS_KEY = Symbol.for('antumbra.page-scope.settlers.v1');
+const REGISTRY_KEY = Symbol.for('antumbra.shared-scope.v1');
+const SETTLERS_KEY = Symbol.for('antumbra.shared-scope.settlers.v1');
 
 type GlobalWithRegistry = typeof globalThis & {
   [REGISTRY_KEY]?: Registry | undefined;
@@ -62,14 +65,14 @@ function settlers(): Settlers {
 }
 
 /**
- * Claim a page-scoped step, or find that somebody already has.
+ * Claim a shared step, or find that somebody already has.
  *
  * **Synchronous, and that is what makes it a lock.** Two bootstraps reaching the same level in the
  * same tick both call this; the first one to arrive registers a promise nobody has resolved yet, and
  * the second one gets it. An `await` anywhere before the registration would open a window where both
  * decide they own it.
  */
-export function claimPageStep(key: string): Claim {
+export function claimSharedStep(key: string): Claim {
   const existing = registry().get(key);
   if (existing !== undefined) {
     return { owned: false, result: existing };
@@ -94,13 +97,12 @@ export function claimPageStep(key: string): Claim {
 }
 
 /**
- * Forget everything the page has shared.
+ * Forget everything that has been shared here.
  *
- * For tests, and for a demo that boots repeatedly. Not for tagion: a page that clears this
- * between two modules loading is a page that does the work twice, which is the thing this exists to
- * stop.
+ * For tests, and for a demo that boots repeatedly. Not for production: clearing this between two
+ * modules loading is how you get the work done twice, which is the thing this exists to stop.
  */
-export function clearPageScope(): void {
+export function clearSharedScope(): void {
   registry().clear();
   settlers().clear();
 }

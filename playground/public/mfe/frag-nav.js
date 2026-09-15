@@ -1,7 +1,7 @@
 // The navigation, on the Solid binding.
 //
 // It needs the session *and* what this user may reach, so it declares two steps and an edge between
-// them. Both are page-scoped: the top bar already asked for the session, so with page scope this
+// them. Both are shared: the top bar already asked for the session, so with shared scope this
 // fragment adopts it and only `access` actually leaves.
 //
 // Written with hyperscript rather than JSX, because nothing compiles this file — the same reason the

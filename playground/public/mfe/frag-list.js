@@ -1,8 +1,8 @@
 // The project list, on the controller binding.
 //
 // No framework at all: this file writes its own markup and drives the queue by hand. It declares the
-// same two page-scoped steps as its neighbours, plus one of its own — `projects:reference` is this
-// module's data, so it is `app` scope whatever the page is doing, and it is the step you can watch
+// same two shared steps as its neighbours, plus one of its own — `projects:reference` is this
+// module's data, so it is `instance` scope whatever the others are doing, and it is the step you can watch
 // run four times if you flip the switch.
 
 import { createBootstrap, defineStep } from 'antumbra';

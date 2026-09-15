@@ -76,8 +76,8 @@ try {
   await page.getByRole('checkbox', { name: 'Trial nearly expired' }).check();
   await page.getByTestId('boot-again').click();
 
-  // Two bootstraps share this page, and the steps that produce the warning are page-scoped, so the
-  // page has to ask once. Asking twice is the bug this scope exists to fix, and it came back once.
+  // Two bootstraps share this realm, and the steps that produce the warning are shared, so it
+  // has to ask once. Asking twice is the bug this scope exists to fix, and it came back once.
   await page.locator('dialog[open]').waitFor({ timeout: 15_000 });
   await page.getByTestId('dialog-acknowledge').click();
   await delay(1200);
@@ -86,10 +86,10 @@ try {
   }
 
   // The Solid panel booted second, so it should have adopted the shared steps rather than redoing
-  // them. A readout of zero means the page scope is not connecting the two bootstraps at all.
+  // them. A readout of zero means the shared scope is not connecting the two bootstraps at all.
   const adopted = await page.getByTestId('solid-shared').innerText();
   if (adopted.includes(': 0')) {
-    failures.push(`The Solid panel adopted nothing from the page: "${adopted}"`);
+    failures.push(`The Solid panel adopted nothing from the others: "${adopted}"`);
   }
 
   // Lowercased because the panel renders the status uppercase; the value is the library's.
@@ -147,7 +147,9 @@ try {
   // two copies stopped finding each other and the demo is claiming something untrue.
   const sharers = await frame.getByText('session · adopted').count();
   if (sharers < 2) {
-    failures.push(`Only ${sharers} fragment(s) adopted the session; page scope is not connecting.`);
+    failures.push(
+      `Only ${sharers} fragment(s) adopted the session; shared scope is not connecting.`
+    );
   }
 
   // The reference. It is generated at build time from typedoc, so it fails in exactly one way —
@@ -196,14 +198,16 @@ try {
   }
   const calls = await reloaded.locator('#calls').innerText();
   if (calls !== '4') {
-    failures.push(`The page made ${calls} requests under page scope; four is the shared answer.`);
+    failures.push(
+      `The fragments made ${calls} requests under shared scope; four is the right answer.`
+    );
   }
 
   // The scope control is a pair of links, so the setting lives in the address. It pointed at a route
   // that no longer existed for a while and nothing caught it: the page loads either way, and only a
   // click tells you the link goes nowhere.
   await page.getByRole('link', { name: 'Every fragment does its own' }).click();
-  await page.waitForURL(/scope=app/, { timeout: 15_000 });
+  await page.waitForURL(/scope=instance/, { timeout: 15_000 });
   const unshared = page.frameLocator('[data-testid="demo-frame"]');
   for (const marker of ['Signed in as', 'Atlas migration', 'Acme Workspace']) {
     await unshared.getByText(marker, { exact: false }).first().waitFor({ timeout: 25_000 });

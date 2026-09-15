@@ -16,11 +16,11 @@ const WORDS: ReadonlyArray<{ term: string; what: string }> = [
     what: 'UI work the framework-free layer cannot do itself. The app decides what to forward, and an intent nobody forwards is recorded as dropped rather than lost.',
   },
   {
-    term: "scope: 'app'",
+    term: "scope: 'instance'",
     what: 'The default. This step is this bootstrap’s work, so every module that declares it does it. Two modules on a page means two requests.',
   },
   {
-    term: "scope: 'page'",
+    term: "scope: 'shared'",
     what: 'The same answer for everyone on the page — a token, a configuration. The first module to ask does the work and the others take that answer without asking. Two modules on a page means one request.',
   },
 ];

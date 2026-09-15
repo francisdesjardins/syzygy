@@ -1,4 +1,4 @@
-import { type AnyStep, type Bootstrap, clearPageScope, createBootstrap } from 'antumbra';
+import { type AnyStep, type Bootstrap, clearSharedScope, createBootstrap } from 'antumbra';
 import { BootstrapProvider, useBootstrapContext } from 'antumbra/react';
 import { useCallback, useState } from 'react';
 import { ExampleCard, ExampleGrid, ExampleSection } from '@/entities/example';
@@ -39,7 +39,7 @@ function shapeOf(steps: readonly AnyStep[]) {
     needsOf[String(step.id)] = (step.needs ?? []).map((need) => {
       return String(need);
     });
-    scopeOf[String(step.id)] = step.scope ?? 'app';
+    scopeOf[String(step.id)] = step.scope ?? 'instance';
   }
   return { needsOf, scopeOf };
 }
@@ -128,9 +128,9 @@ export function GettingStartedPage() {
   // single move, and a second copy in the page header was the same action a page away from its
   // cause.
   const bootAgain = useCallback(() => {
-    // The page remembers what it has already done, which is the whole point of `scope: 'page'` —
+    // The realm remembers what it has already done, which is the whole point of `scope: 'shared'` —
     // and exactly why a demo that boots repeatedly has to forget.
-    clearPageScope();
+    clearSharedScope();
     setBoot(bootFor(faults));
     setRunId((previous) => {
       return previous + 1;
@@ -180,7 +180,7 @@ export function GettingStartedPage() {
       <ExampleSection
         id="two-bootstraps"
         title="Two bootstraps"
-        description="The same steps, rendered by antumbra/solid inside this React page. Session, access and configuration are page-scoped, so whichever side gets there first does the work."
+        description="The same steps, rendered by antumbra/solid inside this React page. Session, access and configuration are shared, so whichever side gets there first does the work."
       >
         <SolidPanel faults={faults} runId={runId} />
       </ExampleSection>
