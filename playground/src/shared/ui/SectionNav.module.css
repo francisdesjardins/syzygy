@@ -1,0 +1,24 @@
+.nav {
+  position: sticky;
+  top: var(--app-topbar-height);
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--app-space-2);
+  padding: var(--app-space-3) 0;
+  background: var(--app-bg);
+}
+
+.chip {
+  font-size: var(--app-text-sm);
+  padding: var(--app-space-1) var(--app-space-3);
+  border-radius: var(--app-radius-pill);
+  border: 1px solid var(--app-divider);
+  color: var(--app-text-secondary);
+  text-decoration: none;
+}
+
+.chip:hover {
+  background: var(--app-hover);
+  color: var(--app-text);
+}

@@ -1,0 +1,52 @@
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--app-space-6);
+  align-items: start;
+}
+
+.rail {
+  display: none;
+}
+
+.content {
+  min-width: 0;
+}
+
+.mobileSearch {
+  margin-bottom: var(--app-space-6);
+}
+
+@media (min-width: 900px) {
+  .grid {
+    /* 236px: the rail's measured column — off the 4px grid, sized to its longest label. */
+    grid-template-columns: 236px minmax(0, 1fr);
+    gap: var(--app-space-10);
+  }
+
+  /* Sticky one step under the top bar, with its own scroll ending a step above the viewport. */
+  .rail {
+    display: block;
+    position: sticky;
+    top: calc(var(--app-topbar-height) + var(--app-space-4));
+    max-height: calc(100dvh - var(--app-topbar-height) - var(--app-space-10));
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: var(--app-space-2);
+    /* Ring room on every side that clips. A scroll container clips at its padding box and the
+       links' rings draw 2px out at 2px offset, so a flush link keeps part of its ring and loses the
+       rest — measured on the left, and again on the last entry's bottom edge. `overflow-y: auto`
+       makes `overflow-x` compute to `auto` too, which is why this is not just a vertical problem. */
+    padding-left: var(--app-space-1);
+    margin-left: calc(-1 * var(--app-space-1));
+    padding-block: var(--app-space-1);
+    /* Padding alone is not enough vertically: focusing a link scrolls it into view, and
+       scroll-into-view aligns to the *client* edge, parking the last entry flush against the clip
+       with its ring outside. `scroll-padding` is what that alignment reads. */
+    scroll-padding-block: var(--app-space-2);
+  }
+
+  .mobileSearch {
+    display: none;
+  }
+}

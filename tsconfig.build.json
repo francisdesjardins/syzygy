@@ -1,0 +1,24 @@
+{
+  // Declaration emit for the published package, replacing vite-plugin-dts. `tsc` is the same
+  // compiler `type-check` already runs, so the published types cannot drift from what the gate
+  // validated, and the build drops a plugin dependency.
+  //
+  // Output mirrors `src/` under `dist/esm` because the Vite build uses `preserveModules: true`:
+  // `src/index.ts` becomes `dist/esm/index.d.ts`, matching the `exports` entries.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "emitDeclarationOnly": true,
+    "declaration": true,
+    "declarationMap": false,
+    "sourceMap": false,
+    "outDir": "./dist/esm",
+    "rootDir": "./src",
+    // Tests are excluded below, so their unused-symbol noise is irrelevant here, and keeping these
+    // off makes declaration emit resilient to type-only re-export shapes.
+    "noUnusedLocals": false,
+    "noUnusedParameters": false
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "playground", "src/**/__tests__/**", "src/**/*.test.ts"]
+}

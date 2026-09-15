@@ -1,0 +1,33 @@
+.body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: var(--app-space-5) var(--app-space-6) var(--app-space-6);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-2);
+  margin-bottom: var(--app-space-2);
+}
+
+.title {
+  flex: 1;
+  margin: 0;
+  font-family: var(--app-font-body);
+  font-weight: 600;
+  font-size: var(--app-text-base);
+  line-height: var(--app-lh-snug);
+  letter-spacing: var(--app-tracking-snug);
+}
+
+.description {
+  margin: 0 0 var(--app-space-5);
+  max-width: var(--app-measure);
+  color: var(--app-text-secondary);
+}
+
+.example {
+  margin-top: auto;
+}

@@ -1,0 +1,10 @@
+{
+  // The type fixtures, which are the gate on module augmentation. Discovered rather than listed:
+  // a named `files` array is how a second fixture comes to compile as nothing at all, with no
+  // error and no test. The empty `include` above is replaced here so `src/` stays out of the
+  // program root; every fixture shares one program, which is the right model because the registry
+  // a consumer augments is global there too.
+  "extends": "./tsconfig.json",
+  "compilerOptions": { "noEmit": true, "rootDir": "." },
+  "include": ["type-fixtures/**/*.test-d.ts"]
+}

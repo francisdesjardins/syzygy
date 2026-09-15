@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>antumbra — one page, four fragments</title>
+
+    <!--
+      The host's entire job: name the shared modules and hand the same ones to everybody.
+
+      Three fragments resolve `antumbra` to one build. The fourth resolves `antumbra-copy` to a
+      second, separately built copy of the same library — its own module instance, its own closures.
+      It still adopts the page's work, because page scope lives in a registry keyed by `Symbol.for`
+      on `globalThis` rather than by module identity. A library whose sharing is a module singleton
+      cannot do that, and fails silently when a host forgets to deduplicate it.
+
+      No bundler runs on this page. The browser resolves the map.
+    -->
+    <script type="importmap">
+      {
+        "imports": {
+          "antumbra": "./antumbra.mjs",
+          "antumbra/react": "./antumbra-react.mjs",
+          "antumbra/solid": "./antumbra-solid.mjs",
+          "antumbra/vanilla": "./antumbra-vanilla.mjs",
+          "antumbra-copy": "./antumbra-copy.mjs",
+          "react": "./react.mjs",
+          "react-dom/client": "./react-dom-client.mjs",
+          "solid-js": "./solid-js.mjs",
+          "solid-js/web": "./solid-js-web.mjs",
+          "solid-js/h": "./solid-js-h.mjs"
+        }
+      }
+    </script>
+
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: light-dark(#f8fafc, #0b1120);
+        --panel: light-dark(#ffffff, #131c2e);
+        --ink: light-dark(#0f172a, #e2e8f0);
+        --muted: light-dark(#64748b, #94a3b8);
+        --line: light-dark(#e2e8f0, #24314a);
+        --accent: light-dark(#3b5bdb, #748ffc);
+        --ok: light-dark(#15803d, #4ade80);
+        --warn: light-dark(#b45309, #fbbf24);
+        /* One colour per fragment, so a badge, a log line and a panel border agree about who. */
+        --topbar: light-dark(#0d9488, #2dd4bf);
+        --nav: light-dark(#7c3aed, #a78bfa);
+        --list: light-dark(#b45309, #f59e0b);
+        --trial: light-dark(#be123c, #fb7185);
+      }
+      :root[data-theme='light'] {
+        color-scheme: light;
+      }
+      :root[data-theme='dark'] {
+        color-scheme: dark;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font:
+          13px/1.5 ui-sans-serif,
+          system-ui,
+          -apple-system,
+          'Segoe UI',
+          sans-serif;
+      }
+      code,
+      .mono {
+        font-family: ui-monospace, 'Cascadia Code', 'SF Mono', Menlo, monospace;
+      }
+
+      .shell {
+        display: grid;
+        grid-template-columns: 190px minmax(0, 1fr);
+        grid-template-rows: auto minmax(0, 1fr);
+        grid-template-areas: 'top top' 'nav main';
+        gap: 10px;
+        padding: 10px;
+      }
+      @media (max-width: 620px) {
+        .shell {
+          grid-template-columns: minmax(0, 1fr);
+          grid-template-areas: 'top' 'nav' 'main';
+        }
+      }
+
+      .frag {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-top: 3px solid var(--own, var(--line));
+        border-radius: 8px;
+        padding: 10px 12px;
+        min-height: 64px;
+      }
+      #topbar {
+        grid-area: top;
+        --own: var(--topbar);
+      }
+      #nav {
+        grid-area: nav;
+        --own: var(--nav);
+      }
+      .main {
+        grid-area: main;
+        display: grid;
+        gap: 10px;
+        align-content: start;
+      }
+      #list {
+        --own: var(--list);
+      }
+      #trial {
+        --own: var(--trial);
+      }
+
+      .frag-name {
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--own, var(--muted));
+        font-weight: 700;
+        margin-bottom: 6px;
+      }
+      .frag-name span {
+        color: var(--muted);
+        font-weight: 400;
+        text-transform: none;
+        letter-spacing: 0;
+      }
+
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        margin-top: 8px;
+      }
+      .chip {
+        font-size: 10.5px;
+        padding: 1px 7px;
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        color: var(--muted);
+      }
+      .chip-ran {
+        border-color: var(--ok);
+        color: var(--ok);
+      }
+      .chip-adopted {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+
+      ul {
+        margin: 6px 0 0;
+        padding-left: 18px;
+      }
+      li {
+        margin: 2px 0;
+      }
+
+      .counter {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px 16px;
+        align-items: baseline;
+        padding: 10px 12px;
+        margin: 10px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+      }
+      .counter strong {
+        font-size: 22px;
+        font-variant-numeric: tabular-nums;
+      }
+      .counter .expect {
+        width: 100%;
+        color: var(--muted);
+      }
+      .counter .expect b {
+        color: var(--ink);
+      }
+      .legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px 14px;
+        margin: 0 10px 10px;
+        color: var(--muted);
+        font-size: 11.5px;
+      }
+      .counter a {
+        color: var(--accent);
+      }
+
+      .log {
+        margin: 0 10px 10px;
+        padding: 10px 12px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        max-height: 170px;
+        overflow-y: auto;
+      }
+      .log p {
+        margin: 1px 0;
+        font-size: 11.5px;
+      }
+      .log .who {
+        font-weight: 700;
+      }
+
+      dialog {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: var(--panel);
+        color: var(--ink);
+        padding: 18px 20px;
+        max-width: 380px;
+      }
+      dialog::backdrop {
+        background: rgb(0 0 0 / 40%);
+      }
+      button {
+        font: inherit;
+        padding: 5px 12px;
+        border-radius: 6px;
+        border: 1px solid var(--line);
+        background: var(--panel);
+        color: var(--ink);
+        cursor: pointer;
+      }
+      button.primary {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="counter">
+      <span>Requests these four fragments actually sent:</span>
+      <strong id="calls">0</strong>
+      <span class="expect" id="scope-note"></span>
+    </div>
+
+    <div class="legend">
+      <span><span class="chip chip-ran">step · ran it</span> this fragment did the work</span>
+      <span
+        ><span class="chip chip-adopted">step · adopted</span> another fragment had already done it,
+        and this one took the answer</span
+      >
+    </div>
+
+    <div class="shell">
+      <header class="frag" id="topbar"></header>
+      <aside class="frag" id="nav"></aside>
+      <div class="main">
+        <section class="frag" id="list"></section>
+        <trial-panel id="trial" class="frag"></trial-panel>
+      </div>
+    </div>
+
+    <div class="log" id="log"></div>
+
+    <dialog id="warn">
+      <h3 style="margin-top: 0">The app is asking</h3>
+      <p id="warn-message"></p>
+      <div style="display: flex; justify-content: flex-end; gap: 8px">
+        <button id="warn-no">Dismiss</button>
+        <button id="warn-yes" class="primary">Acknowledge</button>
+      </div>
+    </dialog>
+
+    <script>
+      /*
+       * The page's own plumbing, shared by all four fragments because they share a document.
+       *
+       * `api` is here rather than in each fragment so the counter is honest: it counts calls that
+       * actually left, which is the only number that says whether page scope did anything.
+       */
+      const params = new URLSearchParams(location.search);
+      const scope = params.get('scope') === 'app' ? 'app' : 'page';
+
+      let calls = 0;
+      const bump = (what) => {
+        calls += 1;
+        document.getElementById('calls').textContent = String(calls);
+        return what;
+      };
+
+      const wait = (ms) => {
+        return new Promise((resolve) => {
+          setTimeout(resolve, ms);
+        });
+      };
+
+      window.demo = {
+        scope,
+
+        api: {
+          async session() {
+            await wait(340);
+            return bump({ userId: 'u-4821', displayName: 'F. Desjardins' });
+          },
+          async access() {
+            await wait(260);
+            return bump(['projects:read', 'tags:read', 'reports:read']);
+          },
+          async config() {
+            await wait(400);
+            return bump({ workspaceName: 'Acme Workspace', trialDaysLeft: 12 });
+          },
+          async projects() {
+            await wait(300);
+            return bump(['Atlas migration', 'Billing rewrite', 'Search index']);
+          },
+        },
+
+        log(who, message) {
+          const line = document.createElement('p');
+          const tag = document.createElement('span');
+          tag.className = 'who';
+          tag.style.color = `var(--${who})`;
+          tag.textContent = `${who} `;
+          line.append(tag, document.createTextNode(message));
+          document.getElementById('log').append(line);
+        },
+
+        /** One chip per step, saying whether this fragment did the work or adopted it. */
+        chips(outcome) {
+          const row = document.createElement('div');
+          row.className = 'chips';
+          for (const trace of outcome.timeline) {
+            const chip = document.createElement('span');
+            const adopted = trace.shared === true;
+            chip.className = `chip ${adopted ? 'chip-adopted' : 'chip-ran'}`;
+            chip.textContent = `${trace.id} · ${adopted ? 'adopted' : 'ran it'}`;
+            row.append(chip);
+          }
+          return row;
+        },
+
+        header(name, framework) {
+          const head = document.createElement('div');
+          head.className = 'frag-name';
+          head.append(document.createTextNode(`${name} `));
+          const note = document.createElement('span');
+          note.textContent = framework;
+          head.append(note);
+          return head;
+        },
+
+        /** The page's one dialog. Whichever fragment holds the intent drives it. */
+        ask(message) {
+          const dialog = document.getElementById('warn');
+          document.getElementById('warn-message').textContent = message;
+          dialog.showModal();
+          return new Promise((resolve) => {
+            const done = (answer) => {
+              dialog.close();
+              resolve(answer);
+            };
+            document.getElementById('warn-yes').onclick = () => {
+              return done(true);
+            };
+            document.getElementById('warn-no').onclick = () => {
+              return done(false);
+            };
+          });
+        },
+      };
+
+      /*
+       * What the page needs in each mode, counted from the fragments themselves.
+       *
+       * The four declare eight steps between them: the top bar needs the session; navigation needs
+       * the session and access; the list needs those two plus its own reference data; the trial
+       * panel needs the session and the configuration. Sharing what is the same answer for everybody
+       * leaves four distinct pieces of work.
+       */
+      const EXPECTED = { page: 4, app: 8 };
+
+      /*
+       * The link back out, rebuilt from the page above rather than written down.
+       *
+       * This frame is served from the parent's own folder, but it cannot assume what that folder is:
+       * the playground sits at the root in dev and under /playground/antumbra/ on the site, and the
+       * deployed build routes in the hash while dev routes on the path. The parent URL already
+       * carries both answers — keep all of it and swap the one parameter.
+       */
+      const scopeHref = (next) => {
+        const url = new URL(parent.location.href);
+        if (url.hash.startsWith('#/')) {
+          const [path, query] = url.hash.slice(1).split('?');
+          const params = new URLSearchParams(query ?? '');
+          params.set('scope', next);
+          url.hash = `#${path}?${params.toString()}`;
+        } else {
+          url.searchParams.set('scope', next);
+        }
+        return url.href;
+      };
+
+      const note = document.getElementById('scope-note');
+      note.innerHTML =
+        scope === 'page'
+          ? `Steps that are the same answer for the whole page are shared, so the page does <b>${EXPECTED.page}</b> pieces of work instead of <b>${EXPECTED.app}</b>. <a href="${scopeHref('app')}" target="_parent">See it without sharing</a>.`
+          : `Each fragment is doing its own, so the same session is fetched four times over: <b>${EXPECTED.app}</b> pieces of work instead of <b>${EXPECTED.page}</b>. <a href="${scopeHref('page')}" target="_parent">Turn sharing back on</a>.`;
+    </script>
+
+    <script type="module" src="./frag-topbar.js"></script>
+    <script type="module" src="./frag-nav.js"></script>
+    <script type="module" src="./frag-list.js"></script>
+    <script type="module" src="./frag-trial.js"></script>
+  </body>
+</html>

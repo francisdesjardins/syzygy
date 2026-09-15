@@ -1,0 +1,16 @@
+/* The demo frames, and the row of controls that switches what is inside them. */
+
+.frame {
+  width: 100%;
+  border: 1px solid var(--app-divider);
+  border-radius: var(--app-radius-lg);
+  background: var(--app-bg);
+  display: block;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--app-space-2);
+  margin: 0 0 var(--app-space-4);
+}

@@ -1,0 +1,70 @@
+.bar {
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: var(--app-topbar-height);
+  z-index: calc(var(--app-z-sidebar) + 1);
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-3);
+  padding: 0 var(--app-space-4);
+  background: var(--app-paper);
+  border-bottom: 1px solid var(--app-divider);
+}
+
+/* One row, one midline. Everything in it centres, including the ring — no `--app-lockup-rise`
+   here: that token is for a mark standing alone with type, and in a row it is the *text* that
+   moves, by trimming it to its cap band. */
+.mark {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-2);
+  text-decoration: none;
+  color: var(--app-text);
+}
+
+.mark:hover .name {
+  color: var(--app-accent);
+}
+
+.name {
+  font-family: var(--app-font-display);
+  font-size: var(--app-text-base);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: var(--app-tracking-tight);
+  /* Cap band, so centring the box centres the letters: "antumbra" reserves descender room it never
+     uses, and the ring beside it reads low without this. */
+  text-box: trim-both cap alphabetic;
+}
+
+.ring {
+  flex-shrink: 0;
+  width: 11px;
+  height: 11px;
+  border-radius: var(--app-radius-pill);
+  border: 2px solid var(--app-flame);
+}
+
+/* Hidden on a phone, where the wordmark and the menu need the whole row. */
+.tag {
+  display: none;
+  align-self: center;
+  padding: 2px var(--app-space-2);
+  border: 1px solid var(--app-divider);
+  border-radius: var(--app-radius-sm);
+  font-family: var(--app-font-mono);
+  font-size: var(--app-text-xs);
+  letter-spacing: 0.04em;
+  color: var(--app-text-tertiary);
+  white-space: nowrap;
+}
+
+@media (min-width: 600px) {
+  .tag {
+    display: inline-flex;
+  }
+}
+
+.spacer {
+  flex: 1;
+}

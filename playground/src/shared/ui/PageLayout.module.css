@@ -1,0 +1,23 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-8);
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--app-space-4);
+}
+
+.title {
+  font-size: var(--app-text-3xl);
+}
+
+.description {
+  margin-top: var(--app-space-3);
+  max-width: var(--app-measure);
+  color: var(--app-text-secondary);
+}

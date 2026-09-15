@@ -1,0 +1,22 @@
+.section {
+  scroll-margin-top: calc(var(--app-topbar-height) + var(--app-space-8));
+}
+
+.title {
+  font-family: var(--app-font-mono);
+  font-size: var(--app-text-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: var(--app-tracking-label);
+  color: var(--app-text-secondary);
+}
+
+.description {
+  margin-top: var(--app-space-2);
+  max-width: var(--app-measure);
+  color: var(--app-text-secondary);
+}
+
+.content {
+  margin-top: var(--app-space-5);
+}

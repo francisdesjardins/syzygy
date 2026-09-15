@@ -1,0 +1,17 @@
+.button {
+  /* The border pays for itself out of the padding: nothing here declares a width, so a bare border
+     would grow the button past the icon buttons it sits beside. */
+  padding: calc(var(--app-space-1) - 1px);
+  border: 1px solid var(--app-divider);
+  background: var(--app-paper);
+  color: var(--app-text-secondary);
+}
+
+.button:hover:not(:disabled) {
+  background: var(--app-hover);
+  color: var(--app-text);
+}
+
+.done {
+  color: var(--app-ok);
+}
