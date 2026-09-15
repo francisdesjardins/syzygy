@@ -112,11 +112,11 @@ run that did the work: replaying them would put the same warning on the screen o
 A preflight step runs before anything is mounted. It has no framework and cannot ask the user
 anything, and it is the only kind that may refuse the mount outright.
 
-A mounted step runs after a binding has taken over, with a UI port in hand. It can open a dialog and
+A hosted step runs after a binding has taken over, with a UI port in hand. It can open a dialog and
 wait for the answer. It cannot refuse a mount that already happened.
 
 That split is in the types, not in a comment: the two phases get two different context types, so a
-preflight step has no `ctx.host` to reach for and a mounted step has no `ctx.block` to call.
+preflight step has no `ctx.host` to reach for and a hosted step has no `ctx.block` to call.
 
 ```ts
 const trialWarning = defineHostedStep({

@@ -83,7 +83,7 @@ Everything in this package belongs to exactly one of three things, and the name 
 
 Two rules fall out of it, and both were broken before the vocabulary was written down:
 
-- **A word means one thing.** `phase` is `preflight` or `mounted` and nothing else, which is why a
+- **A word means one thing.** `phase` is `preflight` or `hosted` and nothing else, which is why a
   run's position is a `stage`. `Outcome` is the object a run produced, which is why how one step
   ended is a `status` — `outcome.timeline[0].outcome` was one noun at two ranks.
 - **No abbreviations.** There is no `Boot` prefix. It was a short `Bootstrap` on types that mostly
@@ -102,17 +102,17 @@ ran.
 **`plan()` returns levels, not waves.** It is a static analysis of the graph, computed before
 anything runs. `outcome.timeline` is what actually happened, and the two are allowed to differ.
 
-**Two phases, two context types.** A preflight step has `block` and no `ui`; a mounted step has `ui`
+**Two phases, two context types.** A preflight step has `block` and no `host`; a hosted step has `host`
 and `awaitIntent` and no `block`. This is why there are two `define*` functions rather than a `phase`
 field: one generic signature would hand every step the union of both contexts, which takes `block`
-away from preflight and `ui` away from mounted in the same breath. An edge from preflight to mounted
+away from preflight and `host` away from hosted in the same breath. An edge from preflight to hosted
 is rejected at construction, because it can never be satisfied.
 
-**A mounted step returns `void`.** `run()` resolves at the end of preflight, so a value produced
+**A hosted step returns `void`.** `run()` resolves at the end of preflight, so a value produced
 later would arrive after the outcome was handed over.
 
 **The outcome is frozen; the session is alive.** Everything that moves — the intent queue's
-transitions, the waiters behind `awaitIntent`, the mounted phase — lives on the session. An outcome
+transitions, the waiters behind `awaitIntent`, the hosted phase — lives on the session. An outcome
 nobody passes to a session leaks nothing, which is what makes the snapshot safe to hand around.
 
 **`run()` never rejects for anything a step did**, and calling it twice returns the same outcome.
@@ -161,8 +161,8 @@ break the caller's cleanup to report a bookkeeping detail.
 **A hook returns intents; it does not take an `onIntent` prop.** A callback prop is a fresh function
 every render, so an effect depending on it would tear the host down between an intent being
 forwarded and the user answering it — and an effect ignoring it would need the dependency check
-switched off. Rendering the queue has neither problem. The same reasoning makes `ui` a
-stability requirement rather than a convenience: a fresh port every render is a fresh mounted phase
+switched off. Rendering the queue has neither problem. The same reasoning makes `host` a
+stability requirement rather than a convenience: a fresh one every render is a fresh hosted phase
 every render.
 
 **`destroy` is not `dispose`, and finding that out cost a bug.** A component unmounting is not the
@@ -171,8 +171,8 @@ application shutting down: a framework rebuilds an effect whenever its inputs ch
 unsubscribes and stops there. `bindBootstrap().destroy()` also disposes, because a caller with no
 component behind it means the page is done — that is the one place the word reads that way.
 
-**`session.mount()` is memoised, like `run()`.** A framework re-attaches its host more often than an
-author expects, and a mounted phase that ran twice would ask the user the same question twice.
+**`session.attach()` is memoised, like `run()`.** A framework re-attaches its host more often than an
+author expects, and a hosted phase that ran twice would ask the user the same question twice.
 
 **A bare `Outcome` means an outcome whose step list is no longer in the type**, so its default type
 argument is the empty list and its data is opaque; `readStepData` is how a value comes back out.
