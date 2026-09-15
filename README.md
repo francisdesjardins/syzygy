@@ -1,7 +1,21 @@
 # antumbra
 
-Bootstrap orchestration for an application made of modules. No framework in the core, no UI, no
-dependencies.
+**Bootstrap orchestration for an application made of modules.**
+
+No framework in the core, no UI, no dependencies.
+
+[![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![React](https://img.shields.io/badge/React-19-61dafb?style=flat-square&logo=react&logoColor=black)](https://react.dev/)
+[![Solid](https://img.shields.io/badge/Solid-1.9-2c4f7c?style=flat-square&logo=solid&logoColor=white)](https://www.solidjs.com/)
+[![Unit coverage](https://img.shields.io/badge/unit_coverage-99%25-3fb950?style=flat-square)](#development)
+[![Component coverage](https://img.shields.io/badge/component_coverage-71%25-3fb950?style=flat-square)](#development)
+[![Dependencies](https://img.shields.io/badge/dependencies-0-f59e0b?style=flat-square)](#)
+[![License: MIT](https://img.shields.io/badge/License-MIT-64748b?style=flat-square)](./LICENSE)
+
+**[Open the playground →](https://francisdesjardins.ca/playground/antumbra/)**
+
+The graph and the timeline of a real run, four fragments on one page sharing a bootstrap, a
+single-spa host that waits on it, and the generated API reference for all four entry points.
 
 Every front end starts the same way. Validate a token. Check what this user may do. Prefetch the
 configuration and the reference lists the modules will ask for on their first render. Then decide
@@ -312,6 +326,60 @@ yarn verify:all     # everything above plus the build, the package checks and a 
 
 Node 24 or newer, Yarn 4 through Corepack.
 
+**Two coverage numbers, because there are two test projects and neither can measure the other's
+half.** `yarn test:unit:coverage` measures the framework-free core in Node (c8) — **98.8%**
+statements — and its exclude list is the statement of what a Node process can reach, not a way to
+flatter the number. `yarn test:component:coverage` measures what that list leaves out: the three
+bindings, in a real browser (istanbul, opt-in because instrumenting costs a slower run and its own
+dev server) — **70.73%** statements over 31 files. Both measured 2026-09-15, and re-measured together or
+not at all: one number moved without the other is two projects being compared across different days.
+`yarn coverage:update` is that rule made mechanical — it runs both commands and rewrites this
+paragraph and the two badges above in one move. Still a snapshot, not a gate.
+
+## How this repo is run
+
+Friendly warning, so nothing here surprises you: **I commit to `main`.** No release branches, no
+deprecation cycles, and **no semver** — the `1.0.0` in `package.json` is a placeholder, not a
+promise. A name can change between two commits if a better one turns up, and on 2026-09-14 fifteen
+of them did in a single pass.
+
+That is a deliberate trade, not neglect. The library is not published, so nobody's build breaks when
+a name improves; what you get instead is a surface that says what it means. The day I publish, that
+freedom ends and the usual ceremony starts — versions, a migration note per break, the lot. Until
+then the CHANGELOG is the migration guide, organised by date, and it explains _why_ each name moved
+rather than only that it did.
+
+If you have lifted code out of `src/`, pin the commit you took it from.
+
+## On the tooling
+
+**This library was written by Claude, and directed by nearly 30 years of doing it by hand.** Worth
+saying plainly, because the interesting question is not whether an AI can write a bootstrap
+orchestrator — it can write ten before lunch, and nine of them will have `phase` meaning two
+different things in the same snapshot.
+
+The question is whether anyone notices. The rename table in the CHANGELOG is that noticing, written
+down: `RunPhase` → `RunStage`, because `phase` already meant `preflight` or `mounted` and
+`snapshot.phase` was not asking the same question as `step.phase`; `StepOutcome` → `StepStatus`,
+because `Outcome` is the object a run produced and `outcome.timeline[0].outcome` was one noun at
+two ranks; `IntentCollector` → `IntentQueue`, because every line of prose already called it the
+queue. No model asked for one of those.
+
+Nor did one ask for the upward channel to be refused. A "module ready" signal was specified, studied
+and turned down — unbounded growth, nowhere to put its types, and the host already does it better.
+And `Session` is still in the API under a name that collides with what almost every app calls its
+token step, because renaming it is a larger call than the fifteen above and there is no real
+consumer yet to arbitrate it. A model would have renamed it, or not, without noticing there was a
+decision to make.
+
+That is the trade this repo makes visible: the tool is extraordinary at the part that used to be
+slow, and no judge at all of which of its own output is worth keeping. **The taste is still yours to
+supply, and it is still the expensive half.**
+
 ## License
 
-MIT
+[MIT](./LICENSE) © 2026 Francis Desjardins
+
+The source is here to read, copy and learn from. The demo code and the user-land patterns under
+`playground/src/` are meant to be lifted into your own project, which the MIT terms allow without
+attribution or ceremony.
