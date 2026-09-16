@@ -11,6 +11,15 @@ shadows it casts.
 | [`limb`](packages/limb) | the framework-free helpers both playgrounds need and neither owns |
 | [`gnomon`](packages/gnomon) | the gates: the example checker, the coverage instrumenter, the formatter |
 
+| app | what it is |
+| --- | --- |
+| [`home`](apps/home) | francisdesjardins.ca — one page, and the door to the packages above |
+
+`yarn deploy` at this root builds both playgrounds, assembles them under the home at
+`/playground/dialog` and `/playground/boot`, and leaves the Cloudflare zip. **Destinations are
+named after the capability, sources after the package** — a library gets renamed, and these two
+already have; a URL is a promise that should outlive that.
+
 Each name says what its package does, twice over. `umbra` is the root the other two derive from
 (*pen*·umbra, *ant*·umbra), so it names the package the others build on — everything boots. It is
 also the deep cone, the part of the shadow where the source is gone: the dark a bootstrapper works

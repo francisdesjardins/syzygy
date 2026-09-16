@@ -5,6 +5,52 @@ keeps its own `CHANGELOG.md` for changes to itself.
 
 Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No semver.
 
+## 2026-09-16, the site is built here now
+
+### Added
+
+`apps/home` — francisdesjardins.ca's homepage, out of a 250-file scratchpad it had been living in
+and into the repository that holds the libraries it links to. 17 files, the traced closure of the
+one route that is online. Its own [CHANGELOG](apps/home/CHANGELOG.md) carries what moved and why.
+
+`deploy.mjs`, and `yarn deploy` with it. The script that assembled the site used to sit beside the
+three projects rather than inside any of them; it now sits at this root. **Nine steps where there
+were eleven, and the two that went are the whole argument for a monorepo**: the old script ran an
+install per project, because there were three projects.
+
+`apps/*` joins `packages/*` in the workspace list. The distinction it draws is the only one that
+matters here: a package is depended on, an app is deployed.
+
+### The measurement that keeps a vitrine honest
+
+This page is the one thing in the repository with an audience that did not come looking for source
+code, so it got a gate the others do not have. Before a file moved, the live build was fingerprinted
+at 448 lines — the DOM tree with 35 computed properties per element, the whole head, the JSON-LD,
+in four render combinations, plus what both toggles do when clicked.
+
+Every claim below is that diff coming back empty, three separate times: after the move, after the
+toolchain conversion, and measured from inside the deploy zip rather than the tree that made it.
+
+- `tokens.system.css` was a **third** copy of penumbra, identical in every declaration. Now a
+  dependency — the second time that file's own header predicted its own removal and was right.
+- `LocalizationProvider`, `@mui/x-date-pickers` and `date-fns` served fields that do not exist on
+  this page.
+- `react` 19.2.8 → 19.3.0, so the lockfile holds one React and not one per app.
+
+### Fixed
+
+A latent defect in `useDocumentHead`, found by pointing the type-aware lint at code it had never
+seen: `querySelector(…) as HTMLMetaElement` erased the `null` that `querySelector` actually
+returns, leaving the branch that creates the tag unreachable to the type checker and perfectly
+reachable at run time.
+
+### Removed
+
+stardust's redirect rule. Nothing in this repository can build it, and a rule pointing at a
+directory the deploy never fills does not 404 — it falls through to the SPA and hands the visitor
+the home page under a URL that promised something else. It had been served from an untracked build
+that existed in exactly one working tree.
+
 ## 2026-09-16, limb, and what measuring first removed from it
 
 ### Added
