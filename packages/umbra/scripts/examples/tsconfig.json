@@ -9,7 +9,7 @@
   // app* — strict null checks, exact optional properties, the DOM lib, `jsx: react-jsx` — is
   // kept exactly as the library has it.
   //
-  // Generated inputs come from `scripts/check-examples.mjs`; `generated/` is not committed.
+  // Generated inputs come from `gnomon-examples`; `generated/` is not committed.
   "compilerOptions": {
     "target": "ES2024",
     "lib": ["ES2024", "DOM", "DOM.Iterable"],

@@ -252,7 +252,7 @@
       }
     },
     {
-      // JSDoc `@example` blocks, extracted by `scripts/check-examples.mjs`. A doc example is code a
+      // JSDoc `@example` blocks, extracted by `gnomon-examples`. A doc example is code a
       // reader copies, so it is linted — but as a snippet: it shows a call and stops, leaves
       // bindings unread, and leans on `declare`d `any` stand-ins for the app around it. It also
       // uses concise arrows on purpose, which is the opposite of what the library asks. What stays

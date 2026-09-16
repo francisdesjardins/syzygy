@@ -508,7 +508,7 @@ choice is in [typedoc.json](../typedoc.json) with its reason.
 
 **`yarn docs:examples` holds the `@example` blocks to the same gates as the code** — oxfmt,
 `tsc`, oxlint — by extracting each to a real module under `scripts/examples/generated/`;
-[the script](../scripts/check-examples.mjs) carries the two non-obvious parts.
+[the script](../../gnomon/check-examples.mjs) carries the two non-obvious parts.
 
 **A new root export needs a `CATEGORIES` entry** in
 [api-model.ts](../playground/vite-plugins/api-model.ts) or the playground's `/api` answers 500 —

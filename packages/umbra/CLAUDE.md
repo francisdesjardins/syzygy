@@ -33,7 +33,7 @@ both quote styles now, and why every negative assertion in this repo has a posit
 ## Commands
 
 ```bash
-yarn install         # Yarn 4 through Corepack
+yarn install         # from the repository root; Yarn 4 is vendored in .yarn/releases
 yarn dev             # the playground on :3000
 yarn build           # ESM bundle (Vite) + .d.ts (tsc)
 yarn type-check      # library, playground and type fixtures
@@ -265,16 +265,17 @@ than `Pick`, which collapses to `{}` while the registry is still empty.
 
 ## Environment
 
-Node >= 24, **Yarn 4** through Corepack, ES2024, ESNext modules, Vite 8.
+Node >= 24, **Yarn 4** vendored in the repository root, ES2024, ESNext modules, Vite 8.
 
 **TypeScript 7, and nothing beside it in the lint path**: every `tsc` call in `scripts` is
 `node node_modules/typescript-7/bin/tsc`, and `oxlint --type-aware` runs its type-aware half through
 tsgolint, built on the same compiler. The bare `typescript` 6.0.3 is typedoc's, which peers on
 `6.0.x`, and the editor's, since `typescript-7/lib` ships no `tsserver.js`.
 
-**Yarn workspaces**: two packages, `umbra` (root, published) and `umbra-playground`
-(`playground/`, private). The published dependency list is the root manifest, whose `dependencies`
-stay empty — anything the demo needs belongs in `playground/package.json`.
+**Yarn workspaces**: this package and `umbra-playground` (`playground/`, private) are two of the
+monorepo’s workspaces, installed by one `yarn install` at its root. The published dependency list is
+this manifest, whose `dependencies` stay empty — anything the demo needs belongs in
+`playground/package.json`.
 
 ## The playground
 
@@ -292,9 +293,9 @@ playground/src/
   shared/     lib/ and ui/, the pieces with no page of their own
 ```
 
-**Two stylesheets, and the split is the point.** `tokens.system.css` carries what a second project
-could take unchanged — spacing, radii, shadows, type scale. `tokens.skin.css` carries what it would
-rewrite: colour and typeface. `scripts/check-contrast.mjs` measures 32 token pairs across both
+**Two stylesheets, and the split is the point.** The `penumbra` package carries what a second
+project takes unchanged — spacing, radii, shadows, type scale. `tokens.skin.css` here carries what
+it would rewrite: colour and typeface. `scripts/check-contrast.mjs` measures 32 token pairs across both
 schemes, so a palette edit that fails WCAG AA fails `yarn check` rather than review.
 
 **Every example is a card with a `codeKey`**, and one dialog in the layout shows the source. A dialog

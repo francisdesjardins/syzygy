@@ -7,19 +7,39 @@
 // `api`), the second declares them `any`, so what remains is misuse of *this library*.
 //
 // Usage:
-//   node scripts/check-examples.mjs          # check (exit 1 on any failure)
-//   node scripts/check-examples.mjs --fix    # rewrite examples through the formatter, then check
-//   node scripts/check-examples.mjs --keep   # leave the generated modules for inspection
+//   gnomon-examples          # check (exit 1 on any failure)
+//   gnomon-examples --fix    # rewrite examples through the formatter, then check
+//   gnomon-examples --keep   # leave the generated modules for inspection
 
 import { execFileSync } from 'node:child_process';
 import { mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { formatAs } from './oxfmt.mjs';
 
-const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+/*
+ * Everything is read from the package the command was run in. This file lives in a package of its
+ * own, so its own location says nothing about whose examples are being checked.
+ *
+ * The bindings are derived from that package's `exports` rather than listed here. Listed, they were
+ * the one thing that differed between the two copies of this script — one library ends its plain
+ * entry `/plain`, the other `/vanilla` — and a list nobody updates is how an entry point stops
+ * being checked without anything going red.
+ */
+const ROOT = process.cwd();
 const SRC = join(ROOT, 'src');
 const EXAMPLES_DIR = join(ROOT, 'scripts', 'examples');
+const PKG = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8'));
+const NAME = PKG.name;
+
+/** `{ specifier: 'lib/react', source: 'react.ts' }` for every published subpath. */
+const BINDINGS = Object.keys(PKG.exports ?? {})
+  .filter((subpath) => {
+    return subpath !== '.' && subpath !== './package.json';
+  })
+  .map((subpath) => {
+    const name = subpath.slice(2);
+    return { specifier: `${NAME}/${name}`, source: `${name}.ts` };
+  });
 const GENERATED = join(EXAMPLES_DIR, 'generated');
 
 const FIX = process.argv.includes('--fix');
@@ -208,7 +228,7 @@ function buildModule(example, from) {
   };
 
   // An example that writes its own import is showing the import; do not add a second one.
-  const selfImporting = /from 'umbra/.test(code);
+  const selfImporting = new RegExp(`from '${NAME}`).test(code);
   const values = selfImporting ? [] : used('value');
   const types = selfImporting ? [] : used('type');
   // An ambient declaration is only legal at the top level of a file, so it is never wrapped —
@@ -242,16 +262,16 @@ function buildModule(example, from) {
 
 /**
  * Which entry point an example's file belongs to. The bindings export the same names, so a
- * `src/solid/` example handed `useLookup` from `umbra/react` fails as if it, not this, were wrong.
+ * `src/solid/` example handed `useLookup` from `${NAME}/react` fails as if it, not this, were wrong.
  */
 function specifierFor(file) {
   const path = relative(SRC, file).replaceAll('\\', '/');
   for (const binding of ['solid', 'vanilla']) {
     if (path === `${binding}.ts` || path.startsWith(`${binding}/`)) {
-      return `umbra/${binding}`;
+      return `${NAME}/${binding}`;
     }
   }
-  return 'umbra/react';
+  return `${NAME}/react`;
 }
 
 /** Every public export of one entry point (plus the root it re-exports), by specifier. */
@@ -317,7 +337,7 @@ function assertSpecifiersMapped() {
 
   const missing = Object.keys(published)
     .map((subpath) => {
-      return subpath === '.' ? 'umbra' : `umbra${subpath.slice(1)}`;
+      return subpath === '.' ? NAME : `${NAME}${subpath.slice(1)}`;
     })
     .filter((specifier) => {
       return !mapped.has(specifier);
@@ -433,11 +453,11 @@ function attributeLint(messages, byModule) {
 // ── Main ─────────────────────────────────────────────────────────────────────
 
 const examples = collectExamples();
-const exported = new Map([
-  ['umbra/react', publicExports('react.ts')],
-  ['umbra/solid', publicExports('solid.ts')],
-  ['umbra/plain', publicExports('plain.ts')],
-]);
+const exported = new Map(
+  BINDINGS.map(({ specifier, source }) => {
+    return [specifier, publicExports(source)];
+  })
+);
 examples.forEach((example, index) => {
   example.module = moduleName(example, index);
 });

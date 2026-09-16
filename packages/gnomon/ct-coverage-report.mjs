@@ -3,27 +3,31 @@
  * Merge and report the component project's coverage: `.nyc_output/` holds one Istanbul object per
  * test, keyed by absolute source path, and a statement covered by any test is covered. Not `nyc`,
  * because the counters are already Istanbul-shaped and a report is arithmetic over those maps.
- * Line numbers are the source's own thanks to `scripts/vite-plugin-ct-coverage.mjs`. Failure mode:
- * finding no counters has three causes, printed below rather than left to guesswork.
+ * Line numbers are the source's own thanks to gnomon's instrumenter. Failure mode:
+ * finding no counters has four causes, printed below rather than left to guesswork.
  *
- * Usage: node scripts/ct-coverage-report.mjs [--json <path>]
+ * Usage: gnomon-ct-coverage-report [--json <path>], from the package being measured
  */
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { relative, resolve } from 'node:path';
 
-const ROOT = resolve(import.meta.dirname, '..');
+/* The package being measured is the one the command was run in — this file lives elsewhere. */
+const ROOT = process.cwd();
 const INPUT_DIR = resolve(ROOT, '.nyc_output');
 
 const jsonFlag = process.argv.indexOf('--json');
 const jsonOut = jsonFlag !== -1 ? process.argv[jsonFlag + 1] : null;
 
-/** What "no counters" can mean — the flag is only the first. */
+/** What "no counters" can mean — all four have happened, and the flag is only the first. */
 const NOTHING_WRITTEN = [
   'No component coverage was written. One of:',
   '  · CT_COVERAGE=1 was not set, so nothing instrumented the bundle;',
   '  · the component run reused an already-running, uninstrumented dev server — the coverage run',
   '    takes its own port for exactly this reason, so check nothing else holds it;',
-  "  · scripts/vite-plugin-ct-coverage.mjs matched no files (check its path filter's separators).",
+  '  · the instrumenter changed but playwright/.cache-coverage/ did not — the freshness check',
+  '    walks the component sources, so delete that directory by hand;',
+  "  · the instrumenter's path filter matched no files — check its separators, and that the root",
+  '    it was handed is the library package and not the playground.',
 ].join('\n');
 
 let files;

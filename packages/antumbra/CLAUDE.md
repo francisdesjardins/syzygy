@@ -48,7 +48,7 @@ and `verify:package` re-checks all of it against the built artifact.
 ## Commands
 
 ```bash
-yarn install            # Install dependencies (Yarn 4 via Corepack)
+yarn install            # from the repository root; Yarn 4 is vendored in .yarn/releases
 yarn dev                # Dev server (debug: localStorage.setItem('dialog:log', '*'))
 yarn build              # Build library (ESM bundle + .d.ts via tsc)
 yarn build:types        # Declarations only (tsc -p tsconfig.build.json)
@@ -129,7 +129,7 @@ artifact nobody opens costs the component job ~45% more runtime. Do not re-add i
 moves under an enterprise **and** something renders the result.
 
 **Every way the CT report has failed has failed quietly**, so each failure mode is documented where
-it bites and `scripts/ct-coverage-report.mjs` prints them all when it finds nothing.
+it bites and gnomon's coverage report prints them all when it finds nothing.
 
 ### Top-layer rule
 
@@ -173,9 +173,9 @@ it bites and `scripts/ct-coverage-report.mjs` prints them all when it finds noth
   `required` rows, asserted by a gate. That inventory cannot see an **option** on a method already
   called, which is why those rows split required from enhancing.
 - **Package manager**: Yarn only — `yarn.lock` is authoritative and `yarn install --immutable` is the CI form. Dependency pins go in `resolutions`; npm's `overrides` is ignored.
-- **Yarn workspaces**: two packages — `antumbra` (root, published) and `antumbra-playground`
-  (`playground/`, private); one `yarn install` at the root installs both. **The published dependency
-  list is the root manifest**, so anything the demo needs belongs in `playground/package.json` and
+- **Yarn workspaces**: this package and `antumbra-playground` (`playground/`, private) are two of
+  the monorepo’s workspaces; one `yarn install` at its root installs everything. **The published
+  dependency list is this manifest**, so anything the demo needs belongs in `playground/package.json` and
   never in the root, whose `dependencies` stay empty. Root `dev`/`playground:*` scripts delegate.
 - **Declarations**: emitted by `tsc -p tsconfig.build.json`, not a Vite plugin, so published types can't drift from what `type-check` validates. **Every relative import in shipped `src/` carries a `.js` extension** (tests are exempt — nothing emits them) — `tsc` copies specifiers into the `.d.ts` verbatim and an extensionless one is invalid on `moduleResolution: node16`/`nodenext`, silently under `skipLibCheck`. `yarn verify:package` fails on any that slip through.
 - **TypeScript 7, and nothing beside it in the lint path**: every `tsc` call in `scripts` is

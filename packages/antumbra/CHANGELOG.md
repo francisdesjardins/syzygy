@@ -10,6 +10,26 @@ its own past is a story, not a record. The package has been renamed twice, so ol
 by older names: `@yourorg/dialog` before 2026-08-04, then `umbra` until 2026-09-15. It is
 `antumbra` now.
 
+## 2026-09-16
+
+### Changed — the gates moved to gnomon
+
+`scripts/` lost six files to the `gnomon` package: the example checker, the coverage instrumenter
+and report, the reset step, and the formatter wrapper. `node scripts/check-examples.mjs` is
+`gnomon-examples`; `node scripts/ct-coverage-report.mjs` is `gnomon-ct-coverage-report`; the two
+modules a config imports come from `gnomon/vite-plugin-ct-coverage` and `gnomon/ct-coverage-reset`.
+
+The example checker no longer names this package's entry points. It reads them from `exports`, which
+is where they were already declared — and that hand-written list was the only real difference
+between the two copies of the script, one library ending its plain entry `/plain` and this one
+`/vanilla`. A list nobody updates is an entry point that stops being checked with nothing going red.
+
+The component coverage is unchanged and was checked rather than assumed: **92.14%, 1712/1858
+statements**, the same number this file has carried since 2026-09-14.
+
+`oxfmt` moved from 0.67.0 to 0.68.0, so the formatter behind the example gate and the one behind
+`format:check` are the same one.
+
 ## 2026-09-15
 
 ### Changed — the package is called `antumbra`

@@ -5,6 +5,38 @@ keeps its own `CHANGELOG.md` for changes to itself.
 
 Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No semver.
 
+## 2026-09-16, gnomon takes the gates
+
+### Added
+
+`packages/gnomon` — 891 lines of tooling that existed twice, one copy per library: the JSDoc example
+checker, the component-coverage instrumenter and its report, the reset step, and the formatter every
+generator shares. Private; it exists to be depended on here.
+
+Two of the divergences between the copies were not cosmetic, and both are the argument for the
+package rather than against it. **The formatter had a fix on one side only** — raising on a parse
+error rather than returning the text unchanged, without which the example checker reads an
+unparsable example as one that needed no formatting. **The two coverage reports listed different
+causes** for finding no counters, each written by whoever hit that particular failure in the copy
+they happened to be working in. The merged list carries four.
+
+### Changed — the tools read the package that ran them
+
+Nothing in gnomon resolves paths against its own location. `process.cwd()` is the package being
+checked, its `package.json` names the library, and its `exports` say which entry points exist —
+which retires the one hand-written list that actually differed between the two copies.
+
+The instrumenter is the exception and takes its root as an argument, because only the caller knows
+it. Its plugin type comes from the caller too: installing vite in gnomon would put a second copy
+beside each library's own, and two structurally identical `Plugin` types are not assignable to each
+other — the same trap that set this repository's hoisting boundary.
+
+### Fixed
+
+A pre-existing lint warning in the dialog manager's story-id generator, surfaced when the move
+invalidated oxlint's cache: `.sort()` on `(string | undefined)[]` with no comparator. It sorted by
+UTF-16 code unit, which put every capitalised harness ahead of every lowercase one.
+
 ## 2026-09-15, umbra and antumbra trade names
 
 ### Changed

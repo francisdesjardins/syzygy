@@ -54,7 +54,7 @@ const needsServer =
 export default defineConfig({
   testDir: './',
   // Empties `.nyc_output/` before any worker writes into it, and only when coverage is on.
-  globalSetup: './scripts/ct-coverage-reset.mjs',
+  globalSetup: 'gnomon/ct-coverage-reset',
   fullyParallel: true,
   forbidOnly: IS_CI,
   retries: IS_CI ? 2 : 0,

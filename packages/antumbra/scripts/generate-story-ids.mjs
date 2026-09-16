@@ -50,11 +50,21 @@ const posixify = (file) => {
 
 /** Every exported harness in a file, sorted, so a regenerate is a no-op when nothing moved. */
 const harnessesIn = (file) => {
-  return [...readFileSync(resolve(ROOT, file), 'utf8').matchAll(EXPORTED)]
-    .map((match) => {
-      return match[1];
-    })
-    .sort();
+  return (
+    [...readFileSync(resolve(ROOT, file), 'utf8').matchAll(EXPORTED)]
+      .map((match) => {
+        return match[1];
+      })
+      .filter((name) => {
+        return name !== undefined;
+      })
+      // Named, not defaulted: the default comparator sorts by UTF-16 code unit, which puts every
+      // capitalised harness ahead of every lowercase one and makes the regenerate order depend on
+      // how a file happened to name its exports.
+      .sort((a, b) => {
+        return a.localeCompare(b);
+      })
+  );
 };
 
 const loaders = [];

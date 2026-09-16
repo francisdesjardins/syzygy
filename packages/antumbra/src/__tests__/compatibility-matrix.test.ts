@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { expect, test } from '@playwright/test';
-import { formatAs } from '../../scripts/oxfmt.mjs';
+import { formatAs } from 'gnomon/oxfmt';
 import {
   BINDING_ROWS,
   FLOOR_ROWS,

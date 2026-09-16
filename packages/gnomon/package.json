@@ -1,0 +1,45 @@
+{
+  "name": "gnomon",
+  "version": "1.0.0",
+  "private": true,
+  "description": "The gates: the JSDoc example checker, the component-coverage instrumenter and its report, and the formatter every generator shares.",
+  "license": "MIT",
+  "author": "Francis Desjardins <francis.desjardins@gmail.com>",
+  "type": "module",
+  "exports": {
+    "./oxfmt": {
+      "types": "./oxfmt.d.mts",
+      "default": "./oxfmt.mjs"
+    },
+    "./vite-plugin-ct-coverage": {
+      "types": "./vite-plugin-ct-coverage.d.mts",
+      "default": "./vite-plugin-ct-coverage.mjs"
+    },
+    "./ct-coverage-reset": "./ct-coverage-reset.mjs",
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "gnomon-ct-coverage-report": "./ct-coverage-report.mjs",
+    "gnomon-examples": "./check-examples.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/francisdesjardins/syzygy.git",
+    "directory": "packages/gnomon"
+  },
+  "dependencies": {
+    "istanbul-lib-instrument": "^6.0.3",
+    "oxfmt": "0.68.0"
+  },
+  "peerDependencies": {
+    "vite": "^8.0.0"
+  },
+  "peerDependenciesMeta": {
+    "vite": {
+      "optional": true
+    }
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}

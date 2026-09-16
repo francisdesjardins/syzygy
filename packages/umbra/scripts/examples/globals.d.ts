@@ -18,7 +18,7 @@
  * registry read exactly as untyped as it was before this file existed.
  *
  * Not shipped and not imported by anything — it exists only in the compilation that
- * `scripts/check-examples.mjs` sets up.
+ * `gnomon-examples` sets up.
  */
 export {};
 

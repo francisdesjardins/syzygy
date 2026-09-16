@@ -10,7 +10,7 @@ import { execSync } from 'node:child_process';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { formatAs } from './oxfmt.mjs';
+import { formatAs } from 'gnomon/oxfmt';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 

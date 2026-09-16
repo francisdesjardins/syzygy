@@ -6,7 +6,7 @@ import { defineConfig, type Plugin } from 'vite';
 // specifier as written, and `allowImportingTsExtensions` is what makes the compiler agree.
 import { apiModelPlugin } from './vite-plugins/api-model.ts';
 import { mfeAntumbraPlugin } from './vite-plugins/mfe-antumbra.ts';
-import { ctCoverage } from '../scripts/vite-plugin-ct-coverage.mjs';
+import { ctCoverage } from 'gnomon/vite-plugin-ct-coverage';
 
 // Set VITE_HASH_ROUTER=true to build for file:// (no server needed)
 const hashRouter = process.env['VITE_HASH_ROUTER'] === 'true';
@@ -22,7 +22,9 @@ const hashRouter = process.env['VITE_HASH_ROUTER'] === 'true';
  * the instrumenter needs the file as written for its counters to land on source lines.
  */
 const withCoverage = process.env['CT_COVERAGE'] === '1';
-const coveragePlugins: Plugin[] = withCoverage ? [ctCoverage()] : [];
+const coveragePlugins: Plugin[] = withCoverage
+  ? [ctCoverage({ root: resolve(import.meta.dirname, '..') })]
+  : [];
 
 export default defineConfig({
   base: hashRouter ? './' : '/',

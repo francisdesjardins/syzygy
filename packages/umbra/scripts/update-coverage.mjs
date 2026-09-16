@@ -12,7 +12,7 @@
 import { execSync } from 'node:child_process';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { formatAs } from './oxfmt.mjs';
+import { formatAs } from 'gnomon/oxfmt';
 
 const ROOT = resolve(import.meta.dirname, '..');
 

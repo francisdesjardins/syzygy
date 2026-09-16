@@ -3,6 +3,30 @@
 Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No semver: names change
 between commits when a better one shows up, and the entry says which and why.
 
+## 2026-09-16, the gates moved to gnomon
+
+### Changed
+
+`scripts/` lost six files to the `gnomon` package: the example checker, the coverage instrumenter
+and report, the reset step, and the formatter wrapper. They ran from `node scripts/…`; they run as
+`gnomon-examples` and `gnomon-ct-coverage-report` now, and the two modules a config imports come
+from `gnomon/vite-plugin-ct-coverage` and `gnomon/ct-coverage-reset`.
+
+This package got the better half of two divergences it never had. The formatter wrapper now raises
+on a parse error instead of handing back the text it was given — without which the example checker
+reads an unparsable `@example` as one that needed no formatting, silently. And the coverage report's
+"nothing was written" list gained the cause the other library had found.
+
+**The instrumenter takes its root as an argument now.** It used to resolve the library directory
+from its own location, which says nothing once the file lives in another package. `playground/vite.
+config.ts` passes it, and assigns the result to an annotated `Plugin[]` — the plugin's type is
+inferred from the position the call sits in, so a bare spread into an array literal has no position
+and arrives as `unknown`.
+
+`oxfmt` moved to 0.68.0 to match. The gate that formats examples and the gate that checks the tree
+have to be the same formatter, or they eventually disagree about a file neither of them is wrong
+about.
+
 ## 2026-09-15, the package is called `umbra`
 
 ### Changed

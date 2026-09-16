@@ -1,5 +1,5 @@
 import { createInstrumenter } from 'istanbul-lib-instrument';
-import { relative, resolve } from 'node:path';
+import { relative } from 'node:path';
 
 /**
  * Istanbul instrumentation for the component run, applied to the **source** at `enforce: 'pre'`.
@@ -13,10 +13,18 @@ import { relative, resolve } from 'node:path';
  * `src/` — which the playground aliases to `../src` — and not the playground's own, because the
  * harness is the test and not the subject.
  *
- * @param {{ include?: (id: string) => boolean }} [options]
+ * `root` is the library package's directory, and the caller passes it because only the caller can
+ * know it: this file lives in a package of its own, so its own location says nothing about whose
+ * sources are being measured. A wrong root is the quiet failure — the filter matches nothing and
+ * the empty report reads as a forgotten flag.
+ *
+ * @param {{ root: string; include?: (id: string) => boolean }} options
  */
-export const ctCoverage = (options = {}) => {
-  const root = resolve(import.meta.dirname, '..');
+export const ctCoverage = (options) => {
+  const { root } = options;
+  if (typeof root !== 'string') {
+    throw new TypeError('ctCoverage({ root }) needs the library package directory.');
+  }
 
   const shouldInstrument =
     options.include ??
@@ -38,7 +46,7 @@ export const ctCoverage = (options = {}) => {
   });
 
   return {
-    name: 'umbra:ct-coverage',
+    name: 'gnomon:ct-coverage',
     enforce: 'pre',
     transform(code, id) {
       const [path] = id.split('?');

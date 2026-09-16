@@ -12,7 +12,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { renderMatrix, worklist } from '../src/__tests__/compatibility-matrix.ts';
-import { formatAs } from './oxfmt.mjs';
+import { formatAs } from 'gnomon/oxfmt';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const DOC = resolve(ROOT, 'API.md');

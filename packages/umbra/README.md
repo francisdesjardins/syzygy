@@ -12,7 +12,7 @@ No framework in the core, no UI, no dependencies.
 [![Dependencies](https://img.shields.io/badge/dependencies-0-f59e0b?style=flat-square)](#)
 [![License: MIT](https://img.shields.io/badge/License-MIT-64748b?style=flat-square)](./LICENSE)
 
-**[Open the playground →](https://francisdesjardins.ca/playground/umbra/)**
+**[Open the playground →](https://francisdesjardins.ca/playground/boot/)**
 
 The graph and the timeline of a real run, four fragments on one page sharing a bootstrap, a
 single-spa host that waits on it, and the generated API reference for all four entry points.

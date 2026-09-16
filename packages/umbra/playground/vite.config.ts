@@ -1,9 +1,9 @@
 import react from '@vitejs/plugin-react';
 import { resolve } from 'node:path';
-import { defineConfig } from 'vite';
+import { defineConfig, type Plugin } from 'vite';
 import { apiModelPlugin } from './vite-plugins/api-model.js';
 import { mfeUmbraPlugin } from './vite-plugins/mfe-umbra.js';
-import { ctCoverage } from '../scripts/vite-plugin-ct-coverage.mjs';
+import { ctCoverage } from 'gnomon/vite-plugin-ct-coverage';
 
 // Set VITE_HASH_ROUTER=true to build for file:// (no server needed)
 const hashRouter = process.env['VITE_HASH_ROUTER'] === 'true';
@@ -17,17 +17,24 @@ const hashRouter = process.env['VITE_HASH_ROUTER'] === 'true';
  */
 const withCoverage = process.env['CT_COVERAGE'] === '1';
 
+/* Annotated rather than spread inline: gnomon leaves the plugin's type to the caller, so that the
+   instrumenter is typed by *this* project's vite and not a second copy of it. A spread into an
+   array literal gives the call no position to infer from, and the type arrives as `unknown`. */
+const coveragePlugins: Plugin[] = withCoverage
+  ? [ctCoverage({ root: resolve(import.meta.dirname, '..') })]
+  : [];
+
 // The playground consumes the library through its public specifiers, aliased to source. Importing
 // `../src` directly would demo a shape no consumer ever sees.
 export default defineConfig({
-  // Deployed under /playground/umbra/ on the site, and opened straight off the disk otherwise:
+  // Deployed under /playground/boot/ on the site, and opened straight off the disk otherwise:
   // neither has the bundle at the server root, so the asset URLs go relative with the hash router.
   base: hashRouter ? './' : '/',
   // A cache of its own, like the port: Vite's dep optimizer deletes and rewrites this directory at
   // startup, so two servers sharing it hand each other's open pages chunk URLs that no longer exist.
   cacheDir: withCoverage ? 'node_modules/.vite-coverage' : 'node_modules/.vite',
   // The instrumenter goes first: it wants the file as written, so its counters land on source lines.
-  plugins: [...(withCoverage ? [ctCoverage()] : []), react(), mfeUmbraPlugin(), apiModelPlugin()],
+  plugins: [...coveragePlugins, react(), mfeUmbraPlugin(), apiModelPlugin()],
   resolve: {
     // The array form, because the four entry points have to match *exactly*: as bare string keys
     // they match by prefix, so `umbra/react/__tests__/x` would resolve against `react.ts` and

@@ -17,7 +17,7 @@ const IS_CI = Boolean(process.env['CI']);
  * The instrumenter is a plugin in the playground's Vite, switched on by `CT_COVERAGE=1` — so a dev
  * server already up on 3000 was started without it, and reusing that one produces a report with no
  * counters in it at all rather than a low number. That is the quiet failure
- * `scripts/ct-coverage-report.mjs` exists to name, and this is the arrangement that stops it: a
+ * gnomon's coverage report exists to name, and this is the arrangement that stops it: a
  * separate port, never reused, so the two servers cannot be mistaken for each other.
  */
 const PORT = withCoverage ? 3101 : 3000;
@@ -120,7 +120,7 @@ export default defineConfig({
   testIgnore: ['**/.claude/**', '**/node_modules/**'],
   // Empties `.nyc_output/` before any worker writes to it, and only when coverage is on — see the
   // file for why stale counters are worse than missing ones.
-  globalSetup: './scripts/ct-coverage-reset.mjs',
+  globalSetup: 'gnomon/ct-coverage-reset',
   snapshotDir: './__snapshots__',
   // The unit project's budget: pure logic, so 10s is already three orders of magnitude of slack and
   // a test that reaches it is hung rather than slow. The three component projects raise it — see the

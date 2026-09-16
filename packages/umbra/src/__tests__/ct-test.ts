@@ -77,11 +77,11 @@ export const test = base.extend<{
   ],
   /**
    * A CT subject runs in the browser, so c8 has no Node process:
-   * `scripts/vite-plugin-ct-coverage.mjs` instruments the source into the bundle, counters land on
+   * gnomon's instrumenter instruments the source into the bundle, counters land on
    * `window.__coverage__` in that page, and this reads them back before the page closes, writing
    * one file per test to `.nyc_output/` for the report step to merge. Inert without
    * `CT_COVERAGE=1`. Counters carry *source* line numbers, which that plugin exists to arrange.
-   * `.nyc_output/` is emptied per run by `scripts/ct-coverage-reset.mjs`, since a file outliving
+   * `.nyc_output/` is emptied per run by gnomon's reset step, since a file outliving
    * its run merges into the next report.
    */
   coverage: [
