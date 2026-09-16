@@ -7,15 +7,17 @@ shadows it casts.
 | --- | --- |
 | [`umbra`](packages/umbra) | a headless dialog manager on the native `<dialog>` top layer |
 | [`antumbra`](packages/antumbra) | a framework-free bootstrap orchestrator over a declared step graph |
+| [`penumbra`](packages/penumbra) | the portable half of a design system: no colour, no typeface |
 
 > **The two names are about to trade places.** `umbra` is the root the other names derive from
 > (*pen*·umbra, *ant*·umbra), so it should name the package the others build on — the bootstrapper.
 > And *ante umbra*, "in front of the shadow", describes the top layer a modal `<dialog>` renders
 > into. The swap is a planned step, not a mistake in this table.
 
-`penumbra` — the design tokens both playgrounds already share — has no directory yet. It is the
-first thing this repo exists to extract: today it lives as a file copied into both playgrounds,
-which have already drifted apart on 6 of its 93 lines.
+Two more are planned, and the rule for naming them is the rule above: one word from the same family,
+describing what the package does. `limb` — the apparent edge of a disc, what an observer actually
+sees of a body — for the playground shell both playgrounds render. `gnomon` — the rod of a sundial,
+the instrument by which a shadow is measured — for the gates.
 
 ## Getting started
 
@@ -59,13 +61,16 @@ from before the move needs the tag.
 ## Layout
 
 ```
-packages/     the libraries
-internal/     shared code that is never published
+packages/     every library, published or not
 apps/         the playgrounds, and the site's front page
 ```
 
-`internal/` and `apps/` do not exist yet. They arrive as the duplication between the two
-playgrounds — 28 byte-identical files, 2007 lines — is lifted out of them one extraction at a time.
+`packages/` is flat and every directory in it is one word from the same family. Whether a package
+ships is `private: true` in its manifest, not a level of the tree — a shared internal utility is
+still a package, and giving it a folder that announces its privacy buys nothing.
+
+`apps/` does not exist yet. It arrives as the duplication between the two playgrounds — 28
+byte-identical files, 2007 lines — is lifted out of them one extraction at a time.
 
 ## AI involvement
 
