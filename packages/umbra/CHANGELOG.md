@@ -9,6 +9,31 @@ behind a decision lives here and nowhere else. Entries are left as written — a
 its own past is a story, not a record. (Which is why entries before 2026-08-04 still name the
 package `@yourorg/dialog`; it is `umbra` now.)
 
+## 2026-09-15
+
+### Changed — the system half of the tokens is a dependency, not a copy
+
+`playground/src/app/styles/tokens.system.css` is gone. `app.css` imports
+`penumbra/tokens.system.css` instead, and the `penumbra` workspace owns the file.
+
+The header of that file had said for months that it was meant to travel unchanged and that the two
+copies would collapse the day these projects shared a repository. They now do. The substance had
+not drifted — across 93 lines not one declaration differed from antumbra's copy — but nothing was
+keeping it that way except somebody noticing.
+
+`tokens.skin.css` stays exactly where it is. That file is this project's palette and typefaces, it
+is _supposed_ to differ from the other project's, and sharing it would defeat the split.
+
+### Removed — one test, to where it can guard both consumers
+
+`design-system-layering.test.ts` no longer asserts that the system half carries no colour and no
+typeface; `penumbra`'s own `yarn check` does. A rule about a shared file, enforced from inside one
+consumer, leaves every other consumer unguarded — which was literally the case: the sibling
+playground imported the same sheet and had no such test at all.
+
+The two checks that remain there are genuinely this playground's — the copyable templates that must
+not reach for a shell token, and the transitions that must not interpolate theme-sensitive ink.
+
 ## 2026-09-14
 
 ### Changed — one formatter, and it is oxfmt

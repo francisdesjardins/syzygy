@@ -1,0 +1,36 @@
+{
+  "name": "penumbra",
+  "version": "1.0.0",
+  "description": "The portable half of a design system: scale, rhythm, motion and stacking, with no colour and no typeface in it.",
+  "license": "MIT",
+  "author": "Francis Desjardins <francis.desjardins@gmail.com>",
+  "type": "module",
+  "sideEffects": [
+    "*.css"
+  ],
+  "files": [
+    "tokens.system.css"
+  ],
+  "exports": {
+    "./tokens.system.css": "./tokens.system.css",
+    "./package.json": "./package.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/francisdesjardins/syzygy.git",
+    "directory": "packages/penumbra"
+  },
+  "keywords": [
+    "css",
+    "custom-properties",
+    "design-system",
+    "design-tokens",
+    "theming"
+  ],
+  "scripts": {
+    "check": "node scripts/check-tokens.mjs"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}

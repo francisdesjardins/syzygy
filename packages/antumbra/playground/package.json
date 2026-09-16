@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@tanstack/react-router": "^1.170.36",
+    "penumbra": "workspace:^",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "react-syntax-highlighter": "^16.1.1",

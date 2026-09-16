@@ -58,30 +58,7 @@ test('the copyable templates depend on no shell token', () => {
   ).toEqual([]);
 });
 
-test('the system half of the token sheet carries no colour and no typeface', () => {
-  const system = readFileSync(join(root, 'app', 'styles', 'tokens.system.css'), 'utf8');
-  // Comments are prose and may name anything; only declarations are the contract.
-  const declarations = system
-    .replace(/\/\*[\s\S]*?\*\//g, '')
-    .split('\n')
-    .filter((line) => {
-      return line.includes(':') && line.includes('--app-');
-    });
-
-  const coloured = declarations.filter((line) => {
-    return /#[0-9a-fA-F]{3,8}\b|\brgba?\(|\bhsla?\(|\boklch\(|\bcolor-mix\(/.test(line);
-  });
-  expect(
-    coloured,
-    'A colour in tokens.system.css means the base has stopped being portable — it belongs in ' +
-      'tokens.skin.css, the file another project rewrites.'
-  ).toEqual([]);
-
-  const typefaced = declarations.filter((line) => {
-    return /font-family|--app-font-/.test(line);
-  });
-  expect(typefaced, 'Typefaces are skin, not system.').toEqual([]);
-});
+/* The system half's own rule is enforced where that file lives: `penumbra`'s `yarn check`. */
 
 test('nothing transitions a theme-sensitive colour', () => {
   /**

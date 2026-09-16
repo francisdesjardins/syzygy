@@ -6,7 +6,7 @@
  */
 
 @import './fonts.css';
-@import './tokens.system.css';
+@import 'penumbra/tokens.system.css';
 @import './tokens.skin.css';
 
 *,

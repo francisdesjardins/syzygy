@@ -3,6 +3,27 @@
 Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No semver: names change
 between commits when a better one shows up, and the entry says which and why.
 
+## 2026-09-15, the tokens the two projects share now have an owner
+
+### Changed
+
+`playground/src/app/styles/tokens.system.css` is gone. `app.css` imports
+`penumbra/tokens.system.css` instead.
+
+This copy was the better-worded of the two — its header carried four extra lines explaining what the
+split is for and predicting that the copies would collapse once these projects shared a repository.
+That header is why the two files differed at all: across 93 lines, no declaration differed. The
+prose was right and it is now unnecessary, so the package keeps the rule and drops the prediction.
+
+`tokens.skin.css` stays. The ring-and-gold palette is this project's and is meant to look nothing
+like the sibling's corona; sharing it would defeat the split it belongs to.
+
+### Added, indirectly
+
+A guard this project never had. The rule "no colour and no typeface in the system half" was enforced
+by a test inside the _other_ playground, so this one imported the same sheet with nothing checking
+it. `penumbra`'s `yarn check` now covers both, and runs from the root `yarn check`.
+
 ## 2026-09-15, a scope that does not name a browser
 
 ### Changed

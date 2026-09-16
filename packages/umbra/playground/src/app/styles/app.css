@@ -1,12 +1,13 @@
 /**
  * The app's global sheet: the two token files, then the baseline rules that belong to no
- * component. The tokens are split so the base can travel — `tokens.system.css` is scale, motion
- * and stacking with no brand in it, `tokens.skin.css` is the palette and the typefaces, and
- * porting Penumbra to another project means copying the first and rewriting the second.
+ * component. The tokens are split so the base can travel — scale, motion and stacking with no
+ * brand in them come from the `penumbra` package, and `tokens.skin.css` beside this file is the
+ * palette and the typefaces, written for this project and nobody else's. Porting Penumbra means
+ * depending on the package and writing a skin, not copying a file.
  */
 
 @import './fonts.css';
-@import './tokens.system.css';
+@import 'penumbra/tokens.system.css';
 @import './tokens.skin.css';
 
 /* ========== Baseline ========== */

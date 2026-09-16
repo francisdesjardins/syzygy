@@ -2,9 +2,9 @@
  * Penumbra — the system half of the design system.
  *
  * Scale, rhythm, motion and stacking. **No colour and no typeface live here**, which is the whole
- * point: this file is lifted into another project unchanged, and `tokens.skin.css` beside it is
- * the one that gets rewritten. If a `#hex` or a font name ever appears below, the split has
- * failed and the file has stopped being portable.
+ * point: consumers import this file unchanged and write their own skin beside it. Anything that
+ * would need changing here belongs in that skin. If a `#hex` or a font name appears below, the
+ * split has failed and the file has stopped being portable — `yarn check` refuses it.
  *
  * A component asks for a step, never a pixel count. An off-scale literal must carry a comment
  * saying why it is off-scale — a measured geometry, a UA constant.
