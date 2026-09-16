@@ -1,0 +1,30 @@
+/* Off-scale numbers are MUI's rendered half-steps: 0.6875rem is the 11px spec text, 6px the
+   0.75 spacing step, 3px the 0.75 radius step. No `opacity` anywhere: it multiplies the
+   contrast just measured — a dimmer tone instead. */
+.badge {
+  flex-shrink: 0;
+  padding: 0 6px;
+  border: 1px solid currentColor;
+  border-radius: 3px;
+  font-family: monospace;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.6;
+}
+
+/* The readable end of each tone, per mode: a palette `main` is a background for its ink, and as
+   11px page text amber measures 3.19:1 on white — so the amber tone is the accent token, which
+   already picks the deep end in light and the bright end in dark. */
+.primary {
+  color: var(--app-accent);
+}
+
+.neutral {
+  color: var(--app-text-secondary);
+}
+
+/* The semantic ink, which flips per mode on its own. */
+.success {
+  color: var(--app-ok);
+}

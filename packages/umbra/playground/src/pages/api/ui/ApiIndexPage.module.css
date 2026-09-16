@@ -1,0 +1,122 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-8);
+}
+
+.intro {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-3);
+}
+
+/* A mono eyebrow. Its breathing room is `.intro`'s flex gap, not leading — which is why this one
+   survived the ramp change that left the homepage's overline sitting on its code block. */
+.overline {
+  color: var(--app-text-tertiary);
+  font-family: var(--app-font-mono);
+  font-size: var(--app-text-xs);
+  font-weight: 500;
+  letter-spacing: var(--app-tracking-label);
+  line-height: var(--app-lh-snug);
+  text-transform: uppercase;
+}
+
+.introBody {
+  max-width: var(--app-measure);
+  margin: 0;
+  color: var(--app-text-secondary);
+  font-size: var(--app-text-md);
+  line-height: var(--app-lh-body);
+}
+
+.cardLink {
+  display: block;
+}
+
+/* CardContent's rendered numbers: 16px, with its own `:last-child` 24px bottom. */
+.cardContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-2);
+  height: 100%;
+  padding: var(--app-space-4);
+  padding-bottom: var(--app-space-6);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: baseline;
+  gap: var(--app-space-2);
+}
+
+/* h3, body face — see StoryCard: the global heading rule reaches h3. */
+.cardTitle {
+  font-family: var(--app-font-body);
+  flex: 1;
+  margin: 0;
+  color: var(--app-text);
+  font-size: var(--app-text-base);
+  font-weight: 700;
+  line-height: var(--app-lh-relaxed);
+}
+
+.count {
+  color: var(--app-text-tertiary);
+  font-size: var(--app-text-xs);
+  line-height: var(--app-lh-body);
+}
+
+.blurb {
+  flex: 1;
+  margin: 0;
+  color: var(--app-text-secondary);
+  font-size: var(--app-text-md);
+  line-height: var(--app-lh-body);
+}
+
+.symbolPreview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--app-space-1);
+  margin-top: var(--app-space-1);
+}
+
+.symbolPreviewName {
+  color: var(--app-text-tertiary);
+  font-family: monospace;
+  font-size: var(--app-text-xs);
+  line-height: var(--app-lh-body);
+}
+
+.startRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--app-space-2);
+}
+
+/* 6px/10px: MUI's 0.75 and 1.25 spacing half-steps, kept at their rendered numbers. The `a.`
+   weight outranks RouterLink's reset whatever the modules' injection order. */
+a.startChip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid var(--app-divider);
+  border-radius: var(--app-radius-md);
+  color: var(--app-text);
+  font-family: monospace;
+  font-size: var(--app-text-sm);
+  transition: all 200ms var(--app-ease);
+}
+
+/* As rendered: the hover pair is the amber fill as border and text — a hover-only accent on a
+   chip whose resting colours carry the reading. */
+a.startChip:hover {
+  border-color: var(--app-flame);
+  color: var(--app-flame);
+}
+
+.startSpecifier {
+  color: var(--app-text-tertiary);
+}

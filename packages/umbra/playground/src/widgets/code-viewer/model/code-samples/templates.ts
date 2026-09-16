@@ -1,0 +1,127 @@
+/**
+ * The copy-paste catalogue behind `/ui-templates`: both template flavours, the playground's shared
+ * components, and the `shared/lib` patterns the Shared tab lists. Split off — see `codeSamples.ts`.
+ */
+import templateUtilScrollRegionSrc from '@/entities/dialog-template/ui/shared/scroll-region.ts?raw';
+import templateUtilTokensSrc from '@/entities/dialog-template/ui/shared/tokens.ts?raw';
+import vanillaFormContentSrc from '@/entities/dialog-template/ui/vanilla/form-dialog/components/Content.tsx?raw';
+import vanillaFormFooterSrc from '@/entities/dialog-template/ui/vanilla/form-dialog/components/Footer.tsx?raw';
+import vanillaFormHeaderSrc from '@/entities/dialog-template/ui/vanilla/form-dialog/components/Header.tsx?raw';
+import vanillaFormButtonContainerSrc from '@/entities/dialog-template/ui/vanilla/form-dialog/components/VanillaButtonContainer.tsx?raw';
+import vanillaFormFieldErrorSrc from '@/entities/dialog-template/ui/vanilla/form-dialog/components/VanillaFieldError.tsx?raw';
+import vanillaFormFieldGroupSrc from '@/entities/dialog-template/ui/vanilla/form-dialog/components/VanillaFieldGroup.tsx?raw';
+import vanillaFormLayoutSrc from '@/entities/dialog-template/ui/vanilla/form-dialog/components/VanillaFormLayout.tsx?raw';
+import vanillaFormInputSrc from '@/entities/dialog-template/ui/vanilla/form-dialog/components/VanillaInput.tsx?raw';
+import vanillaFormLabelSrc from '@/entities/dialog-template/ui/vanilla/form-dialog/components/VanillaLabel.tsx?raw';
+import vanillaFormStylesSrc from '@/entities/dialog-template/ui/vanilla/form-dialog/styles.module.css?raw';
+import vanillaMsgContainerSrc from '@/entities/dialog-template/ui/vanilla/message-dialog/components/VanillaContainer.tsx?raw';
+import vanillaMsgContentSrc from '@/entities/dialog-template/ui/vanilla/message-dialog/components/VanillaContent.tsx?raw';
+import vanillaMsgDefaultLayoutSrc from '@/entities/dialog-template/ui/vanilla/message-dialog/components/VanillaDefaultLayout.tsx?raw';
+import vanillaMsgFooterSrc from '@/entities/dialog-template/ui/vanilla/message-dialog/components/VanillaFooter.tsx?raw';
+import vanillaMsgHeaderSrc from '@/entities/dialog-template/ui/vanilla/message-dialog/components/VanillaHeader.tsx?raw';
+import vanillaMsgIconSrc from '@/entities/dialog-template/ui/vanilla/message-dialog/components/VanillaIcon.tsx?raw';
+import vanillaMsgTitleSrc from '@/entities/dialog-template/ui/vanilla/message-dialog/components/VanillaTitle.tsx?raw';
+import vanillaMsgStylesSrc from '@/entities/dialog-template/ui/vanilla/message-dialog/styles.module.css?raw';
+import vanillaPanelHeaderActionLayoutSrc from '@/entities/dialog-template/ui/vanilla/panel-dialog/components/VanillaHeaderActionLayout.tsx?raw';
+import vanillaPanelPanelContainerSrc from '@/entities/dialog-template/ui/vanilla/panel-dialog/components/VanillaPanelContainer.tsx?raw';
+import vanillaPanelPanelContentSrc from '@/entities/dialog-template/ui/vanilla/panel-dialog/components/VanillaPanelContent.tsx?raw';
+import vanillaPanelDividerSrc from '@/entities/dialog-template/ui/vanilla/panel-dialog/components/VanillaPanelDivider.tsx?raw';
+import vanillaPanelPanelFooterSrc from '@/entities/dialog-template/ui/vanilla/panel-dialog/components/VanillaPanelFooter.tsx?raw';
+import vanillaPanelPanelHeaderSrc from '@/entities/dialog-template/ui/vanilla/panel-dialog/components/VanillaPanelHeader.tsx?raw';
+import vanillaPanelStylesSrc from '@/entities/dialog-template/ui/vanilla/panel-dialog/styles.module.css?raw';
+import vanillaSharedButtonRowStylesSrc from '@/entities/dialog-template/ui/vanilla/shared/ButtonRow.module.css?raw';
+import vanillaSharedButtonRowSrc from '@/entities/dialog-template/ui/vanilla/shared/ButtonRow.tsx?raw';
+import vanillaSharedAlertSrc from '@/entities/dialog-template/ui/vanilla/shared/content/AlertContent.tsx?raw';
+import vanillaSharedContentTransitionSrc from '@/entities/dialog-template/ui/vanilla/shared/content/ContentTransition.tsx?raw';
+import vanillaSharedDetailSrc from '@/entities/dialog-template/ui/vanilla/shared/content/Detail.tsx?raw';
+import vanillaSharedHeadingSrc from '@/entities/dialog-template/ui/vanilla/shared/content/Heading.tsx?raw';
+import vanillaSharedHintSrc from '@/entities/dialog-template/ui/vanilla/shared/content/Hint.tsx?raw';
+import vanillaSharedMessageSrc from '@/entities/dialog-template/ui/vanilla/shared/content/Message.tsx?raw';
+import vanillaSharedOverflowContainerSrc from '@/entities/dialog-template/ui/vanilla/shared/content/OverflowContainer.tsx?raw';
+import vanillaSharedOverflownTypographySrc from '@/entities/dialog-template/ui/vanilla/shared/content/OverflownTypography.tsx?raw';
+import vanillaSharedStylesSrc from '@/entities/dialog-template/ui/vanilla/shared/content/styles.module.css?raw';
+import vanillaSharedButtonSrc from '@/entities/dialog-template/ui/vanilla/shared/VanillaButton.tsx?raw';
+import vanillaSharedIconButtonSrc from '@/entities/dialog-template/ui/vanilla/shared/VanillaIconButton.tsx?raw';
+import vanillaSlideButtonContainerSrc from '@/entities/dialog-template/ui/vanilla/slide-dialog/components/VanillaButtonContainer.tsx?raw';
+import vanillaSlideCheckboxLabelSrc from '@/entities/dialog-template/ui/vanilla/slide-dialog/components/VanillaCheckboxLabel.tsx?raw';
+import vanillaSlideContentSrc from '@/entities/dialog-template/ui/vanilla/slide-dialog/components/VanillaContent.tsx?raw';
+import vanillaSlideDefaultLayoutSrc from '@/entities/dialog-template/ui/vanilla/slide-dialog/components/VanillaDefaultLayout.tsx?raw';
+import vanillaSlideFooterSrc from '@/entities/dialog-template/ui/vanilla/slide-dialog/components/VanillaFooter.tsx?raw';
+import vanillaSlideHeaderSrc from '@/entities/dialog-template/ui/vanilla/slide-dialog/components/VanillaHeader.tsx?raw';
+import vanillaSlideSectionGroupSrc from '@/entities/dialog-template/ui/vanilla/slide-dialog/components/VanillaSectionGroup.tsx?raw';
+import vanillaSlideTitleSrc from '@/entities/dialog-template/ui/vanilla/slide-dialog/components/VanillaTitle.tsx?raw';
+import vanillaSlideStylesSrc from '@/entities/dialog-template/ui/vanilla/slide-dialog/styles.module.css?raw';
+import sharedLibAsyncStateSrc from '@/shared/lib/async-state.ts?raw';
+import sharedLibImmerStoreSrc from '@/shared/lib/immer-store.ts?raw';
+import sharedLibMutexSrc from '@/shared/lib/mutex.ts?raw';
+import sharedLibSafeAwaitSrc from '@/shared/lib/safe-await.ts?raw';
+import sharedLibSingleFlightSrc from '@/shared/lib/single-flight.ts?raw';
+import sharedLibUseAnnouncerSrc from '@/shared/lib/use-announcer.tsx?raw';
+import sharedLibUseFormSrc from '@/shared/lib/use-form.ts?raw';
+import sharedLibUseQuerySrc from '@/shared/lib/use-query.ts?raw';
+import sharedComponentCodeBlockSrc from '@/shared/ui/CodeBlock/CodeBlock.tsx?raw';
+import sharedComponentResultDisplaySrc from '@/shared/ui/ResultDisplay/ResultDisplay.tsx?raw';
+import sharedComponentViewCodeButtonSrc from '@/shared/ui/ViewCodeButton/ViewCodeButton.tsx?raw';
+
+export const templates: Record<string, string> = {
+  'template-util-scroll-region': templateUtilScrollRegionSrc,
+  'template-util-tokens': templateUtilTokensSrc,
+  'vanilla-msg-default-layout': vanillaMsgDefaultLayoutSrc,
+  'vanilla-msg-container': vanillaMsgContainerSrc,
+  'vanilla-msg-header': vanillaMsgHeaderSrc,
+  'vanilla-msg-title': vanillaMsgTitleSrc,
+  'vanilla-msg-icon': vanillaMsgIconSrc,
+  'vanilla-msg-content': vanillaMsgContentSrc,
+  'vanilla-msg-footer': vanillaMsgFooterSrc,
+  'vanilla-msg-styles': vanillaMsgStylesSrc,
+  'vanilla-slide-default-layout': vanillaSlideDefaultLayoutSrc,
+  'vanilla-slide-header': vanillaSlideHeaderSrc,
+  'vanilla-slide-title': vanillaSlideTitleSrc,
+  'vanilla-slide-content': vanillaSlideContentSrc,
+  'vanilla-slide-footer': vanillaSlideFooterSrc,
+  'vanilla-slide-button-container': vanillaSlideButtonContainerSrc,
+  'vanilla-slide-checkbox-label': vanillaSlideCheckboxLabelSrc,
+  'vanilla-slide-section-group': vanillaSlideSectionGroupSrc,
+  'vanilla-slide-styles': vanillaSlideStylesSrc,
+  'vanilla-form-layout': vanillaFormLayoutSrc,
+  'vanilla-form-header': vanillaFormHeaderSrc,
+  'vanilla-form-content': vanillaFormContentSrc,
+  'vanilla-form-footer': vanillaFormFooterSrc,
+  'vanilla-form-field-group': vanillaFormFieldGroupSrc,
+  'vanilla-form-field-error': vanillaFormFieldErrorSrc,
+  'vanilla-form-input': vanillaFormInputSrc,
+  'vanilla-form-label': vanillaFormLabelSrc,
+  'vanilla-form-button-container': vanillaFormButtonContainerSrc,
+  'vanilla-form-styles': vanillaFormStylesSrc,
+  'vanilla-panel-panel-container': vanillaPanelPanelContainerSrc,
+  'vanilla-panel-panel-header': vanillaPanelPanelHeaderSrc,
+  'vanilla-panel-header-action-layout': vanillaPanelHeaderActionLayoutSrc,
+  'vanilla-panel-panel-content': vanillaPanelPanelContentSrc,
+  'vanilla-panel-panel-footer': vanillaPanelPanelFooterSrc,
+  'vanilla-panel-divider': vanillaPanelDividerSrc,
+  'vanilla-panel-styles': vanillaPanelStylesSrc,
+  'vanilla-shared-button': vanillaSharedButtonSrc,
+  'vanilla-shared-icon-button': vanillaSharedIconButtonSrc,
+  'vanilla-shared-button-row': vanillaSharedButtonRowSrc,
+  'vanilla-shared-alert': vanillaSharedAlertSrc,
+  'vanilla-shared-heading': vanillaSharedHeadingSrc,
+  'vanilla-shared-message': vanillaSharedMessageSrc,
+  'vanilla-shared-detail': vanillaSharedDetailSrc,
+  'vanilla-shared-hint': vanillaSharedHintSrc,
+  'vanilla-shared-content-transition': vanillaSharedContentTransitionSrc,
+  'vanilla-shared-overflow-container': vanillaSharedOverflowContainerSrc,
+  'vanilla-shared-overflown-typography': vanillaSharedOverflownTypographySrc,
+  'vanilla-shared-styles': vanillaSharedStylesSrc,
+  'vanilla-shared-button-row-styles': vanillaSharedButtonRowStylesSrc,
+  'shared-component-code-block': sharedComponentCodeBlockSrc,
+  'shared-component-view-code-button': sharedComponentViewCodeButtonSrc,
+  'shared-lib-use-query': sharedLibUseQuerySrc,
+  'shared-lib-use-form': sharedLibUseFormSrc,
+  'shared-lib-use-announcer': sharedLibUseAnnouncerSrc,
+  'shared-lib-async-state': sharedLibAsyncStateSrc,
+  'shared-lib-safe-await': sharedLibSafeAwaitSrc,
+  'shared-lib-mutex': sharedLibMutexSrc,
+  'shared-lib-single-flight': sharedLibSingleFlightSrc,
+  'shared-lib-immer-store': sharedLibImmerStoreSrc,
+  'shared-component-result-display': sharedComponentResultDisplaySrc,
+};

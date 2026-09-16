@@ -1,0 +1,76 @@
+export type Phase =
+  | 'waxing-crescent'
+  | 'first-quarter'
+  | 'waxing-gibbous'
+  | 'full'
+  | 'waning-gibbous'
+  | 'last-quarter'
+  | 'waning-crescent';
+
+/**
+ * The little moon that marks a heading — drawn, not typed. As glyphs (`●`, `◐`, `◑`) they were
+ * sized by the font (48px in a page title, 12px in an `overline` label), drawn to different
+ * optical weights per family, and announced as “circle with left half black”. So: one shape, an
+ * explicit `size` in px, `currentColor`, `aria-hidden` — not `em`, the behaviour being replaced.
+ * The geometry is shared with `scripts/build-moons.mjs`, which redraws the README's marks in the
+ * favicon's amber (Markdown cannot call a component, GitHub strips inline `<svg>`).
+ */
+
+const C = 8;
+const R = 6.5;
+const STROKE = 1.5;
+/** A stroke straddles its path, so a *fill* drawn at `R` comes out smaller — 52px against 58. */
+const FULL_R = R + STROKE / 2;
+/** How far the terminator swells from a straight line — the crescent/gibbous waist. */
+const WAIST = R / 2;
+
+/** Lit on the right while waxing, on the left while waning. */
+const LIT_RIGHT: ReadonlySet<Phase> = new Set<Phase>([
+  'waxing-crescent',
+  'first-quarter',
+  'waxing-gibbous',
+]);
+/** More than half lit: the terminator swells away from the lit limb instead of biting into it. */
+const GIBBOUS: ReadonlySet<Phase> = new Set<Phase>(['waxing-gibbous', 'waning-gibbous']);
+/** A quarter's terminator is straight, which `Z` already draws. */
+const QUARTER: ReadonlySet<Phase> = new Set<Phase>(['first-quarter', 'last-quarter']);
+
+const litPath = (phase: Phase): string => {
+  const limbSweep = LIT_RIGHT.has(phase) ? 1 : 0;
+  const top = `${String(C)} ${String(C - R)}`;
+  const limb = `M${top} A${String(R)} ${String(R)} 0 0 ${String(limbSweep)} ${String(C)} ${String(C + R)}`;
+
+  if (QUARTER.has(phase)) {
+    return `${limb} Z`;
+  }
+  const termSweep = GIBBOUS.has(phase) ? limbSweep : 1 - limbSweep;
+  return `${limb} A${String(WAIST)} ${String(R)} 0 0 ${String(termSweep)} ${top} Z`;
+};
+
+export const MoonPhase = ({
+  phase = 'first-quarter',
+  size = 18,
+}: {
+  readonly phase?: Phase | undefined;
+  readonly size?: number | undefined;
+}) => {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 16 16"
+      aria-hidden="true"
+      focusable="false"
+      style={{ display: 'inline-block', verticalAlign: '-0.125em', flexShrink: 0 }}
+    >
+      {phase === 'full' ? (
+        <circle cx={C} cy={C} r={FULL_R} fill="currentColor" />
+      ) : (
+        <>
+          <circle cx={C} cy={C} r={R} fill="none" stroke="currentColor" strokeWidth={STROKE} />
+          <path d={litPath(phase)} fill="currentColor" />
+        </>
+      )}
+    </svg>
+  );
+};

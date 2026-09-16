@@ -1,0 +1,73 @@
+.frame {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* Floats over the code on a translucent wash + blur, inset on the gutter the code itself uses
+   (`.scroll code` padding) — which is also what puts it under the viewer's Close on one axis,
+   the two being the only controls on that edge. Sized by the button, not padded past it: a
+   second opinion about how big "small" is is what took the two out of line. */
+.copyButton {
+  position: absolute;
+  top: var(--app-space-4);
+  right: var(--app-space-6);
+  z-index: 1;
+  /* The border pays for itself out of the padding: nothing here declares a width, so a bare border
+     grows the button past the shell's 28px small and off the column it shares with Close. */
+  padding: calc(var(--app-space-1) - 1px);
+  border: 1px solid var(--app-divider);
+  background: var(--app-hover);
+  color: var(--app-text-secondary);
+  backdrop-filter: blur(8px);
+  transition: all 200ms var(--app-ease);
+}
+
+.copyButton:hover:not(:disabled) {
+  background: var(--app-selected);
+  transform: scale(1.05);
+}
+
+/* The "copied" tick. */
+.checkIcon {
+  color: var(--app-ok);
+}
+
+/* The surface colour itself is inline (CODE_SURFACE): the TSX also feeds it to
+   `readableSyntaxStyle`, and two declarations of one background drift. */
+.scroll {
+  flex: 1;
+  overflow: auto;
+}
+
+.scroll pre {
+  margin: 0 !important;
+  background: transparent !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  overflow-x: auto !important;
+}
+
+.scroll code {
+  display: block !important;
+  padding: var(--app-space-6) !important;
+  border-radius: 0 !important;
+  /* The theme paints its own background on the <code>, and a background on a scroll
+     container stays put while content moves, sliding the code off its own colour. */
+  background: transparent !important;
+  /* Otherwise the block is only viewport-wide and the scrolled-in region has none. */
+  min-width: max-content;
+}
+
+.wrap pre {
+  overflow-x: visible !important;
+}
+
+/* Declared here because the highlighter puts `white-space: pre` inline on the <pre>. Only
+   on `pre`/`code`: on the token spans each token wraps alone and the line breaks apart. */
+.wrap pre,
+.wrap code {
+  white-space: pre-wrap !important;
+}

@@ -1,0 +1,495 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Umbra — microfrontend host</title>
+    <!-- The playground's own icon. Named explicitly because this page is loaded in a frame and a
+         guessed `/favicon.ico` would 404 into the parent's console — where the smoke test reads. -->
+    <link rel="icon" href="../favicon.svg" />
+
+    <!--
+      The host's entire job: name the shared modules and hand the same ones to everybody.
+
+      Nine specifiers, one build. `dialogManager` is a module-level singleton, so this map is
+      what decides whether three microfrontends share a registry or each get their own — and the
+      frameworks have the same problem one layer down, since two copies of React mean two hook
+      dispatchers and two copies of Solid mean two owner graphs.
+
+      The names are the package's real ones: `umbra` is the library, `umbra/react` and
+      `umbra/solid` are its two bindings, and `react` / `solid-js` are the frameworks themselves.
+      Nothing here is re-exported by the library — the host simply serves every module out of one
+      build, so the parts they share are shared rather than duplicated.
+
+      No bundler runs on this page. The map is resolved by the browser.
+    -->
+    <script type="importmap">
+      {
+        "imports": {
+          "umbra": "./umbra.mjs",
+          "umbra/react": "./umbra-react.mjs",
+          "umbra/solid": "./umbra-solid.mjs",
+          "umbra/vanilla": "./umbra-vanilla.mjs",
+          "react": "./react.mjs",
+          "react-dom/client": "./react-dom-client.mjs",
+          "solid-js": "./solid-js.mjs",
+          "solid-js/web": "./solid-js-web.mjs",
+          "solid-js/h": "./solid-js-h.mjs"
+        }
+      }
+    </script>
+
+    <style>
+      :root {
+        color-scheme: light dark;
+        /* One control height for every control on the page, because two of them now sit on the
+           same line. Left to their natural boxes an input came out 35px (14px × 1.5, plus 6px of
+           padding twice and two borders) and a square icon button whatever number was typed for
+           it — so the two edges missed by a few pixels and the row read as crooked. Stating it
+           once is what makes "same height" a fact rather than an arithmetic coincidence that a
+           font-size change would quietly end.
+           It inherits into Audit's shadow root, which is the one thing that crosses that boundary
+           for free — so the fourth panel agrees with the other three without restating a number. */
+        --control-h: 34px;
+        /* Both schemes in one list, resolved against the used `color-scheme` rather than against
+           the OS directly. That is what lets the playground's own toggle reach in here: this page
+           is a separate document, so a `prefers-color-scheme` query answers the *operating
+           system* and goes on answering it while the top bar says otherwise — the frame stayed
+           light inside a dark app. `host-frame.tsx` sets `data-theme` on this document (same
+           origin, so it can), the two rules below turn that into a `color-scheme`, and every
+           token follows without a second palette to keep in step. */
+        --bg: light-dark(#f8fafc, #0b1120);
+        --panel: light-dark(#ffffff, #131c2e);
+        --ink: light-dark(#0f172a, #e2e8f0);
+        --muted: light-dark(#64748b, #94a3b8);
+        --line: light-dark(#e2e8f0, #24314a);
+        --accent: light-dark(#d97706, #f59e0b);
+        /* One colour per microfrontend, and the dialog each one renders wears its owner's.
+           The point the demo has to make visually: a dialog belongs to whoever registered it,
+           not to whoever asked for it. */
+        --checkout: light-dark(#d97706, #f59e0b);
+        --billing: light-dark(#7c3aed, #a78bfa);
+        --support: light-dark(#0d9488, #2dd4bf);
+        --audit: light-dark(#be123c, #fb7185);
+        --ok: light-dark(#15803d, #4ade80);
+        --no: light-dark(#b91c1c, #f87171);
+      }
+      /* Absent the attribute, `color-scheme: light dark` above leaves it to the OS — which is
+         what this page does when opened on its own, outside the playground. */
+      :root[data-theme='light'] {
+        color-scheme: light;
+      }
+      :root[data-theme='dark'] {
+        color-scheme: dark;
+      }
+      /* `--own` is this microfrontend's colour. With four parties on the page a single "the
+         other one" colour would be a lie, so an incoming line is marked by its glyph and by one
+         shared tint — the transcript still says who asked and who decided, it just no longer
+         claims to say which of the other three it was. */
+      .checkout {
+        --own: var(--checkout);
+      }
+      .billing {
+        --own: var(--billing);
+      }
+      .support {
+        --own: var(--support);
+      }
+      .audit {
+        --own: var(--audit);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        padding: 16px;
+        background: var(--bg);
+        color: var(--ink);
+        font:
+          14px/1.5 system-ui,
+          sans-serif;
+      }
+      /* Two by two, not four across. The frame is 990px wide inside the playground's content
+         column, which four tracks divide into 227px each: every button wrapped to two lines, the
+         log lines were cut mid-word, and the panels disagreed about where their controls ended.
+         Two tracks give 471px, which fits the longest line either half has to say. The rows cost
+         nothing now that the logs are a fixed height — the frame's height stopped being a
+         function of how much anyone clicked.
+
+         Explicit counts rather than `auto-fit`, which cannot help here: the note above spans
+         `1 / -1`, so no repeated track is ever empty and none of them would collapse — the panels
+         would sit in two of four columns and leave two blank. One column on a phone. */
+      .host {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: repeat(2, 1fr);
+        align-items: stretch;
+      }
+      @media (max-width: 560px) {
+        .host {
+          grid-template-columns: 1fr;
+        }
+      }
+      .mfa {
+        display: flex;
+        flex-direction: column;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-top: 3px solid var(--own);
+        border-radius: 10px;
+        padding: 14px;
+        min-width: 0;
+      }
+      .mfa h2 {
+        margin: 0 0 2px;
+        font-size: 15px;
+        color: var(--own);
+      }
+      .mfa .kind {
+        color: var(--muted);
+        font-size: 12px;
+        margin-bottom: 12px;
+      }
+      /* One field and one button row per panel, in that order — which is what makes all four
+         logs start at the same height without a magic number holding them there. It only holds
+         while the labels fit on one line, so they are two or three words each: "Ask Checkout",
+         "Open my ticket". The longer wording wrapped one panel's row and not another's, and a
+         row that is two lines tall in one place and one in another is the whole alignment gone.
+         Audit restates these rules in its own shadow styles — none of this crosses to it. */
+      .controls {
+        display: grid;
+        gap: 10px;
+      }
+      /* Field and buttons on one line, which is where a row of vertical space per panel went.
+         `flex-end` rather than `center`: the label sits above the input, so the two halves agree
+         on the input's bottom edge and not on the middle of a taller stack.
+
+         It wraps, and that is the phone. Below roughly 300px of panel the buttons drop under the
+         field and the layout is the one this replaced — no breakpoint needed, because the only
+         question is whether they fit. */
+      .field-line {
+        display: flex;
+        gap: 8px;
+        align-items: flex-end;
+        flex-wrap: wrap;
+      }
+      .field-line .field {
+        flex: 1 1 9rem;
+      }
+      .field-line .row {
+        flex: 0 1 auto;
+      }
+      .field {
+        display: grid;
+        gap: 4px;
+        min-width: 0;
+      }
+      .field > span {
+        color: var(--muted);
+        font-size: 11.5px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+      .field input,
+      .field output {
+        font: inherit;
+        display: block;
+        width: 100%;
+        height: var(--control-h);
+        padding: 6px 8px;
+        border-radius: 6px;
+        border: 1px solid var(--line);
+        background: transparent;
+        color: inherit;
+      }
+      /* An <output> is not a form control the browser centres text in, so it has to say so —
+         otherwise the one panel showing a value sits its text a few pixels above the three
+         showing an input's. */
+      .field output {
+        display: flex;
+        align-items: center;
+        color: var(--muted);
+      }
+      .row {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      /* Equal shares of the row, so a panel with one button and a panel with two still agree
+         on where the row ends. */
+      .row button {
+        flex: 1 1 0;
+        min-width: 0;
+      }
+      button {
+        font: inherit;
+        padding: 6px 10px;
+        border-radius: 6px;
+        border: 1px solid var(--line);
+        background: transparent;
+        color: inherit;
+        cursor: pointer;
+      }
+      button:hover {
+        border-color: var(--own, var(--accent));
+      }
+      /* An icon button is square and does not stretch — that is the space a text label was
+         costing beside every field. The label does not disappear, it moves into the tooltip and
+         into `aria-label`, which is the half that matters: "Ask Checkout" and "Ask Billing" are
+         the same glyph, and *who is being asked* is the one thing this demo exists to show. An
+         icon alone would say a request left; only the name says where it went. */
+      /* `.row .iconbtn`, not `.iconbtn` — `.row button` above sets `flex: 1 1 0` to make text
+         buttons share the row, and it outranks a single class. An icon button must not stretch,
+         so the override has to carry the same weight the rule it is answering does. */
+      .row .iconbtn {
+        flex: 0 0 auto;
+      }
+      .iconbtn {
+        position: relative;
+        width: var(--control-h);
+        height: var(--control-h);
+        padding: 0;
+        display: inline-grid;
+        place-items: center;
+      }
+      .iconbtn svg {
+        width: 16px;
+        height: 16px;
+        display: block;
+      }
+      /* Ours rather than `title`, for two reasons: the native one waits about a second, which
+         reads as nothing happening, and it never appears for a keyboard user. This one is
+         instant and answers `:focus-visible` too, so tabbing through a panel names each button.
+         `aria-hidden` on it — the accessible name is `aria-label`, and a screen reader that also
+         read this would say everything twice. */
+      .iconbtn::after {
+        content: attr(data-tip);
+        position: absolute;
+        bottom: calc(100% + 6px);
+        left: 50%;
+        transform: translateX(-50%);
+        white-space: nowrap;
+        background: var(--ink);
+        color: var(--bg);
+        font-size: 11px;
+        line-height: 1.4;
+        padding: 3px 7px;
+        border-radius: 4px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 120ms ease;
+        z-index: 5;
+      }
+      .iconbtn:hover::after,
+      .iconbtn:focus-visible::after {
+        opacity: 1;
+      }
+      /* A fixed box that scrolls, not one that grows.
+         `flex: 1` with only a `min-height` made the panel a function of how much anyone had
+         clicked: every line made it taller, the document with it, and `host-frame.tsx` — which
+         measures the document inside — grew the frame to match. Four panels filling at once
+         walked the page down and pushed whatever you were reading off the screen.
+         Sized in lines rather than pixels so the number stays meaningful if the type does: five
+         and a half, the half being the part that says there is more below. Newest is first
+         (`log.js`), so the half you cannot see is the history, which is the half nobody needs.
+         Five carries a whole exchange — asked, decided, opened, and the two lines next door — so
+         the reader still sees a request cross a boundary without scrolling for it. */
+      .log {
+        --log-lines: 5.5;
+        flex: 0 0 auto;
+        margin-top: 12px;
+        height: calc(var(--log-lines) * 1.7em + 16px);
+        overflow-y: auto;
+        background: color-mix(in srgb, var(--ink) 6%, transparent);
+        border-radius: 6px;
+        padding: 8px;
+        font-family: ui-monospace, monospace;
+        font-size: 11.5px;
+        line-height: 1.7;
+        color: var(--muted);
+      }
+      /* Six kinds of line, and the glyph carries the meaning: what I asked for, what I was
+         asked for, what I allowed, what I refused, and what merely happened nearby. */
+      .log .out {
+        color: var(--own);
+      }
+      .log .in {
+        color: var(--accent);
+      }
+      .log .yes {
+        color: var(--ok);
+      }
+      .log .no {
+        color: var(--no);
+      }
+      /* The surface goes on `.panel`, not on `dialog` — and that is the library's contract,
+         not a workaround. It writes `background: transparent; border: none; padding: 0` on the
+         element it owns, so the dialog is a box you fill: a stylesheet rule on `dialog` loses to
+         those styles and the dialog comes out invisible. Billing's hand-written <dialog> would
+         escape that, since nothing styles it; keeping every panel on the same rule is what stops
+         the three microfrontends from looking like three different products. */
+      dialog {
+        /* The same reset the library writes on the dialogs it owns. Spelled out here so
+           Billing's hand-written <dialog> — which the library never styles — does not keep the
+           UA's white box and end up framed twice. */
+        border: none;
+        background: transparent;
+        padding: 0;
+        color: var(--ink);
+        max-width: min(380px, 88vw);
+      }
+      dialog::backdrop {
+        background: rgba(2, 6, 23, 0.62);
+      }
+      /* The dialog wears its owner's colour — the one thing a screenshot of this demo has to
+         say on its own is which microfrontend a dialog came from. */
+      .panel {
+        /* One pixel off the dialog's edge, and that is the fix for a real artifact rather than a
+           nicety. A `<dialog>` is `width: fit-content`, so its box lands on a fraction — the three
+           here measure 154.844, 243.094 and 252.266 — and `margin: auto` puts both edges off-pixel.
+           The right border occupies the box's last pixel, so whatever the compositor does with
+           that final fraction is done to the border: at .844 only 0.156px of it survives and it
+           reads as missing, while .094 and .266 leave 91% and 73% and look fine. Same markup, same
+           computed styles (diffed, open, property by property) — only the width differs, which is
+           why it was only ever Checkout.
+
+           Insetting by 1px puts the border wholly inside the box's whole-pixel part, whatever the
+           fraction. It costs 2px of panel width and nothing else. */
+        margin: 1px;
+        /* Mixed toward the ink rather than the line, for contrast alone. At the previous
+           `40%, var(--line)` the three borders measured 1.67:1 (amber), 1.76:1 (teal) and
+           2.00:1 (violet) against their own panels — under any reasonable bar for a visible
+           edge. This measures 4.56 / 7.08 / 5.11 in light and 8.07 / 6.94 / 8.69 in dark, past
+           the 3:1 non-text threshold, with the owner's hue still dominant.
+
+           It is **not** the fix for the right edge going missing on some dialogs: that survives a
+           high-contrast border, so it is a clipped raster and not a faint one. Left open. */
+        border: 1px solid color-mix(in srgb, var(--own) 75%, var(--ink));
+        border-top: 3px solid var(--own);
+        border-radius: 10px;
+        background: color-mix(in srgb, var(--own) 7%, var(--panel));
+        padding: 18px;
+      }
+      .panel .owner {
+        color: var(--muted);
+        font-size: 11.5px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        margin-bottom: 6px;
+      }
+      .panel h3 {
+        margin: 0 0 8px;
+        color: var(--own);
+      }
+      .note {
+        grid-column: 1 / -1;
+        color: var(--muted);
+        font-size: 12px;
+        margin: 0;
+      }
+      /* WCAG 2.3.3 — same one-rule off-switch the main app declares in its theme: the library's
+         close path measures a 0s duration and finalizes immediately, so nothing hangs. */
+      @media (prefers-reduced-motion: reduce) {
+        dialog[data-dialog-id] {
+          transition: none !important;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="host">
+      <p class="note">
+        Four microfrontends, one shared <code>umbra</code> from the import map. None of them imports
+        another. Push Checkout past Billing's limit and watch the refusal travel on to Support. In
+        the logs: <b>&rarr;</b> I asked · <b>&larr;</b> I was asked · <b>&check;</b> I opened ·
+        <b>&cross;</b> I refused · <b>~</b> happened next door.
+      </p>
+
+      <section class="mfa checkout">
+        <h2>Checkout</h2>
+        <div class="kind">React binding · owns <code>checkout:receipt</code></div>
+        <div id="mfa1-root"></div>
+        <div class="log" id="mfa1-log"></div>
+      </section>
+
+      <section class="mfa billing">
+        <h2>Billing</h2>
+        <div class="kind">Vanilla binding · owns <code>billing:confirm</code></div>
+        <div class="controls">
+          <!-- The buttons are beside the field, not under it — but outside the <label>, which is
+               what makes that safe: a <button> inside a label is a click the label also answers. -->
+          <div class="field-line">
+            <label class="field">
+              <span>Approval limit</span>
+              <!-- Written by mfa2.js from the same constant its refusal reads, so the number
+                   shown and the rule enforced cannot drift apart. -->
+              <output id="mfa2-limit">—</output>
+            </label>
+            <div class="row">
+              <button
+                id="mfa2-ask"
+                class="iconbtn"
+                aria-label="Ask Checkout"
+                data-tip="Ask Checkout"
+              >
+                <!-- An arrow leaving toward someone else: this panel asking another to open. The
+                     same glyph on all four; the tooltip says which one is being asked. -->
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M5 12h13" />
+                  <path d="M12 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="log" id="mfa2-log"></div>
+
+        <dialog id="mfa2-dialog" aria-labelledby="mfa2-title">
+          <div class="panel billing">
+            <div class="owner">Billing's dialog</div>
+            <h3 id="mfa2-title">Confirm payment</h3>
+            <p>
+              <span id="mfa2-from">—</span> is asking to charge <strong id="mfa2-amount">—</strong>.
+            </p>
+            <div class="row">
+              <button id="mfa2-decline">Decline</button>
+              <button id="mfa2-approve">Approve</button>
+            </div>
+          </div>
+        </dialog>
+      </section>
+
+      <section class="mfa support">
+        <h2>Support</h2>
+        <div class="kind">Solid binding · owns <code>support:ticket</code></div>
+        <div id="mfa3-root"></div>
+        <div class="log" id="mfa3-log"></div>
+      </section>
+
+      <section class="mfa audit">
+        <h2>Audit</h2>
+        <div class="kind">Web component · owns <code>audit:review</code></div>
+        <!-- The only panel whose contents are not in this file. `<audit-panel>` builds its own
+             shadow root, so its dialog and its buttons are in a tree the page cannot select into
+             — which is the question this fourth panel exists to ask of the library. -->
+        <audit-panel></audit-panel>
+        <div class="log" id="mfa4-log"></div>
+      </section>
+    </div>
+
+    <script type="module" src="./mfa1.js"></script>
+    <script type="module" src="./mfa2.js"></script>
+    <script type="module" src="./mfa3.js"></script>
+    <script type="module" src="./mfa4.js"></script>
+  </body>
+</html>

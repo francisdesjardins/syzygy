@@ -1,0 +1,67 @@
+/* Sticky under the 64px top bar. The smoke test measures the bar at y=64 — top and the
+   background pair below are load-bearing. */
+.nav {
+  position: sticky;
+  top: var(--app-topbar-height);
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding-block: var(--app-space-3);
+  margin-bottom: var(--app-space-6);
+  /* The bar paints the page ground, not the paper: a sticky strip in a different tone bands
+     against the content scrolling under it. */
+  background: var(--app-bg);
+  border-bottom: 1px solid var(--app-divider);
+}
+
+/* A two-pixel bleed of *background only*: the column's width is fractional, so a card's 1px
+   border straddles this bar's edge and stays half-lit as an orange hairline. The background
+   widens, not the box — negative margins would take the border-bottom past the cards. */
+.nav::before {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  left: -2px;
+  right: -2px;
+  background: var(--app-bg);
+  z-index: -1;
+}
+
+/* A 24px pill. Keyboard focus is the global ring. */
+.chip {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 100%;
+  height: 24px;
+  padding: 0 7px;
+  overflow: hidden;
+  border: 1px solid var(--app-control-border);
+  border-radius: 16px;
+  background: transparent;
+  color: var(--app-text);
+  font-family: monospace;
+  font-size: 0.7rem;
+  line-height: 1.5;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-decoration: none;
+  vertical-align: middle;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color 300ms var(--app-ease),
+    box-shadow 300ms var(--app-ease);
+}
+
+.chip:hover {
+  background: var(--app-hover);
+}
+
+/* It presses. */
+.chip:active {
+  box-shadow: var(--app-lift);
+}

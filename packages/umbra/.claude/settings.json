@@ -1,0 +1,65 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node -e \"let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>{const f=JSON.parse(d).tool_input.file_path;require('child_process').execSync('yarn oxfmt --no-error-on-unmatched-pattern '+JSON.stringify(f),{stdio:'inherit'})})\"",
+            "timeout": 30,
+            "statusMessage": "Formatting with oxfmt"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node node_modules/typescript-7/bin/tsc --noEmit -p tsconfig.json",
+            "timeout": 120,
+            "statusMessage": "Type-checking (TS 7)"
+          },
+          {
+            "type": "command",
+            "command": "yarn lint --deny-warnings",
+            "timeout": 120,
+            "statusMessage": "Running oxlint (type-aware)"
+          },
+          {
+            "type": "command",
+            "command": "yarn playwright test -c playwright.config.ts --project=unit --grep \"the agent instructions have a budget\"",
+            "timeout": 120,
+            "statusMessage": "Checking the CLAUDE.md word budget"
+          }
+        ]
+      }
+    ]
+  },
+  "permissions": {
+    "deny": [
+      "Bash(rm -rf:*)",
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)",
+      "Bash(git reset --hard:*)",
+      "Bash(git clean -fd:*)",
+      "Bash(git stash clear:*)",
+      "Bash(git stash drop:*)",
+      "Bash(git rebase:*)",
+      "Bash(git switch:*)",
+      "Bash(git restore:*)",
+      "Bash(git checkout:*)",
+      "Bash(docker system prune:*)",
+      "Bash(npm publish:*)",
+      "Bash(yarn npm publish:*)",
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./**/*.pem)",
+      "Read(./**/*.key)",
+      "Read(~/.ssh/**)",
+      "Read(~/.aws/**)"
+    ]
+  }
+}

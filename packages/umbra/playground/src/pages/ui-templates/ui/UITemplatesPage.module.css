@@ -1,0 +1,80 @@
+.blurb {
+  margin: 0 0 var(--app-space-8);
+  font-size: var(--app-text-md);
+  line-height: var(--app-lh-body);
+  color: var(--app-text-secondary);
+  max-width: 720px;
+}
+
+/* The flavour switcher: adjacent borders collapse into one hairline so the three read as a
+   single control, the shape the MUI group drew here. */
+.segmented {
+  display: inline-flex;
+}
+
+.segment {
+  padding: 7px var(--app-space-3);
+  border: 1px solid var(--app-divider);
+  background: transparent;
+  color: var(--app-text-secondary);
+  font-family: inherit;
+  font-size: var(--app-text-sm);
+  font-weight: 500;
+  line-height: var(--app-lh-relaxed);
+  letter-spacing: normal;
+  cursor: pointer;
+  /* Background only — `color` here is theme-sensitive, and a flip interpolates the old ink over a
+     surface that switched instantly. */
+  transition: background-color var(--app-duration) var(--app-ease);
+}
+
+.segment + .segment {
+  margin-left: -1px;
+}
+
+.segment:first-child {
+  border-radius: var(--app-radius) 0 0 var(--app-radius);
+}
+
+.segment:last-child {
+  border-radius: 0 var(--app-radius) var(--app-radius) 0;
+}
+
+.segment:hover {
+  background: var(--app-hover);
+}
+
+/* Amber on the page is the 3.19:1 trap — the selected tab takes the readable accent, not the
+   flame. */
+.segment[aria-pressed='true'] {
+  background: var(--app-selected);
+  color: var(--app-accent);
+}
+
+.itemRow {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-2);
+  padding: var(--app-space-3);
+}
+
+.itemName {
+  margin: 0;
+  font-family: monospace;
+  font-size: var(--app-text-sm);
+  line-height: var(--app-lh-body);
+  flex: 1;
+  min-width: 0;
+}
+
+.cardGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--app-space-2);
+}
+
+@media (min-width: 600px) {
+  .cardGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

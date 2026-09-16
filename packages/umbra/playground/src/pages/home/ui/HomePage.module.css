@@ -1,0 +1,301 @@
+.page {
+  max-width: 1040px;
+  margin: 0 auto;
+}
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--app-space-6);
+  padding-top: var(--app-space-8);
+  padding-bottom: var(--app-space-8);
+  min-width: 0;
+}
+
+/* The corona paints past the SVG's box, so the art is inset in a square that clips
+   nothing: the wrapper bounds the layout and the disc sits at 78% of it. */
+.heroArt {
+  width: 176px;
+  aspect-ratio: 1;
+  flex-shrink: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.heroArtDisc {
+  width: 78%;
+  aspect-ratio: 1;
+}
+
+.heroText {
+  min-width: 0;
+}
+
+.heroTitle {
+  margin: 0;
+  font-family: var(--app-font-display);
+  font-size: var(--app-text-2xl);
+  line-height: var(--app-lh-tight);
+  /* 500, not a heavier grade: the display serif's bold is heavier than the drawing wants beside
+     the mascot, and the size is already carrying the emphasis. */
+  font-weight: 500;
+  letter-spacing: var(--app-tracking-tight);
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-3);
+}
+
+/* Sized to the heading's two steps: the mark is part of the lockup, not a bullet — and it rises
+   onto the word's optical centre, since "Umbra" carries no descender to balance its ascent. */
+.markWide,
+.markNarrow {
+  transform: translateY(calc(-1 * var(--app-lockup-rise)));
+}
+
+.markWide {
+  display: none;
+}
+
+.markNarrow {
+  display: flex;
+}
+
+.heroSubtitle {
+  margin: var(--app-space-2) 0 0;
+  font-size: var(--app-text-lg);
+  line-height: 1.6;
+  font-weight: 500;
+  color: var(--app-text-secondary);
+}
+
+.heroBody {
+  margin: var(--app-space-4) 0 0;
+  font-size: var(--app-text-base);
+  line-height: 1.5;
+  color: var(--app-text-secondary);
+  max-width: 560px;
+}
+
+.lastClose {
+  display: block;
+  margin: var(--app-space-4) 0 0;
+  font-family: monospace;
+  font-size: var(--app-text-xs);
+  line-height: var(--app-lh-body);
+  color: var(--app-accent);
+}
+
+.chipRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--app-space-2);
+  margin-top: var(--app-space-4);
+}
+
+.chip {
+  padding: 3px var(--app-space-2);
+  /* Off-scale 12px: the chip's own rounding, half its height — not a step of the radius scale. */
+  border-radius: 12px;
+  font-size: var(--app-text-sm);
+  background: var(--app-hover);
+  color: var(--app-text);
+}
+
+/* The asterisk the floor chip carries. Secondary rather than an opacity, for the reason the moon
+   row states: a shade of the text colour measures, a transparency of it does not. */
+.floorNote {
+  margin: var(--app-space-2) 0 0;
+  font-size: var(--app-text-xs);
+  line-height: var(--app-lh-body);
+  color: var(--app-text-secondary);
+}
+
+.ctaRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--app-space-3);
+  margin-top: var(--app-space-6);
+}
+
+/* Stacked, not side by side: at half width both snippets get a horizontal scrollbar. */
+.snippets {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-6);
+  margin-bottom: var(--app-space-10);
+  min-width: 0;
+}
+
+.snippet {
+  min-width: 0;
+}
+
+/* The eyebrow owns its breathing room as margin. It used to come from a 2.66 line-height — MD2's
+   overline, where the leading was the spacing — so collapsing that ramp onto an honest one left the
+   label sitting on the code block. Spacing is a margin here, and the label reads at its own size. */
+.overline {
+  margin: 0 0 var(--app-space-3);
+  font-family: var(--app-font-mono);
+  font-size: var(--app-text-xs);
+  line-height: var(--app-lh-snug);
+  font-weight: 500;
+  letter-spacing: var(--app-tracking-label);
+  text-transform: uppercase;
+  color: var(--app-text-tertiary);
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-2);
+}
+
+.nextRow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-4);
+  padding-bottom: var(--app-space-12);
+}
+
+.nextCard {
+  flex: 1;
+  padding: var(--app-space-5);
+  border-radius: var(--app-radius-lg);
+  border: 1px solid var(--app-divider);
+  text-decoration: none;
+  color: inherit;
+  transition:
+    border-color 120ms,
+    transform 120ms;
+}
+
+.nextCard:hover {
+  border-color: var(--app-flame);
+  transform: translateY(-2px);
+}
+
+.nextTitle {
+  margin: 0;
+  font-size: var(--app-text-base);
+  line-height: var(--app-lh-relaxed);
+  font-weight: 700;
+  display: flex;
+  /* Not centred: a title that wraps to two lines leaves a centred mark floating beside the break
+     instead of reading as the bullet of the first line. */
+  align-items: flex-start;
+  gap: var(--app-space-2);
+}
+
+/* The mark, put back on the first line's own centre. Half the difference between the line box and
+   the mark, derived rather than measured once — only the 16px is a constant, and it is the `size`
+   the page passes `MoonPhase`. */
+.nextTitle > svg {
+  flex: none;
+  margin-top: calc((var(--app-text-base) * var(--app-lh-relaxed) - 16px) / 2);
+}
+
+.nextBody {
+  margin: var(--app-space-1) 0 0;
+  font-size: var(--app-text-md);
+  line-height: var(--app-lh-body);
+  color: var(--app-text-secondary);
+}
+
+.moonRow {
+  display: flex;
+  gap: var(--app-space-3);
+  padding-bottom: var(--app-space-8);
+  color: var(--app-text-secondary);
+  justify-content: center;
+}
+
+/* ── The hello dialog's interior ─────────────────────────────────────────────────
+   Page-owned on purpose — the library ships no UI, so the front page brings its own, on the
+   same tokens as the shell. The lift is a dialog's: the one place this shell spends a shadow. */
+.helloCard {
+  padding: var(--app-space-6);
+  max-width: min(420px, 88vw);
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-3);
+  background: var(--app-paper);
+  color: var(--app-text);
+  border: 1px solid var(--app-divider);
+  border-radius: var(--app-radius-lg);
+  box-shadow: var(--app-lift);
+}
+
+.helloTitle {
+  margin: 0;
+  font-size: var(--app-text-lg);
+  line-height: 1.6;
+  font-weight: 700;
+}
+
+.helloBody {
+  margin: 0;
+  font-size: var(--app-text-md);
+  line-height: var(--app-lh-body);
+  color: var(--app-text-secondary);
+}
+
+.helloRemember {
+  margin-top: var(--app-space-1);
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-2);
+  font-size: var(--app-text-md);
+  line-height: var(--app-lh-body);
+  color: var(--app-text-secondary);
+  cursor: pointer;
+}
+
+/* A fill, so the browser picks the check ink against the flame. */
+.helloCheckbox {
+  accent-color: var(--app-flame);
+  width: var(--app-space-4);
+  height: var(--app-space-4);
+}
+
+.helloFooter {
+  display: flex;
+  gap: var(--app-space-2);
+  justify-content: flex-end;
+  margin-top: var(--app-space-2);
+}
+
+/* A grid rather than a wrapping row, because there are four cards and wrapping is not
+   deterministic: a flex basis wide enough for tablet widths left the fourth card alone on a row of
+   its own at desktop. Two columns and no third breakpoint — four across fits, but only by wrapping
+   two of the titles onto a second line, which unseats the mark beside them. */
+@media (min-width: 600px) {
+  .nextRow {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 900px) {
+  .hero {
+    flex-direction: row;
+    gap: var(--app-space-12);
+    padding-top: var(--app-space-14);
+    padding-bottom: var(--app-space-14);
+  }
+
+  .heroArt {
+    width: 220px;
+  }
+
+  .heroTitle {
+    font-size: var(--app-text-3xl);
+  }
+
+  .markWide {
+    display: flex;
+  }
+
+  .markNarrow {
+    display: none;
+  }
+}

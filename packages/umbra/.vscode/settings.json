@@ -1,0 +1,36 @@
+{
+  "debug.javascript.terminalOptions": {
+    "resolveSourceMapLocations": [
+      "${workspaceFolder}/**",
+      "!**/node_modules/**",
+      "**/node_modules/.vite-temp/**"
+    ]
+  },
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "oxc.oxc-vscode",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.oxc": "explicit",
+    "source.organizeImports": "explicit"
+  },
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "files.eol": "\n",
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+  // One extension for both halves: the language server formats through the same `oxfmt` binary in
+  // `node_modules` that `yarn format:check` gates on, reading the same `.oxfmtrc.json`, so the
+  // editor and the gate cannot disagree. It registers for md, json, yaml, css and toml as well as
+  // ts/tsx, which is why nothing else is needed beside it.
+  "oxc.enable.oxfmt": true,
+  "js/ts.tsdk.path": "node_modules/typescript/lib",
+  "js/ts.tsdk.promptToUseWorkspaceVersion": true,
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/.git": true,
+    "**/coverage": true,
+    "**/playwright-report": true,
+    "**/test-results": true
+  },
+  "workbench.editor.alwaysShowEditorActions": false
+}

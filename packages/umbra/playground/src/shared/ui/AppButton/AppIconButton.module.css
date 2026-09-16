@@ -1,0 +1,31 @@
+.iconButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--app-space-2);
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  transition: background-color 200ms var(--app-ease);
+  outline: none;
+}
+
+.iconButton:hover:not(:disabled) {
+  background: var(--app-hover);
+}
+
+.iconButton:disabled {
+  cursor: default;
+  color: var(--app-text-tertiary);
+}
+
+.small {
+  padding: var(--app-space-1);
+}
+
+.small svg {
+  width: var(--app-icon-sm);
+  height: var(--app-icon-sm);
+}

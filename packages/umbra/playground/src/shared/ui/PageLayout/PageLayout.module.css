@@ -1,0 +1,54 @@
+.root {
+  max-width: 1040px;
+  margin-inline: auto;
+}
+
+/* Header — left-aligned so the title, the section labels and the card grid all share
+   one leading edge. A centred title over left-aligned content read as two layouts. */
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--app-space-4);
+  margin-bottom: var(--app-space-6);
+  padding-bottom: var(--app-space-4);
+  border-bottom: 1px solid var(--app-divider);
+}
+
+@media (min-width: 900px) {
+  .header {
+    margin-bottom: var(--app-space-8);
+  }
+}
+
+.heading {
+  flex: 1 1 320px;
+  min-width: 0;
+}
+
+/* One size at every width: a page title that grows on desktop competes with the hero, and this
+   one sits under a bar that does not change height. */
+.title {
+  margin: 0;
+  font-size: var(--app-text-xl);
+  font-weight: 700;
+  line-height: var(--app-lh-tight);
+  letter-spacing: -0.02em;
+}
+
+.description {
+  margin: var(--app-space-2) 0 0;
+  max-width: var(--app-measure);
+  font-size: var(--app-text-base);
+  line-height: 1.5;
+  letter-spacing: normal;
+  color: var(--app-text-secondary);
+}
+
+.actions {
+  flex-shrink: 0;
+}
+
+.result {
+  margin-bottom: var(--app-space-6);
+}

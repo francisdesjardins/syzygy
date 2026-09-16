@@ -1,0 +1,39 @@
+/* The one card surface. Edges rather than elevation: a hairline at rest, and the corona only when
+   the card is actually interactive and hovered — light is spent on the live thing, not on faking
+   paper height. `overflow: hidden` clips children to the radius. */
+.card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  /* `clip` rather than `hidden`, with room for a focus ring: children still clip to the radius, but
+     a control flush against the edge keeps the 2px outline it draws 2px outside itself. `hidden`
+     has no such allowance and cuts the ring off — the card does not scroll, so nothing is lost by
+     not being a scroll container. */
+  overflow: clip;
+  overflow-clip-margin: var(--app-space-1);
+  background: var(--app-paper);
+  color: var(--app-text);
+  border: 1px solid var(--app-divider);
+  /* The xl radius is the identity: the mascot is round, and so are the surfaces. */
+  border-radius: var(--app-radius-xl);
+}
+
+.interactive {
+  transition:
+    border-color var(--app-duration) var(--app-ease),
+    box-shadow var(--app-duration) var(--app-ease),
+    transform var(--app-duration) var(--app-ease-out);
+}
+
+/* The corona, and a 2px rise. One glow token, not a stack of three shadows. */
+.interactive:hover {
+  border-color: var(--app-flame);
+  box-shadow: var(--app-glow);
+  transform: translateY(-2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .interactive:hover {
+    transform: none;
+  }
+}

@@ -1,0 +1,156 @@
+{
+  "name": "umbra",
+  "version": "1.0.0",
+  "description": "Framework-agnostic dialog manager on the native <dialog> top layer, zero shipped UI — with React, Solid and vanilla bindings on ./react, ./solid and ./vanilla.",
+  "keywords": [
+    "a11y",
+    "accessible",
+    "dialog",
+    "framework-agnostic",
+    "headless",
+    "hooks",
+    "overlay",
+    "popover",
+    "react",
+    "solid",
+    "solid-js",
+    "typescript",
+    "vanilla-js"
+  ],
+  "homepage": "https://francisdesjardins.ca/playground/dialog/",
+  "bugs": {
+    "url": "https://github.com/francisdesjardins/umbra/issues"
+  },
+  "license": "MIT",
+  "author": "Francis Desjardins <francis.desjardins@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/francisdesjardins/umbra.git"
+  },
+  "workspaces": [
+    "playground"
+  ],
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/esm/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "default": "./dist/esm/index.js"
+    },
+    "./react": {
+      "types": "./dist/esm/react.d.ts",
+      "import": "./dist/esm/react.js",
+      "default": "./dist/esm/react.js"
+    },
+    "./solid": {
+      "types": "./dist/esm/solid.d.ts",
+      "import": "./dist/esm/solid.js",
+      "default": "./dist/esm/solid.js"
+    },
+    "./vanilla": {
+      "types": "./dist/esm/vanilla.d.ts",
+      "import": "./dist/esm/vanilla.js",
+      "default": "./dist/esm/vanilla.js"
+    }
+  },
+  "scripts": {
+    "dev": "yarn workspace umbra-playground dev",
+    "build": "yarn build:clean && yarn build:esm",
+    "build:clean": "node --eval \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
+    "build:esm": "node node_modules/typescript-7/bin/tsc --noEmit && vite build --config vite.config.esm.ts && yarn build:types",
+    "build:types": "node node_modules/typescript-7/bin/tsc -p tsconfig.build.json",
+    "playground:build": "yarn workspace umbra-playground build",
+    "playground:build:file": "yarn workspace umbra-playground build:file",
+    "playground:preview": "yarn workspace umbra-playground preview",
+    "smoke": "node scripts/smoke-playground.mjs",
+    "format:check": "oxfmt --check .",
+    "format": "oxfmt .",
+    "lint": "oxlint --type-aware",
+    "lint:fix": "oxlint --type-aware --fix",
+    "check": "yarn type-check && yarn lint --deny-warnings && yarn format:check && yarn docs:check && yarn docs:examples",
+    "build:moons": "node scripts/build-moons.mjs",
+    "docs:examples": "node scripts/check-examples.mjs",
+    "docs:examples:fix": "node scripts/check-examples.mjs --fix",
+    "docs:check": "typedoc --options typedoc.json --emit none",
+    "verify:all": "yarn lint --deny-warnings && yarn type-check && yarn build && yarn verify:package",
+    "verify:package": "node scripts/verify-package.mjs",
+    "test": "yarn test:unit && yarn test:component",
+    "test:ui": "playwright test -c playwright.config.ts --ui",
+    "test:unit": "playwright test -c playwright.config.ts --project=unit",
+    "test:unit:shard": "node scripts/playwright-shard.mjs --project=unit",
+    "test:unit:coverage": "c8 playwright test -c playwright.config.ts --project=unit",
+    "test:unit:ui": "playwright test -c playwright.config.ts --project=unit --ui",
+    "test:component": "node scripts/test-engines.mjs",
+    "test:component:shard": "node scripts/playwright-shard.mjs --project=component --project=component-firefox --project=component-webkit --project=component-touch --project=component-touch-webkit",
+    "test:component:chromium": "playwright test -c playwright.config.ts --project=component",
+    "test:component:ui": "playwright test -c playwright.config.ts --project=component --ui",
+    "test:component:webkit": "playwright test -c playwright.config.ts --project=component-webkit",
+    "test:component:touch": "playwright test -c playwright.config.ts --project=component-touch",
+    "test:component:touch-webkit": "playwright test -c playwright.config.ts --project=component-touch-webkit",
+    "test:component:firefox": "playwright test -c playwright.config.ts --project=component-firefox",
+    "coverage:update": "node scripts/update-coverage.mjs",
+    "test:component:coverage": "CT_COVERAGE=1 playwright test -c playwright.config.ts --project=component --project=component-firefox --project=component-webkit --project=component-touch --project=component-touch-webkit && node scripts/ct-coverage-report.mjs",
+    "type-check:watch": "node node_modules/typescript-7/bin/tsc --noEmit --watch",
+    "type-check": "node node_modules/typescript-7/bin/tsc --noEmit && node node_modules/typescript-7/bin/tsc -p playground/tsconfig.json --noEmit && yarn type-check:registry",
+    "docs:matrix": "node scripts/render-matrix.mjs",
+    "docs:matrix:check": "node scripts/render-matrix.mjs --check",
+    "todo": "node scripts/render-matrix.mjs --list",
+    "bench": "node scripts/bench.mjs",
+    "test:component:focus": "playwright test -c playwright.config.ts --project=component-focus --workers=1",
+    "type-check:registry": "node node_modules/typescript-7/bin/tsc --noEmit -p tsconfig.registry.json",
+    "story-ids": "node scripts/generate-story-ids.mjs && oxfmt src/__tests__/story-ids.d.ts playground/src/__tests__/story-ids.d.ts playground/src/pages/stories/model/story-loaders.ts"
+  },
+  "devDependencies": {
+    "@babel/core": "^8.0.5",
+    "@playwright/test": "1.63.0",
+    "@rolldown/plugin-babel": "0.2.4",
+    "@types/node": "^24",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "babel-plugin-react-compiler": "1.0.0",
+    "c8": "12.0.0",
+    "istanbul-lib-instrument": "^6.0.3",
+    "oxfmt": "0.67.0",
+    "oxlint": "^1.82.0",
+    "oxlint-tsgolint": "7.0.2001",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "rolldown": "^1.2.8",
+    "solid-js": "^1.9.15",
+    "typedoc": "0.28.20",
+    "typescript": "6.0.3",
+    "typescript-7": "npm:typescript@7.0.2",
+    "vite": "^8.3.0"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "solid-js": "^1.9.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    },
+    "solid-js": {
+      "optional": true
+    }
+  },
+  "browserslist": [
+    "Chrome >= 110",
+    "Edge >= 110",
+    "Safari >= 16.4",
+    "Firefox >= 115"
+  ],
+  "engines": {
+    "node": ">=24"
+  },
+  "packageManager": "yarn@4.18.0"
+}

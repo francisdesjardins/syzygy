@@ -1,0 +1,135 @@
+import { createStore } from '../store/index.js';
+import {
+  Fragment,
+  createContext,
+  use,
+  useState,
+  useSyncExternalStore,
+  type ReactNode,
+} from 'react';
+import { createLogger } from '../utils/logger.js';
+
+const log = createLogger('outlet');
+
+type DialogOutletContextValue = {
+  readonly register: (id: string, node: ReactNode) => void;
+  readonly unregister: (id: string) => void;
+};
+
+const DialogOutletContext = createContext<DialogOutletContextValue | null>(null);
+
+/**
+ * The nearest outlet context, or `null` when none wraps the caller — then `useDialog` returns the
+ * dialog via `Dialog` as usual.
+ *
+ * @internal Not part of the public API.
+ */
+export function useDialogOutletContext(): DialogOutletContextValue | null {
+  return use(DialogOutletContext);
+}
+
+// The outlet holds rendered *nodes* rather than a DOM anchor to portal into, because a React
+// element only renders while some component returns it and the consumer must never write
+// `{Dialog}` — which is what a portal-anchor outlet costs. Registration is an effect, so content
+// lands one commit behind its owner.
+
+type OutletSnapshot = {
+  readonly dialogs: ReadonlyMap<string, ReactNode>;
+};
+
+function createOutletStore() {
+  // Annotated, not type arguments — two of those match `createStore`'s generic overload by arity.
+  const initial: OutletSnapshot = { dialogs: new Map() };
+
+  return createStore(initial, {
+    builder: ({ set }): OutletStoreMethods => {
+      const dialogs = new Map<string, ReactNode>();
+
+      return {
+        register(id: string, node: ReactNode): void {
+          const isNew = !dialogs.has(id);
+          if (isNew) {
+            log('Registering dialog', { id });
+          }
+          dialogs.set(id, node);
+          set({ dialogs: new Map(dialogs) });
+        },
+
+        unregister(id: string): void {
+          if (dialogs.delete(id)) {
+            log('Unregistering dialog', { id });
+            set({ dialogs: new Map(dialogs) });
+          }
+        },
+      };
+    },
+  });
+}
+
+type OutletStoreMethods = {
+  register(id: string, node: ReactNode): void;
+  unregister(id: string): void;
+};
+
+/**
+ * Scoped outlet that renders the dialogs of every descendant `useDialog` call, so nothing has to
+ * place `{dialog.Dialog}` in JSX. Inside one a dialog registers here instead and its `Dialog` becomes
+ * `null` — destructuring still works, it renders nothing. Outlets nest: the nearest wins.
+ * @example
+ * ```tsx
+ * function App() {
+ *   // Dialogs opened anywhere below render here.
+ *   return (
+ *     <DialogOutlet>
+ *       <Dashboard />
+ *     </DialogOutlet>
+ *   );
+ * }
+ *
+ * function Dashboard() {
+ *   const { open } = useDialog({ id: 'info', render: () => <div>Hello</div> });
+ *   // No need to render `Dialog` — the outlet handles it.
+ *   return (
+ *     <button
+ *       onClick={() => {
+ *         void open();
+ *       }}
+ *     >
+ *       Open
+ *     </button>
+ *   );
+ * }
+ * ```
+ */
+export function DialogOutlet({ children }: { readonly children: ReactNode }) {
+  // Created once with the store so its identity is stable: a fresh context object per render would
+  // re-render every descendant `useDialog`, which re-registers, which is a loop.
+  const [init] = useState(() => {
+    const store = createOutletStore();
+    const ctx: DialogOutletContextValue = {
+      register: (id, node) => {
+        store.register(id, node);
+      },
+      unregister: (id) => {
+        store.unregister(id);
+      },
+    };
+    return { store, ctx };
+  });
+
+  // Server-readable for the reason on `useDialog`: the outlet's store is built above and holds no DOM.
+  const snapshot = useSyncExternalStore(
+    init.store.subscribe,
+    init.store.getSnapshot,
+    init.store.getSnapshot
+  );
+
+  return (
+    <DialogOutletContext value={init.ctx}>
+      {children}
+      {Array.from(snapshot.dialogs.entries(), ([id, node]) => {
+        return <Fragment key={id}>{node}</Fragment>;
+      })}
+    </DialogOutletContext>
+  );
+}

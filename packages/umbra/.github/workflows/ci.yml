@@ -1,0 +1,241 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - 'release/**'
+      - 'hotfix/**'
+  pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
+
+jobs:
+  # ── Install ──────────────────────────────────────────────────────────────────
+  # Fills the node_modules cache the other jobs restore from. The Node version and the cache key
+  # live in `.github/actions/setup`, so they cannot disagree between jobs. The checkout stays in
+  # the job: a local action is read out of the workspace, so it has to be cloned first.
+  #
+  # Yarn 4 is resolved through Corepack from the `packageManager` field, so the version is pinned
+  # by the repo rather than by the runner image.
+  install:
+    name: Install
+    runs-on: ubuntu-latest
+    # Published so `test-component` can pin its container to the very version of Playwright
+    # this repo depends on. A hand-written tag drifts silently the moment the dependency is
+    # bumped, and the mismatch surfaces as a confusing driver/browser error.
+    outputs:
+      playwright-version: ${{ steps.playwright-version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup
+      - name: Resolve the Playwright version
+        id: playwright-version
+        # Strips any range prefix, so a `^1.62.1` still yields a usable image tag.
+        run: |
+          version=$(node -p "require('./package.json').devDependencies['@playwright/test'].replace(/^[^0-9]*/, '')")
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "Playwright $version"
+
+  # ── Lint & Format ────────────────────────────────────────────────────────────
+  # `yarn lint` is `oxlint --type-aware`: the type-aware half runs through tsgolint, which is
+  # built on the TypeScript 7 compiler, so the linter and `tsc` are the same compiler generation.
+  # `--deny-warnings` because `yarn check` and `yarn verify:all` both use it — a CI looser than the
+  # local gate lets through exactly what the local gate was written to stop.
+  lint:
+    name: Lint & Format
+    needs: install
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup
+      - run: yarn lint --deny-warnings
+      - run: yarn format:check
+
+  # ── Type Check ───────────────────────────────────────────────────────────────
+  type-check:
+    name: Type Check
+    needs: install
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup
+      - run: yarn type-check
+
+  # ── Unit Tests ───────────────────────────────────────────────────────────────
+  # Pure Node — no browser launched. PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD keeps the
+  # install from fetching browser binaries here.
+  test-unit:
+    name: Unit Tests (${{ matrix.shard }})
+    needs: install
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: ['1/3', '2/3', '3/3']
+    env:
+      PLAYWRIGHT_SHARD: ${{ matrix.shard }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup
+      - run: yarn test:unit:shard
+
+  # ── Component Tests ──────────────────────────────────────────────────────────
+  # Runs inside the official Playwright image — browsers are pre-installed. The tag is derived
+  # from `@playwright/test` in package.json by the install job, so bumping the dependency moves
+  # the container with it.
+  #
+  # **One job per engine**, and the split buys two different things. The suite is the long pole of
+  # this pipeline — 951 tests on one worker, 7 min 52 s serial — so three runners take it to three
+  # (measured: Chromium 2:22, WebKit 2:40, Gecko 3:00), and the whole run from 9:11 to 4:34. And the
+  # engines genuinely disagree: a focus assertion has already been green on
+  # Chromium and red on WebKit, which in a single job is one line buried in a 951-test log and here is
+  # a job name.
+  #
+  # `fail-fast: false` for the same reason. Cancelling the others the moment one goes red would
+  # throw away exactly the comparison that makes a cross-engine run worth paying for — "which engines
+  # disagree" is the question, and a cancelled leg cannot answer it.
+  #
+  # The touch legs are the same Chromium and WebKit with a touchscreen, running the `@touch` set
+  # and nothing else. A finger is not a small mouse — a press that moves is cancelled rather than
+  # released — and the dismissal paths wait on a release, so the desktop legs cannot answer for them.
+  # They are short (a handful of tests) and are legs rather than an append to an existing one,
+  # because one project per invocation is what keeps this suite from going flaky.
+  #
+  # `focus` is the last leg and the one that cannot share: a browser dispatches `blur` and
+  # `focusout` only while the document holds the focus, so those tests run on a single worker. It
+  # is here rather than local-only because a suite nothing runs is a suite nothing defends.
+  test-component:
+    name: Component Tests (${{ matrix.browser }})
+    needs: install
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit, touch, touch-webkit, focus]
+    container:
+      image: mcr.microsoft.com/playwright:v${{ needs.install.outputs.playwright-version }}-noble
+      options: --user 1001
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+      # No corepack here, so `.github/actions/setup` does not apply. The container runs as an
+      # unprivileged user (`--user 1001`) and `corepack enable` symlinks into /usr/bin, which fails
+      # with EACCES. Nothing is lost by skipping it: the repo commits its own Yarn release
+      # (`.yarn/releases` is excluded from .gitignore on purpose) and `.yarnrc.yml` points at it, so
+      # invoking that file directly pins the version by the repo exactly as corepack would — the
+      # same order of preference `deploy-playground.mjs` uses. Read from `.yarnrc.yml` rather than
+      # hard-coded, so a `yarn set version` bump moves CI with it.
+      - name: Resolve the vendored Yarn
+        id: yarn
+        run: |
+          bin=$(node -e "console.log(require('fs').readFileSync('.yarnrc.yml','utf8').match(/yarnPath:\s*(\S+)/)[1])")
+          echo "bin=$bin" >> "$GITHUB_OUTPUT"
+          echo "Yarn at $bin"
+      - run: node ${{ steps.yarn.outputs.bin }} install --immutable
+      - run: node ${{ steps.yarn.outputs.bin }} test:component:${{ matrix.browser }}
+      # Only when something failed. The report earns its keep on a red run — it carries the trace
+      # `on-first-retry` recorded, which is the difference between reading a failure and
+      # reproducing it — and on a green one it is an artifact nobody opens.
+      - name: Upload component test report
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          # Per engine, or the legs collide on one artifact name and the upload fails.
+          name: component-test-report-${{ matrix.browser }}
+          path: playwright-report/
+          if-no-files-found: ignore
+          retention-days: 7
+
+  # ── Build ────────────────────────────────────────────────────────────────────
+  build:
+    name: Build
+    needs: install
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup
+      - run: yarn build
+      # The build only proves tsc exited 0. These prove the *artifact*: that both entry points
+      # resolve for an outside consumer, that the root pulls no React, and that every relative
+      # specifier in the emitted .d.ts carries an extension.
+      - run: yarn verify:package
+      # Builds the playground, which runs typedoc through its own plugin — the gate that fails
+      # when a new public export has no category in the API reference.
+      - run: yarn playground:build
+      # And the hash-router build, which is the artifact that actually deploys. The two differ
+      # in how the router reads a URL, so a breakage confined to the hash history ships
+      # undetected if only the browser-history build is ever compiled.
+      - run: yarn playground:build:file
+
+  # ── Playground Smoke ─────────────────────────────────────────────────────────
+  # Renders the app in a real browser: every route the sidebar advertises, then the interaction
+  # flows. It is the only job that loads the playground at all — `yarn test` covers `src/` and
+  # never mounts a page, so a route that throws in the console, an example registered but placed
+  # on no page, or a `position: sticky` that silently stopped sticking all pass everything else.
+  #
+  # Runs in both themes because the palette is the mascot's and dark mode is not a filter over
+  # light: `secondary` there is the same value as the page background, which is how a badge came
+  # to be drawn in its own background colour.
+  smoke:
+    name: Playground Smoke
+    needs: install
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v${{ needs.install.outputs.playwright-version }}-noble
+      options: --user 1001
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+      # No corepack — same reason as `test-component`: the container runs unprivileged and the
+      # repo vendors its own Yarn release, which `.yarnrc.yml` points at.
+      - name: Resolve the vendored Yarn
+        id: yarn
+        run: |
+          bin=$(node -e "console.log(require('fs').readFileSync('.yarnrc.yml','utf8').match(/yarnPath:\s*(\S+)/)[1])")
+          echo "bin=$bin" >> "$GITHUB_OUTPUT"
+      - run: node ${{ steps.yarn.outputs.bin }} install --immutable
+      - run: node ${{ steps.yarn.outputs.bin }} playground:build
+      # `preview` serves the built bundle on :3000. Backgrounded, then polled — a fixed sleep is
+      # either a flake or wasted minutes, and the poll fails with the server's own log rather
+      # than as a 30-second Playwright timeout with nothing to read.
+      - name: Serve the playground
+        run: |
+          node ${{ steps.yarn.outputs.bin }} playground:preview > preview.log 2>&1 &
+          for i in $(seq 1 60); do
+            if curl -sfo /dev/null http://localhost:3000/; then
+              echo "up after ${i}s"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "preview never came up:"
+          cat preview.log
+          exit 1
+      - run: node ${{ steps.yarn.outputs.bin }} smoke
+      - run: node ${{ steps.yarn.outputs.bin }} smoke --theme dark
+
+  # ── Docs ─────────────────────────────────────────────────────────────────────
+  # `docs:check` runs typedoc with treatWarningsAsErrors — a broken {@link} or a public
+  # signature naming an unexported type fails here. `docs:examples` extracts every JSDoc
+  # @example to a real module and runs oxfmt, tsc and oxlint over it.
+  docs:
+    name: Docs
+    needs: install
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup
+      - run: yarn docs:check
+      - run: yarn docs:examples

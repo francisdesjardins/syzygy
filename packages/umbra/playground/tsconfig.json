@@ -1,0 +1,28 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    // The playground emits no declarations, and requiring them makes any component built from
+    // a third-party generic (a styled TanStack `Link`) unnameable: TS2883.
+    "declaration": false,
+    "declarationMap": false,
+    "rootDir": "..",
+    "paths": {
+      "*": ["./*"],
+      "umbra": ["../src"],
+      "umbra/*": ["../src/*"],
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": [
+    "src/**/*",
+    "vite.config.ts",
+    "vite-plugins/**/*",
+    "mfe-src/**/*",
+    // The `/stories` page renders the library's own CT harnesses, and the code viewer shows
+    // their source. They are reached through the `umbra/*` alias rather than a `../../../../..`
+    // climb, so moving a story inside `src/` is a one-line change here instead of forty.
+    "../src/**/__tests__/*.story.tsx"
+  ],
+  "exclude": ["node_modules", "dist"]
+}
