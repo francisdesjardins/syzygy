@@ -1,5 +1,6 @@
-import react from "@vitejs/plugin-react";
-import { defineConfig } from "vite";
+import react from '@vitejs/plugin-react';
+import { defineConfig } from 'vite';
+import type { ViteDevServer } from 'vite';
 
 /**
  * Serve an assembled playground in dev the way Cloudflare serves it in production.
@@ -13,11 +14,12 @@ import { defineConfig } from "vite";
  * packages behind them are called.
  */
 const playgroundRewrites = {
-  name: "playground-rewrites",
-  configureServer(server: import("vite").ViteDevServer): void {
+  name: 'playground-rewrites',
+  configureServer(server: ViteDevServer): void {
+    // eslint-disable-next-line max-params -- connect's middleware arity is the framework's.
     server.middlewares.use((req, _res, next) => {
       if (req.url) {
-        req.url = req.url.replace(/^(\/playground\/(?:dialog|boot)\/)(\?.*)?$/, "$1index.html$2");
+        req.url = req.url.replace(/^(\/playground\/(?:dialog|boot)\/)(\?.*)?$/, '$1index.html$2');
       }
       next();
     });
@@ -27,20 +29,20 @@ const playgroundRewrites = {
 export default defineConfig({
   plugins: [react(), playgroundRewrites],
   build: {
-    target: "es2024",
-    minify: "oxc",
+    target: 'es2024',
+    minify: 'oxc',
     sourcemap: false,
     rolldownOptions: {
       output: {
         manualChunks(id: string): string | undefined {
-          if (id.includes("node_modules/react-dom") || id.includes("node_modules/react/")) {
-            return "vendor";
+          if (id.includes('node_modules/react-dom') || id.includes('node_modules/react/')) {
+            return 'vendor';
           }
           if (
-            id.includes("node_modules/@mui/material") ||
-            id.includes("node_modules/@mui/icons-material")
+            id.includes('node_modules/@mui/material') ||
+            id.includes('node_modules/@mui/icons-material')
           ) {
-            return "mui";
+            return 'mui';
           }
           return undefined;
         },

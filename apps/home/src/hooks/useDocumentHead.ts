@@ -5,7 +5,7 @@
  * Automatically updates document.title and meta tags based on configuration.
  */
 
-import { useEffect } from "react";
+import { useEffect } from 'react';
 
 /**
  * Configuration for document head elements
@@ -63,16 +63,16 @@ export function useDocumentHead(config: DocumentHeadConfig): void {
 
     // Meta tag configuration mapping
     const metaConfig: Array<{
-      attribute: "name" | "property";
+      attribute: 'name' | 'property';
       key: string;
       content: string | undefined;
     }> = [
-      { attribute: "name", key: "description", content: config.description },
-      { attribute: "name", key: "keywords", content: config.keywords },
-      { attribute: "property", key: "og:title", content: config.ogTitle },
-      { attribute: "property", key: "og:description", content: config.ogDescription },
-      { attribute: "property", key: "og:image", content: config.ogImage },
-      { attribute: "property", key: "og:type", content: config.ogType },
+      { attribute: 'name', key: 'description', content: config.description },
+      { attribute: 'name', key: 'keywords', content: config.keywords },
+      { attribute: 'property', key: 'og:title', content: config.ogTitle },
+      { attribute: 'property', key: 'og:description', content: config.ogDescription },
+      { attribute: 'property', key: 'og:image', content: config.ogImage },
+      { attribute: 'property', key: 'og:type', content: config.ogType },
     ];
 
     // Create or update meta tags
@@ -81,12 +81,14 @@ export function useDocumentHead(config: DocumentHeadConfig): void {
         return;
       }
 
-      // Try to find existing tag
-      let tag = document.querySelector(`meta[${attribute}="${key}"]`) as HTMLMetaElement;
+      // `querySelector` answers null when the tag is absent, and that is precisely the branch
+      // below that creates one. Asserting the element type erased the null from the signature, so
+      // the check read as dead code to anything type-aware while it went on running.
+      let tag = document.querySelector<HTMLMetaElement>(`meta[${attribute}="${key}"]`);
 
       if (!tag) {
         // Create new tag if it doesn't exist
-        tag = document.createElement("meta");
+        tag = document.createElement('meta');
         tag.setAttribute(attribute, key);
         document.head.appendChild(tag);
         createdTags.push(tag);
@@ -98,11 +100,11 @@ export function useDocumentHead(config: DocumentHeadConfig): void {
 
     // Handle canonical link
     if (config.canonical) {
-      let canonicalLink = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
+      let canonicalLink = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
 
       if (!canonicalLink) {
-        canonicalLink = document.createElement("link");
-        canonicalLink.rel = "canonical";
+        canonicalLink = document.createElement('link');
+        canonicalLink.rel = 'canonical';
         document.head.appendChild(canonicalLink);
         createdTags.push(canonicalLink);
       }

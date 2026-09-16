@@ -1,9 +1,9 @@
-import Brightness4Icon from "@mui/icons-material/Brightness4";
-import Brightness7Icon from "@mui/icons-material/Brightness7";
-import { IconButton } from "@mui/material";
-import { memo } from "react";
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
+import IconButton from '@mui/material/IconButton';
+import { memo } from 'react';
 
-import { useTheme } from "../hooks/useTheme";
+import { useTheme } from '../hooks/useTheme';
 
 const ThemeSwitch = memo(() => {
   const { isDarkMode, toggle } = useTheme();
@@ -13,12 +13,12 @@ const ThemeSwitch = memo(() => {
       onClick={toggle}
       color="inherit"
       aria-label="toggle theme mode"
-      sx={{ bgcolor: "background.default", "&:hover": { bgcolor: "action.hover" } }}
+      sx={{ bgcolor: 'background.default', '&:hover': { bgcolor: 'action.hover' } }}
     >
       {isDarkMode ? <Brightness7Icon /> : <Brightness4Icon />}
     </IconButton>
   );
 });
 
-ThemeSwitch.displayName = "ThemeSwitch";
+ThemeSwitch.displayName = 'ThemeSwitch';
 export default ThemeSwitch;

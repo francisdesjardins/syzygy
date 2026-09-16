@@ -2237,6 +2237,7 @@ __metadata:
     i18next-browser-languagedetector: "npm:^8.2.1"
     oxfmt: "npm:0.68.0"
     oxlint: "npm:^1.82.0"
+    oxlint-tsgolint: "npm:7.0.2001"
     penumbra: "workspace:^"
     react: "npm:^19.3.0"
     react-dom: "npm:^19.3.0"

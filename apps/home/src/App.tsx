@@ -1,12 +1,13 @@
-import { CssBaseline, ThemeProvider } from "@mui/material";
-import { useEffect } from "react";
-import type { JSX } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { useTranslation } from "react-i18next";
+import CssBaseline from '@mui/material/CssBaseline';
+import { ThemeProvider } from '@mui/material/styles';
+import { useEffect } from 'react';
+import type { JSX } from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
-import { useTheme } from "./hooks/useTheme";
-import { MainLayout } from "./layouts/MainLayout";
-import { Home } from "./pages/Home";
+import { useTheme } from './hooks/useTheme';
+import { MainLayout } from './layouts/MainLayout';
+import { Home } from './pages/Home';
 
 /**
  * One route, and the page behind it is imported rather than lazily loaded.

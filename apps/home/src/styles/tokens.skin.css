@@ -14,7 +14,7 @@
  */
 
 :root {
-  --app-font-display: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
-  --app-font-body: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
-  --app-font-mono: ui-monospace, "Cascadia Code", "SF Mono", Menlo, Consolas, monospace;
+  --app-font-display: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+  --app-font-body: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+  --app-font-mono: ui-monospace, 'Cascadia Code', 'SF Mono', Menlo, Consolas, monospace;
 }

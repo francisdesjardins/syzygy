@@ -1,3 +1,7 @@
+/* eslint-disable no-console -- this module exists to report unhandled rejections, and the
+   console is where an unhandled rejection is reported. A logger that cannot log is the
+   failure this file was written to prevent. */
+
 interface HandleMisusedPromiseOptions {
   /** Custom error handler function */
   onError?: (error: unknown, context?: string) => void;
@@ -35,19 +39,19 @@ interface HandleMisusedPromiseOptions {
  */
 export const handleMisusedPromise = <TArgs extends unknown[], TReturn>(
   promiseFn: (...args: TArgs) => Promise<TReturn>,
-  options: HandleMisusedPromiseOptions = {},
+  options: HandleMisusedPromiseOptions = {}
 ) => {
   const {
     onError,
     context,
-    logErrors = process.env.NODE_ENV === "development",
+    logErrors = process.env.NODE_ENV === 'development',
     rethrow = false,
   } = options;
 
   return (...args: TArgs): void => {
     promiseFn(...args).catch((error: unknown) => {
       // Enhanced error information
-      const errorContext = context ? `[${context}]` : "[Promise Handler]";
+      const errorContext = context ? `[${context}]` : '[Promise Handler]';
       const errorMessage = error instanceof Error ? error.message : String(error);
 
       // Log to console if enabled
