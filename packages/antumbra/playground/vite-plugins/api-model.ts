@@ -371,7 +371,7 @@ export type ApiSymbol = {
   /** `specifier#name` — see {@link symbolKey}. */
   readonly key: string;
   readonly name: string;
-  readonly kind: 'function' | 'variable' | 'type';
+  readonly kind: 'function' | 'variable' | 'type' | 'class';
   /** Which page it lives on — the `id` of its {@link ApiCategory}. */
   readonly category: string;
   readonly specifier: string;

@@ -9,6 +9,7 @@ import type { ApiSymbol } from 'virtual:api-model';
 const KIND = {
   function: { label: 'fn', tone: 'primary' },
   variable: { label: 'const', tone: 'success' },
+  class: { label: 'class', tone: 'warn' },
   type: { label: 'type', tone: 'neutral' },
 } as const;
 
