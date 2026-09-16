@@ -1,143 +1,74 @@
-import styles from '@/pages/home/ui/HomePage.module.css';
-import { useTheme } from '@/shared/lib/theme-context';
-import { AppButton, appButtonClass } from '@/shared/ui/AppButton';
-import { CodeBlock } from '@/shared/ui/CodeBlock/CodeBlock';
-import { MoonPhase, type Phase } from '@/shared/ui/MoonPhase';
-import { UmbraMoon } from '@/shared/ui/PeekingMoon/UmbraMoon';
 import { Link } from '@tanstack/react-router';
-import { useState } from 'react';
-import { Key, useMessageDialog } from 'umbra/react';
+import { useTheme } from '@/shared/lib/theme-context';
+import { UmbraMoon } from '@/shared/ui/UmbraMoon';
+import { appButtonClass } from '@/shared/ui/button-recipe';
+import { CodeBlock } from '@/shared/ui/CodeBlock';
+import styles from '@/pages/home/ui/HomePage.module.css';
 
 const REPO = 'https://github.com/francisdesjardins/umbra';
 
-const GETTING_IT = `git clone https://github.com/francisdesjardins/umbra.git
-cd umbra && yarn install && yarn dev
+const GETTING_IT = `# Not published. Lift the source, or point a dependency at the commit.
+git clone ${REPO}
+cd umbra && corepack enable && yarn install`;
 
-# Or lift what you need out of src/ — plain TypeScript, MIT, no ceremony.
-import { dialogManager } from 'umbra';   // the root: no framework needed
-import { useDialog } from 'umbra/react';  // the React binding
-import { useDialog } from 'umbra/solid';  // …or the Solid one, same surface
-import { bindDialog } from 'umbra/vanilla'; // …or none: drive your own <dialog>`;
+const HELLO = `import { createBootstrap, defineStep } from 'umbra';
 
-const HELLO = `// The first type argument is what this dialog closes *with*; the second, the
-// reasons it may close for. Both come back to \`onClose\`, both are exhaustive.
-const dialog = useDialog<{ remember: boolean }, 'confirm' | 'cancel'>({
-  id: 'hello',
-  ariaLabel: 'Hello',
-  // Every field an action returns is a DOM prop, so this spread fits a bare
-  // <button>, MUI's, or your own. Running state rides as \`data-loading\`.
-  render: ({ action }) => (
-    <>
-      <label>
-        <input
-          type="checkbox"
-          checked={remember}
-          onChange={(e) => setRemember(e.target.checked)}
-        />
-        Remember this
-      </label>
-      <button {...action('cancel', { focusOnOpen: true })}>Not now</button>
-      <button
-        {...action('confirm', {
-          hotkey: Key.Enter,
-          // A handler is what carries a payload out; without one an action just
-          // closes with its own reason.
-          onAction: (close) => close({ remember }),
-        })}
-      >
-        Confirm
-      </button>
-    </>
-  ),
-  // reason: 'confirm' | 'cancel' | 'dismiss' — data: { remember: boolean } | undefined,
-  // undefined being the honest answer for a dismissal nobody handed anything to.
-  onClose: ({ reason, data }) => report(reason, data?.remember),
-});`;
+const boot = createBootstrap({
+  steps: [
+    defineStep({
+      id: 'session',
+      timeout: 3000,
+      run: async (ctx) => {
+        const session = await validateToken(ctx.signal);
+        if (session === null) {
+          ctx.intent('redirect:sign-in', { returnTo: location.pathname });
+          return ctx.block('No session.');
+        }
+        return session;
+      },
+    }),
+    // Both need the session and nothing else, so both go out together. You did
+    // not ask for that and there is no flag for it: the graph already said so.
+    defineStep({ id: 'access', needs: ['session'], run: readAccess }),
+    defineStep({ id: 'config', needs: ['session'], optional: true, run: readConfig }),
+  ],
+});
 
-/** What the site says before it starts explaining: what this is, how to get it, and one live dialog. */
-export const HomePage = () => {
+const outcome = await boot.run();
+if (outcome.status === 'ready' || outcome.status === 'degraded') {
+  mountTheApp(outcome.data);
+}`;
+
+const NEXT = [
+  {
+    to: '/getting-started',
+    title: 'Start here',
+    body: 'Five steps, the graph they imply, and the run against a clock — with switches that break things on purpose.',
+  },
+  {
+    to: '/microfrontends',
+    title: 'More than one module',
+    body: 'Four fragments on one page, one carrying its own compiled copy of the library and sharing anyway.',
+  },
+  {
+    to: '/single-spa',
+    title: 'Inside a host that already exists',
+    body: 'A root config that runs the bootstrap before start(), and two applications that get what they need two different ways.',
+  },
+  {
+    to: '/api',
+    title: 'API reference',
+    body: 'Every export, generated from the JSDoc the gate validates.',
+  },
+] as const;
+
+/** Where a reader lands: what the library is for, and the shapes the rest of the site takes. */
+export function HomePage() {
   const { scheme } = useTheme();
-
-  const [lastClose, setLastClose] = useState<string | null>(null);
-  // The value the dialog produces, which is the whole reason a close carries a payload: `reason`
-  // says which door, `data` says what came through it.
-  const [remember, setRemember] = useState(false);
-
-  const hello = useMessageDialog({
-    id: 'home-hello',
-    ariaLabelledBy: 'home-hello-title',
-    onClose: (result) => {
-      // Shows the panel's claim rather than asserting it: the reason is typed and exhaustive, and
-      // the contract correlates the two — only `confirm` has a payload, and there it is not optional.
-      switch (result.reason) {
-        case 'confirm':
-          setLastClose(`confirm · data.remember === ${String(result.data.remember)}`);
-          return;
-        case 'cancel':
-          setLastClose('cancel · no data — nothing was confirmed');
-          return;
-        case 'dismiss':
-          setLastClose('dismiss (Escape or the backdrop) · no data');
-          return;
-      }
-    },
-    render: ({ action }) => {
-      return (
-        // The library ships no UI: unstyled, a dialog is text on the backdrop. Consumers bring
-        // this, front page included.
-        <div className={styles['helloCard']}>
-          <h6 id="home-hello-title" className={styles['helloTitle']}>
-            This is the whole thing
-          </h6>
-          <p className={styles['helloBody']}>
-            A native <code>&lt;dialog&gt;</code> in the top layer, animated by CSS you wrote, closed
-            with a reason your <code>onClose</code> can switch on exhaustively. Focus starts on{' '}
-            <em>Not now</em> because that action asked for it. <kbd>Enter</kbd> confirms,{' '}
-            <kbd>Escape</kbd> dismisses.
-          </p>
-          <label className={styles['helloRemember']}>
-            <input
-              type="checkbox"
-              className={styles['helloCheckbox']}
-              checked={remember}
-              onChange={(event) => {
-                setRemember(event.target.checked);
-              }}
-            />
-            Remember this choice
-          </label>
-          <div className={styles['helloFooter']}>
-            <button
-              className={appButtonClass({ size: 'small' })}
-              {...action('cancel', { focusOnOpen: true })}
-            >
-              Not now
-            </button>
-            {/* No `onClick` of our own: after the spread it would replace the action's and the
-                action would never run. The payload rides on `onAction`, which is the only door
-                out — an action without one closes carrying its reason and nothing else. */}
-            <button
-              className={appButtonClass({ variant: 'contained', size: 'small' })}
-              {...action('confirm', {
-                hotkey: Key.Enter,
-                onAction: (close) => {
-                  close({ remember });
-                },
-              })}
-            >
-              Confirm
-            </button>
-          </div>
-        </div>
-      );
-    },
-  });
 
   return (
     <div className={styles['page']}>
-      {/* Hero */}
       <div className={styles['hero']}>
-        {/* The corona clipping arrangement is explained beside the classes in the CSS module. */}
         <div className={styles['heroArt']}>
           <div className={styles['heroArtDisc']}>
             <UmbraMoon isDark={scheme === 'dark'} breathing />
@@ -146,73 +77,58 @@ export const HomePage = () => {
 
         <div className={styles['heroText']}>
           <h1 className={styles['heroTitle']}>
-            {/* Sized to the heading's two steps: the mark is part of the lockup, not a bullet. */}
-            <span className={styles['markWide']}>
-              <MoonPhase phase="first-quarter" size={40} />
-            </span>
-            <span className={styles['markNarrow']}>
-              <MoonPhase phase="first-quarter" size={28} />
-            </span>
+            <span className={`${styles['mark']} ${styles['markWide']}`} aria-hidden="true" />
+            <span className={`${styles['mark']} ${styles['markNarrow']}`} aria-hidden="true" />
             Umbra
           </h1>
-          <p className={styles['heroSubtitle']}>Headless dialogs on the native top layer.</p>
-          <p className={styles['heroBody']}>
-            A dialog manager whose core is plain TypeScript — it resolves and runs with no framework
-            installed at all. React and Solid ship as two bindings over it with the same surface —
-            same hooks, same options, same typed close — and vanilla as a third that renders
-            nothing: a controller for a &lt;dialog&gt; you wrote yourself. Zero UI components either
-            way: the markup, the animation and the styling stay yours.
+          <p className={styles['heroSubtitle']}>
+            Bootstrap orchestration for an application made of modules.
           </p>
           <p className={styles['heroBody']}>
-            Two rules sit above every dialog in a project rather than at each call site:{' '}
-            <code>prioritize</code> decides who is in front, <code>gate</code> decides whether an
-            open happens at all. And an app that declares its dialogs in one interface gets its ids
-            checked and its close payloads correlated — the dialog on this page is declared that
-            way, which is why the <code>switch</code> in the snippet below is exhaustive.
+            Applications start the same way, whatever they run on: validate a token, check what this
+            caller may do, fetch what the first screen — or the first request — will ask for, then
+            decide whether to start at all. Almost nobody orchestrates it, and the two usual shapes
+            are both bad — a chain of awaits where each call waits on one that had nothing to do
+            with it, or a block of promises nobody awaits, with no status and no failure handling.
           </p>
-
-          {lastClose ? <span className={styles['lastClose']}>onClose → {lastClose}</span> : null}
+          <p className={styles['heroBody']}>
+            umbra takes that work, derives the parallelism from the dependencies you declared, and
+            hands back a typed result — plus the two things a bootstrap always produces and nobody
+            has anywhere to put: the facts it recorded on the way, and the UI work it could not do
+            itself.
+          </p>
 
           <div className={styles['chipRow']}>
             <span className={styles['chip']}>0 runtime dependencies</span>
-            <span className={styles['chip']}>native &lt;dialog&gt;</span>
-            <span className={styles['chip']}>typed close payloads</span>
-            <span className={styles['chip']}>React · Solid · vanilla</span>
-            <span className={styles['chip']}>React Compiler ready</span>
-            {/* "Measured" is the claim, not "accessible": the README's Accessibility chapter and
-                the WCAG rows of the compatibility matrix cite the test behind each cell. */}
-            <span className={styles['chip']}>WCAG 2.2 · measured</span>
-            {/* Derived from what the code calls, not picked — the accounting is in the README. */}
-            <span className={styles['chip']}>Chrome 110 · Safari 16.4 · Firefox 115 *</span>
+            <span className={styles['chip']}>no framework in the core</span>
+            <span className={styles['chip']}>React · Solid · plain</span>
+            <span className={styles['chip']}>parallelism derived, never declared</span>
+            <span className={styles['chip']}>typed outcome by augmentation</span>
+            <span className={styles['chip']}>two phases, typed apart</span>
+            <span className={styles['chip']}>Node 24 · ES2023 *</span>
           </div>
-          {/* The floor is what the library *calls*; this is the one thing it *asks* for and does
-              not require. Numbers from the enhancing row in the compatibility matrix. */}
+
           <p className={styles['floorNote']}>
-            * Every focus move is in that floor. The <em>ring</em> on a focus the library made asks
-            for <code>FocusOptions.focusVisible</code> — Chrome 145, Safari 18.4. Below it modality
-            decides: a dialog opened from the keyboard still rings, one opened by pointer does not,
-            except on WebKit, which rings either way.
+            * The floor is the toolchain's, not the library's: the published bundle is plain ES
+            modules with no runtime dependency to pin anyone to a version.{' '}
+            <code>scope: 'shared'</code> keys its registry off <code>Symbol.for</code> on{' '}
+            <code>globalThis</code>, which is the one global this package uses and the reason a
+            second compiled copy still shares.
           </p>
 
           <div className={styles['ctaRow']}>
-            <AppButton
-              variant="contained"
-              onClick={async () => {
-                // Cleared together, so each run starts from the same place and the readout below
-                // is always about the open the visitor just watched.
-                setLastClose(null);
-                setRemember(false);
-                await hello.open();
-              }}
-            >
-              Open a dialog
-            </AppButton>
-            {/* Real anchors wearing the button recipe: a button-with-navigate would drop new-tab
-                and copy-link. */}
-            <Link to="/getting-started" className={appButtonClass({ variant: 'outlined' })}>
-              Get started
+            <Link to="/getting-started" className={appButtonClass({ variant: 'contained' })}>
+              Watch a run
             </Link>
-            <a href={REPO} target="_blank" rel="noreferrer" className={appButtonClass()}>
+            <Link to="/api" className={appButtonClass({ variant: 'outlined' })}>
+              The reference
+            </Link>
+            <a
+              href={REPO}
+              target="_blank"
+              rel="noreferrer"
+              className={appButtonClass({ variant: 'outlined' })}
+            >
               GitHub
             </a>
           </div>
@@ -223,55 +139,27 @@ export const HomePage = () => {
       <div className={styles['snippets']}>
         <div className={styles['snippet']}>
           <p className={styles['overline']}>
-            <MoonPhase phase="first-quarter" size={14} />
+            <span className={styles['overlineMark']} aria-hidden="true" />
             Getting it
           </p>
-          <CodeBlock code={GETTING_IT} language="bash" />
+          <CodeBlock source={GETTING_IT} language="bash" />
         </div>
         <div className={styles['snippet']}>
           <p className={styles['overline']}>
-            <MoonPhase phase="last-quarter" size={14} />
-            The whole API of a confirm dialog
+            <span className={styles['overlineMark']} aria-hidden="true" />
+            The whole API of a three-step bootstrap
           </p>
-          <CodeBlock code={HELLO} language="tsx" />
+          <CodeBlock source={HELLO} language="tsx" />
         </div>
       </div>
 
       {/* Where to go next — the three things worth seeing first. */}
       <div className={styles['nextRow']}>
-        {(
-          [
-            {
-              to: '/getting-started',
-              phase: 'full',
-              title: 'Start here',
-              body: 'Open, render, close — and the typed reason that comes back.',
-            },
-            {
-              to: '/showcases',
-              phase: 'first-quarter',
-              title: 'Stacking and focus',
-              body: 'One Escape closes one dialog; a shared hotkey fires at one level only.',
-            },
-            {
-              to: '/api',
-              phase: 'last-quarter',
-              title: 'API reference',
-              body: 'Generated from the source, so it cannot drift from the code.',
-            },
-            {
-              to: '/interop',
-              phase: 'waning-gibbous',
-              title: 'One manager, four bundles',
-              body: 'React, Solid, vanilla and a web component sharing a single stack.',
-            },
-            // `satisfies`, so each `phase` narrows to its literal instead of widening to `string`.
-          ] satisfies readonly { to: string; phase: Phase; title: string; body: string }[]
-        ).map((card) => {
+        {NEXT.map((card) => {
           return (
             <Link key={card.to} to={card.to} className={styles['nextCard']}>
               <p className={styles['nextTitle']}>
-                <MoonPhase phase={card.phase} size={16} />
+                <span className={styles['nextMark']} aria-hidden="true" />
                 {card.title}
               </p>
               <p className={styles['nextBody']}>{card.body}</p>
@@ -279,27 +167,6 @@ export const HomePage = () => {
           );
         })}
       </div>
-
-      {/* Decoration, marked as such, and carrying no `opacity`: over `text.secondary` that
-          measured 4.3:1, and an ornament is not worth a contrast exception. `MoonPhase` rather
-          than shade-block glyphs, which carry the sizing problem it exists to solve. */}
-      <div aria-hidden="true" className={styles['moonRow']}>
-        {(
-          [
-            'waxing-crescent',
-            'first-quarter',
-            'waxing-gibbous',
-            'full',
-            'waning-gibbous',
-            'last-quarter',
-            'waning-crescent',
-          ] satisfies readonly Phase[]
-        ).map((phase) => {
-          return <MoonPhase key={phase} phase={phase} size={14} />;
-        })}
-      </div>
-
-      {hello.Dialog}
     </div>
   );
-};
+}

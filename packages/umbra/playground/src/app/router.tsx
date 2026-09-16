@@ -1,5 +1,3 @@
-import { AppRoot } from '@/app/AppRoot';
-import { RoutePending } from '@/app/RoutePending';
 import {
   createHashHistory,
   createRootRoute,
@@ -7,10 +5,15 @@ import {
   createRouter,
   lazyRouteComponent,
 } from '@tanstack/react-router';
+import { AppRoot } from '@/app/AppRoot';
+import { RoutePending } from '@/app/RoutePending';
+import { readScope } from '@/pages/microfrontends/model/scope';
 
-const rootRoute = createRootRoute({
-  component: AppRoot,
-});
+const rootRoute = createRootRoute({ component: AppRoot });
+
+// One `const` per route rather than a helper that builds them. A helper widens the path to `string`
+// in the route tree, and the tree is what types `Link`, `useParams` and `useSearch` — so every
+// caller loses its types and the errors land on the callers rather than on the helper.
 
 const indexRoute = createRoute({
   getParentRoute: () => {
@@ -32,125 +35,28 @@ const gettingStartedRoute = createRoute({
   }, 'GettingStartedPage'),
 });
 
-const apiRoute = createRoute({
-  getParentRoute: () => {
-    return rootRoute;
-  },
-  path: '/api',
-  component: lazyRouteComponent(() => {
-    return import('@/pages/api');
-  }, 'ApiIndexPage'),
-});
-
-// One page per chapter — `/api` itself is the map, not a ninety-symbol list.
-const apiCategoryRoute = createRoute({
-  getParentRoute: () => {
-    return rootRoute;
-  },
-  path: '/api/$category',
-  component: lazyRouteComponent(() => {
-    return import('@/pages/api');
-  }, 'ApiCategoryPage'),
-});
-
-const dialogActionsRoute = createRoute({
-  getParentRoute: () => {
-    return rootRoute;
-  },
-  path: '/dialog-actions',
-  component: lazyRouteComponent(() => {
-    return import('@/pages/dialog-actions');
-  }, 'DialogActionsPage'),
-});
-
-const slideDialogRoute = createRoute({
-  getParentRoute: () => {
-    return rootRoute;
-  },
-  path: '/slide-dialog',
-  component: lazyRouteComponent(() => {
-    return import('@/pages/slide-dialog');
-  }, 'SlideDialogPage'),
-});
-
-const stackingRoute = createRoute({
-  getParentRoute: () => {
-    return rootRoute;
-  },
-  path: '/stacking',
-  component: lazyRouteComponent(() => {
-    return import('@/pages/stacking');
-  }, 'StackingPage'),
-});
-
-const imperativeRoute = createRoute({
-  getParentRoute: () => {
-    return rootRoute;
-  },
-  path: '/imperative',
-  component: lazyRouteComponent(() => {
-    return import('@/pages/imperative');
-  }, 'ImperativePage'),
-});
-
-const interopRoute = createRoute({
-  getParentRoute: () => {
-    return rootRoute;
-  },
-  path: '/interop',
-  component: lazyRouteComponent(() => {
-    return import('@/pages/interop');
-  }, 'InteropPage'),
-});
-
-const showcasesRoute = createRoute({
-  getParentRoute: () => {
-    return rootRoute;
-  },
-  path: '/showcases',
-  component: lazyRouteComponent(() => {
-    return import('@/pages/showcases');
-  }, 'ShowcasesPage'),
-});
-
 const microfrontendsRoute = createRoute({
   getParentRoute: () => {
     return rootRoute;
   },
   path: '/microfrontends',
+  // The scope control is a pair of links rather than state, so the setting has to survive in the
+  // address: the page carries a link of its own, inside the frame, next to the number it changes.
+  // Two controls for one setting disagree the moment either is used.
+  validateSearch: readScope,
   component: lazyRouteComponent(() => {
     return import('@/pages/microfrontends');
   }, 'MicrofrontendsPage'),
 });
 
-const uiIntegrationsRoute = createRoute({
+const singleSpaRoute = createRoute({
   getParentRoute: () => {
     return rootRoute;
   },
-  path: '/ui-integrations',
+  path: '/single-spa',
   component: lazyRouteComponent(() => {
-    return import('@/pages/ui-integrations');
-  }, 'UIIntegrationsPage'),
-});
-
-const uiTemplatesRoute = createRoute({
-  getParentRoute: () => {
-    return rootRoute;
-  },
-  path: '/ui-templates',
-  component: lazyRouteComponent(() => {
-    return import('@/pages/ui-templates');
-  }, 'UITemplatesPage'),
-});
-
-const storiesRoute = createRoute({
-  getParentRoute: () => {
-    return rootRoute;
-  },
-  path: '/stories',
-  component: lazyRouteComponent(() => {
-    return import('@/pages/stories');
-  }, 'StoriesPage'),
+    return import('@/pages/single-spa');
+  }, 'SingleSpaPage'),
 });
 
 const designSystemRoute = createRoute({
@@ -163,38 +69,68 @@ const designSystemRoute = createRoute({
   }, 'DesignSystemPage'),
 });
 
+const apiRoute = createRoute({
+  getParentRoute: () => {
+    return rootRoute;
+  },
+  path: '/api',
+  component: lazyRouteComponent(() => {
+    return import('@/pages/api');
+  }, 'ApiIndexPage'),
+});
+
+// One page per chapter — `/api` itself is the map, not a seventy-symbol list.
+const apiCategoryRoute = createRoute({
+  getParentRoute: () => {
+    return rootRoute;
+  },
+  path: '/api/$category',
+  component: lazyRouteComponent(() => {
+    return import('@/pages/api');
+  }, 'ApiCategoryPage'),
+});
+
+const storiesRoute = createRoute({
+  getParentRoute: () => {
+    return rootRoute;
+  },
+  path: '/stories',
+  // The one route with a search parameter of its own, because the component suite addresses a
+  // harness by id.
+  validateSearch: (search: Record<string, unknown>): { story?: string } => {
+    return typeof search['story'] === 'string' ? { story: search['story'] } : {};
+  },
+  component: lazyRouteComponent(() => {
+    return import('@/pages/stories');
+  }, 'StoriesPage'),
+});
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   gettingStartedRoute,
-  dialogActionsRoute,
+  microfrontendsRoute,
+  singleSpaRoute,
+  designSystemRoute,
   apiRoute,
   apiCategoryRoute,
-  slideDialogRoute,
-  stackingRoute,
-  imperativeRoute,
-  interopRoute,
-  showcasesRoute,
-  microfrontendsRoute,
-  uiIntegrationsRoute,
-  uiTemplatesRoute,
-  designSystemRoute,
   storiesRoute,
 ]);
 
-// A `file://` build has no server to rewrite paths, so the single-file bundle needs the hash.
+// A build meant to be opened from a file, or served by a host that rewrites nothing, has no server
+// to map a path onto the bundle — so the whole route moves into the hash.
 const history = import.meta.env['VITE_HASH_ROUTER'] === 'true' ? createHashHistory() : undefined;
 
 export const router = createRouter({
   routeTree,
-  // Route components are lazy, so without `intent` the chunk's round trip sits between click and
-  // first paint; the delay stops a pointer sweeping the sidebar from pulling all twelve.
+  // Route components are lazy, so without `intent` the chunk's round trip sits between the click and
+  // the first paint. The delay stops a pointer sweeping the sidebar from pulling every page.
   defaultPreload: 'intent',
   defaultPreloadDelay: 50,
-  // For what preloading cannot cover (keyboard, touch, a cold link), the default is to hold the
-  // previous page for a full second with nothing saying the click registered.
+  // For what preloading cannot cover — keyboard, touch, a cold link — the default is to hold the
+  // previous page with nothing saying the click registered.
   defaultPendingComponent: RoutePending,
   defaultPendingMs: 150,
-  ...(history ? { history } : {}),
+  ...(history === undefined ? {} : { history }),
 });
 
 declare module '@tanstack/react-router' {

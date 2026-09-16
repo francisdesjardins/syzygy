@@ -1,37 +1,92 @@
+import { Link, useSearch } from '@tanstack/react-router';
+import { useState } from 'react';
 import { ExampleCard, ExampleGrid, ExampleSection } from '@/entities/example';
-import { HostFrame } from '@/pages/microfrontends/examples/host-frame';
+import { AppButton } from '@/shared/ui/AppButton';
+import { appButtonClass } from '@/shared/ui/button-recipe';
+import { DemoControls, DemoFrame, DemoToolbar } from '@/shared/ui/DemoFrame';
 import { PageLayout } from '@/shared/ui/PageLayout';
 import { SectionNav } from '@/shared/ui/SectionNav';
 
+const FRAME_HEIGHT = 500;
+
 const SECTIONS = [
   { id: 'the-demo', label: 'The demo' },
+  { id: 'its-own-copy', label: 'Its own copy' },
   { id: 'the-distribution', label: 'The distribution' },
-  { id: 'the-four-panels', label: 'The four panels' },
 ] as const;
 
-/**
- * Its own page: the frame is the widest thing the playground renders, and one manager across four
- * bindings and a shadow boundary is a peer of stacking, not a card filed under it.
- */
-export const MicrofrontendsPage = () => {
+export function MicrofrontendsPage() {
+  // Read from the address, not from state. The frame carries a link of its own — right beside the
+  // number it changes — and two controls for one setting disagree the moment either is used.
+  const { scope } = useSearch({ from: '/microfrontends' });
+  const [reloadKey, setReloadKey] = useState(0);
+
   return (
     <PageLayout
-      title="Microfrontends"
-      description="One manager, distributed to independently-deployed frontends. Everything below happens inside a frame — a separate document and a separate realm — whose only wiring is an import map: dialogManager is a module-level singleton, so resolving umbra to one shared module is what makes four microfrontends share a registry. Four copies would be four registries, and every request would find nothing."
+      title="Four Fragments"
+      description="A top bar on the React binding, navigation on Solid, a list on the controller binding, and a panel that is a web component behind a shadow root. None of them imports another; what they agree on is three step ids."
     >
       <SectionNav sections={SECTIONS} />
 
       <ExampleSection
         id="the-demo"
         title="The demo"
-        description="Ask across a boundary in any direction, then read the logs. Push Checkout past Billing's approval limit to watch one request cross React, plain JavaScript and Solid in a single trip: Billing refuses through request.refuse and hands the refusal on to Support, which it has never heard of."
+        description="Four fragments all need the session, and three need what the user may reach. With shared scope the first one to ask does it and the rest adopt the answer. Flip it and every fragment does its own."
       >
-        <ExampleGrid columns={1}>
+        <DemoToolbar>
+          <DemoControls label="Step scope">
+            <Link
+              to="/microfrontends"
+              search={{ scope: 'shared' }}
+              className={appButtonClass({ variant: scope === 'shared' ? 'contained' : 'outlined' })}
+            >
+              Share what the page has in common
+            </Link>
+            <Link
+              to="/microfrontends"
+              search={{ scope: 'instance' }}
+              className={appButtonClass({
+                variant: scope === 'instance' ? 'contained' : 'outlined',
+              })}
+            >
+              Every fragment does its own
+            </Link>
+          </DemoControls>
+          <DemoControls label="The frame">
+            <AppButton
+              variant="outlined"
+              onClick={() => {
+                setReloadKey((previous) => {
+                  return previous + 1;
+                });
+              }}
+            >
+              Reload the frame
+            </AppButton>
+          </DemoControls>
+        </DemoToolbar>
+        <DemoFrame
+          title="Four fragments on one page"
+          src={`${import.meta.env.BASE_URL}mfe/host.html?scope=${scope}`}
+          reloadKey={`${scope}-${String(reloadKey)}`}
+          height={FRAME_HEIGHT}
+        />
+      </ExampleSection>
+
+      <ExampleSection
+        id="its-own-copy"
+        title="The fragment with its own copy of the library"
+        description="It does not import umbra. It imports umbra-copy, which the host resolves to a second, separately built bundle — a genuinely different module instance. Its chips still say adopted."
+      >
+        <ExampleGrid columns={2}>
           <ExampleCard
-            title="Four microfrontends, four ways of writing one, one manager"
-            description="Checkout on umbra/react, Support on umbra/solid, Billing on umbra/vanilla over a hand-written <dialog>, and Audit as a web component behind a shadow root. None imports another: each asks with requestOpenAndWait, and the owner decides."
-            codeKey="mfe-host-frame"
-            example={<HostFrame />}
+            title="frag-trial.js — a web component on its own build"
+            description="Shared scope lives in a registry keyed by Symbol.for on globalThis rather than by module identity, which is why a second compiled copy of the library still finds the work the first one did."
+            codeKey="mfe-trial"
+          />
+          <ExampleCard
+            title="Why that matters"
+            description="Sharing through a module singleton is the better arrangement when you own the host: it can share live objects, not only results. It also fails silently when the host forgets to deduplicate the package, and a page assembled from parts you do not own forgets more often than you would like."
           />
         </ExampleGrid>
       </ExampleSection>
@@ -39,50 +94,31 @@ export const MicrofrontendsPage = () => {
       <ExampleSection
         id="the-distribution"
         title="The distribution"
-        description="No bundler runs on the page inside the frame. That is not a simplification — it is the only way to show what the import map does, since a build step that resolved umbra for all four would prove nothing."
+        description="No bundler runs on the page inside the frame. The import map names ten specifiers, four script tags load the fragments, and the browser resolves the rest."
       >
         <ExampleGrid columns={2}>
           <ExampleCard
             title="host.html — the distribution, all of it"
-            description="An import map names the nine specifiers the four microfrontends write — umbra, its three bindings, React, Solid — four <script type=module> tags load them, and the browser resolves the rest. This is the file that decides whether the four share a manager."
-            codeKey="mfe-host-html"
+            description="An import map and four module scripts. This is the file that decides whether the four share a build."
+            codeKey="mfe-host"
           />
           <ExampleCard
-            title="The build behind the import map"
-            description="One rolldown build with eight entries, not eight builds: code-splitting hoists everything the microfrontends have in common — the manager included — into a shared chunk each of them imports. That is the mechanism the demo rests on, and separate builds would quietly break it."
-            codeKey="mfe-distribution"
-          />
-        </ExampleGrid>
-      </ExampleSection>
-
-      <ExampleSection
-        id="the-four-panels"
-        title="The four panels"
-        description="Four ways of writing the same dialog, none of which imports another. Read Checkout and Support side by side: the useDialog call is the same call. Then Billing, which does not render at all. Then Audit, which is not even in the same DOM tree."
-      >
-        <ExampleGrid columns={2}>
-          <ExampleCard
-            title="mfa1.js — Checkout, on the React binding"
-            description="createElement rather than JSX, because nothing compiles this file. It writes the same umbra/react specifier a bundled app would, and the import map resolves it to the same module the other three got — which is the whole trick."
-            codeKey="mfe-checkout"
+            title="frag-topbar.js — the React binding"
+            description="createElement rather than JSX, because nothing compiles this file. It writes the same umbra/react specifier a bundled app would."
+            codeKey="mfe-topbar"
           />
           <ExampleCard
-            title="mfa3.js — Support, on the Solid binding"
-            description="Put this beside Checkout: the same useDialog call, the same options, the same typed close. What differs is Solid's — live values arrive as getters, so the render args are read rather than destructured. Billing asks it for a ticket without knowing it is Solid."
-            codeKey="mfe-support"
+            title="frag-nav.js — the Solid binding"
+            description="The same five hook names, with accessors instead of values. It reads access and hides what this user cannot reach."
+            codeKey="mfe-nav"
           />
           <ExampleCard
-            title="mfa2.js — Billing, on the vanilla binding"
-            description="The third kind of binding: a controller, not a renderer. The <dialog> is hand-written in host.html and this file drives it — bindDialog for the lifecycle, bindAction for a button, with disabled and aria-busy kept in step. The binding a page with no framework reaches for."
-            codeKey="mfe-billing"
-          />
-          <ExampleCard
-            title="mfa4.js — Audit, a web component behind a shadow root"
-            description="The other three prove the core does not care which framework; this one asked whether it cares which tree — and twice the answer was no. A shadow root changes what document.activeElement reports and which stylesheets apply, and both broke the core. Escalate throws on purpose: a failing action is how the focus restore gets exercised."
-            codeKey="mfe-audit"
+            title="frag-list.js — the controller binding"
+            description="No framework at all. It also owns one app-scoped step, which is the one you can watch run four times when sharing is off."
+            codeKey="mfe-list"
           />
         </ExampleGrid>
       </ExampleSection>
     </PageLayout>
   );
-};
+}

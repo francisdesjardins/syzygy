@@ -4,33 +4,33 @@ import { join, resolve } from 'node:path';
 import { promisify } from 'node:util';
 import type { Plugin } from 'vite';
 
-// Asynchronous, and that is the point: typedoc is a subprocess of a few seconds, and spawning it
-// synchronously would freeze the thread the rest of the graph is transformed on.
+// Asynchronous, and that is the whole point: typedoc is a ~5 s subprocess, and spawning it
+// synchronously freezes the thread Rolldown transforms modules on — half a build spent single-file.
 const execFileAsync = promisify(execFile);
 
-// ── virtual:antumbra-api ─────────────────────────────────────────────────────
-// Projects typedoc's graph over the library's entry points into a compact model, so the reference
-// renders with this site's own components rather than an iframed second design system.
+// ── virtual:dialog-api ───────────────────────────────────────────────────────
+// Projects typedoc's ~470 kB graph over the library's entry points into a compact model, so the API
+// page renders with this site's own components rather than an iframed second design system.
 
-const VIRTUAL_ID = 'virtual:antumbra-api';
+const VIRTUAL_ID = 'virtual:dialog-api';
 const RESOLVED_ID = `\0${VIRTUAL_ID}`;
 
 const CORE = 'antumbra';
 const REACT = 'antumbra/react';
 const SOLID = 'antumbra/solid';
-const PLAIN = 'antumbra/plain';
+const VANILLA = 'antumbra/vanilla';
 
 const ENTRY_LABEL: Record<string, string> = {
   index: CORE,
   react: REACT,
   solid: SOLID,
-  plain: PLAIN,
+  vanilla: VANILLA,
 };
 
 /**
  * How a symbol is addressed downstream: the specifier it ships from, then its name. The bindings
- * export the same words with different signatures, so keying on the bare name shows one binding's
- * declaration under another's specifier.
+ * export the same words (`useDialog`, `DialogHandle`) with different signatures, so keying on the
+ * bare name shows one binding's declaration under another's specifier.
  */
 export const symbolKey = (specifier: string, name: string): string => {
   return `${specifier}#${name}`;
@@ -40,187 +40,308 @@ export const symbolKey = (specifier: string, name: string): string => {
 const KIND: Record<number, ApiSymbol['kind']> = {
   32: 'variable',
   64: 'function',
-  // The package's errors are classes, and a reference that drops them drops the four names a
-  // `catch` block is written against.
-  128: 'class',
-  // An interface reads as a type on the page, and four of them are public: the registries a project
-  // augments. Unmapped, the reference silently omits the symbols adopters must find.
+  // An interface reads as a type on the page, and one of them is public: `DialogRegistry`, which a
+  // project augments. Unmapped, the reference silently omits the one symbol adopters must find.
   256: 'type',
   2097152: 'type',
 };
 
 /**
  * The reader-facing table of contents, one page per entry, hand-written because typedoc's output
- * carries no such shape: it knows which file a symbol came from, not which idea it belongs to.
- *
- * `symbols` is the render order, and **every export must appear exactly once** or `buildModel`
- * throws. That gate is the point of writing it by hand — a new export nobody filed is a new export
- * nobody can find, and an alphabetical dump would hide that by having somewhere to put everything.
+ * carries no such shape (`src/utils/` alone holds four chapters); `symbols` is the render order,
+ * and every export must appear exactly once or `buildModel` throws.
  */
 export const CATEGORIES: readonly CategoryDef[] = [
   {
-    id: 'declaring',
-    label: 'Declaring a bootstrap',
+    id: 'manager',
+    label: 'Dialog manager',
     specifier: CORE,
-    blurb: 'The three calls an application writes. Everything else is read, not written.',
+    blurb: 'The registry every dialog lives in: open, close and query one by id from anywhere.',
     symbols: [
-      'createBootstrap',
-      'defineStep',
-      'defineHostedStep',
-      'Bootstrap',
-      'BootstrapOptions',
-      'CreateBootstrapOptions',
-    ],
-  },
-  {
-    id: 'steps',
-    label: 'Steps',
-    specifier: CORE,
-    blurb: 'What one piece of startup work is, what it may read, and what it may do.',
-    symbols: [
-      'Step',
-      'AnyStep',
-      'StepPhase',
-      'StepScope',
-      'StepReturn',
-      'StepContext',
-      'PreflightContext',
-      'HostedContext',
-      'StepStatus',
-      'StepTrace',
-      'StepFailure',
-      'IdsOf',
-      'StepListCheck',
-    ],
-  },
-  {
-    id: 'registries',
-    label: 'The registries',
-    specifier: CORE,
-    blurb:
-      'The four interfaces a project augments, and the types read off them. Declare none and everything still works, with open ids and unknown payloads.',
-    symbols: [
-      'StepRegistry',
-      'NoticeRegistry',
-      'IntentRegistry',
-      'HostCapabilities',
-      'StepId',
-      'NoticeType',
-      'IntentType',
+      'dialogManager',
+      'createDialogManager',
+      'createOpenRequest',
+      'DialogManager',
+      'OpenRequest',
+      'OpenRequestContext',
+      'OpenRequestDispatch',
+      'OpenRequestHandler',
+      'OpenRequestOutcome',
+      'RegisterOptions',
+      'DialogLookup',
+      'DialogInfo',
+      'RegisteredDialogInfo',
+      'UnregisteredDialogInfo',
+      'StackPriority',
+      'StackDialog',
+      'OpenGate',
+      'OpenAttempt',
+      'DialogPhase',
+      'DialogStoreSnapshot',
+      'CloseResult',
+      'DialogFailure',
+      'DialogErrorSource',
+      'DISMISS_REASON',
+      'DismissReason',
+      'DismissCause',
+      'DialogRegistry',
+      'DialogContract',
+      'DialogId',
+      'ReasonOf',
       'DataOf',
-      'PayloadArgs',
+      'DataOfReason',
+      'CloseOf',
+      'PayloadOf',
+      'PayloadFreeReasonOf',
+      'RegisteredDialogId',
+      'setLogLevel',
     ],
   },
   {
-    id: 'outcome',
-    label: 'What a run produced',
+    id: 'placement',
+    label: 'Placement & styling',
     specifier: CORE,
     blurb:
-      'One frozen object. The status is the only thing an app must read to know whether it may mount.',
+      'Where a dialog is positioned from, as a table rather than as markup — and the one way the library writes a style onto an element. What a binding, or a host you write yourself, reads to place a dialog the way the shipped ones do.',
     symbols: [
-      'Outcome',
-      'RunStatus',
-      'RunData',
-      'PartialRunData',
-      'Notice',
-      'Intent',
-      'IntentStatus',
-      'BootstrapPlan',
-      'PlanLevel',
-      'readStepData',
-      'SerializedError',
-      'AbortReason',
-      'AbortReasonKind',
+      'dialogPlacement',
+      'DialogPlacement',
+      'DialogPlacementOptions',
+      'DialogHostStyle',
+      'DialogBackdropStyle',
+      'DialogPositionStyle',
+      'PortalTarget',
+      'applyStyle',
+      'DialogStyle',
+      'StyleTarget',
+      'StyleWrite',
     ],
   },
   {
-    id: 'live',
-    label: 'The live half',
+    id: 'lifecycle',
+    label: 'Lifecycle events',
     specifier: CORE,
-    blurb:
-      'Everything that moves after the run settles: the intent queue, the mounted phase, and the observable snapshot a binding reads.',
+    blurb: 'What the manager emits as dialogs open and close — DOM events and subscriptions.',
     symbols: [
-      'Session',
-      'SessionState',
-      'HostReport',
-      'attachIntentHost',
-      'AttachedIntentHost',
-      'IntentHostOptions',
-      'IntentControls',
-      'ForwardedIntent',
-      'RunObserver',
-      'RunSnapshot',
-      'RunStage',
-      'ReadableStore',
+      'DIALOG_OPEN_EVENT',
+      'DIALOG_CLOSE_EVENT',
+      'DialogOpenEventDetail',
+      'DialogCloseEventDetail',
+      'DialogManagerEvent',
+      'DialogManagerSubscriber',
+      'reconcileOpen',
+      'OpenReconciliation',
+    ],
+  },
+  {
+    id: 'store',
+    label: 'Store engine',
+    specifier: CORE,
+    blurb: 'The reactive cell the library runs on, usable on its own and without a framework.',
+    symbols: [
+      'createStore',
+      'CreateDomainStoreOptions',
+      'CreateStoreOptions',
       'Store',
+      'StoreApi',
+      'StoreContract',
+      'GenericStore',
     ],
-  },
-  {
-    id: 'watching',
-    label: 'Watching a run happen',
-    specifier: CORE,
-    blurb: 'What the outcome cannot tell you, because it only exists once the run is over.',
-    symbols: ['RunEvent'],
-  },
-  {
-    id: 'shared',
-    label: 'More than one module beside each other',
-    specifier: CORE,
-    blurb: 'Work that is the same answer for everybody, done once.',
-    symbols: ['clearSharedScope'],
   },
   {
     id: 'errors',
-    label: 'Errors and utilities',
+    label: 'Errors',
     specifier: CORE,
-    blurb: 'What this package throws, and the two helpers worth exporting.',
+    blurb:
+      'Turning whatever was thrown into an Error — the normalisation an action’s reported error goes through.',
+    symbols: ['normalizeError'],
+  },
+  {
+    id: 'keys',
+    label: 'Keys & hotkeys',
+    specifier: CORE,
+    blurb: 'The vocabulary hotkeys are declared in, plus the helpers that label and match them.',
     symbols: [
-      'BootstrapError',
-      'PlanError',
-      'StepSkippedError',
-      'UndeclaredDependencyError',
-      'normalizeError',
-      'systemClock',
-      'Clock',
-      'DEFAULT_DEADLINE_MS',
+      'Key',
+      'KeyValue',
+      'HotkeyDef',
+      'formatHotkeyLabel',
+      'parseHotkey',
+      'formatAriaKeyshortcuts',
+      'matchesHotkey',
+      'isKeyClaimedByPopup',
+      'isOwnEventTarget',
     ],
   },
   {
-    id: 'react',
-    label: 'React binding',
+    id: 'use-dialog',
+    label: 'useDialog',
+    specifier: REACT,
+    blurb: 'The base hook — one native dialog, its render callback, its typed close result.',
+    symbols: [
+      'useDialog',
+      'UseDialogOptions',
+      'UseDialogBaseOptions',
+      'UseDialogReturn',
+      'DialogRenderArgs',
+      'DialogHandle',
+      'DialogVariant',
+      'DialogAnimation',
+      'AwaitedClose',
+      'DialogOutlet',
+    ],
+  },
+  {
+    id: 'templates',
+    label: 'Template hooks',
+    specifier: REACT,
+    blurb: 'useDialog pre-shaped for the two layouts that come up every time: message and slide.',
+    symbols: [
+      'useMessageDialog',
+      'UseMessageDialogOptions',
+      'UseMessageDialogReturn',
+      'MessageDialogRenderContext',
+      'MessageDialogType',
+      'useSlideDialog',
+      'UseSlideDialogOptions',
+      'UseSlideDialogReturn',
+      'SlideDialogRenderContext',
+      'SlideDirection',
+      'SlideAlign',
+    ],
+  },
+  {
+    id: 'actions',
+    label: 'Actions',
     specifier: REACT,
     blurb:
-      'Five names over the core, which this entry re-exports whole — so a React app imports from this path only.',
+      'Declared by being rendered: one call names the reason, binds the handler and returns the button props. Pending state, error capture, hotkeys and typed close reasons come with it.',
     symbols: [
-      'BootstrapProvider',
-      'useBootstrap',
-      'useBootstrapContext',
-      'useStepData',
-      'useIntentHost',
+      'ActionFactory',
+      'ActionReason',
+      'ActionOptions',
+      'ActionRunContext',
+      'ActionButtonProps',
+      'ActionClickEvent',
+      'ActionCloseFn',
+      'HotkeyDef',
     ],
   },
   {
-    id: 'solid',
-    label: 'Solid binding',
+    id: 'react-manager',
+    label: 'Manager in React',
+    specifier: REACT,
+    blurb: 'Reading manager state from a component, and scoping a manager to a subtree.',
+    symbols: [
+      'useDialogManager',
+      'DialogManagerSnapshot',
+      'useLookup',
+      'DialogManagerProvider',
+      'useDialogManagerContext',
+    ],
+  },
+  {
+    id: 'solid-use-dialog',
+    label: 'useDialog',
     specifier: SOLID,
     blurb:
-      'The same five names, plus `fromStore`. Every value is an accessor, so do not destructure what these return.',
+      'The same hook, the same words. Two differences and both are the renderer’s: the live values are getters over signals, so do not destructure the render args — and `portal: true` mounts the dialog itself, leaving `Dialog` as null.',
     symbols: [
-      'BootstrapProvider',
-      'useBootstrap',
-      'useBootstrapContext',
-      'useStepData',
-      'useIntentHost',
+      'useDialog',
+      'UseDialogOptions',
+      'UseDialogBaseOptions',
+      'UseDialogReturn',
+      'DialogRenderArgs',
+      'DialogHandle',
+      'DialogVariant',
+      'DialogAnimation',
+      'AwaitedClose',
+      'DialogOutlet',
+    ],
+  },
+  {
+    id: 'solid-templates',
+    label: 'Template hooks',
+    specifier: SOLID,
+    blurb:
+      'Message and slide, built on Solid’s useDialog — the same three lines over the same framework-free geometry the React pair uses.',
+    symbols: [
+      'useMessageDialog',
+      'UseMessageDialogOptions',
+      'UseMessageDialogReturn',
+      'MessageDialogRenderContext',
+      'MessageDialogType',
+      'useSlideDialog',
+      'UseSlideDialogOptions',
+      'UseSlideDialogReturn',
+      'SlideDialogRenderContext',
+      'SlideDirection',
+      'SlideAlign',
+    ],
+  },
+  {
+    id: 'solid-actions',
+    label: 'Actions',
+    specifier: SOLID,
+    blurb:
+      'The same action factory the React binding hands out. Its three live fields are getters, so spreading the props inside a tracking scope subscribes each attribute individually — no re-render, no wrapper.',
+    symbols: [
+      'ActionFactory',
+      'ActionReason',
+      'ActionOptions',
+      'ActionRunContext',
+      'ActionButtonProps',
+      'ActionClickEvent',
+      'ActionCloseFn',
+      'HotkeyDef',
+    ],
+  },
+  {
+    id: 'solid-manager',
+    label: 'Manager in Solid',
+    specifier: SOLID,
+    blurb:
+      'Reading manager state from a component, scoping a manager to a subtree, and the six-line bridge from any store this package hands you to a signal.',
+    symbols: [
+      'useDialogManager',
+      'DialogManagerSnapshot',
+      'useLookup',
+      'DialogManagerProvider',
+      'useDialogManagerContext',
       'fromStore',
     ],
   },
   {
-    id: 'plain',
-    label: 'Controller binding',
-    specifier: PLAIN,
+    id: 'vanilla',
+    label: 'bindDialog',
+    specifier: VANILLA,
     blurb:
-      'No hooks, no provider, no rendering: it connects the queue to markup you already wrote, with no framework optional or otherwise.',
-    symbols: ['bindBootstrap', 'BindOptions', 'BoundBootstrap'],
+      'A controller, not a renderer: the <dialog> and everything in it is markup you already wrote, and this drives its lifecycle over the top. No render, no Dialog, no outlet — and bindAction, which is the half a renderer does elsewhere.',
+    symbols: [
+      'bindDialog',
+      'BindDialogOptions',
+      'DialogController',
+      'DialogSnapshot',
+      'DialogHandle',
+      'DialogVariant',
+      'AwaitedClose',
+    ],
+  },
+  {
+    id: 'vanilla-actions',
+    label: 'Actions',
+    specifier: VANILLA,
+    blurb:
+      'The same actions, bound rather than rendered: what you pass to bindAction, and the props it applies on their behalf as one runs.',
+    symbols: [
+      'ActionReason',
+      'ActionOptions',
+      'ActionRunContext',
+      'ActionButtonProps',
+      'ActionClickEvent',
+      'ActionCloseFn',
+      'HotkeyDef',
+    ],
   },
 ];
 
@@ -250,7 +371,7 @@ export type ApiSymbol = {
   /** `specifier#name` — see {@link symbolKey}. */
   readonly key: string;
   readonly name: string;
-  readonly kind: 'function' | 'variable' | 'type' | 'class';
+  readonly kind: 'function' | 'variable' | 'type';
   /** Which page it lives on — the `id` of its {@link ApiCategory}. */
   readonly category: string;
   readonly specifier: string;
@@ -289,7 +410,6 @@ type Node = {
   typeParameters?: Node[];
   type?: TypeNode;
   default?: TypeNode;
-  extendedTypes?: TypeNode[];
 };
 
 /** Typedoc's serialized type tree. Every `type` discriminant it emits is handled by `printType`. */
@@ -436,12 +556,6 @@ type PrintContext = {
   readonly warn: (message: string) => void;
   /** Every reflection id in the project, so an inline `{@link}`'s numeric target resolves. */
   readonly names: Map<number, string>;
-  /**
-   * How many anonymous objects deep this print already is. One level is expanded field by field;
-   * below that the placeholder comes back, because a step's `run` would otherwise drag its whole
-   * context type into a signature line.
-   */
-  readonly depth?: number | undefined;
 };
 
 /**
@@ -450,12 +564,7 @@ type PrintContext = {
  */
 type Printer = PrintContext & { readonly out: Tokens };
 
-/**
- * An object literal type prints as a placeholder **where a members table follows it** — which is
- * true of a symbol's own declaration line and false of a parameter's type, so the two are no longer
- * printed the same way. A parameter that said `step: { … }` promised a table that is never rendered
- * for it, and `defineStep`'s object is the most important shape in the package.
- */
+/** An object literal type prints as a placeholder; its shape is the members table below it. */
 const OBJECT_PLACEHOLDER = '{ … }';
 
 function printCallSignature(signature: Node, printer: Printer): void {
@@ -638,27 +747,7 @@ function printType(node: TypeNode | undefined, printer: Printer): void {
         printCallSignature(signature, printer);
         return;
       }
-      const fields = declaration?.children ?? [];
-      // `string & {}` is the branding idiom behind `StepId`: an object with no members at all.
-      // Printed as the placeholder it advertised a table with nothing in it, on ten rows.
-      if (fields.length === 0) {
-        out.push('{}');
-        return;
-      }
-      const depth = printer.depth ?? 0;
-      if (depth > 0) {
-        out.push(OBJECT_PLACEHOLDER);
-        return;
-      }
-      out.push('{ ');
-      fields.forEach((field, index) => {
-        if (index > 0) {
-          out.push('; ');
-        }
-        out.push(`${field.name}${field.flags?.isOptional === true ? '?' : ''}: `);
-        printType(field.type, { ...printer, depth: depth + 1 });
-      });
-      out.push(' }');
+      out.push(OBJECT_PLACEHOLDER);
       return;
     }
     default: {
@@ -697,17 +786,6 @@ function printSignature(
   if (kind === 'variable') {
     out.push(`const ${node.name}: `);
     printType(node.type, printer);
-    return out.done();
-  }
-
-  if (kind === 'class') {
-    out.push(`class ${node.name}`);
-    printTypeParams(node.typeParameters, printer);
-    const base = node.extendedTypes?.[0];
-    if (base !== undefined) {
-      out.push(' extends ');
-      printType(base, printer);
-    }
     return out.done();
   }
 
@@ -870,8 +948,8 @@ export function typedocFailure(error: unknown): Error {
 
   return new Error(
     output === ''
-      ? `[antumbra-api] typedoc failed: ${reason}`
-      : `[antumbra-api] typedoc failed — its own output follows.
+      ? `[dialog-api] typedoc failed: ${reason}`
+      : `[dialog-api] typedoc failed — its own output follows.
 
 ${output}
 `
@@ -903,7 +981,7 @@ async function buildModel(
         '--entryPoints',
         'src/solid.ts',
         '--entryPoints',
-        'src/plain.ts',
+        'src/vanilla.ts',
         '--json',
         jsonPath,
         '--out',
@@ -981,7 +1059,7 @@ async function buildModel(
         const declaration = declarationFor(category.specifier, name);
         if (declaration === undefined) {
           throw new Error(
-            `[antumbra-api] category "${category.id}" lists "${name}", which "${category.specifier}" does not export.`
+            `[dialog-api] category "${category.id}" lists "${name}", which "${category.specifier}" does not export.`
           );
         }
         consumed.add(symbolKey(declaration.specifier, name));
@@ -993,7 +1071,7 @@ async function buildModel(
         });
         if (symbol === null) {
           throw new Error(
-            `[antumbra-api] "${symbolKey(category.specifier, name)}" has no renderable kind.`
+            `[dialog-api] "${symbolKey(category.specifier, name)}" has no renderable kind.`
           );
         }
         return symbol;
@@ -1006,7 +1084,7 @@ async function buildModel(
   });
   if (orphans.length > 0) {
     throw new Error(
-      `[antumbra-api] ${String(orphans.length)} export(s) belong to no category and would be ` +
+      `[dialog-api] ${String(orphans.length)} export(s) belong to no category and would be ` +
         `unreachable in the reference: ${orphans.join(', ')}. Add them to CATEGORIES in ` +
         `playground/vite-plugins/api-model.ts.`
     );
@@ -1017,7 +1095,7 @@ async function buildModel(
 
 export function apiModelPlugin(): Plugin {
   const repoRoot = resolve(import.meta.dirname, '..', '..');
-  const cacheDir = join(repoRoot, 'node_modules', '.cache', 'antumbra-api');
+  const cacheDir = join(repoRoot, 'node_modules', '.cache', 'dialog-api');
   const watched = join(repoRoot, 'src');
   let pending: Promise<string> | null = null;
 
@@ -1038,7 +1116,7 @@ export function apiModelPlugin(): Plugin {
   };
 
   return {
-    name: 'antumbra:api-model',
+    name: 'dialog-api-model',
 
     // Started here and awaited in `load`, so typedoc runs alongside the rest of the graph rather
     // than in the middle of it. Deliberately not returned: Rolldown awaits `buildStart` before it

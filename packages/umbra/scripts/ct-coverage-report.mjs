@@ -2,9 +2,9 @@
 /**
  * Merge and report the component project's coverage: `.nyc_output/` holds one Istanbul object per
  * test, keyed by absolute source path, and a statement covered by any test is covered. Not `nyc`,
- * because the counters are already Istanbul-shaped and a report is arithmetic over three maps.
+ * because the counters are already Istanbul-shaped and a report is arithmetic over those maps.
  * Line numbers are the source's own thanks to `scripts/vite-plugin-ct-coverage.mjs`. Failure mode:
- * finding no counters has four causes, printed below rather than left to guesswork.
+ * finding no counters has three causes, printed below rather than left to guesswork.
  *
  * Usage: node scripts/ct-coverage-report.mjs [--json <path>]
  */
@@ -17,12 +17,12 @@ const INPUT_DIR = resolve(ROOT, '.nyc_output');
 const jsonFlag = process.argv.indexOf('--json');
 const jsonOut = jsonFlag !== -1 ? process.argv[jsonFlag + 1] : null;
 
-/** What "no counters" can mean — all three have happened, and the flag is only the first. */
+/** What "no counters" can mean — the flag is only the first. */
 const NOTHING_WRITTEN = [
   'No component coverage was written. One of:',
   '  · CT_COVERAGE=1 was not set, so nothing instrumented the bundle;',
-  '  · the instrumenter changed but playwright/.cache-coverage/ did not — the freshness check',
-  '    walks the component sources, so delete that directory by hand;',
+  '  · the component run reused an already-running, uninstrumented dev server — the coverage run',
+  '    takes its own port for exactly this reason, so check nothing else holds it;',
   "  · scripts/vite-plugin-ct-coverage.mjs matched no files (check its path filter's separators).",
 ].join('\n');
 
@@ -106,7 +106,7 @@ for (const [path, entry] of byPath) {
   totals.b[1] += branches.length;
 
   rows.push({
-    // Forward slashes whatever the platform: half a report in `src\core\style.ts` pastes nowhere.
+    // Forward slashes whatever the platform: half a report in `src\core\run.ts` pastes nowhere.
     file: relative(ROOT, path).replaceAll('\\', '/'),
     statements: ratio(covered.s, statements.length),
     missed: statements.length - covered.s,

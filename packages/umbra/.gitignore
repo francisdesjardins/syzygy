@@ -10,50 +10,29 @@ test-results/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
 .vscode/*
 !.vscode/settings.json
-!.vscode/launch.json
 !.vscode/extensions.json
-.claude/settings.local.json
 *.swp
-*.swo
 *~
 .idea/
-# Yarn 4 (nodeLinker: node-modules) — commit the pinned release + patches/plugins so
-# Corepack resolves the same Yarn everywhere; ignore caches and generated state.
+.DS_Store
+Thumbs.db
+
+# Yarn 4 (nodeLinker: node-modules) — commit the pinned release so Corepack resolves the same
+# Yarn everywhere; ignore caches and generated state.
 .yarn/*
 !.yarn/patches
 !.yarn/plugins
 !.yarn/releases
 !.yarn/versions
 .pnp.*
-.DS_Store
-Thumbs.db
 
 # Playwright
 /playwright-report/
 /blob-report/
 /playwright/.cache/
-/playwright/.cache-coverage/
-/playwright/.auth/
 
-# `scripts/examples/generated/` is deliberately NOT ignored here, and the reason is a gate that
-# was silently a no-op: oxlint honours .gitignore unconditionally (no --no-ignore, no config
-# negation, no cwd trick reaches it), so an ignored directory is a directory the linter reports
-# zero files for and passes. `check-examples.mjs` removes the directory itself unless you ask for
-# --keep, and fails if the lint pass ever sees no files again.
-
-# Working notes, not artefacts for readers. RATING.md is a self-assessment whose value is
-# internal — it drives the actionable list — and a self-scored project reads as marketing to
-# anyone who did not write it.
-RATING.md
+.claude/settings.local.json
 .claude/plans/
-
-# The dom-probe skill's screenshots — evidence for one question, not a fixture to keep.
-probe-shots/
-
-# A Claude Code worktree is a whole second checkout of this repo living inside it — committable by
-# one `git add .`, and read as a second copy of the suite by anything that walks the tree.
 .claude/worktrees/

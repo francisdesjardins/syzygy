@@ -1,10 +1,5 @@
 import { createContext, use } from 'react';
 
-/**
- * The theme, as a context every layer may read. It lives in `shared` because of who consumes it,
- * not who provides it: the provider is `app`'s, but `ThemeToggleButton` is `shared/ui` and the
- * microfrontend frame is a page, and Feature-Sliced Design imports run downward only.
- */
 export type Scheme = 'light' | 'dark';
 
 export type ThemeValue = {
@@ -12,12 +7,18 @@ export type ThemeValue = {
   readonly toggle: () => void;
 };
 
-export const ThemeContext = createContext<ThemeValue | null>(null);
+/**
+ * The context and its reader, apart from the provider that fills it.
+ *
+ * A module that exports a component *and* anything else loses fast refresh, so the split is not
+ * tidiness: it is what keeps an edit to the provider from reloading the whole page.
+ */
+export const ThemeContext = createContext<ThemeValue | undefined>(undefined);
 
-export const useTheme = () => {
-  const context = use(ThemeContext);
-  if (!context) {
-    throw new Error('useTheme must be used within ThemeProvider');
+export function useTheme(): ThemeValue {
+  const value = use(ThemeContext);
+  if (value === undefined) {
+    throw new Error('useTheme was called outside a <ThemeProvider>.');
   }
-  return context;
-};
+  return value;
+}

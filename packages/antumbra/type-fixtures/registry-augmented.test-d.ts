@@ -1,204 +1,195 @@
 /**
  * What a declared registry buys, compiled on its own because declaration merging is global:
- * augmenting `StepRegistry` in the main project would narrow ids for every other type test there.
+ * augmenting `DialogRegistry` in the main project would narrow ids for every other type test there.
  *
  * Run by `yarn type-check:registry`, which `yarn type-check` calls.
  */
 
-import { createBootstrap } from '../src/core/create-bootstrap.js';
-import { defineHostedStep, defineStep } from '../src/core/define-step.js';
-import type { DataOf, StepId } from '../src/core/registry.js';
-import type { AnyStep } from '../src/core/types.js';
+import type { DataOf, DialogId, PayloadOf, ReasonOf } from '../src/core/registry.js';
+import { createOpenRequest, dialogManager } from '../src/manager/dialog-manager.js';
+import { useDialog } from '../src/react/use-dialog.js';
 
 declare module '../src/core/registry.js' {
-  interface StepRegistry {
-    session: { userId: string; expiresAt: number };
-    config: { daysLeft: number };
-  }
-  interface NoticeRegistry {
-    'config:from-cache': { age: number };
-    'boot:offline': void;
-  }
-  interface IntentRegistry {
-    'warn:trial': { daysLeft: number };
-  }
-  interface HostCapabilities {
-    confirm: (message: string) => Promise<boolean>;
+  interface DialogRegistry {
+    'delete-account': { closesWith: { confirm: { id: string }; cancel: void } };
+    'session-warning': { closesWith: 'extend' | 'sign-out' };
+    'patient:merge': { opensWith: { patientId: string }; closesWith: 'merged' | 'cancel' };
   }
 }
 
+// oxlint-disable-next-line typescript/no-unnecessary-type-parameters -- the two-signature identity trick needs a parameter the rule counts as used once
 type Equals<A, B> =
-  // oxlint-disable-next-line typescript/no-unnecessary-type-parameters -- both `T`s here: the identity trick compares two signatures, and a parameter used once is exactly what makes them comparable
+  // oxlint-disable-next-line typescript/no-unnecessary-type-parameters -- the two-signature identity trick needs a parameter the rule counts as used once
   (<T>() => T extends A ? 1 : 2) extends <T>() => T extends B ? 1 : 2 ? true : false;
 type Assert<T extends true> = T;
 
-/** A declared id carries its data type. */
-export type _DataNarrows = Assert<Equals<DataOf<'session'>, { userId: string; expiresAt: number }>>;
+/** A declared id carries its contract. */
+export type _ReasonNarrows = Assert<Equals<ReasonOf<'delete-account'>, 'confirm' | 'cancel'>>;
+export type _DataNarrows = Assert<Equals<DataOf<'delete-account'>, { id: string }>>;
 
-/** An undeclared id still works, and answers `unknown` rather than `any`. */
-export type _UndeclaredIsUnknown = Assert<Equals<DataOf<'someone-elses-step'>, unknown>>;
+/** A dialog that declares no payload answers `void`, not `unknown`. */
+export type _NoDataIsVoid = Assert<Equals<DataOf<'session-warning'>, void>>;
 
-/** The id space stays open, which is what lets a project adopt this one step at a time. */
-export const _openIdSpace: StepId = 'a-step-nobody-declared';
+/** The other direction: what a declared dialog is *opened* with. */
+export type _PayloadNarrows = Assert<Equals<PayloadOf<'patient:merge'>, { patientId: string }>>;
 
-export function _stepTypes() {
-  const session = defineStep({
-    id: 'session',
-    run: () => {
-      return { userId: 'u1', expiresAt: 0 };
-    },
-  });
+/**
+ * And the two fallbacks differ on purpose — an undeclared close carries nothing, an undeclared
+ * open carries whatever crossed the boundary.
+ */
+export type _NoPayloadIsUnknown = Assert<Equals<PayloadOf<'session-warning'>, unknown>>;
+export type _UndeclaredPayloadIsUnknown = Assert<
+  Equals<PayloadOf<'someone-elses-dialog'>, unknown>
+>;
 
-  // @ts-expect-error the declared data type is not a string
-  defineStep({ id: 'session', run: () => 'wrong' });
+/** An undeclared id keeps the open answer, which lets a project host dialogs it does not own. */
+export type _UndeclaredStaysOpen = Assert<Equals<ReasonOf<'someone-elses-dialog'>, string>>;
 
-  const config = defineStep({
-    id: 'config',
-    needs: ['session'],
-    run: (ctx) => {
-      // Reading a declared dependency gives back its declared type.
-      const id: string = ctx.get('session').userId;
-      return { daysLeft: id.length };
-    },
-  });
+export function _manager() {
+  dialogManager.open('delete-account');
+  dialogManager.close('delete-account', 'cancel');
+  dialogManager.close('delete-account', 'dismiss');
 
-  defineStep({
-    id: 'config',
-    needs: ['session'],
-    run: (ctx) => {
-      // @ts-expect-error `config` is not in this step's needs
-      ctx.get('config');
-      return { daysLeft: 0 };
-    },
-  });
+  // The manager holds no payload, so it is offered only the reasons that carry none — `confirm`
+  // declares one, and closing without it would hand `onClose` a result its own type forbids.
+  // @ts-expect-error 'confirm' closes with a payload this door cannot supply
+  dialogManager.close('delete-account', 'confirm');
 
-  return [session, config];
+  // Checked **per id**, which is the guarantee that survives an open id space.
+  // @ts-expect-error 'extend' belongs to session-warning
+  dialogManager.close('delete-account', 'extend');
+
+  // An id nobody declared still works: a third-party panel, a harness, a computed name.
+  dialogManager.open('some-other-dialog');
 }
 
-export function _noticeAndIntentPayloads() {
-  defineStep({
-    id: 'session',
-    run: (ctx) => {
-      ctx.notice('config:from-cache', { age: 1 });
-      // A notice declared as `void` takes no payload at all.
-      ctx.notice('boot:offline');
-      // An undeclared type still works, with an optional payload.
-      ctx.notice('something:else');
-      ctx.notice('something:else', { anything: true });
-
-      // @ts-expect-error the declared payload is required
-      ctx.notice('config:from-cache');
-      // @ts-expect-error and it is checked
-      ctx.notice('config:from-cache', { age: 'old' });
-
-      ctx.intent('warn:trial', { daysLeft: 3 });
-
-      return { userId: 'u1', expiresAt: 0 };
+/** Inferred from the id literal: no type argument, and both halves come back typed. */
+export function Inferred() {
+  return useDialog({
+    id: 'delete-account',
+    ariaLabel: 'Delete account',
+    render: ({ handle }) => {
+      handle.close('confirm', { id: '7' });
+      // @ts-expect-error 'extend' belongs to session-warning
+      handle.close('extend');
+      return null;
+    },
+    onClose: (result) => {
+      const reason: 'confirm' | 'cancel' | 'dismiss' = result.reason;
+      void reason;
     },
   });
 }
 
-export function _phasesHaveDifferentContexts() {
-  defineStep({
-    id: 'guard',
-    run: (ctx) => {
-      // @ts-expect-error a preflight step has no UI port; nothing is mounted yet
-      ctx.host;
-      return ctx.block('no session');
-    },
-  });
-
-  defineHostedStep({
-    id: 'warn',
-    run: async (ctx) => {
-      // The declared port is what the framework layer said it could do.
-      await ctx.host.confirm('carry on?');
-      await ctx.awaitIntent('warn:trial', { daysLeft: 3 });
-
-      // @ts-expect-error a mounted step cannot refuse a mount that already happened
-      ctx.block('too late');
+/** The explicit form, naming the id as the one type argument. */
+export function Explicit() {
+  return useDialog<'session-warning'>({
+    id: 'session-warning',
+    ariaLabel: 'Session warning',
+    render: ({ handle }) => {
+      handle.close('extend');
+      return null;
     },
   });
 }
 
-export async function _outcomeIsDiscriminated() {
-  const boot = createBootstrap({
-    steps: [
-      defineStep({
-        id: 'session',
-        run: () => {
-          return { userId: 'u1', expiresAt: 0 };
-        },
-      }),
-    ],
+/** A dialog the registry never named still declares, with its reasons left open. */
+export function Undeclared() {
+  return useDialog({
+    id: 'third-party-panel',
+    ariaLabel: 'Third party',
+    render: ({ handle }) => {
+      handle.close('whatever-it-likes');
+      return null;
+    },
   });
-  const outcome = await boot.run();
+}
 
-  // @ts-expect-error data is partial until the status says otherwise
-  outcome.data.session.userId;
+/** `DialogId` stays assignable from any string, which is what makes the above compile. */
+export const _idAcceptsAnyString: DialogId = String(1);
 
-  if (outcome.status === 'ready') {
-    // A ready run has every declared key, so nothing here needs narrowing.
-    const userId: string = outcome.data.session.userId;
-    return userId;
+/** Does the generic `requestOpenAndWait` really hand back a typed close, or only compile? */
+export async function _requestOpenAndWaitIsTyped() {
+  const outcome = await dialogManager.requestOpenAndWait('delete-account', {});
+  if (!outcome.accepted) {
+    return;
   }
-  return outcome.blockedBy?.reason;
+  const [error, result] = await outcome.closed;
+  if (error) {
+    return;
+  }
+  const reason: 'confirm' | 'cancel' | 'dismiss' = result.reason;
+  const id: string | undefined = result.data?.id;
+  void reason;
+  void id;
 }
 
-export function _needsMustNameAStepThatExists() {
-  const session = defineStep({
-    id: 'session',
-    run: () => {
-      return { userId: 'u1', expiresAt: 0 };
-    },
-  });
-  const config = defineStep({
-    id: 'config',
-    needs: ['session'],
-    run: () => {
-      return { daysLeft: 1 };
-    },
-  });
-  const orphan = defineStep({
-    id: 'config',
-    // A perfectly valid `StepId` — the id space is open on purpose — and a typo.
-    needs: ['sesssion'],
-    run: () => {
-      return { daysLeft: 1 };
-    },
-  });
-
-  // The whole list is consistent, so nothing extra is asked of the caller.
-  createBootstrap({ steps: [session, config] });
-
-  // @ts-expect-error `sesssion` is not a step in this list
-  createBootstrap({ steps: [session, orphan] });
-
-  // A list whose ids are not literals — what a helper that builds steps dynamically produces —
-  // subtracts to `never` on both sides and is left alone.
-  const erased: AnyStep[] = [session, orphan];
-  createBootstrap({ steps: erased });
+/** The imperative twin of a hook's `openAndWait`, typed by the registry. */
+export async function _openAndWaitIsTyped() {
+  const [error, result] = await dialogManager.openAndWait('delete-account');
+  if (error) {
+    return;
+  }
+  const reason: 'confirm' | 'cancel' | 'dismiss' = result.reason;
+  const id: string | undefined = result.data?.id;
+  // @ts-expect-error 'extend' belongs to session-warning
+  const wrong: 'extend' = result.reason;
+  void reason;
+  void id;
+  void wrong;
 }
 
-export function _twoStepsMayNotShareAnId() {
-  const session = defineStep({
-    id: 'session',
-    run: () => {
-      return { userId: 'u1', expiresAt: 0 };
-    },
-  });
-  const again = defineStep({
-    id: 'session',
-    run: () => {
-      return { userId: 'u2', expiresAt: 0 };
-    },
-  });
+/** An id the registry does not name still opens and waits, with the payload erased. */
+export async function _openAndWaitStaysOpen() {
+  const [, result] = await dialogManager.openAndWait('third-party-panel');
+  void result;
+}
 
-  // @ts-expect-error two steps declare `session`
-  createBootstrap({ steps: [session, again] });
+/** The ask is checked against what the dialog said it takes, in both doors. */
+export function _requestOpenChecksThePayload() {
+  dialogManager.requestOpen('patient:merge', { payload: { patientId: '42' } });
+  dialogManager.requestOpen('patient:merge', createOpenRequest({ patientId: '42' }));
 
-  // A list built dynamically has no known positions, so nothing is claimed about them and
-  // `compilePlan` is what catches it at construction.
-  const erased: AnyStep[] = [session, again];
-  createBootstrap({ steps: erased });
+  // @ts-expect-error `patientId` is a string, and the dialog declared as much
+  dialogManager.requestOpen('patient:merge', { payload: { patientId: 42 } });
+
+  // @ts-expect-error a payload of the wrong shape entirely
+  dialogManager.requestOpen('patient:merge', { payload: { patient: '42' } });
+
+  // Asking with nothing stays legal: the contract types the payload, it does not require one.
+  dialogManager.requestOpen('patient:merge');
+  dialogManager.requestOpen('patient:merge', { context: { source: 'portal:nav' } });
+
+  // And the builder's own payload-free form fits a *declared* contract too — the one shape a
+  // single generic signature got wrong, since it inferred `OpenRequest<undefined>` there.
+  dialogManager.requestOpen('patient:merge', createOpenRequest(undefined, { source: 'nav' }));
+  dialogManager.requestOpen('patient:merge', createOpenRequest());
+  void dialogManager.requestOpenAndWait('patient:merge', createOpenRequest(undefined, {}));
+  dialogManager.requestOpen('someone-elses-dialog', createOpenRequest(undefined, { source: 'x' }));
+}
+
+/**
+ * The half an overload pair would have lost. `requestOpenAndWait` keeps two signatures for its
+ * *return*, so a wrong payload must fail **both** — constrained in only the first, it would fail
+ * that one and land on the permissive one, which is the shape `close` avoided by staying generic.
+ */
+export async function _requestOpenAndWaitChecksThePayloadToo() {
+  const ok = await dialogManager.requestOpenAndWait('patient:merge', {
+    payload: { patientId: '42' },
+  });
+  if (ok.accepted) {
+    const [, result] = await ok.closed;
+    void result;
+  }
+
+  await dialogManager.requestOpenAndWait('patient:merge', {
+    // @ts-expect-error the second signature must not rescue a payload the first rejected
+    payload: { patientId: 42 },
+  });
+}
+
+/** An id the registry does not name accepts anything, which is what hosting a stranger means. */
+export function _undeclaredPayloadStaysOpen() {
+  dialogManager.requestOpen('third-party-panel', { payload: { anything: true } });
+  dialogManager.requestOpen('third-party-panel', createOpenRequest('a string'));
 }

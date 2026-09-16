@@ -1,1 +1,1 @@
-export { GettingStartedPage } from '@/pages/getting-started/ui/GettingStartedPage';
+export { GettingStartedPage } from './ui/GettingStartedPage';

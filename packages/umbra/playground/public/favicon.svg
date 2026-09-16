@@ -3,9 +3,13 @@
     The mascot at 16px: the eclipse reduced to what survives that size.
 
     `UmbraMoon` draws eight flames, an engraved face and two rims. None of that reads in a browser
-    tab, so this keeps only the two things that make the silhouette legible — a dark disc and the
-    corona escaping around it — in the same ambers, so the tab and the page are recognisably one
-    product.
+    tab, so this keeps only the two things that make the silhouette legible — a disc wide enough to
+    cover the source completely, and the corona escaping around it. That is what an umbra is: the
+    cone where the source is gone, and the only light left is the crown around the edge.
+
+    Antumbra's favicon is the same two circles with a thin 14-unit ring and no bite taken out of it,
+    because there the disc is too small to cover anything and the light gets all the way around.
+    Same ambers on both, so the two tabs are recognisably one product.
   -->
   <circle cx="100" cy="100" r="88" fill="#f59e0b" />
   <circle cx="100" cy="100" r="66" fill="#0f172a" />

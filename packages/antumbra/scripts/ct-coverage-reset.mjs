@@ -3,8 +3,8 @@ import { resolve } from 'node:path';
 
 /**
  * Empty `.nyc_output/` once, before any worker writes into it. Failure mode: the report merges
- * every file it finds, so a targeted run (`--grep`, one spec) writes two and silently sums the
- * fourteen a full run left behind — plausible numbers for a coverage nobody just measured.
+ * every file it finds, so a targeted run (`--grep`, one spec) writes three and silently sums the
+ * eighteen a full run left behind — plausible numbers for a coverage nobody just measured.
  *
  * A `globalSetup` rather than a delete in the yarn script, because the invocation that gets this
  * wrong is the ad-hoc `CT_COVERAGE=1 playwright test --grep …`; not the fixture's job, since

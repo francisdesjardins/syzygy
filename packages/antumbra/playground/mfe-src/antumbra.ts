@@ -1,3 +1,4 @@
-// `antumbra` — the library itself, framework-free. Three of the four fragments share this module
-// through the host's import map, which is the arrangement a well-configured page has.
+// `antumbra` — the library itself, framework-free. This is the module every microfrontend shares,
+// and sharing it is the whole mechanism: `dialogManager` is a module-level singleton, so two
+// copies would be two registries and `requestOpen` would never cross between them.
 export * from '../../src/index.js';

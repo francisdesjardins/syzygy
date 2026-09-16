@@ -2,7 +2,7 @@ import { ExampleGrid, ExampleSection } from '@/entities/example';
 import styles from '@/pages/api/ui/ApiIndexPage.module.css';
 import { PageLayout } from '@/shared/ui/PageLayout';
 import { SurfaceCard } from '@/shared/ui/SurfaceCard';
-import type { ApiCategory } from 'virtual:dialog-api';
+import type { ApiCategory } from 'virtual:umbra-api';
 import {
   SPECIFIERS,
   SYMBOLS,
@@ -15,30 +15,31 @@ import { ApiLayout } from './ApiLayout';
 import { KindBadge } from './KindBadge';
 import { RouterLink } from './RouterLink';
 
-/** Doors in, qualified: three bindings export `useDialog`, so bare chips would repeat one word. */
+/** Doors in: the three calls an application writes, and the one thing it reads back. */
 const START_HERE: readonly { readonly specifier: string; readonly name: string }[] = [
-  { specifier: 'umbra/react', name: 'useDialog' },
-  { specifier: 'umbra/solid', name: 'useDialog' },
-  { specifier: 'umbra/vanilla', name: 'bindDialog' },
-  { specifier: 'umbra', name: 'dialogManager' },
+  { specifier: 'umbra', name: 'createBootstrap' },
+  { specifier: 'umbra', name: 'defineStep' },
+  { specifier: 'umbra', name: 'defineHostedStep' },
+  { specifier: 'umbra', name: 'Outcome' },
 ];
 
 /** What each entry point is, in the order a reader meets them. */
 const ENTRY_BLURB: Record<string, string> = {
-  umbra: 'The framework-agnostic core. Resolves and runs with no framework installed at all.',
+  umbra:
+    'The framework-agnostic core. Plans the work, runs it, and hands back one frozen answer — with no framework installed at all.',
   'umbra/react':
-    'Hooks, the outlet and React-flavoured store access. It re-exports the core, so a React app imports from this path only.',
+    'Five hooks over the core, which this entry re-exports whole, so a React app imports from this path only.',
   'umbra/solid':
-    'The same surface for Solid, plus `fromStore`. Live values are getters over signals, so do not destructure the render args.',
-  'umbra/vanilla':
-    'A controller for a <dialog> you wrote yourself: no render, no Dialog, no outlet — and no framework, optional or otherwise.',
+    'The same five names for Solid, plus `fromStore`. Live values are accessors over signals, so do not destructure what these return.',
+  'umbra/plain':
+    'A controller for markup you wrote yourself: no provider, no hooks, no rendering — and no framework, optional or otherwise.',
 };
 
 const ENTRY_TITLE: Record<string, string> = {
   umbra: 'Core',
   'umbra/react': 'React binding',
   'umbra/solid': 'Solid binding',
-  'umbra/vanilla': 'Vanilla binding',
+  'umbra/plain': 'Controller binding',
 };
 
 const CategoryCard = ({ category }: { readonly category: ApiCategory }) => {

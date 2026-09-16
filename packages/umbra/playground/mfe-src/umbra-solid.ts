@@ -1,2 +1,2 @@
-// `umbra/solid` — the Solid binding. A sibling of `./react`, over the same core.
+// `umbra/solid`, on the same specifier a bundler-built app would write.
 export * from '../../src/solid.js';

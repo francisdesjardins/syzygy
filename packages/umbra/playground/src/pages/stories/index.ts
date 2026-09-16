@@ -1,1 +1,1 @@
-export { StoriesPage } from './ui/StoriesPage';
+export { StoriesPage } from '@/pages/stories/ui/StoriesPage';

@@ -1,11 +1,8 @@
-import babel from '@rolldown/plugin-babel';
-import react, { reactCompilerPreset } from '@vitejs/plugin-react';
+import react from '@vitejs/plugin-react';
 import { resolve } from 'node:path';
-import { defineConfig, type Plugin } from 'vite';
-// `.ts` and not extensionless: Vite's native config loader (the coming default) resolves the
-// specifier as written, and `allowImportingTsExtensions` is what makes the compiler agree.
-import { apiModelPlugin } from './vite-plugins/api-model.ts';
-import { mfeUmbraPlugin } from './vite-plugins/mfe-umbra.ts';
+import { defineConfig } from 'vite';
+import { apiModelPlugin } from './vite-plugins/api-model.js';
+import { mfeUmbraPlugin } from './vite-plugins/mfe-umbra.js';
 import { ctCoverage } from '../scripts/vite-plugin-ct-coverage.mjs';
 
 // Set VITE_HASH_ROUTER=true to build for file:// (no server needed)
@@ -14,137 +11,46 @@ const hashRouter = process.env['VITE_HASH_ROUTER'] === 'true';
 /**
  * Component-test coverage, opt-in through `CT_COVERAGE=1` — and it lives here because this is the
  * bundler the component suite runs on. A component test's subject runs in the browser, so c8 has no
- * Node process to measure: the source is instrumented on the way in, counters land on
- * `window.__coverage__`, and `src/__tests__/ct-test.ts` reads them back per test. Off by
- * default; instrumentation costs about 45% of a run and the numbers are only wanted when asked for.
- *
- * **Before the compiler, deliberately** — both are `enforce: 'pre'`, so this array is the order and
- * the instrumenter needs the file as written for its counters to land on source lines.
+ * Node process to measure: the library source is instrumented on the way in, counters land on
+ * `window.__coverage__`, and `src/__tests__/ct-test.ts` reads them back per test. Off by default;
+ * the numbers are only wanted when asked for.
  */
 const withCoverage = process.env['CT_COVERAGE'] === '1';
-const coveragePlugins: Plugin[] = withCoverage ? [ctCoverage()] : [];
 
+// The playground consumes the library through its public specifiers, aliased to source. Importing
+// `../src` directly would demo a shape no consumer ever sees.
 export default defineConfig({
+  // Deployed under /playground/umbra/ on the site, and opened straight off the disk otherwise:
+  // neither has the bundle at the server root, so the asset URLs go relative with the hash router.
   base: hashRouter ? './' : '/',
   // A cache of its own, like the port: Vite's dep optimizer deletes and rewrites this directory at
   // startup, so two servers sharing it hand each other's open pages chunk URLs that no longer exist.
   cacheDir: withCoverage ? 'node_modules/.vite-coverage' : 'node_modules/.vite',
-  plugins: [
-    // Fast Refresh is kept off the modules a Worker imports. Its preamble reads `window`, which a
-    // Worker has not got, so anything reaching `umbra/react` from one died on import — and `worker.
-    // plugins` cannot answer for it, since in dev Vite serves a worker through this very pipeline.
-    // Excluding costs nothing: the root `tsconfig.json` sets `jsx: react-jsx`, so esbuild still emits
-    // the automatic runtime, and Fast Refresh over the library's own source is not what anyone edits.
-    react({ exclude: [/src\/react\//, /ssr-worker/] }),
-    ...coveragePlugins,
-    babel({
-      // The compiler decides what a component is by naming convention, so `BasicApp` in the Solid
-      // binding reads as one: left in, it gets `react/compiler-runtime` injected and throws
-      // "Invalid hook call" the moment Solid runs it. `/stories` renders those harnesses, so this
-      // is the playground's copy of the scoping `vite.config.esm.ts` states for the library build.
-      // Restating the default keeps `node_modules` out.
-      exclude: [/node_modules/, /src\/solid\//],
-      // Pinned, not defaulted: the library build and the component-test bundle both pass
-      // `{ target: '19' }`, and a demo compiled under a different target would stop being
-      // evidence of how the shipped code behaves. The plugin's own default matches today —
-      // which is exactly the kind of agreement that breaks quietly.
-      presets: [reactCompilerPreset({ target: '19' })],
-    }),
-    apiModelPlugin(),
-    mfeUmbraPlugin(),
-  ],
+  // The instrumenter goes first: it wants the file as written, so its counters land on source lines.
+  plugins: [...(withCoverage ? [ctCoverage()] : []), react(), mfeUmbraPlugin(), apiModelPlugin()],
   resolve: {
-    dedupe: ['react', 'react-dom'],
-    alias: {
-      umbra: resolve(import.meta.dirname, '../src'),
-      '@': resolve(import.meta.dirname, 'src'),
-    },
-  },
-  optimizeDeps: {
-    // Named up front rather than left to discovery. Vite pre-bundles a dependency the first time
-    // it sees one imported, and discovering one mid-session re-runs the optimizer and reloads the
-    // page — which lands, by construction, on the first visit to whichever section introduced it.
-    // The highlighter's subpaths are here because `CodeBlock` reaches them past the package's own
-    // entry, so nothing points at them until the code viewer is first opened.
-    // No `@mui/material` barrel here: source imports are per-module (`@mui/material/Box`), so
-    // pre-bundling the barrel would drag all ~2 500 modules back into the optimizer for nothing.
-    include: [
-      '@mui/material/styles',
-      '@tanstack/react-router',
-      'immer',
-      'react-syntax-highlighter/dist/esm/prism-light',
-      'react-syntax-highlighter/dist/esm/languages/prism/bash',
-      'react-syntax-highlighter/dist/esm/languages/prism/css',
-      'react-syntax-highlighter/dist/esm/languages/prism/markup',
-      'react-syntax-highlighter/dist/esm/languages/prism/tsx',
-      'react-syntax-highlighter/dist/esm/styles/prism/one-dark',
-      'react-syntax-highlighter/dist/esm/styles/prism/one-light',
-    ],
-    // The library is the source next door, not a dependency — pre-bundling it would freeze it
-    // behind an optimizer cache and stop an edit in `src/` from showing up here.
-    exclude: ['umbra'],
-  },
-  server: {
-    port: 3000,
-    open: true,
-    allowedHosts: ['.ngrok-free.app', '.ngrok.io'],
-    // Transformed at startup rather than on the click that needs it. Each route is a lazy chunk,
-    // so in dev its whole subtree — page, examples, templates — is transformed the first time it
-    // is opened and instantly on every visit after: the lag is per section, once, which is
-    // precisely the shape being complained about. Every page barrel is listed because a section
-    // left off is a section that keeps its stall.
-    warmup: {
-      clientFiles: [
-        './src/app/main.tsx',
-        './src/app/router.tsx',
-        './src/widgets/root-layout/ui/RootLayout.tsx',
-        './src/pages/*/index.ts',
-      ],
-    },
-    fs: {
-      strict: false,
-      allow: ['..'],
-    },
-  },
-  preview: {
-    port: 3000,
-    allowedHosts: ['.ngrok-free.app', '.ngrok.io'],
-  },
-  build: {
-    chunkSizeWarningLimit: 700,
-    rolldownOptions: {
-      output: {
-        // One group whose `name` is the old `manualChunks` predicate. `manualChunks` is Rolldown's
-        // Rollup-compatibility shim and is deprecated in favour of this; a dynamic `name` returning
-        // a different string is a separate group, which is how four vendor chunks come out of one
-        // entry. `null` leaves the module to ordinary splitting — the shim spelled that `undefined`.
-        codeSplitting: {
-          groups: [
-            {
-              name: (id): string | null => {
-                if (!id.includes('node_modules')) {
-                  return null;
-                }
-                if (id.includes('@mui') || id.includes('@emotion')) {
-                  return 'vendor-mui';
-                }
-                if (
-                  id.includes('react-syntax-highlighter') ||
-                  id.includes('highlight.js') ||
-                  id.includes('refractor') ||
-                  id.includes('prismjs')
-                ) {
-                  return 'vendor-syntax';
-                }
-                if (id.includes('@tanstack')) {
-                  return 'vendor-router';
-                }
-                return 'vendor-react';
-              },
-            },
-          ],
-        },
+    // The array form, because the four entry points have to match *exactly*: as bare string keys
+    // they match by prefix, so `umbra/react/__tests__/x` would resolve against `react.ts` and
+    // land on a path inside a file. Anchored patterns say what each one means, and the trailing
+    // rule then carries every other subpath into `src/` — which is how the playground reaches the
+    // harnesses that live beside the code they exercise.
+    alias: [
+      // Absolute imports inside the playground, so a file that moves between layers does not drag a
+      // trail of `../../..` with it.
+      { find: '@', replacement: resolve(import.meta.dirname, 'src') },
+      { find: /^umbra\/react$/, replacement: resolve(import.meta.dirname, '../src/react.ts') },
+      { find: /^umbra\/solid$/, replacement: resolve(import.meta.dirname, '../src/solid.ts') },
+      {
+        find: /^umbra\/plain$/,
+        replacement: resolve(import.meta.dirname, '../src/plain.ts'),
       },
-    },
+      { find: /^umbra$/, replacement: resolve(import.meta.dirname, '../src/index.ts') },
+      { find: /^umbra\//, replacement: `${resolve(import.meta.dirname, '../src')}/` },
+    ],
   },
+  // Left to itself the scanner walks `public/`, finds the fragment that imports `umbra-copy` —
+  // a specifier only the frames' import map knows — and gives up on pre-bundling for the whole dev
+  // server. The app's entry is the only one it needs.
+  optimizeDeps: { entries: ['index.html'] },
+  server: { port: 3000 },
 });

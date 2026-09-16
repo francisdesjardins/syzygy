@@ -23,21 +23,6 @@
   border-color: var(--app-text);
 }
 
-/* The ring goes on the box, not on the bare `<input>` inside it.
- *
- * A text field matches `:focus-visible` on a click where a button does not — that is the platform's
- * convention and worth keeping — but the input has no border of its own, so the global ring drew a
- * second rectangle *inside* the field's edge. On the wrapper it is the same ring, in the same place,
- * as every other control's. */
-.field:focus-within {
-  outline: 2px solid var(--app-ring);
-  outline-offset: 2px;
-}
-
-.input:focus-visible {
-  outline: none;
-}
-
 /* MUI's `action.disabled` glyph — decorative, named by the placeholder beside it. */
 .fieldIcon {
   flex-shrink: 0;

@@ -1,25 +1,25 @@
 import { createContext, use } from 'react';
 
-export type Opener = ((codeKey: string) => void) | null;
-
-export type CodePaneValue = {
-  readonly open: Opener;
-  readonly setOpen: (opener: Opener) => void;
+/**
+ * Shared state for the source-code viewer: only *what* to show (`selectedExample`) and the
+ * opener the root layout publishes once its slide dialog is mounted
+ * (`codeDialogOpen`), so any `ViewCodeButton` in the tree drives one viewer instance. It lives in
+ * `shared` because of who consumes it — `ViewCodeButton` is `shared/ui`, and under Feature-Sliced
+ * Design may not reach up into `app` or `widgets`. Contract here, provider and dialog above.
+ */
+export type CodePaneContextValue = {
+  selectedExample: string | null;
+  setSelectedExample: (id: string | null) => void;
+  codeDialogOpen: (() => void) | null;
+  setCodeDialogOpen: (fn: (() => void) | null) => void;
 };
 
-/**
- * The seam between the card that asks for code and the one dialog that shows it.
- *
- * Deliberately holding a *setter*: the layout registers the opener once it has one, and nothing
- * below has to know the dialog exists. Split from the provider for the same fast-refresh reason as
- * the theme.
- */
-export const CodePaneContext = createContext<CodePaneValue | undefined>(undefined);
+export const CodePaneContext = createContext<CodePaneContextValue | null>(null);
 
-export function useCodePane(): CodePaneValue {
-  const value = use(CodePaneContext);
-  if (value === undefined) {
-    throw new Error('useCodePane was called outside a <CodePaneProvider>.');
+export const useCodePane = () => {
+  const context = use(CodePaneContext);
+  if (!context) {
+    throw new Error('useCodePane must be used within CodePaneProvider');
   }
-  return value;
-}
+  return context;
+};

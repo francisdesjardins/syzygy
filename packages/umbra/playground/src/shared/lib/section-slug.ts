@@ -1,10 +1,7 @@
-/**
- * Anchor id for a section heading — `"Rendering & events"` → `"rendering-events"`. Shared by
- * `ExampleSection` (which stamps the id) and `SectionNav` (which links to it), so they can't drift.
- */
-export const sectionSlug = (title: string) => {
+/** A section title as an anchor id, so a page nav and a heading cannot disagree about one. */
+export function sectionSlug(title: string): string {
   return title
     .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/[^\da-z]+/g, '-')
     .replace(/^-|-$/g, '');
-};
+}

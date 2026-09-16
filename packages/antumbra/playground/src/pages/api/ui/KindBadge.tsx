@@ -1,5 +1,5 @@
 import styles from '@/pages/api/ui/KindBadge.module.css';
-import type { ApiSymbol } from 'virtual:antumbra-api';
+import type { ApiSymbol } from 'virtual:dialog-api';
 
 /**
  * What a symbol *is*, where the word does not fit. Two accents and a neutral: the palette's
@@ -9,7 +9,6 @@ import type { ApiSymbol } from 'virtual:antumbra-api';
 const KIND = {
   function: { label: 'fn', tone: 'primary' },
   variable: { label: 'const', tone: 'success' },
-  class: { label: 'class', tone: 'warn' },
   type: { label: 'type', tone: 'neutral' },
 } as const;
 

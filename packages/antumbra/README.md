@@ -1,445 +1,496 @@
-# antumbra
+<div align="center">
 
-**Bootstrap orchestration for an application made of modules.**
+# <img src="docs/brand/moon-first-quarter.svg" width="24" height="24" alt="" /> Antumbra
 
-No framework in the core, no UI, no dependencies.
+**Headless dialogs on the native top layer.**
 
+Framework-agnostic core, with React, Solid and vanilla bindings over it.
+
+[![CI](https://github.com/francisdesjardins/antumbra/actions/workflows/ci.yml/badge.svg)](https://github.com/francisdesjardins/antumbra/actions/workflows/ci.yml)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-19-61dafb?style=flat-square&logo=react&logoColor=black)](https://react.dev/)
 [![Solid](https://img.shields.io/badge/Solid-1.9-2c4f7c?style=flat-square&logo=solid&logoColor=white)](https://www.solidjs.com/)
-[![Unit coverage](https://img.shields.io/badge/unit_coverage-99%25-3fb950?style=flat-square)](#development)
-[![Component coverage](https://img.shields.io/badge/component_coverage-71%25-3fb950?style=flat-square)](#development)
+[![Unit coverage](https://img.shields.io/badge/unit_coverage-97%25-3fb950?style=flat-square)](#development)
+[![Component coverage](https://img.shields.io/badge/component_coverage-92%25-3fb950?style=flat-square)](#development)
 [![Dependencies](https://img.shields.io/badge/dependencies-0-f59e0b?style=flat-square)](#)
 [![License: MIT](https://img.shields.io/badge/License-MIT-64748b?style=flat-square)](./LICENSE)
 
-**[Open the playground →](https://francisdesjardins.ca/playground/antumbra/)**
+**[Open the playground →](https://francisdesjardins.ca/playground/dialog/)**
 
-The graph and the timeline of a real run, four fragments on one page sharing a bootstrap, a
-single-spa host that waits on it, and the generated API reference for all four entry points.
+Every example on this page, running — plus the generated API reference for all four entry points,
+the component test harnesses, and four microfrontends sharing one manager across React, Solid,
+vanilla and a web component.
 
-Applications start the same way, whatever they run on. Validate a token. Check what this caller may
-do. Fetch the configuration and the reference lists the modules will ask for the moment they come
-up. Then decide whether the thing may start at all. Almost nobody orchestrates it, and the two usual
-shapes are both bad: a chain of `await` on the critical path, where each call waits for one that had
-nothing to do with it, or a block of promises fired and never awaited, with no status and no failure
-handling.
+</div>
 
-A browser calls the end of that "mounting" and a server calls it "listening", which is a difference
-in what happens next rather than in the work. The core imports no framework and touches no DOM —
-`src/__tests__/entry-isolation.test.ts` walks the real import graph to keep it that way, and the
-unit suite runs in Node with no browser at all.
+---
 
-antumbra takes that work, derives the parallelism from the dependencies you declare, and hands back
-a typed result — plus the two things a bootstrap always produces and nobody has anywhere to put:
-facts it recorded on the way, and UI work it could not do itself.
+A **headless**, fully typed dialog manager. The core is plain TypeScript with no framework in it; **React, Solid and vanilla ship as three bindings over it**. The two hook bindings share a surface — same names, same options, same typed close — and the vanilla one is a _controller_ for a `<dialog>` you wrote yourself. The library exports zero UI components — you bring your own (MUI, Tailwind, vanilla HTML/CSS).
 
-```ts
-import { createBootstrap, defineStep } from 'antumbra';
+## <img src="docs/brand/moon-first-quarter.svg" width="18" height="18" alt="" /> Entry points
 
-const boot = createBootstrap({
-  steps: [
-    defineStep({
-      id: 'session',
-      timeout: 3000,
-      run: async (ctx) => {
-        const session = await validateToken(ctx.signal);
-        if (session === null) {
-          ctx.intent('redirect:sign-in', { returnTo: location.pathname });
-          return ctx.block('No session.');
-        }
-        return session;
-      },
-    }),
-    defineStep({
-      id: 'access',
-      needs: ['session'],
-      run: async (ctx) => {
-        return rolesOf(ctx.get('session').userId);
-      },
-    }),
-    defineStep({
-      id: 'config',
-      needs: ['session'],
-      optional: true,
-      run: async (ctx) => {
-        return fetchConfig(ctx.signal);
-      },
-    }),
-  ],
-});
+| Specifier          | Contents                                                                                                                                                                                                                                                                                                                                 |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `antumbra`         | The manager (`dialogManager`, `createDialogManager`), the placement and style tables (`dialogPlacement`, `applyStyle`), the store engine (`createStore`, `StoreContract`), `normalizeError`, the key utilities (`Key`, `HotkeyDef`, `matchesHotkey`, `formatHotkeyLabel`, `formatAriaKeyshortcuts`) and `setLogLevel`. **No framework.** |
+| `antumbra/react`   | `useDialog`, `useMessageDialog`, `useSlideDialog`, `DialogOutlet`, `DialogManagerProvider`, `useDialogManager`, `useLookup` — **plus everything above**, so a React app imports one path.                                                                                                                                                |
+| `antumbra/solid`   | The same names for Solid, plus `fromStore`, and the same wholesale re-export of the root.                                                                                                                                                                                                                                                |
+| `antumbra/vanilla` | `bindDialog` — a _controller_ for a `<dialog>` you wrote yourself — whose `bindAction` is a **member of the controller it returns**, not a second export. No `render`, no `Dialog`, no outlet, and no framework. Same wholesale re-export.                                                                                               |
 
-const outcome = await boot.run();
-if (outcome.status === 'ready' || outcome.status === 'degraded') {
-  mountTheApp(outcome.data);
-}
+The root resolves and runs with no framework installed at all, which is what lets a plain `.ts`
+service, a router guard, a worker or an SSR path raise a dialog without a component. Each binding
+reaches its own framework and only its own, so installing one is never a condition for using the
+other. All of that is enforced by tests that walk the real import graphs — and re-checked against
+the built package — not by convention.
+
+**The two hook bindings share a surface deliberately.** Three differences, and all three are the
+renderer's: Solid's live values (`isVisible`, `isPreparing`, `hasRunningAction`, `error`) are
+getters over signals, so read them through the object rather than destructuring it; `useLookup`
+returns an accessor rather than an object, because a discriminated union cannot survive being
+spread into getters; and `portal: true` mounts the dialog for you, leaving `Dialog` as `null`.
+
+**`antumbra/vanilla` is a different kind on purpose.** It renders nothing — a binding that did would
+mean shipping a renderer, which this library refuses to do — so the element and its contents stay
+yours and `bindDialog` drives the lifecycle over them: phases and animation, `prepare`, the
+dismiss key, click-outside, backdrop hit-testing, opening focus, the registration that makes it
+addressable by id, and the typed close. `bindAction(button, { reason })` is its one addition, and it
+does the half a renderer would: attach the handler, then keep `disabled`, `data-loading` and
+`aria-busy` in step — and hand the button back as it was when you unbind it, since the markup is
+yours and outlives the controller.
+
+## <img src="docs/brand/moon-last-quarter.svg" width="18" height="18" alt="" /> Features
+
+- **Headless** — No UI opinions; use any component library or plain HTML/CSS
+- **Framework-agnostic core** — React is a binding, not the library; a second binding is a sibling file
+- **Primitive + template layers** — Core `useDialog` powers `useMessageDialog`, `useSlideDialog`
+- **Actions declared by use** — `action('save', handler)` inside `render` names the reason, binds the handler and returns `{ type, onClick, disabled, 'data-loading', 'aria-busy', 'data-action-reason', 'aria-keyshortcuts'?, 'data-focus-on-open'? }` to spread. Every field is a DOM prop, so the same set fits a bare `<button>`, MUI's, or your own — the core never guesses what your buttons are called
+- **Which action is running, not just that one is** — `action.isRunning('publish')` is the per-action state anywhere the button's own `data-loading` cannot reach: a header, a locked field, a status line. `hasRunningAction` stays the aggregate
+- **Type-safe** — Strict TypeScript with `exactOptionalPropertyTypes`, generics for close data and form values
+- **Native `<dialog>`** — Renders inline by default; opt-in `portal: true` for `createPortal`, automatic z-index stacking
+- **Who is in front is a decision, not a race** — `dialogManager.prioritize((dialog) => number)` installs one project-wide rule, so "every drawer under every alert" is stated once instead of being settled by whichever `showModal()` landed last. Modality is a fact no policy can touch: the top layer paints above ordinary content and no `z-index` reaches between them
+- **Whether a dialog opens at all is a policy too** — `dialogManager.gate((attempt) => reason | void)` sits in front of every door, including a dialog’s own `open()`, so an allow list, a cap on how many may be stacked, a time window or a kill switch is stated once above the dialogs rather than agreed by a hundred call sites. Refusal is explicit and acceptance is the default; each refusal reaches `subscribe` as a `refuse` event, which is the whole of an audit log. A policy layer, not a security boundary — a gate that throws admits, logged, rather than taking every dialog in the app down with it
+- **When the `open` is a prop** — a dialog it owns cannot close itself, because the boolean upstream would put it straight back. `reconcileOpen(phase, open)` puts the dialog wherever the prop says, reconciled on every pass rather than reacted to; `onDismissRequest` turns every dismissal — the key, a backdrop click, a click outside a panel, each naming itself — into a report to the owner, with every gate above it — which key, an action claiming it, where the pointer landed, `prepare`, which dialog is in front — still the library's
+- **Content that isn't ready yet** — `prepare(signal)` runs alongside the entrance animation and gates `isPreparing` and the promise `open()` returns; its `AbortSignal` fires when the dialog closes, so a dialog dismissed while it loads drops the work it started
+- **Non-modal panels, positioned honestly** — `dialogPlacement` ships from the core as a table of CSS, so every binding puts a panel in the same place: `portal: true` anchors it to the viewport, `portal: false` contains it in a library-owned wrapper immune to a transformed ancestor hijacking the containing block
+- **Go-style `openAndWait()`** — `const [err, result] = await dialog.openAndWait()`; one call, and the only order that cannot lose the close
+- **Scoped hotkeys** — `action('save', { hotkey: Key.Enter, onAction })`; the dialog dispatches it by clicking the button, so the key path and the click path are the same path, running state and veto included. Scoped to the dialog that declared it: a dialog opened from inside another never answers to the one in front of it
+- **Opening focus you choose** — `action('cancel', { focusOnOpen: true })` starts the dialog on the button that matters instead of on its first input
+- **Shadow DOM** — a `<dialog>` inside a web component gets the library's backdrop (the sheet is adopted per root, since `adoptedStyleSheets` does not cross the boundary) and its focus policy asks that root rather than the document
+- **Across bundles** — `requestOpen` / `requestOpenAndWait` ask a dialog another microfrontend owns, and the `dialog:open` / `dialog:close` DOM events report every dialog on the page, including ones raised by a different copy of the library
+- **Server-rendered markup** — `antumbra/vanilla` binds to a `<dialog>` that is already in the document, and **adopts one that already carries `open`** rather than closing it out from under a page that has been showing it since first paint. A server cannot render a _dialog_ dialog and no library can change that — the top layer is enterable only from script — so an `open` attribute in HTML is a non-modal open, and a modal one is closed on binding with a warning rather than pretending to a backdrop it does not have
+- **Zero runtime dependencies** — `react` / `react-dom` and `solid-js` are _optional_ peers, each needed only by its own binding; `./vanilla` and the root need neither
+- **React Compiler ready** — No `useMemo`/`useCallback`/`React.memo`
+- **A measured browser floor** — Chrome/Edge 110+, Safari 16.4+, Firefox 115+, set by what the code actually calls rather than picked; the accounting is under _Using it_ below
+- **Debug logging** — Zero-dep logger with namespace filtering via `localStorage`
+
+## <img src="docs/brand/moon-full.svg" width="18" height="18" alt="" /> Accessibility
+
+The accessible half of a dialog is mostly the platform's, and the library's job is to keep it
+intact — then hand you the one lever only you hold, and refuse the ones that would lie. Every
+claim below is a cell in the compatibility matrix ([API.md → Compatibility](API.md#compatibility)),
+where each cites the test that proves it on which engine and which binding — including a
+**WCAG 2.2 chapter**, criterion by criterion, that says which halves are the library's and which
+are deliberately yours. Fifteen criteria, and a mapping rather than a conformance claim: a headless
+library renders nothing, so a page can carry every cell below and still fail an audit on content it
+wrote itself. Where the answer is not yet settled the cell says `~` and carries the question, which
+is how it reaches `yarn todo` instead of a footnote.
+
+- **Native `<dialog>`, natively dialog.** `showModal()` puts the dialog in the top layer and makes
+  the rest of the document inert, and that is what assistive technology is told — the library never
+  writes `aria-modal`, because the attribute is redundant on a modal dialog and a lie on a
+  non-modal one.
+- **The name is yours, and never invented.** `ariaLabel` / `ariaLabelledBy` / `ariaDescribedBy`
+  reach the element; an absent option omits the attribute entirely, because `aria-label=""` is the
+  spelling that hides a nameless dialog from an audit. A shipped diagnostic (silent until
+  `setLogLevel`) reports a reference that resolves to nothing, a dialog with no accessible name at
+  all, and `role="alertdialog"` on a non-modal dialog — the one role pairing the type system
+  already refuses on the hook bindings, an alertdialog being dialog by definition.
+- **`aria-busy` is the one attribute the library owns.** Written both ways, `"false"` included,
+  tracking `prepare` — a dialog is never left silently announcing itself as loading.
+- **The hotkey attribute is the mechanism.** A hotkey dispatches by querying
+  `[aria-keyshortcuts]` and clicking what it finds, so the attribute a screen reader announces and
+  the behaviour it describes cannot drift apart — and a custom button wrapper that drops the prop
+  loses its hotkeys, which is pinned in both directions.
+- **Focus moves are measured, and visible.** Opening focus (`focusOnOpen`), the restore after a
+  failed action, the reclaim when the stack moves, and the keyboard handed back to the opener when
+  a non-modal panel closes — each is pinned per engine, and every focus move the library makes **of
+  its own** shows a `:focus-visible` ring, because input-modality heuristics make a library-made
+  focus invisible on two engines out of three. That ring asks for `FocusOptions.focusVisible`, an
+  _enhancing_ row in the [browser floor table](API.md#compatibility) rather than a floor one. Below
+  Chrome 145 / Safari 18.4 the option is ignored and modality decides: a dialog opened from the
+  keyboard rings on all three, and one opened by pointer rings only on WebKit — the engine that
+  follows the guidance for script-managed focus. The move is made either way; asking is how a page
+  answers what an input-modality heuristic cannot. The exception says the same thing from the other
+  side: putting back a caret you had placed yourself is done silently, being your state rather than
+  a move of ours to announce. `restoreFocusTo` redirects that last
+  one when the opener is no longer the right answer — a list that drove the panel's content is the
+  case — and only where the restore already owns the focus, so a caret you moved yourself stays. The
+  ring is drawn on the way back too: the platform's own restore shows one by input modality, so
+  closing with the mouse would otherwise hand the keyboard back invisibly. `handle.moveFocus` is
+  the same scan offered outward, for a device the browser never turns into Tab — a controller's
+  d-pad is the case, and `/interop` drives one.
+- **`containFocus` buys the Tab wrap; the recovery is unconditional.** Keeping Tab inside is
+  opt-in because on a toast or a popover it is the defect rather than the fix — but recovering a
+  Tab pressed on the `<dialog>` element itself (a dead-space click puts it there, and WebKit
+  swallows the press) works on every dialog, flag or no flag.
+- **A toast is a live region, and it lives outside the dialog.** The library refuses
+  `role="status"` on a `<dialog>` and ships no announcer — a live region only announces reliably
+  when it exists _before_ its content, which is a structural fact no dialog-rendered region can
+  satisfy. The playground's `useAnnouncer` is the copyable pattern, and its corner toast runs it.
+- **Reduced motion is one CSS rule, and the close path is built to meet it.**
+  `@media (prefers-reduced-motion: reduce) { dialog { transition: none !important } }` — the
+  library _measures_ whether transitions are live and finalizes a close immediately when they are
+  not, so the rule cannot hang an exit waiting for a `transitionend` that never comes. Animations
+  are defaults you replace; the playground ships that rule itself.
+- **Forced colors keeps the silhouette, if you give it one.** Windows High Contrast strips author
+  backgrounds and shadows: the library's backdrop is replaced by the system's own scrim, and a
+  surface drawn by shadow alone disappears. Measured under emulation: the reference templates all
+  stay delimited, because each carries a real border on the edge that matters — the one rule a
+  consumer needs. The focus ring comes back in the system Highlight on its own.
+
+## <img src="docs/brand/moon-first-quarter.svg" width="18" height="18" alt="" /> Using it
+
+Clone the repo and run the playground, or lift what you need straight out of `src/` — it is
+plain TypeScript with no build magic and no runtime dependencies.
+
+```bash
+git clone https://github.com/francisdesjardins/antumbra.git
+cd antumbra
+yarn install
+yarn dev
 ```
 
-### When the graph is not known in advance
+**Both frameworks are optional peers.** The root is plain TypeScript and resolves with neither
+installed; `react` / `react-dom` (`^19.0.0`) are needed only by `antumbra/react`, and `solid-js`
+(`^1.9.0`) only by `antumbra/solid`. `antumbra/vanilla` needs neither, and resolves wherever the root
+does — a plain page, an Astro island, a web component, a server-rendered app with a sprinkle of
+JavaScript.
 
-The steps above were written by someone who knew what they were. Plenty of processes do not have
-that: a robot whose arm is assembled from whatever the base reports at power-on, a worker whose
-queues come from its own configuration, a server whose plugins are a directory listing. The obvious
-ask is a way to add steps while the run is going.
+**Requirements:** Chrome/Edge 110+ · Safari 16.4+ · Firefox 115+
 
-**There isn't one, and that is the design.** `createBootstrap` compiles the graph once, and
-`plan()` hands that compilation back — a step added mid-run would make the plan a description of
-something that did not happen, and the plan is the one promise the planner makes.
+That floor is what the code actually uses, measured rather than picked: constructed
+`CSSStyleSheet` + `adoptedStyleSheets` sets the Safari bound, `Array.prototype.toSorted` the
+Chrome and Firefox ones, and native `<dialog>` — the headline requirement — has been the widest
+of the three since Firefox 98. In [Baseline](https://web.dev/baseline) terms, everything the
+floor rests on has been Baseline since 2023 — the version numbers above are the same fact,
+spelled as the measurement it came from. Node >= 24 is a **contributor** requirement — see
+Development below; the package is browser code with zero runtime dependencies, so nothing about
+it cares what a consumer builds with.
 
-What replaces it is **one bootstrap per tier**. A tier that discovers the next one hands its outcome
-over, and the next `createBootstrap` is declared from that answer:
+## <img src="docs/brand/moon-full.svg" width="18" height="18" alt="" /> Quick Start
 
-```ts
-// Tier one: what is true of every robot, whatever it turns out to be made of.
-const base = createBootstrap({ steps: [bus, baseConfig, discoverTree] });
-const powered = await base.run();
-if (powered.status !== 'ready') {
-  return refuseToMove(powered);
-}
-
-// Tier two, declared from what tier one found. These ids did not exist when the file was written.
-const tree = powered.data.tree;
-const arm = createBootstrap({
-  steps: [
-    ...tree.joints.map((joint) => {
-      return defineStep({
-        id: `joint:${joint.id}`,
-        run: () => {
-          return home(joint);
-        },
-      });
-    }),
-    defineStep({
-      id: 'end-effector',
-      needs: tree.joints.map((joint) => {
-        return `joint:${joint.id}`;
-      }),
-      run: () => {
-        return attach(tree.endEffector);
-      },
-    }),
-  ],
-});
-```
-
-Seven joints that need nothing from each other go out on one level; the end effector waits for all
-seven. Every tier keeps the whole model — derived parallelism, refusals, timeouts, notices, intents
-— and a tier that cannot describe itself refuses, so the next one is never built.
-
-An id a registry does not name is still a legal id, which is what lets a graph be built from data at
-all. `src/core/__tests__/discovered-tiers.test.ts` is this example, run.
-
-`access` and `config` both depend on `session` and on nothing else, so they go out together. You did
-not ask for that and there is no flag for it: it is what the graph you wrote already said.
-
-## What this is for
-
-An application whose modules are separated — a monorepo with one module per domain is the common
-case. The session module owns the token, another owns access, two more own reference data they would
-otherwise each fetch on first render. Written as a graph, the shared work happens once and the
-independent work overlaps.
-
-Deploying those modules separately, as micro-frontends, changes nothing about the graph. That is a
-property of the shape rather than the reason for it.
-
-## More than one module on a page
-
-Two modules booting independently — a monorepo where each domain owns its startup, or two
-micro-frontends built separately — will each validate the same token and fetch the same
-configuration. Mark the step `scope: 'shared'` and the first one to reach it does the work; the rest
-adopt the result.
-
-```ts
-defineStep({
-  id: 'session',
-  scope: 'shared',
-  run: async (ctx) => {
-    return validateToken(ctx.signal);
-  },
-});
-```
-
-The step id is the sharing key: two modules that declare `session` are declaring the same thing.
-Nothing needs to import anything else, which is the point — the registry lives on a versioned
-`Symbol.for` so two separately built copies of the library find each other.
-
-A shared step is attempted once and its ending is everyone's answer, refusal and timeout included,
-so modules that share a step should agree on its `timeout`. Its notices and intents stay with the
-run that did the work: replaying them would put the same warning on the screen once per module.
-`outcome.timeline` marks an adopted step `shared: true`.
-
-## The two phases
-
-A preflight step runs before anything is mounted. It has no framework and cannot ask the user
-anything, and it is the only kind that may refuse the mount outright.
-
-A hosted step runs after a binding has taken over, with a UI port in hand. It can open a dialog and
-wait for the answer. It cannot refuse a mount that already happened.
-
-That split is in the types, not in a comment: the two phases get two different context types, so a
-preflight step has no `ctx.host` to reach for and a hosted step has no `ctx.block` to call.
-
-```ts
-const trialWarning = defineHostedStep({
-  id: 'trial-warning',
-  needs: ['config'],
-  run: async (ctx) => {
-    if (ctx.get('config').daysLeft < 30) {
-      await ctx.awaitIntent('warn:trial-expiring', { daysLeft: ctx.get('config').daysLeft });
-    }
-  },
-});
-```
-
-## Notices and intents
-
-A **notice** is a fact recorded during the run. Passive: nothing is expected to act on it. It is what
-tells you the configuration came from a four-hour-old cache, or that a module's reference data never
-arrived. Notices survive the failure of the step that wrote them, because the run that went wrong is
-the one whose facts matter.
-
-An **intent** is UI work the framework-free layer cannot do itself. Open a warning dialog, redirect,
-ask for a confirmation. It has a life: `pending → forwarded → handled | dropped`. Nothing is
-forwarded on its own — the app says what it takes — and an intent nobody forwards is recorded as
-dropped with a reason rather than lost.
-
-```ts
-const session = boot.session();
-const bound = bindBootstrap(session, {
-  host: {
-    confirm: (message) => {
-      return myDialog.ask(message);
-    },
-  },
-  onIntent: (intent, controls) => {
-    if (intent.type === 'redirect:sign-in') {
-      controls.drop('handled by the router');
-      return;
-    }
-    myBanner.show(intent, controls.settle);
-  },
-});
-```
-
-## Status
-
-| Status     | Means                             | What the app does                                    |
-| ---------- | --------------------------------- | ---------------------------------------------------- |
-| `ready`    | Every step succeeded              | Mount everything                                     |
-| `degraded` | An optional step failed           | Mount, and read the notices to know what is missing  |
-| `blocked`  | A step refused the mount          | Do not mount; the intents say where to send the user |
-| `failed`   | A required step failed            | Do not mount                                         |
-| `aborted`  | Something outside stopped the run | Usually nothing: the page is going away              |
-
-`run()` never rejects for anything a step did. A step that throws, times out or refuses is reported
-through `status`, because the notices and intents collected on the way to that failure are the most
-valuable thing the run produced and a rejection would throw them away. Programming mistakes — a
-cycle, an unknown dependency, a duplicate id — throw synchronously from `createBootstrap`, before
-anything runs.
-
-Calling `run()` twice returns the same outcome and re-runs nothing.
-
-## Types belong to your app
-
-Four interfaces, filled by declaration merging. Declare none and everything still works, with open
-ids and `unknown` payloads; declare one and every call site that touches it is typed.
-
-```ts
-declare module 'antumbra' {
-  interface StepRegistry {
-    session: { userId: string; expiresAt: number };
-    config: { workspaceName: string; trialDaysLeft: number };
-  }
-  interface NoticeRegistry {
-    'config:from-cache': { ageSeconds: number };
-    'boot:offline': void;
-  }
-  interface IntentRegistry {
-    'warn:trial-expiring': { daysLeft: number };
-  }
-  interface HostCapabilities {
-    confirm: (message: string) => Promise<boolean>;
-  }
-}
-```
-
-After that, `ctx.get('session').userId` is a `string`, `ctx.notice('config:from-cache')` is an error
-because that notice declares a payload, and `outcome.data.session` needs no narrowing once the status
-says `ready`.
-
-## Watching a run happen
-
-The outcome arrives at the end and says what the app may do. It cannot tell you what is taking so
-long while the user is looking at a blank page. That is what the event stream is for.
-
-```ts
-const stream = boot.events();
-const running = boot.run();
-
-for await (const event of stream) {
-  if (event.kind === 'step:settle') {
-    splash.advance(String(event.trace.id));
-  }
-}
-
-const outcome = await running;
-```
-
-Open it before `run()`: it buffers from the moment it is created and ends on its own at
-`run:settle`. There is a push form too — `createBootstrap({ onEvent })` — over the same hub.
-
-The stream reports what is happening, never what it means. Whether the app may mount is the
-outcome's answer, and a consumer that reduces these events into its own version of it will drift.
-
-## What else does this
-
-Nothing that covers the whole shape, as far as I can tell. Every ecosystem re-solves a piece of it
-at home:
-
-|                                      | Has                                                                             | Lacks                                                          |
-| ------------------------------------ | ------------------------------------------------------------------------------- | -------------------------------------------------------------- |
-| Angular `provideAppInitializer`      | Async work before bootstrap, in parallel                                        | Angular only, no typed result, no deferred UI                  |
-| Nuxt plugins                         | The closest in spirit: declared parallelism and a typed context by augmentation | Nuxt only, no degraded status, no deferred UI                  |
-| TanStack Router loaders + `Register` | Typed accumulated context, parallel loading, declaration merging                | Route-scoped, replayed on every navigation                     |
-| Luigi `uxManager`                    | A module asks the shell to show an alert, which is the intent idea              | A whole micro-frontend framework, iframe-centric               |
-| Effect `Layer`                       | Typed dependency graph, concurrency, errors in the signature                    | A whole paradigm, no bootstrap vocabulary                      |
-| `orchestrator`, `p-graph`            | Parallel task graphs                                                            | No accumulated typing, no result model, published a decade ago |
-
-If you know of one I have missed, I would like to hear about it.
-
-## Bindings
-
-The core decides everything; a binding is how your framework subscribes to it and how it owns a
-lifetime. React and Solid share five names down to the file they live in, so a team running both
-writes the same bootstrap twice with the same words.
+An action is declared by being rendered. `action('confirm', handler)` names the reason, binds
+the handler and returns the props to spread — one expression, at the one place it matters.
+There is no action config and nothing to pass in.
 
 ```tsx
-import { BootstrapProvider, useBootstrapContext, useStepData, useIntentHost } from 'antumbra/react';
+import { useMessageDialog } from 'antumbra/react';
 
-const port = {
-  confirm: (message: string) => {
-    return dialog.ask(message);
-  },
-};
+function ConfirmDelete() {
+  const dialog = useMessageDialog<void, 'confirm' | 'cancel'>({
+    id: 'confirm-delete',
+    ariaLabelledBy: 'confirm-delete-title',
+    render: ({ action }) => (
+      <div>
+        <h2 id="confirm-delete-title">Delete Item</h2>
+        <p>Are you sure?</p>
+        <button {...action('cancel')}>Cancel</button>
+        <button
+          {...action('confirm', async (close) => {
+            await api.deleteItem();
+            close();
+          })}
+        >
+          Delete
+        </button>
+      </div>
+    ),
+  });
 
-function Shell({ boot }) {
-  return (
-    <BootstrapProvider boot={boot}>
-      <App />
-    </BootstrapProvider>
-  );
-}
-
-function App() {
-  const { stage, outcome } = useBootstrapContext();
-  const config = useStepData('config');
-  const pending = useIntentHost(port);
-
-  if (stage !== 'settled') {
-    return <Splash />;
-  }
   return (
     <>
-      <h1>{config?.workspaceName}</h1>
-      {pending.map(({ intent, controls }) => {
-        return <Banner key={intent.id} intent={intent} onOk={controls.settle} />;
-      })}
+      <button onClick={() => dialog.open()}>Delete</button>
+      {dialog.Dialog}
     </>
   );
 }
 ```
 
-`useIntentHost` hands back the intents rather than taking an `onIntent` callback, and that shape is
-deliberate. A callback prop is a fresh function on every render, so an effect depending on it would
-tear the host down between an intent being forwarded and the user answering it. For the same reason
-`ui` has to be stable — module scope or `useMemo` — the way the subscribe function handed to
-`useSyncExternalStore` does.
+The reason **is** the action's identity: it names the action and it is what the dialog closes
+with, so there is nothing to keep in sync.
 
-Solid is the same five names plus `fromStore`, with one difference that belongs to the renderer:
-**every value is an accessor, so do not destructure what these return.**
+### Typed close payloads and closed reasons
+
+A dialog declares what it closes with, and optionally _which reasons it may close with_:
+
+```tsx
+type User = { id: string; name: string };
+
+const dialog = useDialog<User, 'submit' | 'cancel'>({
+  id: 'create-user',
+  render: ({ action, hasRunningAction }) => (
+    <>
+      <button {...action('cancel')}>Cancel</button>
+      <button
+        {...action('submit', (close) => {
+          close(draft);
+        })}
+      >
+        {hasRunningAction ? 'Saving…' : 'Save'}
+      </button>
+    </>
+  ),
+  onClose: (result) => {
+    switch (result.reason) {
+      case 'submit':
+        save(result.data); // User | undefined
+        return;
+      case 'cancel':
+      case 'dismiss':
+        return;
+    }
+  },
+});
+```
+
+Declaring the reasons is optional — leave them out and any string is accepted. Declare them and
+you get three things: a mistyped `action('submmit')` is a compile error, the reason
+autocompletes, and the `switch` above is **exhaustive**. `'dismiss'` is always in the union
+because the library produces it itself, on Escape, on a backdrop click and on teardown.
+
+### Declaring your dialogs in one place
+
+Everything above is declared at the call site, which is fine until the app has forty dialogs and a
+bug report names one by id. Then two questions get hard: **which component owns `confirm-delete`**,
+and **what does it close with**. A project can answer both once, by declaring its dialogs in a
+single interface:
 
 ```ts
-const snapshot = useBootstrap(boot);
-const config = useStepData('config');
-// snapshot().stage, config()?.workspaceName
+// src/dialogs.d.ts — or anywhere your tsconfig includes
+declare module 'antumbra' {
+  interface DialogRegistry {
+    'confirm-delete': { closesWith: { confirm: { id: string }; cancel: void } };
+    'session-warning': { closesWith: 'extend' | 'sign-out' };
+    'patient:merge': { opensWith: { patientId: string }; closesWith: 'merged' | 'cancel' };
+    'command-palette': Record<string, never>;
+  }
+}
 ```
 
-## Install
+An entry names the two directions — `closesWith` for the close, `opensWith` for the open — and both
+are optional. `closesWith` takes the bare reasons when none carries a payload, or one per reason;
+a payload declared that way is **required** when closing with that reason.
 
-```sh
-yarn add antumbra
+From then on the id is checked wherever one is accepted, in both directions:
+
+```ts
+dialogManager.open('confirm-delete'); // fine
+dialogManager.open('confirm-delet'); // Allowed — an unknown id is a supported one
+dialogManager.close('confirm-delete', 'extend'); // Type error: that reason belongs to another dialog
+dialogManager.requestOpen('patient:merge', { payload: { patientId: 42 } }); // Type error: it declared a string
 ```
 
-Four entry points. `antumbra` is the core and resolves with no framework installed. `antumbra/react`
-and `antumbra/solid` are the hook bindings, each reaching only its own framework.
-`antumbra/plain` is a controller that connects the intent queue to markup you already wrote, with
-no framework at all.
+`payload` types the **asking** side, where both call sites are yours. `onOpenRequest` still receives
+`unknown` on purpose — that is where a message from outside the project arrives, and a declaration
+is a contract between call sites rather than a check on what turns up. Parse it; `PayloadOf<'patient:merge'>`
+is the type to parse to.
 
-## Development
+And `useDialog` reads the contract off the id, so a declared dialog needs no type arguments at all:
 
-```sh
-yarn install
-yarn dev            # the playground on :3000
-yarn check          # type-check, lint, format, docs
-yarn test           # the unit and component suites, both on Playwright
-yarn verify:all     # everything above plus the build, the package checks and a browser smoke test
+```tsx
+const dialog = useDialog({
+  id: 'confirm-delete',
+  render: ({ handle }) => <button onClick={() => handle.close('confirm', { id })}>Delete</button>,
+  onClose: (result) => {
+    if (result.reason === 'confirm' && result.data) {
+      remove(result.data.id); // typed, without `useDialog<{ id: string }, …>` anywhere
+    }
+  },
+});
 ```
 
-Node 24 or newer, Yarn 4 through Corepack.
+**The registry becomes the index.** Because every key is a real type, "which component opens this?"
+is find-references on the key rather than a grep across the codebase — which is the half of this
+that pays off during a bug hunt rather than at the keyboard.
+
+Three things to know before adopting it:
+
+- **Declare as few as you like.** An id the registry does not name still works, so you can adopt
+  one dialog at a time — and an app can host dialogs it does not own. The trade is that a mistyped
+  id is not an error: what a declared entry buys is its _contract_, not exhaustiveness.
+- **Payload types have to be exported** to be named in the registry. Types that were local to one
+  component become part of the app's vocabulary, which is usually an improvement and is always
+  work.
+- **Nothing changes if you skip it.** The interface ships empty, and while it is empty an id is
+  the `string` it has always been — no new errors, and the per-call-site `useDialog<TData, TReason>`
+  form keeps working exactly as documented above. Both forms are supported; the registry is the one
+  that scales with the number of dialogs.
+
+## <img src="docs/brand/moon-last-quarter.svg" width="18" height="18" alt="" /> Without a framework
+
+A module that has no component to hang a hook off — an API client, a router guard, a worker —
+imports the root and drives dialogs by id. This file compiles and runs with no renderer installed:
+
+```ts
+import { dialogManager } from 'antumbra';
+
+export const deleteAccount = async () => {
+  const [unavailable, closed] = await dialogManager.openAndWait('confirm-delete');
+  if (unavailable) {
+    return report(unavailable.message); // nobody registered that id — an answer, not a hang
+  }
+  if (closed.reason === 'confirm') {
+    // 'cancel' or 'dismiss' otherwise, and the checker knows it
+    await api.deleteAccount();
+  }
+};
+```
+
+`openAndWait` is the same door a hook offers, on the manager instead — so the service needs no
+component to hold one. `reason` and `data` are typed, and correlated, if the id is [in the registry](#declaring-your-dialogs-in-one-place)
+and open if it is not, and there is no listener to unsubscribe or to register in the right order.
+
+Your UI layer only has to _register_ a dialog with that id; the service decides when it appears.
+For a dialog the service does not own, `requestOpenAndWait(id, request)` asks instead of
+instructing and comes back with the owner's answer — a reason if it refused, the close if it did
+not.
+
+## <img src="docs/brand/moon-first-quarter.svg" width="18" height="18" alt="" /> API Reference
+
+See **[API.md](API.md)** for the complete API documentation covering:
+
+- `useDialog` — Base primitive
+- `useMessageDialog` / `useSlideDialog` — Template hooks
+- `action(reason, handler?)` — actions, declared where they are rendered
+- `dialogPlacement` / `DialogAnimation` — where a non-modal dialog sits, and how any of them animates
+- `DialogOutlet` — render registered dialogs from one place instead of placing `{dialog.Dialog}`
+- `antumbra/solid` — the three differences from the React chapter, all of them the renderer's, plus `fromStore`
+- `antumbra/vanilla` — `bindDialog`, `DialogController`, `bindAction`, reading state without a renderer, and what happens to a `<dialog>` the server sent already open
+- `createStore` / `StoreContract` — the zero-dependency reactive cell the library runs on, and the shape a binding consumes
+- `dialogManager` — Imperative open/close, and the `lookup` query API
+- `prioritize` — who is in front, as one project-wide rule, and the three costs of reordering a modal dialog
+- `gate` — whether an open happens at all, as one project-wide rule in front of every door
+- `openAndWait()` — Go-style async result: open, and resolve with how it closed — on a hook, and on `dialogManager` for code with no component
+- `requestOpen` / `requestOpenAndWait` — ask a dialog you do not own, and hear the answer
+- `dialog:open` / `dialog:close` — DOM lifecycle events, heard across bundles
+- `subscribe` — the same two moments plus `register` / `unregister`, so an imperative open can wait for a dialog behind a code-split route, and `refuse`, so a gate’s decisions are readable
+- `normalizeError` — turn whatever was thrown into an `Error`
+- Hotkey system (`Key`, `HotkeyDef`, `matchesHotkey`, `formatHotkeyLabel` for a label a person reads, `formatAriaKeyshortcuts` for the value the DOM takes)
+- Debug logging
+
+## <img src="docs/brand/moon-last-quarter.svg" width="18" height="18" alt="" /> Reference Templates
+
+The library ships no UI components. Reference implementations live in `playground/src/entities/dialog-template/ui/vanilla/`: a full **HTML/CSS** set for the message dialog, the slide panel, the form dialog and the shared content helpers, since plain markup is the one flavour that depends on nothing. Copy it into your project or write your own.
+
+**A component kit gets no template layer, deliberately.** `playground/src/pages/ui-integrations/` puts the same form on MUI and on plain markup — the same values, messages, timing and submit gate, shared byte-for-byte, so only `TextField` and `<input>` differ. It is written against MUI directly because the interesting line is where this library's DOM contract meets a kit's props, and an indirection over that seam hides exactly the line worth reading.
+
+> **If you write a custom button wrapper**, you must forward three props onto the underlying `<button>` element: `aria-keyshortcuts`, `data-focus-on-open` and `data-action-reason`. All three are how the library finds a button in the DOM — hotkeys dispatch by querying `[aria-keyshortcuts]`, `focusOnOpen` finds its button by `[data-focus-on-open]`, and the focus restore after an action re-queries `[data-action-reason]` when your renderer has replaced the node it ran on. Dropping any one of them makes that feature silently do nothing. A wrapper that spreads `...rest` onto its button already forwards all three. A wrapper that _builds_ `aria-keyshortcuts` instead of forwarding it must build it with `formatAriaKeyshortcuts`, which is the spelling dispatch looks for.
+
+## <img src="docs/brand/moon-first-quarter.svg" width="18" height="18" alt="" /> Debug Logging
+
+```js
+// Browser console — enable all namespaces:
+localStorage.setItem('dialog:log', '*');
+
+// Specific namespaces:
+localStorage.setItem('dialog:log', 'dialog,action');
+
+// Programmatic:
+import { setLogLevel } from 'antumbra';
+setLogLevel('*');
+```
+
+| Namespace              | Description                          |
+| ---------------------- | ------------------------------------ |
+| `manager`              | Registration, stack state            |
+| `dialog`               | Open/close/unmount lifecycle         |
+| `dialog:lifecycle`     | prepare, showModal, labelling checks |
+| `dialog:keydown`       | ESC dismiss, user onKeyDown          |
+| `dialog:click-outside` | Click-outside for non-modal dialogs  |
+| `dialog:native-close`  | A close the element made unasked     |
+| `outlet`               | DialogOutlet registration            |
+| `action`               | Action start/end, state changes      |
+
+## <img src="docs/brand/moon-last-quarter.svg" width="18" height="18" alt="" /> Development
+
+This repo uses **Yarn 4**, pinned via the `packageManager` field and resolved through
+[Corepack](https://nodejs.org/api/corepack.html) — run `corepack enable` once, then:
+
+```bash
+yarn install         # Install dependencies (--immutable in CI)
+yarn dev             # Start playground
+yarn build           # Build library (ESM bundle + .d.ts via tsc)
+yarn type-check      # TypeScript strict check
+yarn test            # Unit + component tests
+yarn lint            # oxlint (type-aware)
+yarn format          # oxfmt
+yarn check           # type-check + lint + format + docs — what CI runs, across three jobs
+yarn verify:all      # lint + type-check + build + package checks, against the built artifact
+```
 
 **Two coverage numbers, because there are two test projects and neither can measure the other's
-half.** `yarn test:unit:coverage` measures the framework-free core in Node (c8) — **98.8%**
+half.** `yarn test:unit:coverage` measures the framework-free core in Node (c8) — **96.93%**
 statements — and its exclude list is the statement of what a Node process can reach, not a way to
 flatter the number. `yarn test:component:coverage` measures what that list leaves out: the three
-bindings, in a real browser (istanbul, opt-in because instrumenting costs a slower run and its own
-dev server) — **70.73%** statements over 31 files. Both measured 2026-09-15, and re-measured together or
-not at all: one number moved without the other is two projects being compared across different days.
-`yarn coverage:update` is that rule made mechanical — it runs both commands and rewrites this
-paragraph and the two badges above in one move. Still a snapshot, not a gate.
+bindings and the DOM-only modules, in a real browser (istanbul, opt-in because instrumenting costs
+~45% of the run) — **92.14%** statements over 60 files. Both measured 2026-09-14, and re-measured
+together or not at all: one number moved without the other is two projects being compared across
+different days. `yarn coverage:update` is that rule made mechanical: it runs both commands and
+rewrites this paragraph, the badges above and CLAUDE.md's copy in one move — still a snapshot, not
+a gate.
 
-## How this repo is run
+The same pair is quoted in [CLAUDE.md](CLAUDE.md#what-coverage-measures), which is the other half of
+"together": this file drifted two points behind it by moving one copy and not the other, which is the
+document-level version of the mistake the paragraph above warns about.
+
+## <img src="docs/brand/moon-last-quarter.svg" width="18" height="18" alt="" /> How this repo is run
 
 Friendly warning, so nothing here surprises you: **I commit to `main`.** No release branches, no
-deprecation cycles, and **no semver** — the `1.0.0` in `package.json` is a placeholder, not a
-promise. A name can change between two commits if a better one turns up, and on 2026-09-14 fifteen
-of them did in a single pass.
+deprecation cycles, and **no semver** — a name can change between two commits if a better one
+turns up, and it does. The last four naming passes turned `isOpen` into `isVisible`, `onOpen`
+into `prepare`, `ModalInfo.modalType` into `template`, and then `useModal` — with the whole surface
+around it — into `useDialog`, because each was describing itself inaccurately.
 
-That is a deliberate trade, not neglect. The library is not published, so nobody's build breaks when
-a name improves; what you get instead is a surface that says what it means. The day I publish, that
-freedom ends and the usual ceremony starts — versions, a migration note per break, the lot. Until
-then the CHANGELOG is the migration guide, organised by date, and it explains _why_ each name moved
-rather than only that it did.
+That is a deliberate trade, not neglect. The library is not published, so nobody's build breaks
+when a name improves; what you get instead is a surface that says what it means. The day I decide
+to publish it, that freedom ends and the usual ceremony starts — versions, a migration note per
+break, the lot. Until then the CHANGELOG is the migration guide, organised by date, and it
+explains _why_ each name moved rather than only that it did.
 
 If you have lifted code out of `src/`, pin the commit you took it from.
 
-## On the tooling
+## <img src="docs/brand/moon-full.svg" width="18" height="18" alt="" /> On the tooling
 
 **This library was written by Claude, and directed by nearly 30 years of doing it by hand.** Worth
-saying plainly, because the interesting question is not whether an AI can write a bootstrap
-orchestrator — it can write ten before lunch, and nine of them will have `phase` meaning two
-different things in the same snapshot.
+saying plainly, because the interesting question is not whether an AI can write a dialog manager —
+it can write ten before lunch, and nine of them will have `isOpen` meaning three different things
+in three files.
 
-The question is whether anyone notices. The rename table in the CHANGELOG is that noticing, written
-down: `RunPhase` → `RunStage`, because `phase` already meant `preflight` or `mounted` and
-`snapshot.phase` was not asking the same question as `step.phase`; `StepOutcome` → `StepStatus`,
-because `Outcome` is the object a run produced and `outcome.timeline[0].outcome` was one noun at
-two ranks; `IntentCollector` → `IntentQueue`, because every line of prose already called it the
-queue. No model asked for one of those.
-
-Nor did one ask for the upward channel to be refused. A "module ready" signal was specified, studied
-and turned down — unbounded growth, nowhere to put its types, and the host already does it better.
-And `Session` is still in the API under a name that collides with what almost every app calls its
-token step, because renaming it is a larger call than the fifteen above and there is no real
-consumer yet to arbitrate it. A model would have renamed it, or not, without noticing there was a
-decision to make.
+The question is whether anyone notices. Every rename in the CHANGELOG is that noticing, written
+down: `isOpen` → `isVisible`, because the flag stayed true through the entire exit animation and
+the semantics were right — the name was the lie; `onOpen` → `prepare`, because it is work the open
+waits on and not a notification; `modalType` → `template`, because the field and the type attribute
+it shadowed were each right about something different; `useModal` → `useDialog`, because the library
+drives a `<dialog>` and _modal_ is one of that element's two variants, so the hook was named after
+half of what it does. No model asked for one of those. The
+entry-point isolation tests exist because someone knew, before it happened, exactly how a framework
+import sneaks into a framework-free core.
 
 That is the trade this repo makes visible: the tool is extraordinary at the part that used to be
-slow, and no judge at all of which of its own output is worth keeping. **The taste is still yours to
-supply, and it is still the expensive half.**
+slow, and no judge at all of which of its own output is worth keeping. **The taste is still yours
+to supply, and it is still the expensive half.**
 
-## License
+## <img src="docs/brand/moon-first-quarter.svg" width="18" height="18" alt="" /> License
 
 [MIT](./LICENSE) © 2026 Francis Desjardins
 
-The source is here to read, copy and learn from. The demo code and the user-land patterns under
-`playground/src/` are meant to be lifted into your own project, which the MIT terms allow without
-attribution or ceremony.
+The source is here to read, copy and learn from. The reference templates and the user-land
+patterns under `playground/src/` are meant to be lifted into your own project, which the MIT
+terms allow without attribution or ceremony.
+
+---
+
+<div align="center">
+
+<img src="docs/brand/moon-waxing-crescent.svg" width="16" height="16" alt="" /> &nbsp; <img src="docs/brand/moon-first-quarter.svg" width="16" height="16" alt="" /> &nbsp; <img src="docs/brand/moon-waxing-gibbous.svg" width="16" height="16" alt="" /> &nbsp; <img src="docs/brand/moon-full.svg" width="16" height="16" alt="" /> &nbsp; <img src="docs/brand/moon-waning-gibbous.svg" width="16" height="16" alt="" /> &nbsp; <img src="docs/brand/moon-last-quarter.svg" width="16" height="16" alt="" /> &nbsp; <img src="docs/brand/moon-waning-crescent.svg" width="16" height="16" alt="" />
+
+</div>

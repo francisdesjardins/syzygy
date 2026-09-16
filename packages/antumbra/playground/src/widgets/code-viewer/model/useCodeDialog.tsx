@@ -1,44 +1,47 @@
-import { useCallback, useRef, useState } from 'react';
-import { CodeDialog } from '@/widgets/code-viewer/ui/CodeDialog';
-import { codeSamples } from '@/widgets/code-viewer/model/code-samples';
+import styles from '@/widgets/code-viewer/model/useCodeDialog.module.css';
+import { useRouterState } from '@tanstack/react-router';
+import { useSlideDialog } from 'antumbra/react';
+import { useState } from 'react';
+import { useCodePane } from '@/shared/lib/code-pane-context';
+import { CodeDialogContent } from '@/widgets/code-viewer/ui/CodeDialog';
 
-export type CodeDialogHandle = {
-  /** Stable identity, so it works as an effect dependency directly. */
-  readonly open: (codeKey: string) => void;
-  readonly Dialog: React.ReactNode;
+/** Declared once and passed both ways, since the heading and the reference are in two files. */
+const CODE_VIEWER_TITLE_ID = 'code-viewer-title';
+
+export const useCodeDialog = () => {
+  const { selectedExample } = useCodePane();
+  const routerState = useRouterState();
+  const currentPath = routerState.location.pathname;
+
+  const [codeSamples, setCodeSamples] = useState<Record<string, string>>({});
+
+  const routeKey = currentPath.replace('/', '') || 'basic';
+  const codeKey = selectedExample ?? routeKey;
+  const code = codeSamples[codeKey] ?? '';
+
+  return useSlideDialog({
+    id: 'code-viewer',
+    direction: 'right',
+    ariaLabelledBy: CODE_VIEWER_TITLE_ID,
+    // Sample sources are a third of the bundle and a visitor who never opens this panel needs none
+    // of it; `prepare` runs with the panel already on screen, and `isPreparing` renders the body.
+    prepare: async () => {
+      const { loadCodeSamples } = await import('./codeSamples');
+      setCodeSamples(await loadCodeSamples(currentPath, codeKey));
+    },
+    render: ({ handle, isPreparing }) => {
+      return (
+        <div className={styles['panel']}>
+          <CodeDialogContent
+            code={code}
+            codeKey={codeKey}
+            handle={handle}
+            isLoading={isPreparing}
+            title="Source Code"
+            titleId={CODE_VIEWER_TITLE_ID}
+          />
+        </div>
+      );
+    },
+  });
 };
-
-/**
- * One dialog for the whole app, opened by key.
- *
- * A dialog per card would be a dialog per card in the DOM — sixty of them on the reference page —
- * and the source text they hold is the largest thing the playground ships. One dialog and a key is
- * the same feature at a hundredth of the markup.
- */
-export function useCodeDialog(): CodeDialogHandle {
-  const [codeKey, setCodeKey] = useState<string | undefined>(undefined);
-  const dialogRef = useRef<HTMLDialogElement | null>(null);
-
-  const open = useCallback((key: string) => {
-    setCodeKey(key);
-  }, []);
-
-  const close = useCallback(() => {
-    setCodeKey(undefined);
-  }, []);
-
-  const sample = codeKey === undefined ? undefined : codeSamples[codeKey];
-
-  return {
-    open,
-    Dialog: (
-      <CodeDialog
-        ref={dialogRef}
-        title={codeKey ?? ''}
-        source={sample?.source ?? (codeKey === undefined ? '' : `No sample named ${codeKey}.`)}
-        language={sample?.language ?? 'tsx'}
-        onClose={close}
-      />
-    ),
-  };
-}

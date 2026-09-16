@@ -2,12 +2,13 @@
   display: grid;
   gap: var(--app-space-4);
   align-items: stretch;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
 }
 
-/* Collapses to one column below the sm breakpoint. */
+/* Mobile-first, and two columns from the sm breakpoint — antumbra's rule. Stated this way round so
+   the narrow case is the default rather than an override, which is what a phone gets first. */
 @media (min-width: 600px) {
-  .twoColumns {
+  .two {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }

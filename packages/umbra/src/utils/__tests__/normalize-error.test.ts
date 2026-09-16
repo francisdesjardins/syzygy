@@ -1,44 +1,60 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import { normalizeError } from '../normalize-error.js';
 
-test.describe('normalizeError', () => {
-  test('passes Error instances through unchanged (same reference)', () => {
-    const err = new Error('original');
-    expect(normalizeError(err)).toBe(err);
-  });
+/**
+ * `throw` accepts anything, and the timeline has to survive all of it.
+ *
+ * The non-`Error` cases below are the ones the function exists for: `JSON.stringify(new Error('x'))`
+ * is `{}`, and code throws strings and numbers often enough that the runner cannot assume it caught
+ * an `Error`. Each shape is asserted rather than assumed.
+ */
 
-  test('preserves subclass instances (e.g. TypeError)', () => {
-    const err = new TypeError('type error');
-    expect(normalizeError(err)).toBe(err);
-  });
+test('an Error keeps its name and message', () => {
+  const normalized = normalizeError(new TypeError('bad shape'));
 
-  test('wraps a string in a new Error', () => {
-    const result = normalizeError('oops');
-    expect(result).toBeInstanceOf(Error);
-    expect(result.message).toBe('oops');
-  });
+  expect(normalized.name).toBe('TypeError');
+  expect(normalized.message).toBe('bad shape');
+  expect(typeof normalized.stack).toBe('string');
+});
 
-  test('wraps a number via String() coercion', () => {
-    const result = normalizeError(42);
-    expect(result).toBeInstanceOf(Error);
-    expect(result.message).toBe('42');
-  });
+test('a thrown string becomes an Error carrying it as the message', () => {
+  expect(normalizeError('nope')).toEqual({ name: 'Error', message: 'nope' });
+});
 
-  test('wraps null with message "null"', () => {
-    const result = normalizeError(null);
-    expect(result).toBeInstanceOf(Error);
-    expect(result.message).toBe('null');
-  });
+test('thrown numbers, booleans and bigints are stringified rather than dropped', () => {
+  expect(normalizeError(404)).toEqual({ name: 'Error', message: '404' });
+  expect(normalizeError(false)).toEqual({ name: 'Error', message: 'false' });
+  expect(normalizeError(7n)).toEqual({ name: 'Error', message: '7' });
+});
 
-  test('wraps undefined with message "undefined"', () => {
-    const result = normalizeError(undefined);
-    expect(result).toBeInstanceOf(Error);
-    expect(result.message).toBe('undefined');
-  });
+test('null and undefined say which of the two they were', () => {
+  expect(normalizeError(null)).toEqual({ name: 'Error', message: 'null' });
+  expect(normalizeError(undefined)).toEqual({ name: 'Error', message: 'undefined' });
+});
 
-  test('wraps a plain object via String() coercion', () => {
-    const result = normalizeError({ code: 'E001' });
-    expect(result).toBeInstanceOf(Error);
-    expect(result.message).toBe('[object Object]');
-  });
+test('anything else admits it was not an error', () => {
+  expect(normalizeError({ status: 500 })).toEqual({ name: 'Error', message: 'Non-error thrown' });
+});
+
+test('a cause is followed', () => {
+  const normalized = normalizeError(new Error('outer', { cause: new Error('inner') }));
+
+  expect(normalized.cause?.message).toBe('inner');
+});
+
+test('a cause chain stops before it can run forever', () => {
+  // Ten deep, against a cap of eight: the point is that it terminates, not where exactly it stops.
+  let error = new Error('depth-10');
+  for (let depth = 9; depth >= 0; depth -= 1) {
+    error = new Error(`depth-${String(depth)}`, { cause: error });
+  }
+
+  let node = normalizeError(error);
+  let seen = 0;
+  while (node.cause !== undefined) {
+    node = node.cause;
+    seen += 1;
+  }
+
+  expect(seen).toBeLessThan(10);
 });

@@ -1,117 +1,198 @@
 /**
- * The project-level registries: the places a consumer declares what their bootstrap produces, so
- * that a step id, a notice type and an intent type stop being bare `string` at every door.
+ * The project-level dialog registry: one place a consumer declares the dialogs their app has, so
+ * that an id stops being a bare `string` at every door the manager offers.
  *
- * Nothing here is required. All four interfaces ship empty, and while one is empty its ids accept
- * any string, so every call site works before a single declaration exists.
+ * Nothing here is required. The interface ships empty, and while it is empty {@link DialogId}
+ * accepts any string — every existing call site stays exactly as it was.
  *
- * **Declare as few or as many as you like.** An id a registry does not name still works, which is
- * what lets a project adopt this one step at a time and host steps it does not own. What a declared
- * entry buys is its contract: the runner reads a step's data type off its id, `notice` and `intent`
- * read their payload off their type, and a mounted step reads the UI port off {@link HostCapabilities}.
+ * **Declare as few or as many as you like.** An id the registry does not name still works, so a
+ * project can adopt this one dialog at a time and can host dialogs it does not own — a third-party
+ * panel, a test harness. What a declared entry buys is its contract: `useDialog` reads the payload
+ * and the reasons off the id, and `close` accepts only the reasons that id declared.
  *
  * The trade is that a mistyped id is **not** an error, because an unknown id is a supported one.
- * The editor still completes the declared names, and the list is still the index.
+ * The editor still completes the declared names, and the list is still the index — which is the
+ * half that pays off when a bug report names a dialog and you have to find who opens it.
  *
  * @example
  * declare module 'antumbra' {
- *   interface StepRegistry {
- *     session: { userId: string; expiresAt: number };
- *     config: WorkspaceConfig;
- *   }
- *   interface NoticeRegistry {
- *     'config:from-cache': { age: number };
- *     'boot:offline': void;
- *   }
- *   interface IntentRegistry {
- *     'warn:trial-expiring': { daysLeft: number };
- *   }
- *   interface HostCapabilities {
- *     confirm: (message: string) => Promise<boolean>;
+ *   interface DialogRegistry {
+ *     'delete-account': { closesWith: { confirm: { id: string }; cancel: void } };
+ *     'session-warning': { reason: 'extend' | 'sign-out' };
  *   }
  * }
  */
 
-/**
- * Step id to the data that step resolves with. The one registry the runner reads to type both
- * `ctx.get` and `outcome.data`.
- */
-// oxlint-disable-next-line typescript/no-empty-object-type -- the emptiness is the mechanism: only an interface merges, and it starts with no keys because the steps are the project's to name
-export interface StepRegistry {}
+import type { DismissReason } from './dismiss-reason.js';
 
 /**
- * Notice type to its payload. A notice is a fact recorded during the run, so its payload is the
- * fact's detail; declare `void` for one that carries nothing.
+ * One entry: `closesWith` for the close, `opensWith` for the open. Both optional, and named apart because
+ * they are two directions with two levels of trust — what the dialog hands back, and what a stranger
+ * hands in.
+ *
+ * **Advisory, not enforced.** `DialogRegistry` is filled by declaration merging, so nothing can check
+ * an augmentation against this; a key none of the types below reads is ignored.
  */
-// oxlint-disable-next-line typescript/no-empty-object-type -- see StepRegistry
-export interface NoticeRegistry {}
+export type DialogContract = {
+  /**
+   * What this dialog closes with — the reasons alone, or a payload per reason with `void` for one
+   * that carries nothing:
+   *
+   * ```ts
+   * 'session-warning': { closesWith: 'extend' | 'sign-out' };
+   * 'delete-account': { closesWith: { confirm: { id: string }; cancel: void } };
+   * ```
+   *
+   * Two forms rather than two keys, the way {@link PortalTarget} takes a boolean or a getter: a
+   * second key would be a second spelling of one act, needing a precedence rule to disagree under.
+   *
+   * **A declared payload is required** — `close('confirm', data)` must be given it, and a bare
+   * `action('confirm')` is rejected as a close with nothing — which is what lets a `case 'confirm'`
+   * read `result.data` outright. A reason that sometimes closes empty declares `Data | undefined`.
+   *
+   * `'dismiss'` is reserved and payload-free, added by {@link CloseOf}; naming it here is ignored.
+   */
+  readonly closesWith?: string | Readonly<Record<string, unknown>>;
+  /** What this dialog is *opened* with, checked at the ask — see {@link PayloadOf}. */
+  readonly opensWith?: unknown;
+};
+
+/** The interface a project augments. Empty as shipped — see the module doc for the shape. */
+// oxlint-disable-next-line typescript/no-empty-object-type -- the emptiness is the mechanism: only an interface merges, and it starts with no keys because the dialogs are the project's to name
+export interface DialogRegistry {}
 
 /**
- * Intent type to its payload.
+ * The id every door accepts: the declared names **and** any other string, so that declaring one
+ * dialog does not make every undeclared one an error.
  *
- * The payload is declared directly rather than wrapped in a contract object, because the terse form
- * is what people actually write. An intent that one day needs to hand a *result* back gets a second
- * registry rather than a new shape here: changing this one would break every augmentation already
- * written against it.
- */
-// oxlint-disable-next-line typescript/no-empty-object-type -- see StepRegistry
-export interface IntentRegistry {}
-
-/**
- * What a mounted step can reach into the framework with.
- *
- * This is the seam the whole two-phase design turns on. A preflight step runs before anything is
- * mounted and therefore has no port at all; a mounted step is run by a binding, which supplies this
- * object. Declare here only what the framework layer can genuinely do.
- */
-// oxlint-disable-next-line typescript/no-empty-object-type -- see StepRegistry
-export interface HostCapabilities {}
-
-/**
- * The id every door accepts: the declared names **and** any other string, so declaring one step
- * does not make every undeclared one an error.
- *
- * **`(string & {})` is what keeps both halves.** A plain `keyof StepRegistry | string` collapses to
- * `string` and the editor stops completing the names; the branded member survives that reduction
- * long enough to be suggested.
- *
- * It is also why the generated reference shows every signature that takes an id as `string & {}`
- * rather than as this alias. Those pages are built from *this* package, where nothing has been
- * augmented, so `keyof StepRegistry` is `never` and TypeScript reduces the union to its surviving
- * half before the documenter ever sees a node. In a project that has declared its steps the same
- * signature reads `'session' | 'config' | (string & {})`: the declared names first, then the
- * escape hatch that keeps the undeclared ones legal.
+ * **`(string & {})` is what keeps both halves.** A plain `keyof DialogRegistry | string` collapses
+ * to `string` and the editor stops completing the names; the branded member is ignored by that
+ * reduction, so the union survives long enough to be suggested.
  */
 // oxlint-disable-next-line typescript/no-redundant-type-constituents -- `never` only while nobody has augmented; it becomes the union of declared ids, which is the whole mechanism
-export type StepId = keyof StepRegistry | (string & {});
-
-/** Notice types, declared and otherwise. Same mechanism as {@link StepId}. */
-// oxlint-disable-next-line typescript/no-redundant-type-constituents -- see StepId
-export type NoticeType = keyof NoticeRegistry | (string & {});
-
-/** Intent types, declared and otherwise. Same mechanism as {@link StepId}. */
-// oxlint-disable-next-line typescript/no-redundant-type-constituents -- see StepId
-export type IntentType = keyof IntentRegistry | (string & {});
+export type DialogId = keyof DialogRegistry | (string & {});
 
 /**
- * What a step with this id resolves with, or `unknown` for an id the registry does not name.
- *
- * `unknown` rather than `any` on purpose: an undeclared step still forces the reader to narrow,
- * which is the nudge toward declaring it.
+ * The declared close map, or `never` for an id that declares none — the one place the `closesWith` key
+ * is read, so the types below cannot disagree about what a contract said.
  */
-export type DataOf<TId> = TId extends keyof StepRegistry ? StepRegistry[TId] : unknown;
+type ClosesWithOf<TId> = TId extends keyof DialogRegistry
+  ? DialogRegistry[TId] extends { readonly closesWith: infer TCloses }
+    ? TCloses
+    : never
+  : never;
 
 /**
- * The argument list that follows a type, for the emitters that take an optional payload.
+ * The reasons one id may close with, beside {@link DismissReason} which every dialog has. `string`
+ * for an id the registry does not name, or names without reasons.
  *
- * Three cases, and the middle one is the reason this is a rest tuple rather than an overload: a
- * declared payload is **required**, a type declared as `void` takes none at all, and an undeclared
- * type takes an optional `unknown`. The type parameter is inferred from the emitter's first
- * parameter, which is fixed — a conditional over the rest alone has nothing to infer from and stays
- * deferred forever.
+ * Both forms of `closesWith` answer here — the bare union as itself, the map through its keys.
  */
-export type PayloadArgs<TType, TRegistry> = TType extends keyof TRegistry
-  ? [TRegistry[TType]] extends [void]
-    ? []
-    : [payload: TRegistry[TType]]
-  : [payload?: unknown];
+export type ReasonOf<TId> = TId extends keyof DialogRegistry
+  ? DialogRegistry[TId] extends { readonly closesWith: infer TCloses }
+    ? TCloses extends string
+      ? TCloses
+      : Exclude<keyof TCloses & string, DismissReason>
+    : string
+  : string;
+
+/**
+ * What one declared reason closes with — `void` when it carries nothing, which is what makes the
+ * second argument of `close` required for the reasons that do and absent for the rest.
+ */
+export type DataOfReason<TId, TReason> =
+  ClosesWithOf<TId> extends string
+    ? void
+    : TReason extends keyof ClosesWithOf<TId>
+      ? ClosesWithOf<TId>[TReason]
+      : void;
+
+/**
+ * The payload one id closes with, across all of its reasons, or `void` when none carries one.
+ *
+ * **The union, with `void` excluded** — the `TData` of the flat internal model (the store, the
+ * resolver queue, {@link CloseResult}), which is generic over one payload; {@link CloseOf} holds the
+ * correlation. `CloseResult.data` is already optional, so a `void` member would be one every hop
+ * carries and none can use.
+ *
+ * **Reading through `infer` and `keyof` is load-bearing twice over.** A `Record<string, …>` pattern
+ * matches a type literal and not an `interface`, which has no index signature — the contract would
+ * answer `void` there while {@link ReasonOf} read it correctly. And un-augmented this conditional
+ * stays deferred, so the checker compares against the union of its branches: narrow that union and
+ * the manager's facade silently stops implementing its own interface.
+ */
+export type DataOf<TId> = TId extends keyof DialogRegistry
+  ? DialogRegistry[TId] extends { readonly closesWith: infer TClosesWith }
+    ? TClosesWith extends string
+      ? void
+      : [Exclude<TClosesWith[keyof TClosesWith], void>] extends [never]
+        ? void
+        : Exclude<TClosesWith[keyof TClosesWith], void>
+    : void
+  : void;
+
+/**
+ * The reasons that close with nothing — what a door with no way to carry a payload may ask for.
+ *
+ * `dialogManager.close(id, reason)` is that door: the registry is keyed by string and the manager
+ * holds no `TData`, so offering a reason whose contract requires one would be offering a close it
+ * cannot make. A payload goes through the typed doors — `handle.close(reason, data)`, or an action.
+ */
+export type PayloadFreeReasonOf<TId> = {
+  [TReason in ReasonOf<TId>]: DataOfReason<TId, TReason> extends void ? TReason : never;
+}[ReasonOf<TId>];
+
+/**
+ * How one declared dialog closed, as a union correlated by `reason` — so a `switch` on it narrows
+ * `data` to what *that* reason carries, instead of leaving it optional on every branch.
+ *
+ * **A reason carrying nothing keeps `data` present and optional** (`data?: undefined`): the store
+ * writes a bare `{ reason }`, which under `exactOptionalPropertyTypes` only the optional form
+ * accepts, and dropping the key would make `result.data` a property-access error on the branches
+ * where reading it is how you find out there is nothing.
+ *
+ * **Stated in the registered-id overloads and nowhere else.** A correlated union is opaque at a
+ * generic boundary the way a conditional is — see {@link CloseResult}, a plain object for that
+ * reason — so the internals never name it and never have to prove a value inhabits it.
+ */
+export type CloseOf<TId> =
+  | {
+      [TReason in ReasonOf<TId>]: DataOfReason<TId, TReason> extends void
+        ? { readonly reason: TReason; readonly data?: undefined }
+        : { readonly reason: TReason; readonly data: DataOfReason<TId, TReason> };
+    }[ReasonOf<TId>]
+  | { readonly reason: DismissReason; readonly data?: undefined };
+
+/**
+ * The payload one id is *opened* with — what {@link DataOf} is for the other direction, and what
+ * closes the loop the registry had left half-open: `requestOpenAndWait` narrowed its result off
+ * the id while its argument stayed `unknown`, in the same call.
+ *
+ * **`unknown` for an id the registry does not name**, rather than `void` the way `DataOf` falls
+ * back: an undeclared close carries nothing until someone says otherwise, but an undeclared open
+ * carries whatever crossed the boundary, and `void` would be a claim about a stranger's message.
+ *
+ * **A declaration is not a validation, and the distinction is the whole reason `OpenRequest` was
+ * written untyped.** This types the call sites a project owns — the ask is checked against what the
+ * dialog said it takes — and it cannot check what arrives from outside the project, because nothing
+ * at compile time can. A dialog genuinely reachable by strangers (a microfrontend bridge, a
+ * `postMessage` relay) still parses before believing; what it gains here is a name to parse *to*.
+ */
+export type PayloadOf<TId> = TId extends keyof DialogRegistry
+  ? DialogRegistry[TId] extends { readonly opensWith: infer TPayload }
+    ? TPayload
+    : unknown
+  : unknown;
+
+/**
+ * Whether a project has opted in at all — the discriminator the hook overloads switch on, so that
+ * an empty registry resolves to today's signature rather than to an uninhabitable one.
+ *
+ * **This is what "the registered door" means** on every hook that leads with an overload
+ * constrained to it — `useDialog`, both templates, `bindDialog`, on every binding. That overload is
+ * declared **first** so a declared id is matched by it, whether the caller wrote the id as a
+ * literal and let it infer or named it as the one type argument. While `DialogRegistry` is empty
+ * this type is `never`, the overload is uninhabitable, and every call falls through to the one
+ * below — which is the signature each of those hooks has always had.
+ */
+export type RegisteredDialogId = keyof DialogRegistry;

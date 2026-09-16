@@ -2,7 +2,7 @@ import { ExampleGrid, ExampleSection } from '@/entities/example';
 import styles from '@/pages/api/ui/ApiIndexPage.module.css';
 import { PageLayout } from '@/shared/ui/PageLayout';
 import { SurfaceCard } from '@/shared/ui/SurfaceCard';
-import type { ApiCategory } from 'virtual:antumbra-api';
+import type { ApiCategory } from 'virtual:dialog-api';
 import {
   SPECIFIERS,
   SYMBOLS,
@@ -15,31 +15,30 @@ import { ApiLayout } from './ApiLayout';
 import { KindBadge } from './KindBadge';
 import { RouterLink } from './RouterLink';
 
-/** Doors in: the three calls an application writes, and the one thing it reads back. */
+/** Doors in, qualified: three bindings export `useDialog`, so bare chips would repeat one word. */
 const START_HERE: readonly { readonly specifier: string; readonly name: string }[] = [
-  { specifier: 'antumbra', name: 'createBootstrap' },
-  { specifier: 'antumbra', name: 'defineStep' },
-  { specifier: 'antumbra', name: 'defineHostedStep' },
-  { specifier: 'antumbra', name: 'Outcome' },
+  { specifier: 'antumbra/react', name: 'useDialog' },
+  { specifier: 'antumbra/solid', name: 'useDialog' },
+  { specifier: 'antumbra/vanilla', name: 'bindDialog' },
+  { specifier: 'antumbra', name: 'dialogManager' },
 ];
 
 /** What each entry point is, in the order a reader meets them. */
 const ENTRY_BLURB: Record<string, string> = {
-  antumbra:
-    'The framework-agnostic core. Plans the work, runs it, and hands back one frozen answer — with no framework installed at all.',
+  antumbra: 'The framework-agnostic core. Resolves and runs with no framework installed at all.',
   'antumbra/react':
-    'Five hooks over the core, which this entry re-exports whole, so a React app imports from this path only.',
+    'Hooks, the outlet and React-flavoured store access. It re-exports the core, so a React app imports from this path only.',
   'antumbra/solid':
-    'The same five names for Solid, plus `fromStore`. Live values are accessors over signals, so do not destructure what these return.',
-  'antumbra/plain':
-    'A controller for markup you wrote yourself: no provider, no hooks, no rendering — and no framework, optional or otherwise.',
+    'The same surface for Solid, plus `fromStore`. Live values are getters over signals, so do not destructure the render args.',
+  'antumbra/vanilla':
+    'A controller for a <dialog> you wrote yourself: no render, no Dialog, no outlet — and no framework, optional or otherwise.',
 };
 
 const ENTRY_TITLE: Record<string, string> = {
   antumbra: 'Core',
   'antumbra/react': 'React binding',
   'antumbra/solid': 'Solid binding',
-  'antumbra/plain': 'Controller binding',
+  'antumbra/vanilla': 'Vanilla binding',
 };
 
 const CategoryCard = ({ category }: { readonly category: ApiCategory }) => {

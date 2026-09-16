@@ -1,23 +1,21 @@
-import { useEffect, useState } from 'react';
 import { ExampleSection } from '@/entities/example';
 import { useTheme } from '@/shared/lib/theme-context';
 import { AppButton } from '@/shared/ui/AppButton';
+import { SelectionDropdown } from '@/shared/ui/SelectionDropdown';
 import { CodeIcon, PlayArrowIcon } from '@/shared/ui/icons';
 import { PageLayout } from '@/shared/ui/PageLayout';
-import { SelectionDropdown } from '@/shared/ui/SelectionDropdown';
 import { SectionNav } from '@/shared/ui/SectionNav';
 import { SurfaceCard } from '@/shared/ui/SurfaceCard';
 import styles from '@/pages/design-system/ui/DesignSystemPage.module.css';
+import { useEffect, useState } from 'react';
 
 /**
  * Penumbra, rendered from Penumbra.
  *
  * Every value on this page is read out of `getComputedStyle(document.documentElement)` rather than
- * written here, so the page cannot drift from `tokens.system.css` / `tokens.skin.css`. It re-reads
- * on a theme flip, which is also how the swatches show the right pair.
- *
- * The same page umbra carries, section for section, on this project's skin — the day the two
- * playgrounds share one, this file and umbra's collapse rather than being reconciled.
+ * written here, so the page cannot drift from `tokens.system.css` / `tokens.skin.css` — a style
+ * guide that restates its own tokens is a second source of truth and goes stale the first time one
+ * of them changes. It re-reads on a theme flip, which is also how the swatches show the right pair.
  */
 
 const SECTIONS = [
@@ -31,33 +29,29 @@ const SECTIONS = [
 ];
 
 /** Colour tokens, with what each one is *for* — the part a value cannot tell you. */
-const PALETTE = [
+const PALETTE: ReadonlyArray<readonly [string, string]> = [
   ['--app-bg', 'The ground. A step under the paper in both schemes.'],
   ['--app-paper', 'Bars, rails, cards.'],
   ['--app-text', 'Body ink.'],
   ['--app-text-secondary', 'Supporting copy.'],
   ['--app-text-tertiary', 'Counts, hints, placeholders — still clears 4.5:1.'],
-  ['--app-flame', 'A fill, and the ring itself. Never text: it does not clear 4.5:1 on paper.'],
-  ['--app-accent', 'The ink you may write in — the indigo answering umbra at the same rank.'],
-  ['--app-primary', 'A filled control’s ground.'],
-  ['--app-primary-ink', 'What goes on that fill. It flips with the scheme; the fill does not.'],
-  ['--app-primary-hover', 'A filled primary moves away from its ink, whichever way that is.'],
+  ['--app-flame', 'A fill. Never text: 3.2:1 on the page.'],
+  ['--app-accent', 'The amber you may write in.'],
+  ['--app-primary-hover', 'A filled primary brightens; it never deepens.'],
   ['--app-flame-wash', 'The tint behind a selected or live surface.'],
   ['--app-divider', 'A layout hairline. Owes no contrast.'],
-  ['--app-control-border', 'A control edge. 1.4.11 asks 3:1 of it.'],
+  ['--app-control-border', "A control's edge. 1.4.11 asks 3:1 of it."],
   ['--app-hover', 'The neutral overlay under a hover.'],
-] as const;
+];
 
-const SEMANTIC = [
-  ['--app-error', 'A step that failed, and a destructive control.'],
+const SEMANTIC: ReadonlyArray<readonly [string, string]> = [
+  ['--app-error', 'Destructive and failed states.'],
   ['--app-error-ink', 'What goes on the error fill.'],
   ['--app-ok', 'Succeeded.'],
   ['--app-ok-wash', 'The surface a success badge sits on.'],
   ['--app-info', 'Neutral notice.'],
   ['--app-info-wash', 'The surface an info banner sits on.'],
-  ['--app-warn', 'Degraded: the run mounted, but not with everything it asked for.'],
-  ['--app-warn-wash', 'The surface that badge sits on.'],
-] as const;
+];
 
 const TYPE_STEPS = [
   '--app-text-xs',
@@ -83,7 +77,6 @@ const RADII = [
 ];
 
 const EASINGS = ['--app-ease', '--app-ease-out', '--app-ease-in'];
-const DURATIONS = ['--app-quick', '--app-duration', '--app-slow'];
 
 /** Reads the live custom properties, and again whenever the scheme flips. */
 function useTokens(): (name: string) => string {
@@ -103,7 +96,15 @@ function useTokens(): (name: string) => string {
       ...SPACE_STEPS,
       ...RADII,
       ...EASINGS,
-      ...DURATIONS,
+      '--app-quick',
+      '--app-duration',
+      '--app-slow',
+      '--app-topbar-height',
+      '--app-sidebar-width',
+      '--app-measure',
+      '--app-font-display',
+      '--app-font-body',
+      '--app-font-mono',
     ];
     const next: Record<string, string> = {};
     for (const name of names) {
@@ -133,30 +134,20 @@ function Swatch({ name, note, value }: { name: string; note: string; value: stri
   );
 }
 
-function Rows({ children }: { children: React.ReactNode }) {
-  return (
-    <SurfaceCard>
-      <div style={{ padding: 'var(--app-space-5)' }}>
-        <div className={styles['rows']}>{children}</div>
-      </div>
-    </SurfaceCard>
-  );
-}
-
 export function DesignSystemPage() {
   const token = useTokens();
 
   return (
     <PageLayout
       title="Penumbra"
-      description="The design system this playground is built in — read live from the token sheet, so what you see here is what the CSS holds rather than a copy of it. The annular eclipse the mascot draws: a dark body, and a complete ring of light around it."
+      description="The design system this playground is built in — read live from the token sheet, so what you see here is what the CSS holds rather than a copy of it. The eclipse the mascot draws: a dark body, a corona around it."
     >
       <SectionNav sections={SECTIONS} />
 
       <ExampleSection
         id="palette"
         title="Palette"
-        description="The neutrals are umbra's, to the hex: two playgrounds that differ in their neutrals are two products. What differs is the accent, which is the one thing the split exists to vary."
+        description="Dark is the designed-for scheme; light is given the same care rather than derived by inversion. Components read tokens and never branch on the mode — the tokens do that."
       >
         <div className={styles['grid']}>
           {PALETTE.map(([name, note]) => {
@@ -168,7 +159,7 @@ export function DesignSystemPage() {
       <ExampleSection
         id="semantic"
         title="Semantic"
-        description="Each ink pairs with the tinted surface a badge sits on. A run has four endings and three of them are on this list, which is why the set is one longer than umbra's."
+        description="Each ink pairs with the tinted surface a badge or banner sits on. They exist so a component stops reaching for a literal — and with it, stops branching on mode."
       >
         <div className={styles['grid']}>
           {SEMANTIC.map(([name, note]) => {
@@ -180,21 +171,25 @@ export function DesignSystemPage() {
       <ExampleSection
         id="type"
         title="Type"
-        description="Three voices: the display serif on the wordmark and the headings, the body sans everywhere else, the mono for code, eyebrows and columns of digits. The ramp is ~1.22 off a 15px body."
+        description="Three voices: the display serif on h1–h3 and the wordmark, the body sans everywhere else, the mono for code, eyebrows and columns of digits. The ramp is ~1.22 off a 15px body."
       >
-        <Rows>
-          {TYPE_STEPS.map((name) => {
-            return (
-              <div className={styles['row']} key={name}>
-                <span className={styles['rowKey']}>{name}</span>
-                <span className={styles['rowValue']}>{token(name)}</span>
-                <span className={styles['specimen']} style={{ fontSize: `var(${name})` }}>
-                  Declare, derive, settle
-                </span>
-              </div>
-            );
-          })}
-        </Rows>
+        <SurfaceCard>
+          <div style={{ padding: 'var(--app-space-5)' }}>
+            <div className={styles['rows']}>
+              {TYPE_STEPS.map((name) => {
+                return (
+                  <div className={styles['row']} key={name}>
+                    <span className={styles['rowKey']}>{name}</span>
+                    <span className={styles['rowValue']}>{token(name)}</span>
+                    <span className={styles['specimen']} style={{ fontSize: `var(${name})` }}>
+                      Open, render, close
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </SurfaceCard>
       </ExampleSection>
 
       <ExampleSection
@@ -202,26 +197,33 @@ export function DesignSystemPage() {
         title="Space & radii"
         description="A component asks for a step, never a pixel count. An off-scale literal has to say why it is off-scale."
       >
-        <Rows>
-          {SPACE_STEPS.map((name) => {
-            return (
-              <div className={styles['row']} key={name}>
-                <span className={styles['rowKey']}>{name}</span>
-                <span className={styles['rowValue']}>{token(name)}</span>
-                <span className={styles['bar']} style={{ width: `var(${name})` }} />
-              </div>
-            );
-          })}
-          {RADII.map((name) => {
-            return (
-              <div className={styles['row']} key={name}>
-                <span className={styles['rowKey']}>{name}</span>
-                <span className={styles['rowValue']}>{token(name)}</span>
-                <span className={styles['radiusDemo']} style={{ borderRadius: `var(${name})` }} />
-              </div>
-            );
-          })}
-        </Rows>
+        <SurfaceCard>
+          <div style={{ padding: 'var(--app-space-5)' }}>
+            <div className={styles['rows']}>
+              {SPACE_STEPS.map((name) => {
+                return (
+                  <div className={styles['row']} key={name}>
+                    <span className={styles['rowKey']}>{name}</span>
+                    <span className={styles['rowValue']}>{token(name)}</span>
+                    <span className={styles['bar']} style={{ width: `var(${name})` }} />
+                  </div>
+                );
+              })}
+              {RADII.map((name) => {
+                return (
+                  <div className={styles['row']} key={name}>
+                    <span className={styles['rowKey']}>{name}</span>
+                    <span className={styles['rowValue']}>{token(name)}</span>
+                    <span
+                      className={styles['radiusDemo']}
+                      style={{ borderRadius: `var(${name})` }}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </SurfaceCard>
       </ExampleSection>
 
       <ExampleSection
@@ -229,39 +231,46 @@ export function DesignSystemPage() {
         title="Motion"
         description="Never a cubic-bezier literal in a component — and never a transition on colour, since a scheme flip switches backgrounds instantly and would interpolate the outgoing ink across them. Hover a track."
       >
-        <Rows>
-          {EASINGS.map((name) => {
-            return (
-              <div className={styles['row']} key={name}>
-                <span className={styles['rowKey']}>{name}</span>
-                <span className={styles['rowValue']}>{token(name)}</span>
-                <span className={styles['track']} tabIndex={0}>
-                  <span
-                    className={styles['dot']}
-                    style={{ transitionTimingFunction: `var(${name})` }}
-                  />
-                </span>
-              </div>
-            );
-          })}
-          {DURATIONS.map((name) => {
-            return (
-              <div className={styles['row']} key={name}>
-                <span className={styles['rowKey']}>{name}</span>
-                <span className={styles['rowValue']}>{token(name)}</span>
-                <span className={styles['track']} tabIndex={0}>
-                  <span className={styles['dot']} style={{ transitionDuration: `var(${name})` }} />
-                </span>
-              </div>
-            );
-          })}
-        </Rows>
+        <SurfaceCard>
+          <div style={{ padding: 'var(--app-space-5)' }}>
+            <div className={styles['rows']}>
+              {EASINGS.map((name) => {
+                return (
+                  <div className={styles['row']} key={name}>
+                    <span className={styles['rowKey']}>{name}</span>
+                    <span className={styles['rowValue']}>{token(name)}</span>
+                    <span className={styles['track']} tabIndex={0}>
+                      <span
+                        className={styles['dot']}
+                        style={{ transitionTimingFunction: `var(${name})` }}
+                      />
+                    </span>
+                  </div>
+                );
+              })}
+              {['--app-quick', '--app-duration', '--app-slow'].map((name) => {
+                return (
+                  <div className={styles['row']} key={name}>
+                    <span className={styles['rowKey']}>{name}</span>
+                    <span className={styles['rowValue']}>{token(name)}</span>
+                    <span className={styles['track']} tabIndex={0}>
+                      <span
+                        className={styles['dot']}
+                        style={{ transitionDuration: `var(${name})` }}
+                      />
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </SurfaceCard>
       </ExampleSection>
 
       <ExampleSection
         id="recipes"
         title="Recipes"
-        description="One recipe per thing. These are the shell's own controls — the library ships no UI, so unlike umbra there is no second set of dialog buttons to keep in step with them."
+        description="One recipe per thing. The buttons below are the shell's own; a dialog's interior uses the templates' buttons instead, on purpose. The select is the exception that proves it — one recipe worn on both sides, which is why it reads the template tokens first."
       >
         <SurfaceCard>
           <div
@@ -331,32 +340,36 @@ export function DesignSystemPage() {
       <ExampleSection
         id="rules"
         title="Rules with teeth"
-        description="Each of these is checked rather than remembered: scripts/check-contrast.mjs runs in the gate and refuses the build when a pair stops clearing its floor."
+        description="Each of these was written down first and broken anyway, so each is a test in design-system-layering.test.ts — verified to fail when violated."
       >
         <SurfaceCard>
           <div style={{ padding: 'var(--app-space-5)' }}>
             <ul className={styles['rules']}>
               <li>
-                <strong>No colour or typeface in the system half.</strong> The moment one appears
-                the base has stopped being portable, and the day these playgrounds share a monorepo
-                the two copies stop collapsing into one.
+                <strong>No shell token inside the templates.</strong> They are copied into apps with
+                no <code>--app-*</code> sheet, where <code>var(--app-ease)</code> makes a whole
+                transition invalid and the dialog stops animating.
               </li>
               <li>
-                <strong>The flame is a fill; the accent is the ink.</strong> Gold as text on paper
-                measures around 3:1, so it is never written as a colour.
+                <strong>
+                  No colour or typeface in <code>tokens.system.css</code>.
+                </strong>{' '}
+                The moment one appears the base has stopped being portable.
               </li>
               <li>
-                <strong>A filled primary hovers away from its ink.</strong> In light the ink is
-                white so the fill deepens; in dark the ink is dark so it brightens. The first indigo
-                tried for dark measured 4.22:1 and the check refused it.
+                <strong>No Material easing, no MD2 metric.</strong> The transcribed constants are
+                gone and stay gone.
               </li>
               <li>
-                <strong>No transition on colour.</strong> A scheme flip switches the background
-                instantly and would interpolate the outgoing ink across it.
+                <strong>
+                  No transition on <code>color</code>.
+                </strong>{' '}
+                Measured at 1.08:1 mid-flip.
               </li>
               <li>
-                <strong>Colour is measured, not chosen.</strong> 32 pairs across both schemes, every
-                one through the same script the gate runs.
+                <strong>Colour is measured, not chosen.</strong> Eleven routes × both schemes, plus
+                dialogs, through a real browser — and axe-core for ARIA, run with a dialog open as
+                well as closed.
               </li>
             </ul>
           </div>

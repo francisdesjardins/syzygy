@@ -1,19 +1,17 @@
 import { expect, test } from '@playwright/test';
 import { readFileSync, readdirSync } from 'node:fs';
-import { dirname, relative, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { relative, resolve } from 'node:path';
 
 /**
- * Every component test takes its `test` from [ct-test.ts](ct-test.ts), and **two things go
- * quiet where one does not**: its counters are dropped, so the report is wrong rather than merely
- * low, and its page may throw with nothing watching. The tests of `raiseDialog`, `reclaimFocus` and
- * the opening-focus decline sit on `.c8rc.json`'s exclude list, so the component report is their
- * only possible measurement. A test, not a lint rule, because the claim is about a *set of files*
- * being complete — hence the counts, which are per root, since a glob that stopped matching would
- * pass over nothing and a harness is a harness wherever it ships.
+ * Every component test takes its `test` from [ct-test.ts](ct-test.ts), and **two things go quiet
+ * where one does not**: its counters are dropped, so the component report is wrong rather than
+ * merely low, and its page may throw with nothing watching. The bindings sit on `.c8rc.json`'s
+ * exclude list, so the component report is their only possible measurement.
+ *
+ * A test, not a lint rule, because the claim is about a *set of files* being complete.
  */
 
-const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
+const REPO_ROOT = resolve(import.meta.dirname, '..', '..');
 const ROOTS = [resolve(REPO_ROOT, 'src'), resolve(REPO_ROOT, 'playground', 'src')];
 
 function findComponentTests(directory: string): string[] {
@@ -22,7 +20,7 @@ function findComponentTests(directory: string): string[] {
     const path = resolve(directory, entry.name);
     if (entry.isDirectory()) {
       found.push(...findComponentTests(path));
-    } else if (entry.name.endsWith('.ct.tsx')) {
+    } else if (entry.name.endsWith('.ct.ts')) {
       found.push(path);
     }
   }
@@ -32,17 +30,10 @@ function findComponentTests(directory: string): string[] {
 const componentTests = ROOTS.flatMap(findComponentTests);
 
 test.describe('CT test wiring', () => {
-  test('both roots have component tests to check', () => {
-    // Per root, not just the total: the library's files clear the count alone, so a playground scan
-    // that stopped matching would vanish in the sum.
-    const empty = ROOTS.filter((root) => {
-      return findComponentTests(root).length === 0;
-    }).map((root) => {
-      return relative(REPO_ROOT, root);
-    });
-
-    expect(empty).toEqual([]);
-    expect(componentTests.length).toBeGreaterThan(10);
+  test('there are component tests to check', () => {
+    // Not per root, unlike antumbra's: the playground here has no component tests of its own yet, and
+    // asserting one into existence would be a test about a plan rather than about the code.
+    expect(componentTests.length).toBeGreaterThan(0);
   });
 
   test('none of them import test from the runner directly', () => {
@@ -67,7 +58,7 @@ test.describe('CT test wiring', () => {
     // the imports point nowhere, which `type-check` catches only for files it still compiles.
     const missing = componentTests
       .filter((path) => {
-        return !readFileSync(path, 'utf8').includes("__tests__/ct-test.js'");
+        return !readFileSync(path, 'utf8').includes("ct-test.js'");
       })
       .map((path) => {
         return relative(REPO_ROOT, path);

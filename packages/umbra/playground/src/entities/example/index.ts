@@ -1,5 +1,3 @@
-export { ExampleCard } from './ui/ExampleCard';
-export { ExampleGrid } from './ui/ExampleGrid';
-export { ExampleLayout } from './ui/ExampleLayout';
-export { ExampleSection } from './ui/ExampleSection';
-export { StoryCard } from './ui/StoryCard';
+export { ExampleCard } from '@/entities/example/ui/ExampleCard';
+export { ExampleGrid } from '@/entities/example/ui/ExampleGrid';
+export { ExampleSection } from '@/entities/example/ui/ExampleSection';

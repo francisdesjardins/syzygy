@@ -436,7 +436,7 @@ const examples = collectExamples();
 const exported = new Map([
   ['umbra/react', publicExports('react.ts')],
   ['umbra/solid', publicExports('solid.ts')],
-  ['umbra/vanilla', publicExports('vanilla.ts')],
+  ['umbra/plain', publicExports('plain.ts')],
 ]);
 examples.forEach((example, index) => {
   example.module = moduleName(example, index);

@@ -1,7 +1,10 @@
+/* antumbra's rules: the section owns the space under it, so the page frame does not need a gap and
+   every page gets the same rhythm whatever it puts between the sections. */
 .section {
   margin-bottom: var(--app-space-10);
-  /* Anchor jumps must clear the fixed 64px top bar. */
-  scroll-margin-top: 80px;
+  /* Anchor jumps must clear the fixed bar. Derived rather than the literal antumbra spells, because
+     the bar's height is a token here and a jump that lands under it is the bug either way. */
+  scroll-margin-top: calc(var(--app-topbar-height) + var(--app-space-6));
 }
 
 .section:last-of-type {

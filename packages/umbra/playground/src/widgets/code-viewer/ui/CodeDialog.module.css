@@ -1,98 +1,77 @@
-.root {
+/*
+ * A modal with both ends pinned: the head and the foot stay, the source between them scrolls.
+ *
+ * `overflow: hidden` on the dialog is what makes that true. Without it the element scrolls as well
+ * as the body inside it, and a long file gets two scrollbars that fight over the same gesture.
+ */
+
+/* The layout is on `[open]`, not on the element: a bare `display` here beats the user agent's
+   `dialog:not([open]) { display: none }` and leaves a closed dialog painted on the page. */
+.dialog[open] {
   display: flex;
   flex-direction: column;
-  flex: 1;
-  min-height: 0;
 }
 
-.header {
-  padding: var(--app-space-4) var(--app-space-6);
-  border-bottom: 1px solid var(--app-divider);
-  display: flex;
-  align-items: center;
-  gap: var(--app-space-3);
-  flex-shrink: 0;
-  /* A step off the panel it sits on, from the palette rather than a literal grey. */
-  background: var(--app-hover);
-}
-
-/* The glyph is decoration on a named panel; the flame clears 1.4.11's 3:1 for non-text. */
-.headerIcon {
-  width: var(--app-icon-sm);
-  height: var(--app-icon-sm);
-  color: var(--app-flame);
-  flex-shrink: 0;
-}
-
-.titleRow {
-  display: flex;
-  align-items: center;
-  gap: var(--app-space-3);
-  flex: 1;
-  min-width: 0;
-}
-
-.title {
-  margin: 0;
-  font-size: var(--app-text-lg);
-  font-weight: 600;
-  letter-spacing: var(--app-tracking-snug);
-  /* Cap band, so the icon beside it lines up with the letters rather than with the descender room
-     the serif reserves and this title never uses. */
-  text-box: trim-both cap alphabetic;
-  /* Two words that must stay two words: wrapped, they double the header and squeeze the badge into
-     a hyphenated column. Narrow enough and the title yields rather than push Close off-screen. */
-  min-width: 0;
-  white-space: nowrap;
-  /* clip, not hidden: `text-box` above trims the box to the cap band, and `hidden` would clip the
-     letters to it. The margin gives the glyphs back the room the trim took. */
-  overflow: clip;
-  overflow-clip-margin: 0.2em;
-  text-overflow: ellipsis;
-}
-
-.keyBadge {
-  padding: var(--app-space-1) var(--app-space-3);
-  border-radius: var(--app-radius);
-  background: var(--app-hover);
+.dialog {
+  overflow: hidden;
   border: 1px solid var(--app-divider);
-  /* A key badge is a label device, not a Material button: uppercase mono at the label tracking is
-     the one place the shell still shouts, and it means something here. */
-  font-family: var(--app-font-mono);
-  font-weight: 500;
-  font-size: var(--app-text-xs);
-  letter-spacing: var(--app-tracking-label);
-  text-transform: uppercase;
-  white-space: nowrap;
+  border-radius: var(--app-radius-lg);
+  background: var(--app-paper);
+  color: var(--app-text);
+  padding: 0;
+  width: min(900px, 92vw);
+  max-height: 84dvh;
+  box-shadow: var(--app-lift);
+}
+
+.dialog::backdrop {
+  background: var(--app-scrim);
+}
+
+.head,
+.foot {
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-4);
+  padding: var(--app-space-4) var(--app-space-5);
+  /* A step off the sheet it sits on, from the palette rather than a literal grey. */
+  background: var(--app-hover);
 }
 
-/* Phone: the key is already the first thing the source shows, so the badge is the part to drop. */
-@media (max-width: 480px) {
-  .header {
-    padding-block: var(--app-space-3);
-  }
-
-  .keyBadge {
-    display: none;
-  }
+.head {
+  border-bottom: 1px solid var(--app-divider);
 }
 
+.foot {
+  justify-content: flex-end;
+  border-top: 1px solid var(--app-divider);
+}
+
+.key {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--app-font-mono);
+  font-size: var(--app-text-sm);
+  color: var(--app-text-secondary);
+}
+
+.lines {
+  color: var(--app-text-tertiary);
+  font-size: var(--app-text-xs);
+}
+
+/* `min-height: 0` is the half people forget: a flex child will not shrink below its content, so
+   without it the body grows past the dialog and the dialog is what scrolls. */
 .body {
   flex: 1;
   min-height: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-.emptyState {
-  padding: var(--app-space-6);
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--app-space-3);
-  flex: 1;
-  font-size: var(--app-text-md);
-  color: var(--app-text-secondary);
+  overflow: auto;
+  margin: 0;
+  padding: var(--app-space-5);
+  font-size: var(--app-text-sm);
+  line-height: var(--app-lh-body);
 }

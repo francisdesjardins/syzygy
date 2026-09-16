@@ -3,7 +3,7 @@ import { ArrowBackIcon, ArrowForwardIcon } from '@/shared/ui/icons';
 import { PageLayout } from '@/shared/ui/PageLayout';
 import { SurfaceCard } from '@/shared/ui/SurfaceCard';
 import { useParams } from '@tanstack/react-router';
-import type { ApiCategory } from 'virtual:dialog-api';
+import type { ApiCategory } from 'virtual:umbra-api';
 import { categoryHref, findCategory, neighboursOf } from '../model/api-index';
 import { useActiveSymbol, useHashScroll } from '../model/use-api-scroll';
 import { ApiLayout } from './ApiLayout';

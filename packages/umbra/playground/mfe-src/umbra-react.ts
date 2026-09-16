@@ -1,2 +1,2 @@
-// `umbra/react` — the React binding, on the same specifier a bundler-built app would use.
+// `umbra/react`, on the same specifier a bundler-built app would write.
 export * from '../../src/react.js';

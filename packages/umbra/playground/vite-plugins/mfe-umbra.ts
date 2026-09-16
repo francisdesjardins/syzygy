@@ -1,75 +1,98 @@
-import { rolldown } from 'rolldown';
 import { readFile } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { rolldown } from 'rolldown';
 import type { Plugin } from 'vite';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const ENTRY_DIR = resolve(HERE, '../mfe-src');
+const SHARED_DIR = resolve(HERE, '../mfe-src');
+const COPY_DIR = resolve(HERE, '../mfe-src-copy');
 const LIB_ROOT = resolve(HERE, '../../src');
 const PUBLIC_DIR = resolve(HERE, '../public/mfe');
+const PUBLIC_PREFIX = '/mfe/';
 
 /**
- * Frame sources as text, so the viewer shows the bytes the browser runs. `public/` is mounted at
- * `/` with no importable address: a relative `?raw` climb warns on every dev page load, the root
- * form fails the build (`UNRESOLVED_IMPORT`, public files being copied). Reading them here works.
+ * Frame sources as text, so the code viewer shows the bytes the browser runs.
+ *
+ * `public/` is mounted at `/` with no importable address, so a `?raw` import of these files either
+ * warns on every dev page load or fails the build. Reading them here works.
  */
 const VIRTUAL_SOURCES = 'virtual:mfe-sources';
 const RESOLVED_SOURCES = `\0${VIRTUAL_SOURCES}`;
 
 const SOURCE_FILES: Readonly<Record<string, string>> = {
   host: 'host.html',
-  checkout: 'mfa1.js',
-  billing: 'mfa2.js',
-  support: 'mfa3.js',
-  audit: 'mfa4.js',
+  topbar: 'frag-topbar.js',
+  nav: 'frag-nav.js',
+  list: 'frag-list.js',
+  trial: 'frag-trial.js',
+  spaHost: '../spa/spa.html',
+  spaRoot: '../spa/root-config.js',
+  spaDashboard: '../spa/app-dashboard.js',
+  spaReports: '../spa/app-reports.js',
 };
 
-/** Everything the host's import map names, and the module that answers for each. */
-const ENTRIES = [
+/** Everything the host's import map names and expects to be shared. */
+const SHARED_ENTRIES = [
   'umbra',
   'umbra-react',
   'umbra-solid',
-  'umbra-vanilla',
+  'umbra-plain',
   'react',
   'react-dom-client',
   'solid-js',
   'solid-js-web',
   'solid-js-h',
+  'single-spa',
 ] as const;
 
-/** Where the frame fetches them from. Relative in the map, so the hash-router build works too. */
-const PUBLIC_PREFIX = '/mfe/';
-
 /**
- * One browser-loadable ES module per specifier the host's import map names. The `public/mfe/` page
- * is plain HTML and JS — no build step — so `umbra`, `umbra/react`, `umbra/solid`, `react` and
- * `solid-js` must resolve to fetchable files. One build, not three: rolldown hoists what the
- * entries share — the manager included — so one `dialogManager` serves the page and React's
- * microfrontend reaches a Solid-owned dialog; three builds would give three registries.
+ * Two builds, and the second one is the point.
+ *
+ * The first hoists what its nine entries share into common chunks, so three fragments and the two
+ * frameworks resolve to one copy of everything — the arrangement a host that deduplicates properly
+ * produces, and the one antumbra-style module-singleton sharing requires.
+ *
+ * The second builds the library again, alone, under its own name. The fourth fragment imports that,
+ * so it genuinely holds a second instance: separate closures, separate module state. It still shares
+ * the page's work, because the registry that holds it is keyed by `Symbol.for` on `globalThis` and
+ * not by module identity. One build would prove nothing about that.
  */
 export function mfeUmbraPlugin(): Plugin {
   let cached: Map<string, string> | null = null;
 
   const bundle = async (): Promise<Map<string, string>> => {
-    const build = await rolldown({
+    const files = new Map<string, string>();
+
+    const shared = await rolldown({
       input: Object.fromEntries(
-        ENTRIES.map((name) => {
-          return [name, resolve(ENTRY_DIR, `${name}.ts`)];
+        SHARED_ENTRIES.map((name) => {
+          return [name, resolve(SHARED_DIR, `${name}.ts`)];
         })
       ),
     });
-    // Minified but still the dev builds: their warnings (a spread onto a bare `<button>`) are taught.
-    const { output } = await build.generate({
+    const sharedOutput = await shared.generate({
       format: 'esm',
       minify: true,
       entryFileNames: '[name].mjs',
       chunkFileNames: 'shared-[hash].mjs',
     });
-    await build.close();
+    await shared.close();
 
-    const files = new Map<string, string>();
-    for (const chunk of output) {
+    const copy = await rolldown({
+      input: { 'umbra-copy': resolve(COPY_DIR, 'umbra-copy.ts') },
+    });
+    const copyOutput = await copy.generate({
+      format: 'esm',
+      minify: true,
+      entryFileNames: '[name].mjs',
+      // Named apart so the two builds cannot collide in one directory, which would silently make
+      // the "own copy" fragment share after all and turn the demo into a lie.
+      chunkFileNames: 'copy-[hash].mjs',
+    });
+    await copy.close();
+
+    for (const chunk of [...sharedOutput.output, ...copyOutput.output]) {
       if (chunk.type === 'chunk') {
         files.set(chunk.fileName, chunk.code);
       }
@@ -100,20 +123,25 @@ export function mfeUmbraPlugin(): Plugin {
     },
 
     configureServer(server) {
-      // `mfe-src/` too: outside `src/`, so nothing else notices an edit and the bundle goes stale.
-      server.watcher.add(LIB_ROOT);
-      server.watcher.add(ENTRY_DIR);
+      // `mfe-src/` and the library too: both are outside the playground's `src/`, so nothing else
+      // notices an edit and the bundle goes stale.
+      for (const directory of [LIB_ROOT, SHARED_DIR, COPY_DIR]) {
+        server.watcher.add(directory);
+      }
       server.watcher.on('change', (file) => {
         const changed = resolve(file);
-        if (changed.startsWith(LIB_ROOT) || changed.startsWith(ENTRY_DIR)) {
+        if (
+          [LIB_ROOT, SHARED_DIR, COPY_DIR].some((root) => {
+            return changed.startsWith(root);
+          })
+        ) {
           cached = null;
         }
       });
 
-      // Connect's handler signature, not ours — the three parameters are what `use` calls.
-      // oxlint-disable-next-line max-params
+      // oxlint-disable-next-line max-params -- Connect's handler signature, not ours: `use` calls it with three arguments, and a middleware that declares two never sees `next`
       server.middlewares.use(PUBLIC_PREFIX, (request, response, next) => {
-        // Chunk names are only known after a build, so everything else must fall through untouched.
+        // Chunk names are only known after a build, so everything else falls through untouched.
         const name = (request.url ?? '').replace(/^\//, '').split('?')[0] ?? '';
         if (!name.endsWith('.mjs')) {
           next();
@@ -131,7 +159,7 @@ export function mfeUmbraPlugin(): Plugin {
             response.setHeader('Content-Type', 'text/javascript');
             response.setHeader('Cache-Control', 'no-cache');
             response.end(code);
-          } catch (error) {
+          } catch (error: unknown) {
             next(error);
           }
         })();

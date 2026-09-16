@@ -1,1 +1,1 @@
-export * from './icons';
+export * from '@/shared/ui/icons/icons';

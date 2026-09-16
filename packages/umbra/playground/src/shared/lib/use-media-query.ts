@@ -1,21 +1,25 @@
-import { useSyncExternalStore } from 'react';
+import { useEffect, useState } from 'react';
 
 /**
- * `window.matchMedia` as a subscription — the shell's own, MUI-free. The breakpoint values the
- * layout uses are MUI's defaults spelled out (`sm` 600, `md` 900), because the rendered layout
- * must not move when the theme object goes.
+ * A media query as state.
+ *
+ * Read once on mount rather than during render: the server and the first client pass have no
+ * `matchMedia`, and a layout that branches on it during render tears on hydration.
  */
 export function useMediaQuery(query: string): boolean {
-  return useSyncExternalStore(
-    (onChange) => {
-      const list = window.matchMedia(query);
-      list.addEventListener('change', onChange);
-      return () => {
-        list.removeEventListener('change', onChange);
-      };
-    },
-    () => {
-      return window.matchMedia(query).matches;
-    }
-  );
+  const [matches, setMatches] = useState(false);
+
+  useEffect(() => {
+    const list = window.matchMedia(query);
+    const update = (): void => {
+      setMatches(list.matches);
+    };
+    update();
+    list.addEventListener('change', update);
+    return () => {
+      list.removeEventListener('change', update);
+    };
+  }, [query]);
+
+  return matches;
 }

@@ -4,11 +4,12 @@ import { ThemeProvider } from '@/app/providers/ThemeProvider/ThemeProvider';
 import { RootLayout } from '@/widgets/root-layout';
 
 /**
- * What surrounds the application, composed here because `RootLayout` is a widget and reaching up into
- * `app` for its providers inverts the layer order. Its own file rather than `router.tsx` because a
- * module exporting a component *and* anything else forces a full reload (`only-export-components`).
+ * What surrounds the application.
+ *
+ * Its own file rather than `router.tsx` because a module that exports a component *and* anything
+ * else forces a full reload instead of a fast refresh.
  */
-export const AppRoot = () => {
+export function AppRoot() {
   useDocumentTitle();
 
   return (
@@ -18,4 +19,4 @@ export const AppRoot = () => {
       </CodePaneProvider>
     </ThemeProvider>
   );
-};
+}

@@ -1,1 +1,1 @@
-export { MicrofrontendsPage } from '@/pages/microfrontends/ui/MicrofrontendsPage';
+export { MicrofrontendsPage } from './ui/MicrofrontendsPage';

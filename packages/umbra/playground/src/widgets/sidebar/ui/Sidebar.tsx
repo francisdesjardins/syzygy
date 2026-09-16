@@ -1,23 +1,15 @@
 import { NAV_GROUPS } from '@/widgets/sidebar/model/nav';
-import styles from '@/widgets/sidebar/ui/Sidebar.module.css';
 import { Link, useRouterState } from '@tanstack/react-router';
 import { useEffect } from 'react';
+import styles from '@/widgets/sidebar/ui/Sidebar.module.css';
 
-const SIDEBAR_WIDTH = 232;
-
-type SidebarProps = {
-  readonly isMobile: boolean;
-  readonly mobileOpen: boolean;
-  readonly onClose: () => void;
-};
-
-const NavGroups = ({
+function NavGroups({
   currentPath,
   onNavigate,
 }: {
   readonly currentPath: string;
   readonly onNavigate: (() => void) | undefined;
-}) => {
+}) {
   return (
     <div className={styles['nav']}>
       {NAV_GROUPS.map((group) => {
@@ -26,26 +18,20 @@ const NavGroups = ({
             <span className={styles['groupLabel']}>{group.label}</span>
             <ul className={styles['list']}>
               {group.items.map((item) => {
-                // `/api/…` has a page per category, so its entry stays lit on those too.
-                const isActive =
-                  currentPath === item.path || currentPath.startsWith(`${item.path}/`);
-                const Icon = item.icon;
-
+                // Exact for the index, prefix for the rest: `/` is a prefix of everything.
+                const current =
+                  item.path === '/' ? currentPath === '/' : currentPath.startsWith(item.path);
                 return (
                   <li key={item.path}>
                     <Link
                       to={item.path}
+                      className={`${styles['item']} ${current ? styles['current'] : ''}`}
+                      aria-current={current ? 'page' : undefined}
                       onClick={onNavigate}
-                      aria-current={isActive ? 'page' : undefined}
-                      className={[styles['item'], isActive ? styles['itemSelected'] : '']
-                        .filter(Boolean)
-                        .join(' ')}
                     >
-                      <span className={styles['itemIcon']}>
-                        <Icon />
+                      <span className={styles['icon']}>
+                        <item.icon />
                       </span>
-                      {/* One weight throughout: 400→600 on select re-measures every glyph, so the
-                          label re-spaces under the pointer mid-click. The fill already says which. */}
                       {item.label}
                     </Link>
                   </li>
@@ -57,13 +43,32 @@ const NavGroups = ({
       })}
     </div>
   );
-};
+}
 
-export const Sidebar = ({ isMobile, mobileOpen, onClose }: SidebarProps) => {
-  const routerState = useRouterState();
-  const currentPath = routerState.location.pathname;
+export function Sidebar({
+  isMobile,
+  mobileOpen,
+  onClose,
+}: {
+  readonly isMobile: boolean;
+  readonly mobileOpen: boolean;
+  readonly onClose: () => void;
+}) {
+  const currentPath = useRouterState({
+    select: (state) => {
+      return state.location.pathname;
+    },
+  });
 
-  // The overlay answers Escape the way the dialog drawer it replaces did.
+  /*
+   * Escape closes the overlay, and nothing else here closes anything.
+   *
+   * There used to be an effect that called `onClose()` whenever `currentPath` *or* `onClose`
+   * changed — and `onClose` is an inline arrow from the shell, so its identity changed on every
+   * render. Opening the drawer re-rendered the shell, which handed this a new `onClose`, which ran
+   * it, which closed the drawer again: the mobile menu could never open. Navigation already closes
+   * it through `onNavigate` on the links below, which is where that belongs.
+   */
   useEffect(() => {
     if (!isMobile || !mobileOpen) {
       return;
@@ -82,27 +87,15 @@ export const Sidebar = ({ isMobile, mobileOpen, onClose }: SidebarProps) => {
   if (isMobile) {
     return (
       <>
-        <button
-          type="button"
-          aria-label="Close navigation"
-          tabIndex={mobileOpen ? 0 : -1}
-          className={[styles['backdrop'], mobileOpen ? styles['backdropOpen'] : '']
-            .filter(Boolean)
-            .join(' ')}
-          onClick={onClose}
-        />
+        {mobileOpen ? <div className={styles['scrim']} onClick={onClose} /> : null}
         <aside
-          className={[
-            styles['panel'],
-            styles['panelMobile'],
-            mobileOpen ? styles['panelMobileOpen'] : '',
-          ]
-            .filter(Boolean)
-            .join(' ')}
-          // `inert`, not `aria-hidden`: the closed panel still holds tabbable links, and hiding
-          // it from readers while leaving it in the tab order is the worse half of the bug.
+          className={`${styles['fixed']} ${styles['drawer']} ${mobileOpen ? styles['drawerOpen'] : ''}`}
+          // `inert`, not `aria-hidden`: the closed panel still holds tabbable links, and hiding it
+          // from readers while leaving it in the tab order is the worse half of the bug. `inert`
+          // does both, so the pair cannot drift apart.
           inert={mobileOpen ? undefined : true}
         >
+          {/* The drawer runs the full height, so without this its first item sits under the bar. */}
           <div className={styles['toolbarSpacer']} />
           <NavGroups currentPath={currentPath} onNavigate={onClose} />
         </aside>
@@ -111,13 +104,10 @@ export const Sidebar = ({ isMobile, mobileOpen, onClose }: SidebarProps) => {
   }
 
   return (
-    <aside className={styles['placeholder']}>
-      <div className={styles['panel']}>
-        <div className={styles['toolbarSpacer']} />
+    <div className={styles['sidebar']}>
+      <aside className={styles['fixed']}>
         <NavGroups currentPath={currentPath} onNavigate={undefined} />
-      </div>
-    </aside>
+      </aside>
+    </div>
   );
-};
-
-export { SIDEBAR_WIDTH };
+}

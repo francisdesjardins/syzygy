@@ -5,14 +5,17 @@ shadows it casts.
 
 | package | what it is |
 | --- | --- |
-| [`umbra`](packages/umbra) | a headless dialog manager on the native `<dialog>` top layer |
-| [`antumbra`](packages/antumbra) | a framework-free bootstrap orchestrator over a declared step graph |
+| [`umbra`](packages/umbra) | a framework-free bootstrap orchestrator over a declared step graph |
+| [`antumbra`](packages/antumbra) | a headless dialog manager on the native `<dialog>` top layer |
 | [`penumbra`](packages/penumbra) | the portable half of a design system: no colour, no typeface |
 
-> **The two names are about to trade places.** `umbra` is the root the other names derive from
-> (*pen*·umbra, *ant*·umbra), so it should name the package the others build on — the bootstrapper.
-> And *ante umbra*, "in front of the shadow", describes the top layer a modal `<dialog>` renders
-> into. The swap is a planned step, not a mistake in this table.
+Each name says what its package does, twice over. `umbra` is the root the other two derive from
+(*pen*·umbra, *ant*·umbra), so it names the package the others build on — everything boots. It is
+also the deep cone, the part of the shadow where the source is gone: the dark a bootstrapper works
+in, before anything has been lit. And *ante umbra*, "in front of the shadow", is the top layer a
+modal `<dialog>` renders into — while the antumbra itself is the region where the disc sits wholly
+inside the source and light gets all the way around it, which is a page still visible around the
+thing in front of it.
 
 Two more are planned, and the rule for naming them is the rule above: one word from the same family,
 describing what the package does. `limb` — the apparent edge of a disc, what an observer actually
@@ -40,19 +43,19 @@ Each package also runs standalone: `yarn workspace umbra run test`, and so on.
 
 ## History across the import
 
-Both libraries arrived by `git subtree`, so their commits are here in full — `umbra` back to
-2026-08-04, `antumbra` to 2026-09-14. But subtree merges those commits with the paths they had in
-their own repository, so the usual per-file lookup finds only the merge:
+Both libraries arrived by `git subtree`, so their commits are here in full — the dialog manager back
+to 2026-08-04, the bootstrapper to 2026-09-14. But subtree merges those commits with the paths they
+had in their own repository, so the usual per-file lookup finds only the merge:
 
 ```sh
-git log -- packages/antumbra/src/core/types.ts   # one commit: "Add 'packages/antumbra/' from ..."
+git log -- packages/umbra/src/core/types.ts   # one commit: "Add 'packages/umbra/' from ..."
 ```
 
 Ask the import point instead, using the path as it was then. The tags exist for exactly this:
 
 ```sh
-git log import/antumbra -- src/core/types.ts     # the four commits that really touched it
-git log import/umbra -- src/manager.ts
+git log import/boot -- src/core/types.ts     # the four commits that really touched it
+git log import/dialog -- src/manager.ts
 ```
 
 Anything committed *after* the import is found the normal way, at the current path. Only history

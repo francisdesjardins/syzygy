@@ -1,25 +1,30 @@
-/**
- * The app's global sheet: the two token files, then the baseline rules that belong to no
- * component. The tokens are split so the base can travel — scale, motion and stacking with no
- * brand in them come from the `penumbra` package, and `tokens.skin.css` beside this file is the
- * palette and the typefaces, written for this project and nobody else's. Porting Penumbra means
- * depending on the package and writing a skin, not copying a file.
+/*
+ * The page itself: the reset, the element defaults, and nothing that belongs to a component.
+ *
+ * Every value here is a token. A literal in this file is a token that was never added, and the next
+ * person to need it invents a second one.
  */
 
 @import './fonts.css';
 @import 'penumbra/tokens.system.css';
 @import './tokens.skin.css';
 
-/* ========== Baseline ========== */
-html {
-  box-sizing: border-box;
-  -webkit-text-size-adjust: 100%;
-}
-
 *,
 *::before,
 *::after {
-  box-sizing: inherit;
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: light dark;
+}
+
+:root[data-color-scheme='light'] {
+  color-scheme: light;
+}
+
+:root[data-color-scheme='dark'] {
+  color-scheme: dark;
 }
 
 body {
@@ -28,166 +33,57 @@ body {
   color: var(--app-text);
   font-family: var(--app-font-body);
   font-size: var(--app-text-md);
-  font-weight: 400;
   line-height: var(--app-lh-body);
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Display sizes speak in the serif and tighten as they grow; the ramp sets the size, this sets
-   the voice. Weight stays at 500 — Newsreader's 600 is heavier than the drawing wants. */
 h1,
 h2,
 h3 {
   font-family: var(--app-font-display);
-  font-weight: 500;
-  line-height: var(--app-lh-tight);
+  font-weight: 600;
   letter-spacing: var(--app-tracking-tight);
-  text-wrap: balance;
+  line-height: var(--app-lh-tight);
+  margin: 0;
 }
 
-h4,
-h5,
-h6 {
-  font-family: var(--app-font-body);
-  font-weight: 600;
-  line-height: var(--app-lh-snug);
-  letter-spacing: normal;
+h1 {
+  font-size: var(--app-text-2xl);
+}
+
+h2 {
+  font-size: var(--app-text-lg);
+}
+
+h3 {
+  font-size: var(--app-text-base);
+}
+
+p {
+  margin: 0;
 }
 
 code,
-kbd,
-samp,
-pre {
+pre,
+.mono {
   font-family: var(--app-font-mono);
 }
 
-strong,
-b {
-  font-weight: 600;
+a {
+  color: var(--app-accent);
 }
 
-/* ========== Scrollbars ========== */
-/* Firefox */
-*,
-*::before,
-*::after {
-  scrollbar-width: thin;
+::selection {
+  background: var(--app-selected);
+}
+
+/* The scrollbar is a surface too, and a default one reads as a different application's. */
+* {
   scrollbar-color: var(--app-scrollbar-thumb) var(--app-scrollbar-track);
+  scrollbar-width: thin;
 }
 
-/* Webkit */
-*::-webkit-scrollbar {
-  width: var(--app-scrollbar-width);
-  height: var(--app-scrollbar-width);
-}
-
-*::-webkit-scrollbar-track {
-  background: var(--app-scrollbar-track);
-}
-
-*::-webkit-scrollbar-thumb {
-  background-color: var(--app-scrollbar-thumb);
-  border-radius: var(--app-radius-md);
-  border: 2px solid var(--app-scrollbar-track);
-}
-
-*::-webkit-scrollbar-thumb:hover {
-  background-color: color-mix(in srgb, var(--app-scrollbar-thumb) 90%, transparent);
-}
-
-/* ========== Keyboard focus ========== */
-/* One keyboard focus ring, for everything. Declared globally because the custom link surfaces are
-   plain <a>; the 2px offset puts the ring on the page rather than the control, which keeps it
-   readable over the amber fill.
-
-   `body ` is load-bearing: `.MuiButtonBase-root` zeroes the outline at the same specificity as a
-   bare `:focus-visible` and is injected later, so the descendant selector is what lifts this above
-   it. Measured — with the bare selector the plain links got a ring and every button inside the MUI
-   island silently did not. */
-body :focus-visible {
+:focus-visible {
   outline: 2px solid var(--app-ring);
   outline-offset: 2px;
-}
-
-/* ========== Dialogs ========== */
-/* The UA stylesheet sets `color: black` on <dialog> explicitly, overriding the colour the page
-   puts on body. */
-dialog {
-  color: inherit;
-}
-
-/* Background scroll while a dialog is open — critical on mobile, where touch-scrolling passes
-   through the native backdrop. Non-modal dialogs leave scroll intact. */
-html:has(dialog[open][data-dialog-type='dialog']) {
-  overflow: hidden;
-}
-
-/* WCAG 2.3.3: `areTransitionsDisabled` measures a 0s duration and finalizes at once, so a
-   reduced-motion dialog snaps rather than awaiting a `transitionend` that never comes. Dialog
-   element only — the slide/fade defaults are inline there, which is why the `!important` is
-   required and safe. */
-@media (prefers-reduced-motion: reduce) {
-  dialog[data-dialog-id] {
-    transition: none !important;
-  }
-}
-
-/* The /stories harnesses are unstyled test fixtures, so their dialogs are whatever the content
-   makes them — a one-word dialog is a one-word box, which reads as a glitch to a visitor trying
-   the harness by hand. A floor rather than a size: the seven harnesses that size themselves
-   deliberately keep their shape, and `min(…, 100%)` yields to a contained dialog's host and to a
-   phone. Scoped by the attribute `StoriesPage` sets, because these dialogs are portaled to
-   document.body where no CSS module reaches them. A shadow-root harness is out of reach either
-   way — a document sheet stops at the boundary. */
-html[data-stories] dialog[data-dialog-type] {
-  min-width: min(280px, 100%);
-  min-height: min(120px, 100%);
-  /* 102 of the 157 harness dialogs have no surface of their own: the library writes
-     `background: transparent` inline because the box belongs to the caller, and a fixture that
-     renders a bare fragment never fills it. The panel was a hole — the page showing through it,
-     undimmed, with the card's own paragraph running across the middle. `Canvas` rather than
-     `--app-paper` because that is the exact colour `story-styles.ts` puts on the interiors that do
-     fill their box, so the 55 that already have one show no seam. `!important` for the inline
-     `background`; the radius matches the same file's 8. */
-  background: canvas !important;
-  color: canvastext;
-  border-radius: var(--app-radius-md);
-}
-
-/* `show()` paints no `::backdrop` — platform law — so 46 of the harness dialogs opened with nothing
-   between them and the page. The scrim is the second shadow: an outer `box-shadow` is painted
-   outside the border box, never hit-tests, and is clipped by any ancestor that clips — which
-   answers both arrangements with one declaration. A *contained* panel sits inside `SurfaceCard`'s
-   `overflow: clip`, so its scrim stops at the card it belongs to; a *portaled* one is a child of
-   `<body>` with nothing to clip it, so its scrim covers the viewport. That is the same pair
-   `dialogPlacement` describes in `backdrop`, and it reads the same `--dialog-backdrop` the native
-   one does, so a modal and a non-modal in one theme are the same shade.
-
-   Painting it rather than rendering an element is what keeps the harnesses honest: a real scrim in
-   the tree would cover the region and take the clicks `NonModalClickOutside`, `ControlledPanel` and
-   `VanillaContained`'s click-through exist to prove. `border` is `!important` for the reason the
-   reduced-motion rule above is: `getDialogAnimationStyles` writes `border: none` inline. */
-html[data-stories] dialog[data-dialog-type='non-modal'][open] {
-  /* `--app-control-border`, not the layout hairline: this edge is what separates the panel from
-     the scrim, and at `--app-divider`'s 1.3:1 it disappeared into it. */
-  border: 1px solid var(--app-control-border) !important;
-  box-shadow:
-    var(--app-lift),
-    0 0 0 100vmax var(--dialog-backdrop, rgba(0, 0, 0, 0.7));
-}
-
-/* No radius above, deliberately: a slide panel is flush with the edge it slid from, and rounding
-   the flush side reads as a mistake — worse once it holds a scrollbar the curve clips. Nothing in
-   the DOM tells a slide from a centred panel (`data-dialog-type` is the whole styling contract, and
-   `template` is the manager's, not the element's), so the shape stays square rather than guessed.
-
-   A harness interior is markup, not a layout: buttons land as flex-column siblings with no gap at
-   all, and the ring — 2px at 2px offset — then draws straight onto the control above. Margin rather
-   than `gap`, because these interiors are block, inline and flex by turns and only margin reaches
-   all three. The code viewer is a real widget with its own spacing and is left alone. */
-html[data-stories]
-  dialog[data-dialog-id]:not([data-dialog-id='code-viewer'])
-  :is(button, input, select, textarea, [tabindex], [contenteditable]) {
-  margin: var(--app-space-1);
 }

@@ -1,5 +1,5 @@
 import { fuzzyRank, type FuzzyMatch } from '@/shared/lib/fuzzy-match';
-import apiModel, { type ApiCategory, type ApiSymbol } from 'virtual:antumbra-api';
+import apiModel, { type ApiCategory, type ApiSymbol } from 'virtual:dialog-api';
 
 export const CATEGORIES: readonly ApiCategory[] = apiModel;
 

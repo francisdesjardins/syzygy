@@ -1,3 +1,11 @@
+/*
+ * The landing page's own layout, on antumbra's rules.
+ *
+ * Same hero, same chip row, same stacked snippets, same "where to go next" column — the two
+ * playgrounds are siblings, so a reader arriving at either should recognise the second from the
+ * first. What differs is the drawing in the hero and the words beside it.
+ */
+
 .page {
   max-width: 1040px;
   margin: 0 auto;
@@ -13,8 +21,8 @@
   min-width: 0;
 }
 
-/* The corona paints past the SVG's box, so the art is inset in a square that clips
-   nothing: the wrapper bounds the layout and the disc sits at 78% of it. */
+/* The corona paints past the SVG's box, so the art is inset in a square that clips nothing: the
+   wrapper bounds the layout and the disc sits at 78% of it. */
 .heroArt {
   width: 176px;
   aspect-ratio: 1;
@@ -48,19 +56,27 @@
   gap: var(--app-space-3);
 }
 
-/* Sized to the heading's two steps: the mark is part of the lockup, not a bullet — and it rises
-   onto the word's optical centre, since "Umbra" carries no descender to balance its ascent. */
-.markWide,
-.markNarrow {
+/* The mark is part of the lockup, not a bullet — and it rises onto the word's optical centre,
+   since "Umbra" carries no descender to balance its ascent. */
+.mark {
+  flex: none;
+  border-radius: var(--app-radius-pill);
+  background: var(--app-body);
   transform: translateY(calc(-1 * var(--app-lockup-rise)));
 }
 
 .markWide {
   display: none;
+  width: 40px;
+  height: 40px;
+  border: 7px solid var(--app-flame);
 }
 
 .markNarrow {
-  display: flex;
+  display: block;
+  width: 28px;
+  height: 28px;
+  border: 5px solid var(--app-flame);
 }
 
 .heroSubtitle {
@@ -79,15 +95,6 @@
   max-width: 560px;
 }
 
-.lastClose {
-  display: block;
-  margin: var(--app-space-4) 0 0;
-  font-family: monospace;
-  font-size: var(--app-text-xs);
-  line-height: var(--app-lh-body);
-  color: var(--app-accent);
-}
-
 .chipRow {
   display: flex;
   flex-wrap: wrap;
@@ -104,8 +111,8 @@
   color: var(--app-text);
 }
 
-/* The asterisk the floor chip carries. Secondary rather than an opacity, for the reason the moon
-   row states: a shade of the text colour measures, a transparency of it does not. */
+/* The asterisk the floor chip carries. Secondary rather than an opacity: a shade of the text
+   colour measures, a transparency of it does not. */
 .floorNote {
   margin: var(--app-space-2) 0 0;
   font-size: var(--app-text-xs);
@@ -133,9 +140,7 @@
   min-width: 0;
 }
 
-/* The eyebrow owns its breathing room as margin. It used to come from a 2.66 line-height — MD2's
-   overline, where the leading was the spacing — so collapsing that ramp onto an honest one left the
-   label sitting on the code block. Spacing is a margin here, and the label reads at its own size. */
+/* The eyebrow owns its breathing room as margin, and reads at its own size. */
 .overline {
   margin: 0 0 var(--app-space-3);
   font-family: var(--app-font-mono);
@@ -148,6 +153,15 @@
   display: flex;
   align-items: center;
   gap: var(--app-space-2);
+}
+
+.overlineMark {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  border-radius: var(--app-radius-pill);
+  border: 3px solid var(--app-flame);
+  background: var(--app-body);
 }
 
 .nextRow {
@@ -187,10 +201,14 @@
 }
 
 /* The mark, put back on the first line's own centre. Half the difference between the line box and
-   the mark, derived rather than measured once — only the 16px is a constant, and it is the `size`
-   the page passes `MoonPhase`. */
-.nextTitle > svg {
+   the mark, derived rather than measured once. */
+.nextMark {
   flex: none;
+  width: 16px;
+  height: 16px;
+  border-radius: var(--app-radius-pill);
+  border: 3px solid var(--app-flame);
+  background: var(--app-body);
   margin-top: calc((var(--app-text-base) * var(--app-lh-relaxed) - 16px) / 2);
 }
 
@@ -201,73 +219,6 @@
   color: var(--app-text-secondary);
 }
 
-.moonRow {
-  display: flex;
-  gap: var(--app-space-3);
-  padding-bottom: var(--app-space-8);
-  color: var(--app-text-secondary);
-  justify-content: center;
-}
-
-/* ── The hello dialog's interior ─────────────────────────────────────────────────
-   Page-owned on purpose — the library ships no UI, so the front page brings its own, on the
-   same tokens as the shell. The lift is a dialog's: the one place this shell spends a shadow. */
-.helloCard {
-  padding: var(--app-space-6);
-  max-width: min(420px, 88vw);
-  display: flex;
-  flex-direction: column;
-  gap: var(--app-space-3);
-  background: var(--app-paper);
-  color: var(--app-text);
-  border: 1px solid var(--app-divider);
-  border-radius: var(--app-radius-lg);
-  box-shadow: var(--app-lift);
-}
-
-.helloTitle {
-  margin: 0;
-  font-size: var(--app-text-lg);
-  line-height: 1.6;
-  font-weight: 700;
-}
-
-.helloBody {
-  margin: 0;
-  font-size: var(--app-text-md);
-  line-height: var(--app-lh-body);
-  color: var(--app-text-secondary);
-}
-
-.helloRemember {
-  margin-top: var(--app-space-1);
-  display: flex;
-  align-items: center;
-  gap: var(--app-space-2);
-  font-size: var(--app-text-md);
-  line-height: var(--app-lh-body);
-  color: var(--app-text-secondary);
-  cursor: pointer;
-}
-
-/* A fill, so the browser picks the check ink against the flame. */
-.helloCheckbox {
-  accent-color: var(--app-flame);
-  width: var(--app-space-4);
-  height: var(--app-space-4);
-}
-
-.helloFooter {
-  display: flex;
-  gap: var(--app-space-2);
-  justify-content: flex-end;
-  margin-top: var(--app-space-2);
-}
-
-/* A grid rather than a wrapping row, because there are four cards and wrapping is not
-   deterministic: a flex basis wide enough for tablet widths left the fourth card alone on a row of
-   its own at desktop. Two columns and no third breakpoint — four across fits, but only by wrapping
-   two of the titles onto a second line, which unseats the mark beside them. */
 @media (min-width: 600px) {
   .nextRow {
     display: grid;
@@ -278,6 +229,7 @@
 @media (min-width: 900px) {
   .hero {
     flex-direction: row;
+    align-items: center;
     gap: var(--app-space-12);
     padding-top: var(--app-space-14);
     padding-bottom: var(--app-space-14);
@@ -292,7 +244,7 @@
   }
 
   .markWide {
-    display: flex;
+    display: block;
   }
 
   .markNarrow {

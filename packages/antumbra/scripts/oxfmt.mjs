@@ -1,12 +1,18 @@
 // The one place that knows where `.oxfmtrc.json` lives. oxfmt's Node API takes its options
 // explicitly and ships no `resolveConfig`, so a call site reading the file itself is a call site
 // that can drift from the gate `yarn format:check` runs over the same tree.
+//
+// **Parse failures are raised rather than returned.** `format` hands back the original text with
+// the diagnostics beside it, so a caller comparing its answer to what it passed in reads an
+// unparsable `@example` as one that needed no formatting — which is the whole of what
+// `check-examples.mjs` is looking for.
 
 import { readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { format } from 'oxfmt';
 
-const ROOT = resolve(import.meta.dirname, '..');
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const config = JSON.parse(readFileSync(resolve(ROOT, '.oxfmtrc.json'), 'utf8'));
 
 /**

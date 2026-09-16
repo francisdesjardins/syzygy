@@ -1,0 +1,13 @@
+/* The bordered square the top bar always drew around it — owned here since this is the only place
+   the toggle renders. Duplicated from antumbra so the two bars carry the same control.
+ *
+ * The doubled class is load-bearing: `AppIconButton` sets `border: none` and a round radius, and
+ * both rules are a single class, so the winner is whichever stylesheet the bundler emits last —
+ * which is not something this file should depend on.
+ */
+.toggle.toggle {
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--app-divider);
+  border-radius: var(--app-radius);
+}

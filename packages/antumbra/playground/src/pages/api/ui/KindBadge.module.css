@@ -28,8 +28,3 @@
 .success {
   color: var(--app-ok);
 }
-
-/* The semantic ink for a thrown thing, which flips per mode on its own. */
-.warn {
-  color: var(--app-warn);
-}

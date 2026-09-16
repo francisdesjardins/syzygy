@@ -1,1 +1,1 @@
-export { RootLayout } from '@/widgets/root-layout/ui/RootLayout';
+export { RootLayout } from './ui/RootLayout';

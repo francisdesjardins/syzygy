@@ -5,6 +5,40 @@ keeps its own `CHANGELOG.md` for changes to itself.
 
 Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No semver.
 
+## 2026-09-15, umbra and antumbra trade names
+
+### Changed
+
+`umbra` now names the bootstrapper and `antumbra` the dialog manager. 231 files, 1009 swapped
+occurrences, 13 renamed files and two directories that had to pass through a temporary name.
+
+`umbra` is the root the other two derive from — _pen_·umbra, _ant_·umbra — so it belongs to the
+package the others build on, and everything boots. _Ante umbra_, "in front of the shadow", is where
+a modal `<dialog>` renders. Each package's own changelog carries the reasoning; this entry is about
+what the move touched across the repository.
+
+**Excluded, on this repository's own rule:** the changelogs. "A changelog that edits its own past is
+a story, not a record" — the dialog manager's has been through this once before and says so in its
+header, which now names both renames.
+
+**Not mechanical, and rewritten by hand:** anything that _justified_ a name rather than using it. A
+lexical pass leaves those asserting falsehoods — the bootstrapper's mascot claimed "an umbra is the
+ring past the apex", which is what an antumbra is. Both mascot doc comments, both skin headers and
+both favicons were rewritten instead of swapped.
+
+**The favicons swapped drawings, not just words.** They depict the shadow region itself: a wide disc
+with a corona around it is an umbra, a thin ring with no bite is an antumbra. Keeping each with its
+old library would have left both tabs illustrating the wrong name. This is the one visible change to
+the deployed playgrounds.
+
+**Nothing in the deployed URLs moved.** `/playground/dialog` and `/playground/boot` are named for
+the capability, which is the entire reason they are.
+
+### Changed — the import tags are named for the capability too
+
+`import/umbra` and `import/antumbra` became `import/dialog` and `import/boot`. A tag naming a
+library points at the wrong history the moment that library is renamed, and this one just was.
+
 ## 2026-09-15, penumbra becomes a package
 
 ### Added

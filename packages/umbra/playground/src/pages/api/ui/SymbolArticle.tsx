@@ -1,8 +1,8 @@
 import styles from '@/pages/api/ui/SymbolArticle.module.css';
-import { CodeBlock } from '@/shared/ui/CodeBlock/CodeBlock';
+import { CodeBlock } from '@/shared/ui/CodeBlock';
 import { LinkIcon } from '@/shared/ui/icons';
 import { SurfaceCard } from '@/shared/ui/SurfaceCard';
-import type { ApiSymbol } from 'virtual:dialog-api';
+import type { ApiSymbol } from 'virtual:umbra-api';
 import { categoryHref, symbolAnchor } from '../model/api-index';
 import { DocProse } from './DocText';
 import { KindBadge } from './KindBadge';
@@ -71,7 +71,7 @@ export const SymbolArticle = ({ symbol }: { readonly symbol: ApiSymbol }) => {
                   </MemberListLabel>
                   {/* No height cap: a nested scrollbar hides the end of a twenty-line example. */}
                   <div className={styles['example']}>
-                    <CodeBlock code={example} language="tsx" wrap />
+                    <CodeBlock source={example} wrap />
                   </div>
                 </div>
               );

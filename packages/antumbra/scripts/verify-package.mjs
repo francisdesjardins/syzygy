@@ -1,122 +1,380 @@
-// Checks the built artefact rather than the source, because everything it asserts is something the
-// build could get wrong on its own: a missing entry, a declaration whose import has no extension,
-// a dependency that slipped into a package that claims to have none.
+#!/usr/bin/env node
+/**
+ * Verifies the *built* package as a consumer resolves it: `type-check` compiles `src/` and says
+ * nothing about the `exports` map, the emitted `.d.ts` layout or the entry split, and those
+ * failures outlive a release. Against `dist/` — both entries resolve (types included) under
+ * `moduleResolution: NodeNext`; the root's graph imports no `react` (the optional-peer promise);
+ * the React binding re-exports the root; the promised inference survives into the `.d.ts` (the
+ * `DocumentEventMap` augmentation, `DialogInfo`'s `exists` discrimination, the typed close payload,
+ * a payload declared once on an action and *inferred* at the dialog), each with a matching
+ * `@ts-expect-error` so a widened type fails too. Run after `yarn build`, by `yarn verify:all`
+ * and by CI's build job.
+ */
+import { execFileSync } from 'node:child_process';
+import {
+  cpSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  readdirSync,
+  rmSync,
+  writeFileSync,
+} from 'node:fs';
+import { dirname, join, resolve } from 'node:path';
+import { tmpdir } from 'node:os';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+
+const REPO = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+const DIST = join(REPO, 'dist');
+const TSC = join(REPO, 'node_modules', 'typescript-7', 'bin', 'tsc');
+
+let failures = 0;
+const report = (ok, said) => {
+  const { label, detail = '' } = said;
+  if (!ok) failures++;
+  console.log(`${ok ? 'OK  ' : 'FAIL'} ${label}${detail ? ` — ${detail}` : ''}`);
+};
+
+try {
+  readdirSync(DIST);
+} catch {
+  console.error('FAIL dist/ not found — run `yarn build` first.');
+  process.exit(1);
+}
+
+// ── 1 + 3. Resolve both entry points as an external consumer ─────────────────
+
+const sandbox = mkdtempSync(join(tmpdir(), 'dialog-verify-'));
+try {
+  const pkgDir = join(sandbox, 'node_modules', 'antumbra');
+  mkdirSync(pkgDir, { recursive: true });
+  cpSync(DIST, join(pkgDir, 'dist'), { recursive: true });
+  cpSync(join(REPO, 'package.json'), join(pkgDir, 'package.json'));
+
+  writeFileSync(
+    join(sandbox, 'tsconfig.json'),
+    JSON.stringify({
+      compilerOptions: {
+        target: 'ES2024',
+        lib: ['ES2024', 'DOM'],
+        module: 'NodeNext',
+        moduleResolution: 'NodeNext',
+        jsx: 'react-jsx',
+        strict: true,
+        noEmit: true,
+        skipLibCheck: true,
+      },
+      include: ['*.ts'],
+    })
+  );
+
+  // Root: only framework-agnostic symbols, the way a non-React service imports them.
+  writeFileSync(
+    join(sandbox, 'root.ts'),
+    [
+      "import { dialogManager, createDialogManager, createStore } from 'antumbra';",
+      "import { normalizeError, Key, setLogLevel } from 'antumbra';",
+      "import type { DialogInfo, DialogPhase, DialogManager } from 'antumbra';",
+      'export const used = [dialogManager, createDialogManager, createStore,',
+      '  normalizeError, Key, setLogLevel];',
+      'export type Used = [DialogInfo, DialogManager];',
+      '// A root consumer must be able to name the types the ones it was handed refer to.',
+      'declare const info: DialogInfo;',
+      'export const phase: DialogPhase = info.phase;',
+    ].join('\n')
+  );
+
+  // Binding: the hooks, plus a root symbol to prove the re-export reaches consumers.
+  writeFileSync(
+    join(sandbox, 'react-entry.ts'),
+    [
+      "import { useDialog, useMessageDialog, useSlideDialog } from 'antumbra/react';",
+      "import { DialogOutlet, dialogManager } from 'antumbra/react';",
+      'export const used = [useDialog, useMessageDialog, useSlideDialog,',
+      '  DialogOutlet, dialogManager];',
+    ].join('\n')
+  );
+
+  // The controller binding: no framework, so it must resolve for a consumer with neither peer.
+  writeFileSync(
+    join(sandbox, 'vanilla-entry.ts'),
+    [
+      "import { bindDialog, dialogManager, Key } from 'antumbra/vanilla';",
+      "import type { DialogController } from 'antumbra/vanilla';",
+      'export const used = [bindDialog, dialogManager, Key];',
+      'export type Used = [DialogController];',
+    ].join('\n')
+  );
+
+  // The second binding: same hook names, same re-exported root — its `exports` entry and `.d.ts`.
+  writeFileSync(
+    join(sandbox, 'solid-entry.ts'),
+    [
+      "import { useDialog, useMessageDialog, useSlideDialog } from 'antumbra/solid';",
+      "import { DialogOutlet, fromStore, dialogManager } from 'antumbra/solid';",
+      'export const used = [useDialog, useMessageDialog, useSlideDialog,',
+      '  DialogOutlet, fromStore, dialogManager];',
+    ].join('\n')
+  );
+
+  // Type-level promises that hold only if the emitted `.d.ts` carries them. Each
+  // `@ts-expect-error` is a negative assertion: an unused directive is itself an error.
+  writeFileSync(
+    join(sandbox, 'inference.ts'),
+    [
+      "import { DIALOG_OPEN_EVENT, DIALOG_CLOSE_EVENT, dialogManager } from 'antumbra';",
+      "import { useDialog } from 'antumbra/react';",
+      "import type { DialogHandle } from 'antumbra/react';",
+      '',
+      '// No cast: the augmentation must survive into the published declarations.',
+      'document.addEventListener(DIALOG_OPEN_EVENT, (event) => {',
+      '  const id: string = event.detail.id;',
+      '  void id;',
+      '});',
+      'document.addEventListener(DIALOG_CLOSE_EVENT, (event) => {',
+      '  const reason: string | undefined = event.detail.reason;',
+      '  void reason;',
+      '});',
+      '',
+      "const info = dialogManager.lookup('some-dialog');",
+      'export const template = info.exists ? info.template : undefined;',
+      '// @ts-expect-error registration-time facts need narrowing on `exists`',
+      'export const unguarded = info.template;',
+      '',
+      'declare const typed: DialogHandle<{ id: string }>;',
+      "typed.close('ok', { id: 'a' });",
+      '// @ts-expect-error the payload is the one the dialog declares, not `unknown`',
+      "typed.close('ok', 42);",
+      '',
+      '// Reasons declared on the hook are enforced at every door. This holds only if the',
+      '// published declarations carry `TReason` through the factory, the handle and onClose.',
+      "const dialog = useDialog<{ id: string }, 'save' | 'cancel'>({",
+      "  id: 'declared',",
+      '  render: ({ action, handle }) => {',
+      "    action('save', (close) => { close({ id: 'a' }); });",
+      "    action('cancel');",
+      '    // @ts-expect-error not one of the declared reasons',
+      "    action('savee');",
+      "    handle.close('cancel');",
+      '    return null;',
+      '  },',
+      '  onClose: (result) => {',
+      "    const reason: 'save' | 'cancel' | 'dismiss' = result.reason;",
+      '    const id: string | undefined = result.data?.id;',
+      '    void [reason, id];',
+      '  },',
+      '});',
+      'void dialog.hasRunningAction;',
+    ].join('\n')
+  );
+
+  try {
+    execFileSync(process.execPath, [TSC, '-p', join(sandbox, 'tsconfig.json')], {
+      stdio: 'pipe',
+      encoding: 'utf8',
+    });
+    report(true, { label: 'both entry points resolve for an external consumer (NodeNext)' });
+  } catch (error) {
+    const output = `${error.stdout ?? ''}${error.stderr ?? ''}`.trim();
+    report(false, { label: 'both entry points resolve for an external consumer (NodeNext)' });
+    console.error(output.split('\n').slice(0, 12).join('\n'));
+  }
+} finally {
+  rmSync(sandbox, { recursive: true, force: true });
+}
+
+// ── 1b. Every relative specifier in the declarations carries an extension ─────
+// `tsc` copies relative specifiers into the emitted `.d.ts` verbatim, and an extensionless one is
+// invalid under `moduleResolution: node16`/`nodenext` — silently, since `skipLibCheck: true` (a
+// common default, and what the sandbox above uses) suppresses the resolution error and every type
+// crossing that boundary degrades to an error type: the package type-checks with no type safety.
+// Checked statically because it is an invariant of the artifact, not of one consumer file.
+
+const collectDeclarations = (dir) => {
+  const found = [];
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const full = join(dir, entry.name);
+    if (entry.isDirectory()) found.push(...collectDeclarations(full));
+    else if (entry.name.endsWith('.d.ts')) found.push(full);
+  }
+  return found;
+};
+
+const declarations = collectDeclarations(DIST);
+const extensionless = [];
+for (const file of declarations) {
+  for (const match of readFileSync(file, 'utf8').matchAll(/from\s*["'](\.[^"']*)["']/g)) {
+    const specifier = match[1];
+    if (!specifier.endsWith('.js')) {
+      extensionless.push(`${file.replace(DIST, 'dist')} -> ${specifier}`);
+    }
+  }
+}
+report(declarations.length > 0 && extensionless.length === 0, {
+  label: 'every relative specifier in the emitted .d.ts carries an extension',
+  detail: `${declarations.length} declaration files${
+    extensionless.length > 0 ? ` — ${extensionless.length} bad: ${extensionless[0]}, …` : ''
+  }`,
+});
+
+// ── 2. Each entry ships exactly its own framework ────────────────────────────
+
+/** The frameworks the package can bind to, by the bare specifiers each one owns. */
+const FRAMEWORKS = {
+  react: ['react', 'react-dom'],
+  solid: ['solid-js'],
+};
+
+const frameworkOf = (specifier) => {
+  return Object.keys(FRAMEWORKS).find((name) => {
+    return FRAMEWORKS[name].some((root) => {
+      return specifier === root || specifier.startsWith(`${root}/`);
+    });
+  });
+};
+
+const walk = (entry) => {
+  const seen = new Set();
+  const leaks = [];
+  const stack = [entry];
+
+  while (stack.length > 0) {
+    const file = stack.pop();
+    if (seen.has(file)) continue;
+    seen.add(file);
+
+    let source;
+    try {
+      source = readFileSync(file, 'utf8');
+    } catch {
+      continue;
+    }
+
+    for (const match of source.matchAll(/from\s*["']([^"']+)["']/g)) {
+      const specifier = match[1];
+      const framework = frameworkOf(specifier);
+      if (framework !== undefined) {
+        leaks.push({ framework, detail: `${file.replace(DIST, 'dist')} -> ${specifier}` });
+        continue;
+      }
+      if (specifier.startsWith('.')) {
+        stack.push(join(dirname(file), specifier));
+      }
+    }
+  }
+
+  return { seen, leaks };
+};
+
+const frameworksIn = (result) => {
+  return new Set(
+    result.leaks.map((leak) => {
+      return leak.framework;
+    })
+  );
+};
+const describe = (result) => {
+  return result.leaks
+    .map((leak) => {
+      return leak.detail;
+    })
+    .join(', ');
+};
+
+const root = walk(join(DIST, 'esm', 'index.js'));
+report(root.leaks.length === 0 && root.seen.size > 3, {
+  label: 'the built root imports no framework',
+  detail: `${root.seen.size} modules${root.leaks.length > 0 ? ` — LEAKS: ${describe(root)}` : ''}`,
+});
+
+// Mirror assertions — else a blind walker passes the check above, and one peer would gate both.
+for (const [entry, own, other] of [
+  ['react.js', 'react', 'solid'],
+  ['solid.js', 'solid', 'react'],
+]) {
+  const result = walk(join(DIST, 'esm', entry));
+  const reached = frameworksIn(result);
+  report(reached.has(own), {
+    label: `the built ${own} binding does import ${own} (walker is not blind)`,
+  });
+  report(!reached.has(other), {
+    label: `the built ${own} binding imports no ${other}`,
+    detail: reached.has(other) ? describe(result) : '',
+  });
+}
+
+// The controller binding renders nothing, so it must resolve for a consumer with neither peer.
+const vanilla = walk(join(DIST, 'esm', 'vanilla.js'));
+report(vanilla.leaks.length === 0 && vanilla.seen.size > 3, {
+  label: 'the built vanilla binding imports no framework',
+  detail: `${vanilla.seen.size} modules${vanilla.leaks.length > 0 ? ` — LEAKS: ${describe(vanilla)}` : ''}`,
+});
+
+// ── The React Compiler actually ran ─────────────────────────────────────────
+// `react({ babel: … })` is accepted under this Vite and transforms *nothing*, so the bundle once
+// shipped uncompiled while the source was documented as compiled. Both halves are asserted — a
+// `compiler-runtime` import alone survives a build that compiled one trivial function and bailed.
+const compiled = readFileSync(join(DIST, 'esm', 'react', 'use-dialog.js'), 'utf8');
+const hasRuntime = compiled.includes('react/compiler-runtime');
+const hasMemoCache = /\bc\(\d+\)/.test(compiled);
+report(hasRuntime && hasMemoCache, {
+  label: 'the React binding is compiled — compiler-runtime imported and a memo cache allocated',
+  // Only on failure, and it names which half is missing — two different problems.
+  detail:
+    hasRuntime && hasMemoCache
+      ? ''
+      : hasRuntime
+        ? 'no `c(n)` allocation, so the hook itself was not lowered'
+        : 'no `react/compiler-runtime` import at all — the plugin did not run',
+});
+
+// The Solid binding must not be: the compiler names hooks by convention and it exports `useDialog`.
+const solidSource = readFileSync(join(DIST, 'esm', 'solid', 'use-dialog.js'), 'utf8');
+report(!solidSource.includes('compiler-runtime'), {
+  label: 'the Solid binding is not compiled — no compiler-runtime in it',
+});
+
+// ── The React binding survives a server render ───────────────────────────────
 //
-// Run by `yarn verify:package`, which `yarn verify:all` calls.
+// Every hook here reads its store through `useSyncExternalStore`, which throws outright when no
+// server reader is given — so a single missing third argument takes down the whole render of any
+// page that mounts a dialog, and does it in the consumer's app rather than in this repo. Asserted on
+// the built artifact for the reason the compiler checks are: the source cannot show whether what
+// shipped still does it.
+//
+// The output is inspected rather than merely awaited, because a hook that rendered nothing would
+// also "not throw" — the same blindness the import walker's positive halves exist to catch.
+{
+  const { renderToString } = await import('react-dom/server');
+  const { createElement } = await import('react');
+  const { useDialog } = await import(pathToFileURL(join(DIST, 'esm', 'react.js')).href);
 
-import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs';
-import { join, relative } from 'node:path';
-
-const DIST = 'dist/esm';
-const failures = [];
-
-function fail(message) {
-  failures.push(message);
-}
-
-function walk(dir) {
-  const out = [];
-  for (const entry of readdirSync(dir)) {
-    const full = join(dir, entry);
-    if (statSync(full).isDirectory()) out.push(...walk(full));
-    else out.push(full);
+  let html = '';
+  let threw = '';
+  try {
+    html = renderToString(
+      createElement(() => {
+        return useDialog({
+          id: 'ssr-check',
+          ariaLabel: 'SSR check',
+          render: () => {
+            return null;
+          },
+        }).Dialog;
+      })
+    );
+  } catch (error) {
+    threw = error instanceof Error ? error.message : String(error);
   }
-  return out;
+
+  // A closed dialog, and closed is the only honest server answer: the top layer is enterable from
+  // `showModal()` alone, so no served HTML can hand back an open modal one.
+  const rendered = html.includes('<dialog') && html.includes('data-dialog-id="ssr-check"');
+  report(threw === '' && rendered && !html.includes(' open'), {
+    label: 'the React binding server-renders — a closed <dialog>, with no DOM in scope',
+    detail: threw !== '' ? threw : rendered ? '' : `rendered nothing useful: ${html.slice(0, 80)}`,
+  });
 }
 
-// 1. The entries named in `exports` are the entries that exist.
-const manifest = JSON.parse(readFileSync('package.json', 'utf8'));
-for (const [subpath, entry] of Object.entries(manifest.exports)) {
-  for (const target of new Set(Object.values(entry))) {
-    const file = target.replace(/^\.\//, '');
-    if (!existsSync(file)) fail(`exports["${subpath}"] points at ${file}, which was not built.`);
-  }
-}
-
-if (!existsSync(DIST)) {
-  console.error(`${DIST} does not exist. Run \`yarn build\` first.`);
-  process.exit(1);
-}
-
-const files = walk(DIST);
-// Both quote styles. The source is single-quoted by oxfmt and the bundler emits double, so a
-// pattern that knew only one matched nothing in `dist` and every check below passed vacuously —
-// which is what the `mustReach` assertions exist to catch, and did.
-const importPattern = /from\s+["']([^"']+)["']/g;
-
-const PEERS = ['react', 'react-dom', 'react/jsx-runtime', 'solid-js'];
-function isPeer(specifier) {
-  return PEERS.includes(specifier) || specifier.startsWith('solid-js/');
-}
-
-// Which framework each entry is allowed to reach. The root's empty list is the promise the whole
-// package is built on; the positive lists are what stop that assertion from passing on a walker
-// that resolved nothing.
-const ENTRY_RULES = [
-  { entry: 'index.js', allowed: [], mustReach: [] },
-  { entry: 'react.js', allowed: ['react', 'react-dom', 'react/jsx-runtime'], mustReach: ['react'] },
-  { entry: 'solid.js', allowed: ['solid-js'], mustReach: ['solid-js'] },
-  { entry: 'plain.js', allowed: [], mustReach: [] },
-];
-
-function graphOf(entryFile) {
-  const files = new Set();
-  const packages = new Set();
-  const queue = [join(DIST, entryFile)];
-  while (queue.length > 0) {
-    const file = queue.pop();
-    if (files.has(file) || !existsSync(file)) continue;
-    files.add(file);
-    for (const [, specifier] of readFileSync(file, 'utf8').matchAll(importPattern)) {
-      if (specifier.startsWith('.')) queue.push(join(file, '..', specifier));
-      else packages.add(specifier.startsWith('solid-js/') ? 'solid-js' : specifier);
-    }
-  }
-  return { files, packages };
-}
-
-for (const file of files) {
-  const source = readFileSync(file, 'utf8');
-  for (const [, specifier] of source.matchAll(importPattern)) {
-    // 2. A relative import without an extension is invalid under node16/nodenext resolution, and
-    //    `skipLibCheck` hides it in every consumer until one turns it off.
-    if (specifier.startsWith('.') && !/\.[cm]?js$/.test(specifier)) {
-      fail(`${relative('.', file)} imports "${specifier}" with no .js extension.`);
-    }
-    // 3. The only packages allowed in the output are the optional peers, and only the bindings may
-    //    reach them. Anything else got in by accident.
-    if (!specifier.startsWith('.') && !specifier.startsWith('node:') && !isPeer(specifier)) {
-      fail(`${relative('.', file)} imports the package "${specifier}", which is not a peer.`);
-    }
-  }
-}
-
-// 4. Each entry reaches its own framework and nobody else's, and the root reaches no binding.
-for (const rule of ENTRY_RULES) {
-  const { files: reached, packages } = graphOf(rule.entry);
-  for (const pkg of packages) {
-    if (!rule.allowed.includes(pkg)) {
-      fail(`${rule.entry} reaches "${pkg}", which belongs to another binding.`);
-    }
-  }
-  for (const pkg of rule.mustReach) {
-    if (!packages.has(pkg)) {
-      fail(`${rule.entry} does not reach "${pkg}" at all, so the check above proves nothing.`);
-    }
-  }
-  if (rule.entry !== 'index.js') continue;
-  for (const file of reached) {
-    const folder = relative(DIST, file).split(/[\\/]/)[0];
-    if (['react', 'solid', 'plain'].includes(folder)) {
-      fail(`The root entry reaches ${relative('.', file)}, which belongs to a binding.`);
-    }
-  }
-}
-
-if (failures.length > 0) {
-  console.error(`verify:package found ${failures.length} problem(s):`);
-  for (const failure of failures) console.error(`  - ${failure}`);
-  process.exit(1);
-}
-
-console.log(`verify:package: ${files.length} built files, all checks passed.`);
+console.log(failures === 0 ? '\nPACKAGE OK' : `\n${failures} PACKAGE CHECK(S) FAILED`);
+process.exit(failures === 0 ? 0 : 1);

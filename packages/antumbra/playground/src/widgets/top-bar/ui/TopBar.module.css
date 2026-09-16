@@ -1,4 +1,4 @@
-/* Fixed above the sidebar (its 30) and below anything a dialog would raise. */
+/* Fixed above the sidebar (its 1200) and below the dialogs (the manager's 1300+). */
 .appBar {
   position: fixed;
   top: 0;
@@ -23,7 +23,7 @@
   }
 }
 
-/* The icon's padding hangs into the gutter so the glyph aligns with the content below it. */
+/* `edge="start"`'s job: the icon's padding hangs into the gutter so the glyph aligns with content. */
 .menuButton {
   margin-left: -8px;
   margin-right: var(--app-space-2);
@@ -52,26 +52,12 @@
   font-weight: 500;
   line-height: 1;
   letter-spacing: var(--app-tracking-snug);
-  /* Cap band, so centring the box centres the letters: "antumbra" reserves descender room it never
-     uses, and the ring beside it reads low. Trimming the text keeps every item in the row on one
+  /* Cap band, so centring the box centres the letters: "Antumbra" reserves descender room it never
+     uses, and the disc beside it reads low. Trimming the text keeps every item in the row on one
      midline; nudging the mark would not. */
   text-box: trim-both cap alphabetic;
-}
-
-/* The annular ring — antumbra's mark, and the one thing in this bar that is not umbra's.
-   26px, which is what umbra renders its own mark at: the two bars differ in what the mark *is*,
-   never in how much room it takes. The stroke scales with it, or a ring this wide reads as a
-   hairline next to a filled disc of the same size. */
-.ring {
-  flex-shrink: 0;
-  width: 26px;
-  height: 26px;
-  border-radius: var(--app-radius-pill);
-  border: 5px solid var(--app-flame);
-  /* The disc under the ring, as umbra paints it. Without it the mark is an outline, and an outline
-     reads a size smaller than a solid object of the same diameter however the box measures. An
-     annular eclipse is a dark disc with a complete ring around it, so the fill is also the truth. */
-  background: var(--app-body);
+  /* Not transitioned: the wordmark's colour is inherited and theme-sensitive, so a flip would
+     interpolate it against a background that switches instantly — 1.08:1 mid-flip, measured. */
 }
 
 .pill {
