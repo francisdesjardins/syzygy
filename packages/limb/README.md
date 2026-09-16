@@ -2,14 +2,20 @@
 
 The edge of the disc — the visible rim, the part of a body you actually see.
 
-Three helpers the two playgrounds both need and neither owns: a fuzzy matcher, a contrast
-calculator, and the syntax theme built on top of it.
+The framework-free machinery the playgrounds run on, in one place instead of none or two: a fuzzy
+matcher, a contrast calculator and the syntax theme over it, a mutex, a single-flight gate, a
+shallow comparison and a declaration slicer.
 
 ```ts
 import { fuzzyRank } from 'limb/fuzzy-match';
 import { readableHsl } from 'limb/color-contrast';
-import { readableSyntaxStyle } from 'limb/readable-syntax';
+import { createMutex } from 'limb/mutex';
+import { createSingleFlight } from 'limb/single-flight';
 ```
+
+Two kinds of thing arrive here, and both are the same problem. Some existed **twice**, one copy per
+playground. Others existed **once**, locked inside the app that happened to write them — which is
+how the next project comes to write them a second time.
 
 ## The boundary is framework-freedom
 

@@ -1,7 +1,7 @@
 import { createStore } from 'antumbra/react';
 import { useStore } from '@/shared/lib/use-store';
 import { asyncIdle, runAsync, type AsyncState } from './async-state';
-import { createSingleFlight } from './single-flight';
+import { createSingleFlight } from 'limb/single-flight';
 
 // A `useQuery` stand-in with the real shape (`{ data, isFetching, refetch }`), built from the
 // library's own primitives, so swapping in React Query changes the import and nothing else.

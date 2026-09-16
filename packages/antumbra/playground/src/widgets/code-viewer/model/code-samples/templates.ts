@@ -53,9 +53,9 @@ import vanillaSlideTitleSrc from '@/entities/dialog-template/ui/vanilla/slide-di
 import vanillaSlideStylesSrc from '@/entities/dialog-template/ui/vanilla/slide-dialog/styles.module.css?raw';
 import sharedLibAsyncStateSrc from '@/shared/lib/async-state.ts?raw';
 import sharedLibImmerStoreSrc from '@/shared/lib/immer-store.ts?raw';
-import sharedLibMutexSrc from '@/shared/lib/mutex.ts?raw';
+import sharedLibMutexSrc from 'limb/src/mutex.ts?raw';
 import sharedLibSafeAwaitSrc from '@/shared/lib/safe-await.ts?raw';
-import sharedLibSingleFlightSrc from '@/shared/lib/single-flight.ts?raw';
+import sharedLibSingleFlightSrc from 'limb/src/single-flight.ts?raw';
 import sharedLibUseAnnouncerSrc from '@/shared/lib/use-announcer.tsx?raw';
 import sharedLibUseFormSrc from '@/shared/lib/use-form.ts?raw';
 import sharedLibUseQuerySrc from '@/shared/lib/use-query.ts?raw';

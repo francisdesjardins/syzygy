@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { createStore } from 'antumbra/react';
-import { shallowEqual } from '../shallow-equal';
+import { shallowEqual } from 'limb/shallow-equal';
 import { useStore } from '../use-store';
 
 // Factory, not module scope, so every mounted harness gets a fresh store and tests stay isolated.

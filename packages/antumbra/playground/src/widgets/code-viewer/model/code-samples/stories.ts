@@ -2,7 +2,7 @@
  * The library's component-test harnesses, rendered live by `/stories` and shown here as source —
  * the largest of the three groups, for the one route that needs it. See `codeSamples.ts`.
  */
-import { sliceDeclaration, sliceDeclarations } from '@/shared/lib/slice-declaration';
+import { sliceDeclaration, sliceDeclarations } from 'limb/slice-declaration';
 
 import storyUseDialogBasicSrc from 'antumbra/react/__tests__/use-dialog/basic.story.tsx?raw';
 import storyUseDialogOpenAndWaitSrc from 'antumbra/react/__tests__/use-dialog/open-and-wait.story.tsx?raw';

@@ -5,6 +5,32 @@ Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No s
 **This file is the package's memory.** The code states what holds now; why it came to hold lives
 here.
 
+## 2026-09-16, four primitives that were never shared at all
+
+### Added
+
+`mutex`, `single-flight`, `shallow-equal` and `slice-declaration` — 235 lines, and the 24 tests
+that came with them.
+
+**These were not duplicated.** They existed once, in the dialog manager's playground, where nothing
+but that playground could reach them. That is the other half of what this package is for: the first
+entry collapsed copies, this one moves a primitive out of the one app that happened to author it.
+A `createMutex` locked inside a demo is a `createMutex` the next project writes again.
+
+The entry rule is unchanged and did the choosing again. Of the seventeen modules in that
+playground's `shared/lib` that the other one lacks, exactly these four import **nothing at all**.
+
+### Not yet — and the reason is one function
+
+`runAsync` and `safeAwait` belong here by every other measure: no framework, no UI, pure machinery
+over a promise. Each imports exactly one thing, `normalizeError`, and that function exists **twice**
+in this repository — 15 lines in the dialog manager, 45 in the bootstrapper, independently written.
+Moving the callers first would make this package depend on one library's version of a primitive the
+other library also owns.
+
+So the order is forced: normalise `normalizeError`, then these follow. `watch` waits on the same
+question one level up — its only import is a store contract type, and there are two of those too.
+
 ## 2026-09-16, the three that had not drifted
 
 ### Added
