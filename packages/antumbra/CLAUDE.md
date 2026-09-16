@@ -173,8 +173,8 @@ it bites and gnomon's coverage report prints them all when it finds nothing.
   `required` rows, asserted by a gate. That inventory cannot see an **option** on a method already
   called, which is why those rows split required from enhancing.
 - **Package manager**: Yarn only — `yarn.lock` is authoritative and `yarn install --immutable` is the CI form. Dependency pins go in `resolutions`; npm's `overrides` is ignored.
-- **Yarn workspaces**: this package and `antumbra-playground` (`playground/`, private) are two of
-  the monorepo’s workspaces; one `yarn install` at its root installs everything. **The published
+- **Yarn workspaces**: this package and `antumbra-playground` (`playground/`, private) are monorepo
+  workspaces; one `yarn install` at its root installs everything. **The published
   dependency list is this manifest**, so anything the demo needs belongs in `playground/package.json` and
   never in the root, whose `dependencies` stay empty. Root `dev`/`playground:*` scripts delegate.
 - **Declarations**: emitted by `tsc -p tsconfig.build.json`, not a Vite plugin, so published types can't drift from what `type-check` validates. **Every relative import in shipped `src/` carries a `.js` extension** (tests are exempt — nothing emits them) — `tsc` copies specifiers into the `.d.ts` verbatim and an extensionless one is invalid on `moduleResolution: node16`/`nodenext`, silently under `skipLibCheck`. `yarn verify:package` fails on any that slip through.
