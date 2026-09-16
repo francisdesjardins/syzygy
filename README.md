@@ -36,6 +36,26 @@ yarn playgrounds:build  # the relocatable playground builds the site serves
 
 Each package also runs standalone: `yarn workspace umbra run test`, and so on.
 
+## History across the import
+
+Both libraries arrived by `git subtree`, so their commits are here in full — `umbra` back to
+2026-08-04, `antumbra` to 2026-09-14. But subtree merges those commits with the paths they had in
+their own repository, so the usual per-file lookup finds only the merge:
+
+```sh
+git log -- packages/antumbra/src/core/types.ts   # one commit: "Add 'packages/antumbra/' from ..."
+```
+
+Ask the import point instead, using the path as it was then. The tags exist for exactly this:
+
+```sh
+git log import/antumbra -- src/core/types.ts     # the four commits that really touched it
+git log import/umbra -- src/manager.ts
+```
+
+Anything committed *after* the import is found the normal way, at the current path. Only history
+from before the move needs the tag.
+
 ## Layout
 
 ```
