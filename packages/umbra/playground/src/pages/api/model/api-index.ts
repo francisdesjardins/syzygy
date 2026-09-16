@@ -1,4 +1,4 @@
-import { fuzzyRank, type FuzzyMatch } from '@/shared/lib/fuzzy-match';
+import { fuzzyRank, type FuzzyMatch } from 'limb/fuzzy-match';
 import apiModel, { type ApiCategory, type ApiSymbol } from 'virtual:umbra-api';
 
 export const CATEGORIES: readonly ApiCategory[] = apiModel;

@@ -8,6 +8,8 @@ shadows it casts.
 | [`umbra`](packages/umbra) | a framework-free bootstrap orchestrator over a declared step graph |
 | [`antumbra`](packages/antumbra) | a headless dialog manager on the native `<dialog>` top layer |
 | [`penumbra`](packages/penumbra) | the portable half of a design system: no colour, no typeface |
+| [`limb`](packages/limb) | the framework-free helpers both playgrounds need and neither owns |
+| [`gnomon`](packages/gnomon) | the gates: the example checker, the coverage instrumenter, the formatter |
 
 Each name says what its package does, twice over. `umbra` is the root the other two derive from
 (*pen*·umbra, *ant*·umbra), so it names the package the others build on — everything boots. It is
@@ -17,10 +19,14 @@ modal `<dialog>` renders into — while the antumbra itself is the region where 
 inside the source and light gets all the way around it, which is a page still visible around the
 thing in front of it.
 
-Two more are planned, and the rule for naming them is the rule above: one word from the same family,
-describing what the package does. `limb` — the apparent edge of a disc, what an observer actually
-sees of a body — for the playground shell both playgrounds render. `gnomon` — the rod of a sundial,
-the instrument by which a shadow is measured — for the gates.
+The two internal packages are named by the same rule. `limb` is the apparent edge of a disc, what an
+observer actually sees of a body — the pieces of a playground that are not the library it
+demonstrates. `gnomon` is the rod of a sundial, the instrument by which a shadow is measured — the
+gates every package runs.
+
+A new package takes one word from the same family, describing what it does. The family is finite and
+[the vocabulary](CHANGELOG.md) is written down, which is the point of choosing one: the next name is
+a decision about meaning, not about availability.
 
 ## Getting started
 

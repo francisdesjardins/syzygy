@@ -5,6 +5,38 @@ keeps its own `CHANGELOG.md` for changes to itself.
 
 Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No semver.
 
+## 2026-09-16, limb, and what measuring first removed from it
+
+### Added
+
+`packages/limb` — `color-contrast`, `fuzzy-match` and `readable-syntax`, with the 35 tests that had
+existed on only one of the two copies. Private, and framework-free by rule rather than by habit.
+
+This phase was planned as the largest of the five and came out the smallest. It was written to
+absorb "the playground shell" at 28 files; it took 3. The shell turned out not to be shared at all
+— the layout, the sidebar and the navigation diverge because the two playgrounds demonstrate
+different libraries and hold different pages. The API reference route read as 943 shareable lines
+until its dependencies were traced: it needs five components, four of which differ by design.
+`CodeBlock` diverges on 117 of its 129 lines.
+
+### The measurement that drew the boundary
+
+Seven modules sat at `shared/lib` in both playgrounds. Sorted by whether they import anything at run
+time, they sorted perfectly: the three with no run-time import were **byte-identical**; the four
+that reach for React had each drifted, by 11 to 38 lines. Nothing in between.
+
+Two copies of a pure function stay equal because there is one right answer and both authors found
+it. Two copies of a hook drift because each bends toward the app around it. So framework-freedom is
+`limb`'s entry rule, not its description — it is the property that made these three shareable.
+
+`useDocumentTitle` diverges by one line, a product-name constant, and was still left out: it is a
+hook, and taking it would put React in the package whose claim is that it needs none.
+
+### Fixed
+
+`packages/antumbra/CLAUDE.md` was 3002 words against its own 3000-word budget, over since the gnomon
+entry above rewrote the workspaces paragraph. The gate had been red at that commit and was not run.
+
 ## 2026-09-16, gnomon takes the gates
 
 ### Added

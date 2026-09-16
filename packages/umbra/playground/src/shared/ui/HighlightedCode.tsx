@@ -1,5 +1,5 @@
 import { useTheme } from '@/shared/lib/theme-context';
-import { readableSyntaxStyle } from '@/shared/lib/readable-syntax';
+import { readableSyntaxStyle } from 'limb/readable-syntax';
 // Deep paths, not the barrels: `react-syntax-highlighter` re-exports the whole Prism build (every
 // grammar refractor ships) and `styles/prism` re-exports all 47 themes, and Vite serves modules
 // unbundled in dev — so a barrel import pays for all of it whatever the named import says.

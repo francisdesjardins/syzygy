@@ -1,0 +1,44 @@
+{
+  "name": "limb",
+  "version": "1.0.0",
+  "private": true,
+  "description": "The framework-free half of a playground: a fuzzy matcher, a contrast calculator and the readable syntax theme built on it.",
+  "license": "MIT",
+  "author": "Francis Desjardins <francis.desjardins@gmail.com>",
+  "type": "module",
+  "exports": {
+    "./color-contrast": "./src/color-contrast.ts",
+    "./fuzzy-match": "./src/fuzzy-match.ts",
+    "./readable-syntax": "./src/readable-syntax.ts",
+    "./package.json": "./package.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/francisdesjardins/syzygy.git",
+    "directory": "packages/limb"
+  },
+  "scripts": {
+    "check": "node node_modules/typescript-7/bin/tsc --noEmit",
+    "test": "playwright test"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.57.0",
+    "@types/node": "^24.10.1",
+    "@types/react": "^19.3.0",
+    "typescript-7": "npm:typescript@7.0.2"
+  },
+  "installConfig": {
+    "hoistingLimits": "workspaces"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}

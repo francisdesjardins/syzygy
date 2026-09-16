@@ -1,5 +1,5 @@
-import { contrastRatio, parseCssColor } from '@/shared/lib/color-contrast';
-import { readableSyntaxStyle } from '@/shared/lib/readable-syntax';
+import { contrastRatio, parseCssColor } from '../color-contrast';
+import { readableSyntaxStyle } from '../readable-syntax';
 import { expect, test } from '@playwright/test';
 import type { CSSProperties } from 'react';
 

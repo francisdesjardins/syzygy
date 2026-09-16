@@ -1,5 +1,5 @@
 import styles from '@/pages/api/ui/SymbolSearch.module.css';
-import type { FuzzyMatch } from '@/shared/lib/fuzzy-match';
+import type { FuzzyMatch } from 'limb/fuzzy-match';
 import { SearchIcon } from '@/shared/ui/icons';
 import { useState } from 'react';
 import { categoryHref, searchSymbols, symbolAnchor } from '../model/api-index';

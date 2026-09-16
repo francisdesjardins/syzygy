@@ -1052,7 +1052,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/test@npm:1.63.0":
+"@playwright/test@npm:1.63.0, @playwright/test@npm:^1.57.0":
   version: 1.63.0
   resolution: "@playwright/test@npm:1.63.0"
   dependencies:
@@ -1367,7 +1367,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^24":
+"@types/node@npm:^24, @types/node@npm:^24.10.1":
   version: 24.13.4
   resolution: "@types/node@npm:24.13.4"
   dependencies:
@@ -1643,6 +1643,7 @@ __metadata:
     "@types/react-dom": "npm:^19.3.0"
     "@types/react-syntax-highlighter": "npm:^15.5.13"
     immer: "npm:^11.1.18"
+    limb: "workspace:^"
     penumbra: "workspace:^"
     react: "npm:^19.3.0"
     react-dom: "npm:^19.3.0"
@@ -2510,6 +2511,22 @@ __metadata:
   checksum: 10c0/ce1f8279fbae636dbf37fa6e7385d5f98ed881d72af3362f24afbd4685e19c1fcdfecf17e5dd77f2ebee3d0c23ade276230d85842d07292229a2cffba8ff20a3
   languageName: node
   linkType: hard
+
+"limb@workspace:^, limb@workspace:packages/limb":
+  version: 0.0.0-use.local
+  resolution: "limb@workspace:packages/limb"
+  dependencies:
+    "@playwright/test": "npm:^1.57.0"
+    "@types/node": "npm:^24.10.1"
+    "@types/react": "npm:^19.3.0"
+    typescript-7: "npm:typescript@7.0.2"
+  peerDependencies:
+    react: ^19.0.0
+  peerDependenciesMeta:
+    react:
+      optional: true
+  languageName: unknown
+  linkType: soft
 
 "lines-and-columns@npm:^1.1.6":
   version: 1.2.4
@@ -3581,6 +3598,7 @@ __metadata:
     "@types/react-dom": "npm:^19.3.0"
     "@types/react-syntax-highlighter": "npm:^15.5.13"
     "@vitejs/plugin-react": "npm:^6.1.1"
+    limb: "workspace:^"
     penumbra: "workspace:^"
     react: "npm:^19.3.0"
     react-dom: "npm:^19.3.0"

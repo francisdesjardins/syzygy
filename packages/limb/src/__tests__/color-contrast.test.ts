@@ -1,4 +1,4 @@
-import { contrastRatio, parseCssColor, readableHsl } from '@/shared/lib/color-contrast';
+import { contrastRatio, parseCssColor, readableHsl } from '../color-contrast';
 import { expect, test } from '@playwright/test';
 
 const ratio = (foreground: string, background: string) => {

@@ -1,4 +1,4 @@
-import { readableHsl } from '@/shared/lib/color-contrast';
+import { readableHsl } from './color-contrast';
 import type { CSSProperties } from 'react';
 
 type PrismStyle = Record<string, CSSProperties>;
