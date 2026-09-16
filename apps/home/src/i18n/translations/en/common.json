@@ -1,0 +1,62 @@
+{
+  "title": "hello",
+  "patate": {
+    "magie": "bleg"
+  },
+  "otherTitle": "goodbye goodbye",
+  "errorBoundary": {
+    "title": "Oops! Something went wrong",
+    "message": "We're sorry, but an error occurred while rendering this component",
+    "technicalDetails": "Technical Details",
+    "refreshButton": "Refresh Page"
+  },
+  "eventStatus": {
+    "title": "Event Status:",
+    "namespace": "{{namespace}} events",
+    "allowed": "Allowed",
+    "notAllowed": "Not Allowed"
+  },
+  "home": {
+    "name": "Francis Desjardins",
+    "breathing": "Front-end infrastructure engineer · Breathing air since 1980.",
+    "enough": "Prefers explicit over implicit, predictable over magical. Writes primitives other people build things with — which is either very useful or very humbling depending on the day. What a library refuses to do is the first decision, not the last.",
+    "expiry": "... still under active development",
+    "skills": {
+      "title": "What I Build",
+      "description": "Framework-free cores with React, Solid and vanilla bindings over them. Zero runtime dependencies, three for three. Measures things in nanoseconds when nobody is watching.",
+      "secondary": "Also: a self-declared cat person. No further questions."
+    },
+    "work": {
+      "title": "What's running",
+      "description": "Two framework-agnostic libraries, each with its own playground. The names come from the three shadows an eclipse casts. What they refuse to do is documented as carefully as the rest.",
+      "dialog": {
+        "name": "antumbra",
+        "description": "Dialog manager on the native top layer. Zero shipped UI: the renderer stays yours. React, Solid and vanilla bindings."
+      },
+      "boot": {
+        "name": "umbra",
+        "description": "Bootstrap orchestrator. You declare what each step needs and the parallelism is derived from the graph — no flag, no concurrency ceiling."
+      }
+    },
+    "location": {
+      "title": "Location",
+      "description": "Based in Quebec"
+    }
+  },
+  "seo": {
+    "home": {
+      "title": "Francis Desjardins - Web Developer",
+      "description": "Senior software engineer specializing in reactive state systems and composable developer tooling. Breathing air since 1980.",
+      "ogTitle": "Francis Desjardins - Senior Software Engineer",
+      "ogDescription": "Reactive systems, zero-dependency tooling, and an unapologetic cat person."
+    },
+    "playground": {
+      "title": "Playground - Francis Desjardins",
+      "description": "Experimental playground for testing modal system, events, and other features"
+    },
+    "formPlayground": {
+      "title": "Form Components - Francis Desjardins",
+      "description": "Interactive playground for FormComponents system with live demos and examples"
+    }
+  }
+}

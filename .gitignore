@@ -13,3 +13,6 @@ test-results/
 *.log
 .DS_Store
 Thumbs.db
+
+# Assembled by the deploy: each playground is its own build, dropped in before the site is built.
+apps/home/public/playground/

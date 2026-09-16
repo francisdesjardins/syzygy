@@ -1,0 +1,20 @@
+{
+  "name": "Francis Desjardins - Portfolio",
+  "short_name": "Francis Desjardins",
+  "description": "Software developer breathing air since 1980. Good enough for now, expiry date unknown.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1976d2",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ],
+  "categories": ["business", "productivity", "utilities"],
+  "lang": "en",
+  "dir": "ltr"
+}

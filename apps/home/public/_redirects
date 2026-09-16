@@ -1,0 +1,18 @@
+# Each playground is its own build served as a standalone static page, not by the SPA.
+#
+# These paths name the capability, not the library. A library gets renamed — umbra and antumbra
+# are about to trade places — and a URL is a promise that should outlive that. So the dialog
+# manager's playground stays at /playground/dialog whatever the package ends up being called,
+# and the bootstrapper's at /playground/boot.
+/playground/dialog/ /playground/dialog/index.html 200
+/playground/boot/ /playground/boot/index.html 200
+/playground/stardust/ /playground/stardust/index.html 200
+
+# The bootstrapper's playground used to be served under the library's name. Kept so the links
+# that are already out there survive the move. Both forms, because only the trailing-slash one
+# would otherwise match and the bare path would fall through to the SPA.
+/playground/antumbra /playground/boot/ 301
+/playground/antumbra/* /playground/boot/:splat 301
+
+# SPA fallback for everything else
+/* /index.html 200

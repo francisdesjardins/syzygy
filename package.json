@@ -3,7 +3,8 @@
   "private": true,
   "packageManager": "yarn@4.18.0",
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "apps/*"
   ],
   "scripts": {
     "check": "yarn workspaces foreach --all --topological-dev run check",

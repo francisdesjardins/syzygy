@@ -1,0 +1,20 @@
+/**
+ * Penumbra — the skin, written for francisdesjardins.ca. **This is the file a project rewrites**;
+ * `tokens.system.css` beside it was lifted from the playgrounds unchanged.
+ *
+ * Only the typefaces are set here. Colour stays in the MUI palette (`src/hooks/useTheme.ts`),
+ * because this site's identity is the fuchsia and MUI components have to read it from the theme
+ * anyway — two sources for one colour is how they drift apart.
+ *
+ * The pairing is the playgrounds': a Palatino-class serif for display over a grotesque, with mono
+ * for anything that is an identifier. antumbra runs it on system faces; umbra puts Newsreader and
+ * Geist in front of the same fallbacks. This site takes the system spelling — no font files to
+ * fetch on a page that is mostly one screen of text. The pairing is what makes the three read as
+ * siblings; the palettes deliberately differ, and so does this one.
+ */
+
+:root {
+  --app-font-display: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --app-font-body: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  --app-font-mono: ui-monospace, "Cascadia Code", "SF Mono", Menlo, Consolas, monospace;
+}
