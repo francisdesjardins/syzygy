@@ -1,7 +1,13 @@
 import { type ReactNode, useEffect, useRef, useState } from 'react';
 import styles from '@/shared/ui/DemoFrame.module.css';
 
-/** The row above a frame: the links or buttons that decide what the frame loads. */
+/**
+ * One labelled set of controls above a frame.
+ *
+ * A group rather than a bare row because the label is what tells a screen reader what the buttons
+ * inside it decide — so a control that decides something else gets its own group rather than
+ * joining this one under a name that does not describe it.
+ */
 export function DemoControls({
   label,
   children,
@@ -14,6 +20,11 @@ export function DemoControls({
       {children}
     </div>
   );
+}
+
+/** Several groups on one row, so two unrelated settings sit side by side above one frame. */
+export function DemoToolbar({ children }: { readonly children: ReactNode }) {
+  return <div className={styles['toolbar']}>{children}</div>;
 }
 
 /**

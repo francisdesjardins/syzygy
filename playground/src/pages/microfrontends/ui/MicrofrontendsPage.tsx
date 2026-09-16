@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { ExampleCard, ExampleGrid, ExampleSection } from '@/entities/example';
 import { AppButton } from '@/shared/ui/AppButton';
 import { appButtonClass } from '@/shared/ui/button-recipe';
-import { DemoControls, DemoFrame } from '@/shared/ui/DemoFrame';
+import { DemoControls, DemoFrame, DemoToolbar } from '@/shared/ui/DemoFrame';
 import { PageLayout } from '@/shared/ui/PageLayout';
 import { SectionNav } from '@/shared/ui/SectionNav';
 
@@ -25,18 +25,6 @@ export function MicrofrontendsPage() {
     <PageLayout
       title="Four Fragments"
       description="A top bar on the React binding, navigation on Solid, a list on the controller binding, and a panel that is a web component behind a shadow root. None of them imports another; what they agree on is three step ids."
-      actions={
-        <AppButton
-          variant="outlined"
-          onClick={() => {
-            setReloadKey((previous) => {
-              return previous + 1;
-            });
-          }}
-        >
-          Reload the frame
-        </AppButton>
-      }
     >
       <SectionNav sections={SECTIONS} />
 
@@ -45,22 +33,38 @@ export function MicrofrontendsPage() {
         title="The demo"
         description="Four fragments all need the session, and three need what the user may reach. With shared scope the first one to ask does it and the rest adopt the answer. Flip it and every fragment does its own."
       >
-        <DemoControls label="Step scope">
-          <Link
-            to="/microfrontends"
-            search={{ scope: 'shared' }}
-            className={appButtonClass({ variant: scope === 'shared' ? 'contained' : 'outlined' })}
-          >
-            Share what the page has in common
-          </Link>
-          <Link
-            to="/microfrontends"
-            search={{ scope: 'instance' }}
-            className={appButtonClass({ variant: scope === 'instance' ? 'contained' : 'outlined' })}
-          >
-            Every fragment does its own
-          </Link>
-        </DemoControls>
+        <DemoToolbar>
+          <DemoControls label="Step scope">
+            <Link
+              to="/microfrontends"
+              search={{ scope: 'shared' }}
+              className={appButtonClass({ variant: scope === 'shared' ? 'contained' : 'outlined' })}
+            >
+              Share what the page has in common
+            </Link>
+            <Link
+              to="/microfrontends"
+              search={{ scope: 'instance' }}
+              className={appButtonClass({
+                variant: scope === 'instance' ? 'contained' : 'outlined',
+              })}
+            >
+              Every fragment does its own
+            </Link>
+          </DemoControls>
+          <DemoControls label="The frame">
+            <AppButton
+              variant="outlined"
+              onClick={() => {
+                setReloadKey((previous) => {
+                  return previous + 1;
+                });
+              }}
+            >
+              Reload the frame
+            </AppButton>
+          </DemoControls>
+        </DemoToolbar>
         <DemoFrame
           title="Four fragments on one page"
           src={`${import.meta.env.BASE_URL}mfe/host.html?scope=${scope}`}

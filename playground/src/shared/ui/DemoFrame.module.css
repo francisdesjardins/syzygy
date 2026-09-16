@@ -14,3 +14,17 @@
   gap: var(--app-space-2);
   margin: 0 0 var(--app-space-4);
 }
+
+/* Two groups above one frame. The groups keep their own spacing between buttons; the row owns the
+   gap between the groups and the margin under them, so a group nested here drops its own. */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--app-space-2) var(--app-space-6);
+  align-items: center;
+  margin: 0 0 var(--app-space-4);
+}
+
+.toolbar .controls {
+  margin: 0;
+}

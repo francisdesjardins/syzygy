@@ -47,9 +47,16 @@
       * {
         box-sizing: border-box;
       }
+      /* Same reason as the other frame: the log beside the demo instead of under it, so the frame
+         is as tall as its panels and not a head taller. */
       body {
         margin: 0;
         padding: 10px;
+        display: grid;
+        grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+        grid-template-areas: 'bar bar' 'nav log' 'outlet log';
+        align-content: start;
+        gap: 10px;
         background: var(--bg);
         color: var(--ink);
         font:
@@ -133,8 +140,28 @@
         color: var(--accent);
       }
       .log {
-        max-height: 150px;
+        grid-area: log;
+        align-self: start;
+        max-height: 340px;
         overflow-y: auto;
+      }
+      .bar {
+        grid-area: bar;
+      }
+      #spa-nav {
+        grid-area: nav;
+      }
+      #spa-outlet {
+        grid-area: outlet;
+      }
+      @media (max-width: 820px) {
+        body {
+          grid-template-columns: minmax(0, 1fr);
+          grid-template-areas: 'bar' 'nav' 'outlet' 'log';
+        }
+        .log {
+          max-height: 150px;
+        }
       }
       .log p {
         margin: 1px 0;
@@ -170,7 +197,7 @@
       <span class="note" id="hosted">single-spa has mounted nothing yet.</span>
     </div>
 
-    <div class="panel">
+    <div class="panel" id="spa-nav">
       <nav>
         <a href="#/" id="nav-dashboard">Dashboard</a>
         <a href="#/reports" id="nav-reports">Reports</a>

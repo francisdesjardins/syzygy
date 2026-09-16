@@ -12,7 +12,10 @@
   font-family: inherit;
   font-weight: 600;
   /* The recipe is worn by real <a>s too (see `appButtonClass`), so the anchor defaults have to be
-     neutralised here rather than at each call site. */
+     neutralised here rather than at each call site — line height included. A <button> takes
+     `normal` from the user agent while an <a> inherits the page's, which made the two links in the
+     Four Fragments toolbar 38px tall beside a 33px button in the group next to them. */
+  line-height: 1.25;
   text-decoration: none;
   white-space: nowrap;
   cursor: pointer;

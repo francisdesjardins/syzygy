@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ExampleCard, ExampleGrid, ExampleSection } from '@/entities/example';
 import { AppButton } from '@/shared/ui/AppButton';
-import { DemoControls, DemoFrame } from '@/shared/ui/DemoFrame';
+import { DemoControls, DemoFrame, DemoToolbar } from '@/shared/ui/DemoFrame';
 import { PageLayout } from '@/shared/ui/PageLayout';
 import { SectionNav } from '@/shared/ui/SectionNav';
 
@@ -29,18 +29,6 @@ export function SingleSpaPage() {
     <PageLayout
       title="With single-spa"
       description="A root config loads two applications through single-spa 6. The bootstrap runs to completion before start(), because its answer is what decides whether starting is the right thing to do at all."
-      actions={
-        <AppButton
-          variant="outlined"
-          onClick={() => {
-            setReloadKey((previous) => {
-              return previous + 1;
-            });
-          }}
-        >
-          Reload the frame
-        </AppButton>
-      }
     >
       <SectionNav sections={SECTIONS} />
 
@@ -49,30 +37,44 @@ export function SingleSpaPage() {
         title="The demo"
         description="Dashboard is handed the outcome in customProps — what a root config does today. Reports is route-activated, loads long after the root ran, and was given nothing. Open it and watch the counter: it moves by one, for its own filters."
       >
-        <DemoControls label="Session">
-          <AppButton
-            variant={signedOut ? 'outlined' : 'contained'}
-            onClick={() => {
-              setSignedOut(false);
-              setReloadKey((previous) => {
-                return previous + 1;
-              });
-            }}
-          >
-            Signed in
-          </AppButton>
-          <AppButton
-            variant={signedOut ? 'contained' : 'outlined'}
-            onClick={() => {
-              setSignedOut(true);
-              setReloadKey((previous) => {
-                return previous + 1;
-              });
-            }}
-          >
-            No session
-          </AppButton>
-        </DemoControls>
+        <DemoToolbar>
+          <DemoControls label="Session">
+            <AppButton
+              variant={signedOut ? 'outlined' : 'contained'}
+              onClick={() => {
+                setSignedOut(false);
+                setReloadKey((previous) => {
+                  return previous + 1;
+                });
+              }}
+            >
+              Signed in
+            </AppButton>
+            <AppButton
+              variant={signedOut ? 'contained' : 'outlined'}
+              onClick={() => {
+                setSignedOut(true);
+                setReloadKey((previous) => {
+                  return previous + 1;
+                });
+              }}
+            >
+              No session
+            </AppButton>
+          </DemoControls>
+          <DemoControls label="The frame">
+            <AppButton
+              variant="outlined"
+              onClick={() => {
+                setReloadKey((previous) => {
+                  return previous + 1;
+                });
+              }}
+            >
+              Reload the frame
+            </AppButton>
+          </DemoControls>
+        </DemoToolbar>
         <DemoFrame
           title="single-spa loading two applications"
           src={`${import.meta.env.BASE_URL}spa/spa.html${signedOut ? '?session=none' : ''}`}
