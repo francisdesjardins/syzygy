@@ -55,6 +55,51 @@ A new package takes one word from the same family, describing what it does. The 
 [the vocabulary](CHANGELOG.md) is written down, which is the point of choosing one: the next name is
 a decision about meaning, not about availability.
 
+## Reading the directory names
+
+An eclipse does not cast one shadow, it casts three, and the geometry says which is which. That is
+what settles the names here — not taste.
+
+```
+   source                 occulter          apex
+  ┌────────┐                 ██               ·
+  │        │╲                ██               ·          ╱  antumbra
+  │        │ ╲               ██╲              ·        ╱    light rings
+  │        │  ╲              ██  ╲            ·      ╱      all the way
+  │        │   ╲─────────────██    ╲  umbra   ·    ╱        round the disc
+  │        │                 ██      ╲────────·──╱
+  │        │                 ██      ╱────────·──╲
+  │        │   ╱─────────────██    ╱          ·    ╲
+  │        │  ╱              ██  ╱            ·      ╲
+  │        │ ╱               ██╱              ·        ╲
+  │        │╱                ██               ·          ╲
+  └────────┘                 ██               ·
+
+   penumbra is everything still shaded outside that cone — the soft edge
+```
+
+`umbra` is the root the other two derive from — *pen*·umbra, *ant*·umbra — which is why it names the
+package everything else boots on.
+
+**The cost of these names is real, so here is the key.** A developer arriving at this repository
+looks for `utils/` and finds `limb/`. The middle column is that translation, and the rule that keeps
+the names from being decoration is the last one: the word has to describe what the package *does*.
+
+| directory | what you were looking for | the word | why it fits |
+| --- | --- | --- | --- |
+| `umbra` | `core`, `bootstrap` | the total shadow — and the root morpheme the other two derive from | the package the others build on: nothing is lit yet, everything boots |
+| `antumbra` | `dialog`, `modal` | *ante umbra*, "in front of the shadow": past the apex, light rings around the occulter | the native `<dialog>` top layer — painted in front, the page still visible around it |
+| `penumbra` | `tokens`, `theme`, `design-system` | the partial shadow, the soft half | the half of a design system that ports: no colour, no typeface |
+| `limb` | **`utils`**, `shared`, `common` | the apparent edge of a disc — what an observer actually sees of a body | the framework-free primitives, and nothing that needs a renderer |
+| `gnomon` | `tooling`, `scripts`, `build` | the rod of a sundial: the instrument a shadow is measured by | the gates — example checker, coverage instrumenter, formatter |
+| `home` | `site`, `www` | — | the one surface that ships. `apps/` is deployed, `packages/` is depended on |
+
+`limb` is the one that earns the table. `utils` would have told a reader where to put things but
+nothing about what belongs there, and a directory that accepts anything fills up with everything.
+`limb` has an entry rule it can fail: **if it needs a framework, it is not limb.** That rule is what
+kept four React-coupled helpers out, and the measurement behind it is in
+[its changelog](packages/limb/CHANGELOG.md).
+
 ## Getting started
 
 ```sh
