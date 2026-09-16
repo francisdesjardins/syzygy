@@ -22,11 +22,11 @@ export type RunSnapshot<TSteps extends readonly AnyStep[] = readonly []> = {
   /**
    * What the mounted phase did, once it has run.
    *
-   * Here rather than only on `session.mount()`'s promise, because a graph drawn from the timeline
+   * Here rather than only on `session.attach()`'s promise, because a graph drawn from the timeline
    * is missing its last column without it — the mounted step showed as permanently unresolved, and
    * somebody noticed.
    */
-  readonly mount: HostReport | undefined;
+  readonly hosted: HostReport | undefined;
   readonly session: Session | undefined;
 };
 
@@ -70,7 +70,7 @@ export function createRunObserver<TSteps extends readonly AnyStep[]>(
     events: [],
     outcome: undefined,
     intents: [],
-    mount: undefined,
+    hosted: undefined,
     session: undefined,
   });
 
@@ -104,7 +104,7 @@ export function createRunObserver<TSteps extends readonly AnyStep[]>(
         // Subscribed rather than read once: the mounted phase queues intents of its own, and a
         // snapshot taken here would show the queue as it was before any of them existed.
         unsubscribeIntents = session.subscribe((state) => {
-          store.set({ ...store.get(), intents: state.intents, mount: state.mount });
+          store.set({ ...store.get(), intents: state.intents, hosted: state.hosted });
         });
         store.set({ ...store.get(), stage: 'settled', outcome, session });
       });

@@ -85,6 +85,26 @@ try {
     failures.push('A second dialog opened: the trial warning was raised more than once.');
   }
 
+  // Escape, which closes a native dialog through neither button. It shipped once with nothing
+  // listening for that: the question stayed pending behind a dialog that was gone, the hosted step
+  // waited on an intent nobody would ever answer, and the page showed no sign of any of it. The
+  // failure mode is *silence*, so the assertion is that the step reached an end at all.
+  await page.getByRole('checkbox', { name: 'Trial nearly expired' }).check();
+  await page.getByTestId('boot-again').click();
+  await page.locator('dialog[open]').waitFor({ timeout: 15_000 });
+  await page.keyboard.press('Escape');
+  await delay(1500);
+
+  if (await page.locator('dialog[open]').isVisible()) {
+    failures.push('Escape left the dialog open.');
+  }
+
+  // `textContent`, not `innerText`: the chart is SVG, and `innerText` is an HTMLElement API.
+  const afterEscape = (await page.locator('.run-chart').first().textContent()) ?? '';
+  if (!afterEscape.includes('trial-warning')) {
+    failures.push('Escape left the hosted step waiting: it never reached the timeline.');
+  }
+
   // The Solid panel booted second, so it should have adopted the shared steps rather than redoing
   // them. A readout of zero means the shared scope is not connecting the two bootstraps at all.
   const adopted = await page.getByTestId('solid-shared').innerText();

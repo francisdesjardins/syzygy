@@ -24,7 +24,7 @@ export type CompiledPlan = {
   /** Preflight steps grouped by level, levels in order. */
   readonly preflight: readonly (readonly PlannedStep[])[];
   /** Mounted steps grouped by level, numbered after the preflight levels. */
-  readonly mounted: readonly (readonly PlannedStep[])[];
+  readonly hosted: readonly (readonly PlannedStep[])[];
 };
 
 function phaseOf(step: AnyStep): StepPhase {
@@ -142,7 +142,7 @@ export function compilePlan(steps: readonly AnyStep[]): CompiledPlan {
   };
 
   const preflightLevels = levelize(idsOf('preflight'), edgesFor('preflight'));
-  const mountedLevels = levelize(idsOf('hosted'), edgesFor('hosted'));
+  const hostedLevels = levelize(idsOf('hosted'), edgesFor('hosted'));
 
   const dependents = new Map<StepId, StepId[]>(
     steps.map((step) => {
@@ -161,7 +161,7 @@ export function compilePlan(steps: readonly AnyStep[]): CompiledPlan {
       levelOf.set(id, index);
     }
   });
-  mountedLevels.forEach((ids, index) => {
+  hostedLevels.forEach((ids, index) => {
     for (const id of ids) {
       levelOf.set(id, preflightLevels.length + index);
     }
@@ -186,7 +186,7 @@ export function compilePlan(steps: readonly AnyStep[]): CompiledPlan {
       ...preflightLevels.map((ids, index): PlanLevel => {
         return { level: index, phase: 'preflight', ids };
       }),
-      ...mountedLevels.map((ids, index): PlanLevel => {
+      ...hostedLevels.map((ids, index): PlanLevel => {
         return { level: preflightLevels.length + index, phase: 'hosted', ids };
       }),
     ],
@@ -204,6 +204,6 @@ export function compilePlan(steps: readonly AnyStep[]): CompiledPlan {
     plan,
     byId,
     preflight: resolve(preflightLevels),
-    mounted: resolve(mountedLevels),
+    hosted: resolve(hostedLevels),
   };
 }

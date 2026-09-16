@@ -277,7 +277,7 @@
       <h3 style="margin-top: 0">The app is asking</h3>
       <p id="warn-message"></p>
       <div style="display: flex; justify-content: flex-end; gap: 8px">
-        <button id="warn-no">Dismiss</button>
+        <button id="warn-no">Not now</button>
         <button id="warn-yes" class="primary">Acknowledge</button>
       </div>
     </dialog>
@@ -367,7 +367,17 @@
           document.getElementById('warn-message').textContent = message;
           dialog.showModal();
           return new Promise((resolve) => {
+            // Escape closes a native dialog on its own, through neither button. Without this the
+            // promise never settles, the intent stays forwarded, and the step waiting on it waits
+            // for the rest of the session — the failure looks like nothing happening at all.
+            // Closing the question without answering it is a refusal, same as the other button.
+            const cancelled = () => {
+              resolve(false);
+            };
+            dialog.addEventListener('close', cancelled, { once: true });
+
             const done = (answer) => {
+              dialog.removeEventListener('close', cancelled);
               dialog.close();
               resolve(answer);
             };

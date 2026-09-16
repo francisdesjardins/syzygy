@@ -50,7 +50,7 @@ function Panel() {
   createEffect(() => {
     const adopted = [
       ...(snapshot().outcome?.timeline ?? []),
-      ...(snapshot().mount?.timeline ?? []),
+      ...(snapshot().hosted?.timeline ?? []),
     ].filter((trace) => {
       return trace.shared === true;
     });

@@ -80,12 +80,24 @@ export function IntentHost() {
     if (accepted) {
       question.entry.controls.settle();
     } else {
-      question.entry.controls.drop('dismissed by the user');
+      question.entry.controls.drop('declined by the reader');
     }
   };
 
   return (
-    <dialog ref={dialogRef} className={styles['dialog']} aria-labelledby="intent-dialog-title">
+    <dialog
+      ref={dialogRef}
+      className={styles['dialog']}
+      aria-labelledby="intent-dialog-title"
+      onClose={() => {
+        // Escape closes a native dialog through neither button. Left alone, the question stays
+        // pending behind a dialog that is no longer on screen, and the step waiting on the intent
+        // never hears anything. Closing without answering is a refusal.
+        if (question !== undefined) {
+          answer(false);
+        }
+      }}
+    >
       <h2 id="intent-dialog-title" className={styles['title']}>
         The app is asking
       </h2>
@@ -95,11 +107,12 @@ export function IntentHost() {
       <div className={styles['actions']}>
         <AppButton
           variant="outlined"
+          data-testid="dialog-decline"
           onClick={() => {
             answer(false);
           }}
         >
-          Dismiss
+          Not now
         </AppButton>
         <AppButton
           variant="contained"

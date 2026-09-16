@@ -30,14 +30,14 @@ export type BoundBootstrap = AttachedIntentHost;
  *   },
  * });
  *
- * await bound.mounted;
+ * await bound.hosted;
  * // The page is going away, which is the one reading of `destroy` that disposes the session.
  * window.addEventListener('pagehide', bound.destroy, { once: true });
  */
 export function bindBootstrap(session: Session, options: BindOptions): BoundBootstrap {
   const host = attachIntentHost(session, options);
   return {
-    mounted: host.mounted,
+    hosted: host.hosted,
     // The controller binding has no component lifetime behind it, so `destroy` here means what a
     // caller with no framework means by it: the page is done with this bootstrap. That is the one
     // place disposing the session is the right reading of the word.

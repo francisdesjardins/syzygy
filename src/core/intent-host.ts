@@ -38,7 +38,7 @@ export type IntentHostOptions = {
 /** A host that is listening. Its lifetime is the caller's to manage. */
 export type AttachedIntentHost = {
   /** Resolves when the mounted phase is done. */
-  readonly mounted: Promise<void>;
+  readonly hosted: Promise<void>;
   /**
    * Stop listening.
    *
@@ -72,7 +72,7 @@ export type AttachedIntentHost = {
  *   },
  * });
  *
- * await host.mounted;
+ * await host.hosted;
  */
 export function attachIntentHost(session: Session, options: IntentHostOptions): AttachedIntentHost {
   const seen = new Set<string>();
@@ -98,12 +98,12 @@ export function attachIntentHost(session: Session, options: IntentHostOptions): 
     drain();
   });
 
-  const mounted = session.attach(options.host).then(() => {
+  const hosted = session.attach(options.host).then(() => {
     return undefined;
   });
 
   return {
-    mounted,
+    hosted,
     destroy: () => {
       unsubscribe();
     },

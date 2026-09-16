@@ -109,7 +109,7 @@ test('events accumulate while the run is going', async () => {
   observer.dispose();
 });
 
-test('intents queued by the mounted phase reach the snapshot', async () => {
+test('intents queued by the hosted phase reach the snapshot', async () => {
   const boot = createBootstrap({
     steps: [
       defineStep({

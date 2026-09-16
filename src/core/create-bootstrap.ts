@@ -112,7 +112,7 @@ export type CreateBootstrapOptions<TSteps extends readonly AnyStep[]> = Bootstra
  *
  * A `needs` naming a step this list does not contain, and two steps sharing an id, are **compile**
  * errors — see {@link StepListCheck}. What is left for runtime is what a type cannot see cheaply:
- * cycles, the edge from preflight to mounted, and everything at all for a list built dynamically.
+ * cycles, the edge from preflight to hosted, and everything at all for a list built dynamically.
  * Those throw here, because a cycle reported through a status field would deliver a bug report as
  * data.
  *

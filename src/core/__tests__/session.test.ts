@@ -148,7 +148,7 @@ test('dispose drops what nobody forwarded, with the reason on the record', async
   expect(session.list()[0]?.droppedReason).toBe('not-forwarded');
 });
 
-test('a mounted step reaches the UI port and waits for the app to settle its intent', async () => {
+test('a hosted step reaches the host capabilities and waits for the app to settle its intent', async () => {
   const answered: string[] = [];
 
   const boot = createBootstrap({
@@ -190,12 +190,12 @@ test('a mounted step reaches the UI port and waits for the app to settle its int
     },
   });
 
-  await bound.mounted;
+  await bound.hosted;
   expect(answered).toEqual(['about to warn', 'shown:warn:trial', 'released']);
   bound.destroy();
 });
 
-test('a dropped intent rejects the mounted step that was waiting on it', async () => {
+test('a dropped intent rejects the hosted step that was waiting on it', async () => {
   const boot = createBootstrap({
     steps: [
       defineHostedStep({
@@ -217,7 +217,7 @@ test('a dropped intent rejects the mounted step that was waiting on it', async (
     },
   });
 
-  await bound.mounted;
+  await bound.hosted;
   expect(session.list()[0]?.status).toBe('dropped');
   expect(session.list()[0]?.droppedReason).toBe('the host does not do confirmations');
   bound.destroy();
@@ -296,14 +296,14 @@ test('the two kinds of destroy differ on what nobody forwarded', async () => {
 
   const forFramework = await build();
   const host = attachIntentHost(forFramework, refuses);
-  await host.mounted;
+  await host.hosted;
   host.destroy();
   // A component unmounting is not the app shutting down, so the queue survives for the next host.
   expect(forFramework.list()[0]?.status).toBe('pending');
 
   const forPage = await build();
   const bound = bindBootstrap(forPage, refuses);
-  await bound.mounted;
+  await bound.hosted;
   bound.destroy();
   // The controller binding has no component behind it, so its destroy means the page is done.
   expect(forPage.list()[0]?.status).toBe('dropped');
@@ -332,7 +332,7 @@ test('attachIntentHost leaves the session alive when its host goes away', async 
     },
   };
   const host = attachIntentHost(session, ignore);
-  await host.mounted;
+  await host.hosted;
   host.destroy();
 
   // Still forwarded, not dropped: a component unmounting is not the app shutting down, and a second
@@ -340,12 +340,12 @@ test('attachIntentHost leaves the session alive when its host goes away', async 
   expect(session.list()[0]?.status).toBe('forwarded');
 
   const replacement = attachIntentHost(session, ignore);
-  await replacement.mounted;
+  await replacement.hosted;
   replacement.destroy();
   expect(session.list()[0]?.status).toBe('forwarded');
 });
 
-test('the mounted phase reaches the session state, not only the caller that awaited it', async () => {
+test('the hosted phase reaches the session state, not only the caller that awaited it', async () => {
   const boot = createBootstrap({
     steps: [
       defineStep({
@@ -369,7 +369,7 @@ test('the mounted phase reaches the session state, not only the caller that awai
   const seen: Array<string | undefined> = [];
   const unsubscribe = session.subscribe((state) => {
     seen.push(
-      state.mount?.timeline.find((trace) => {
+      state.hosted?.timeline.find((trace) => {
         return trace.id === 'warn';
       })?.status
     );
@@ -378,7 +378,7 @@ test('the mounted phase reaches the session state, not only the caller that awai
   expect(seen).toEqual([undefined]);
   await session.attach({});
 
-  // The graph a binding draws needs this half: without it the mounted step stays unresolved on
+  // The graph a binding draws needs this half: without it the hosted step stays unresolved on
   // screen for ever, whatever it actually did.
   expect(seen.at(-1)).toBe('success');
   unsubscribe();
@@ -408,7 +408,7 @@ test('settling an intent nobody emitted says so rather than going quiet', async 
   }).toThrow(BootstrapError);
 });
 
-test('the same intent type twice in the mounted phase is one record that counts occurrences', async () => {
+test('the same intent type twice in the hosted phase is one record that counts occurrences', async () => {
   const boot = createBootstrap({
     steps: [
       defineHostedStep({
@@ -430,7 +430,7 @@ test('the same intent type twice in the mounted phase is one record that counts 
       controls.settle();
     },
   });
-  await bound.mounted;
+  await bound.hosted;
 
   // One record, not two: the second emit of a type already queued is folded into the first so a
   // host that renders one dialog per intent does not get a second one for the same thing.
@@ -442,13 +442,13 @@ test('the same intent type twice in the mounted phase is one record that counts 
   bound.destroy();
 });
 
-test('a mounted step whose dependency failed never runs', async () => {
+test('a hosted step whose dependency failed never runs', async () => {
   const ran: string[] = [];
   const boot = createBootstrap({
     steps: [
       defineStep({
         id: 'config',
-        // Optional, so the run reaches the mounted phase at all rather than failing outright —
+        // Optional, so the run reaches the hosted phase at all rather than failing outright —
         // which is what makes the skip below observable.
         optional: true,
         run: () => {
@@ -474,8 +474,97 @@ test('a mounted step whose dependency failed never runs', async () => {
       controls.settle();
     },
   });
-  await bound.mounted;
+  await bound.hosted;
 
   expect(ran).toEqual([]);
+  bound.destroy();
+});
+
+/**
+ * A drop is an answer, and the step that was waiting is the thing that has to hear it.
+ *
+ * Both playground demos lean on this: the dialog's negative button drops the intent, and what the
+ * reader sees next is whatever the waiting step decided a refusal means. Nothing covered it, so
+ * "resolve on drop" would have been a green refactor that silently turned every refusal into a yes.
+ */
+test('a hosted step awaiting a dropped intent fails, and the reason travels with it', async () => {
+  const boot = createBootstrap({
+    steps: [
+      defineHostedStep({
+        id: 'asks',
+        run: async (ctx) => {
+          await ctx.awaitIntent('confirm', {});
+        },
+      }),
+    ],
+  });
+
+  await boot.run();
+  const session = boot.session();
+
+  const bound = bindBootstrap(session, {
+    host: {},
+    onIntent: (_intent, controls) => {
+      controls.drop('the reader said no');
+    },
+  });
+
+  const report = await session.attach({});
+  expect(
+    report.errors.map((failure) => {
+      return failure.step;
+    })
+  ).toEqual(['asks']);
+  expect(report.errors[0]?.error.message).toContain('the reader said no');
+  expect(
+    report.timeline.find((trace) => {
+      return trace.id === 'asks';
+    })?.status
+  ).toBe('failed');
+
+  await bound.hosted;
+  bound.destroy();
+});
+
+test('a hosted step that catches the drop decides a refusal is not fatal', async () => {
+  const seen: string[] = [];
+
+  const boot = createBootstrap({
+    steps: [
+      defineHostedStep({
+        id: 'asks',
+        run: async (ctx) => {
+          try {
+            await ctx.awaitIntent('confirm', {});
+            seen.push('accepted');
+          } catch {
+            // The other half of the contract: a step for which "no" is an ordinary answer.
+            seen.push('declined');
+          }
+        },
+      }),
+    ],
+  });
+
+  await boot.run();
+  const session = boot.session();
+
+  const bound = bindBootstrap(session, {
+    host: {},
+    onIntent: (_intent, controls) => {
+      controls.drop('no thanks');
+    },
+  });
+
+  const report = await session.attach({});
+  expect(seen).toEqual(['declined']);
+  expect(report.errors).toEqual([]);
+  expect(
+    report.timeline.find((trace) => {
+      return trace.id === 'asks';
+    })?.status
+  ).toBe('success');
+
+  await bound.hosted;
   bound.destroy();
 });

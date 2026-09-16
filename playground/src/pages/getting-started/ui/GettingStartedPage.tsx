@@ -49,7 +49,7 @@ function Run(props: { shape: ReturnType<typeof shapeOf>; plan: Bootstrap<Steps>[
   // Both halves. The preflight's traces are frozen into the outcome; the mounted phase's arrive
   // later, on the session, and a graph drawn from the outcome alone leaves its last column
   // permanently unresolved.
-  const timeline = [...(snapshot.outcome?.timeline ?? []), ...(snapshot.mount?.timeline ?? [])];
+  const timeline = [...(snapshot.outcome?.timeline ?? []), ...(snapshot.hosted?.timeline ?? [])];
 
   return (
     <>

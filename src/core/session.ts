@@ -32,7 +32,7 @@ export type HostReport = {
 export type SessionState = {
   readonly intents: readonly Intent[];
   /** Undefined until the mounted phase has run. Its timeline is the other half of the graph. */
-  readonly mount: HostReport | undefined;
+  readonly hosted: HostReport | undefined;
 };
 
 export type Session = {
@@ -92,7 +92,7 @@ function replace(intents: readonly Intent[], next: Intent): Intent[] {
  * safe to pass around.
  */
 export function createSession(deps: SessionDeps): Session {
-  const store = createStore<SessionState>({ intents: deps.preflight.intents, mount: undefined });
+  const store = createStore<SessionState>({ intents: deps.preflight.intents, hosted: undefined });
   const waiters = new Map<string, Waiter>();
   // An answer that arrived before anyone was waiting for it.
   //
@@ -219,7 +219,7 @@ export function createSession(deps: SessionDeps): Session {
       mounting ??= runHosted({ deps, host, sink: liveSink, awaitIntent }).then((report) => {
         // Published, not just returned: the graph a binding draws needs the mounted half too, and
         // only the caller that happened to await `mount` would otherwise ever see it.
-        store.set({ ...store.get(), mount: report });
+        store.set({ ...store.get(), hosted: report });
         return report;
       });
       return mounting;
@@ -262,7 +262,7 @@ async function runHosted(args: MountArgs): Promise<HostReport> {
     };
   };
 
-  for (const level of deps.compiled.mounted) {
+  for (const level of deps.compiled.hosted) {
     const runnable = level.filter((planned) => {
       return planned.needs.every((need) => {
         return statuses.get(need) === 'success';

@@ -45,7 +45,7 @@ const boot = createBootstrap({
           await ctx.awaitIntent('warn:trial-expiring', {
             daysLeft: ctx.get('config').trialDaysLeft,
           });
-          demo.log('trial', 'acknowledged — the mounted step is released');
+          demo.log('trial', 'acknowledged — the hosted step is released');
         }
       },
     }),
@@ -117,9 +117,13 @@ class TrialPanel extends HTMLElement {
           .then((accepted) => {
             if (accepted) {
               session.settle(intent.id);
-            } else {
-              session.drop(intent.id, 'dismissed');
+              return;
             }
+            // Dropping is a real answer, not a cancel: `awaitIntent` *rejects* on a drop, so the
+            // step that was waiting fails. Saying so here is the point of the demo — the step
+            // cannot log it itself, because it never gets past the await.
+            session.drop(intent.id, 'declined');
+            demo.log('trial', 'declined — the intent is dropped, and the step waiting on it fails');
           });
       }
     });

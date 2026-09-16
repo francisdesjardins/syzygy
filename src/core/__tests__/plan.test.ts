@@ -67,19 +67,19 @@ test('a duplicate id is rejected at construction', () => {
   }).toThrow(/Duplicate step id "a"/);
 });
 
-test('a preflight step cannot depend on a mounted one', () => {
-  const mounted = defineHostedStep({
+test('a preflight step cannot depend on a hosted one', () => {
+  const hosted = defineHostedStep({
     id: 'warn',
     run: () => {
       return undefined;
     },
   });
   expect(() => {
-    return createBootstrap({ steps: [mounted, inert('a', ['warn'])] });
+    return createBootstrap({ steps: [hosted, inert('a', ['warn'])] });
   }).toThrow(/never be satisfied/);
 });
 
-test('mounted levels are numbered after the preflight ones', () => {
+test('hosted levels are numbered after the preflight ones', () => {
   const boot = createBootstrap({
     steps: [
       inert('session'),

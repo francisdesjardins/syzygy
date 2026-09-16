@@ -162,7 +162,12 @@ export type HostedContext<TNeeds extends readonly StepId[] = readonly StepId[]> 
     /** Whatever the host declared it can do. Empty until a project augments it. */
     readonly host: HostCapabilities;
     /**
-     * Queue an intent and wait for the app to settle it.
+     * Queue an intent and wait for the app to answer it.
+     *
+     * **It rejects if the app drops the intent instead of settling it**, because a refusal is an
+     * answer and the step is the only thing that knows what to do with one. A step that treats
+     * "no" as fatal lets it through and fails; a step that does not, catches. Resolving on a drop
+     * would make the two indistinguishable, which is the one thing a waiting step cannot afford.
      *
      * Only reachable here, and that is the whole two-phase design in one signature: a preflight
      * step has nothing that could ever answer.
