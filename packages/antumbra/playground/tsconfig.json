@@ -1,0 +1,24 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    // The program legitimately spans two workspaces: the demo consumes the library through its
+    // public specifiers, aliased to source, so the common root is the repo rather than this folder.
+    "rootDir": "..",
+    "declaration": false,
+    "declarationMap": false,
+    "jsx": "react-jsx",
+    "types": ["node", "vite/client"],
+    "paths": {
+      "@/*": ["./src/*"],
+      "antumbra": ["../src/index.ts"],
+      "antumbra/react": ["../src/react.ts"],
+      "antumbra/solid": ["../src/solid.ts"],
+      "antumbra/plain": ["../src/plain.ts"],
+      // Subpaths, for the harnesses that live beside the code they exercise. Listed last so the
+      // four exact entries above still win for the entry points themselves.
+      "antumbra/*": ["../src/*"]
+    }
+  },
+  "include": ["src/**/*", "vite-plugins/**/*", "vite.config.ts"],
+  "exclude": ["node_modules", "dist"]
+}

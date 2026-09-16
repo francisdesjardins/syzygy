@@ -1,0 +1,122 @@
+{
+  "name": "antumbra",
+  "version": "1.0.0",
+  "description": "Framework-agnostic bootstrap orchestrator: a step graph whose parallelism is derived, a typed outcome, and deferred UI intents handed to whichever framework mounts.",
+  "keywords": [
+    "bootstrap",
+    "framework-agnostic",
+    "micro-frontend",
+    "orchestration",
+    "prefetch",
+    "startup",
+    "typescript"
+  ],
+  "license": "MIT",
+  "author": "Francis Desjardins <francis.desjardins@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/francisdesjardins/antumbra.git"
+  },
+  "workspaces": [
+    "playground"
+  ],
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/esm/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "default": "./dist/esm/index.js"
+    },
+    "./react": {
+      "types": "./dist/esm/react.d.ts",
+      "import": "./dist/esm/react.js",
+      "default": "./dist/esm/react.js"
+    },
+    "./solid": {
+      "types": "./dist/esm/solid.d.ts",
+      "import": "./dist/esm/solid.js",
+      "default": "./dist/esm/solid.js"
+    },
+    "./plain": {
+      "types": "./dist/esm/plain.d.ts",
+      "import": "./dist/esm/plain.js",
+      "default": "./dist/esm/plain.js"
+    }
+  },
+  "scripts": {
+    "build": "yarn build:clean && yarn build:esm",
+    "build:clean": "node --eval \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
+    "build:esm": "node node_modules/typescript-7/bin/tsc --noEmit && vite build --config vite.config.esm.ts && yarn build:types",
+    "build:types": "node node_modules/typescript-7/bin/tsc -p tsconfig.build.json",
+    "check": "yarn type-check && yarn lint --deny-warnings && yarn format:check && yarn check:contrast && yarn docs:check && yarn docs:examples",
+    "check:contrast": "node scripts/check-contrast.mjs",
+    "coverage:update": "node scripts/update-coverage.mjs",
+    "dev": "yarn workspace antumbra-playground dev",
+    "docs:check": "typedoc --options typedoc.json --emit none",
+    "docs:examples": "node scripts/check-examples.mjs",
+    "docs:examples:fix": "node scripts/check-examples.mjs --fix",
+    "format": "oxfmt .",
+    "format:check": "oxfmt --check .",
+    "lint": "oxlint --type-aware",
+    "lint:fix": "oxlint --type-aware --fix",
+    "playground:build": "yarn workspace antumbra-playground build",
+    "playground:build:file": "yarn workspace antumbra-playground build:file",
+    "playground:preview": "yarn workspace antumbra-playground preview",
+    "smoke": "yarn playground:build && node scripts/smoke-playground.mjs",
+    "test": "yarn test:unit && yarn test:component",
+    "test:component": "playwright test -c playwright.config.ts --project=component",
+    "test:component:coverage": "CT_COVERAGE=1 playwright test -c playwright.config.ts --project=component && node scripts/ct-coverage-report.mjs",
+    "test:component:ui": "playwright test -c playwright.config.ts --project=component --ui",
+    "test:unit": "playwright test -c playwright.config.ts --project=unit",
+    "test:unit:coverage": "c8 playwright test -c playwright.config.ts --project=unit",
+    "test:unit:ui": "playwright test -c playwright.config.ts --project=unit --ui",
+    "type-check": "node node_modules/typescript-7/bin/tsc --noEmit && node node_modules/typescript-7/bin/tsc -p playground/tsconfig.json --noEmit && yarn type-check:registry",
+    "type-check:registry": "node node_modules/typescript-7/bin/tsc --noEmit -p tsconfig.registry.json",
+    "type-check:watch": "node node_modules/typescript-7/bin/tsc --noEmit --watch",
+    "verify:all": "yarn lint --deny-warnings && yarn type-check && yarn build && yarn verify:package && yarn smoke",
+    "verify:package": "node scripts/verify-package.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "@types/node": "^24",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "c8": "12.0.0",
+    "istanbul-lib-instrument": "^6.0.3",
+    "oxfmt": "0.68.0",
+    "oxlint": "^1.83.0",
+    "oxlint-tsgolint": "7.0.2001",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "rolldown": "^1.2.8",
+    "solid-js": "^1.9.15",
+    "typedoc": "0.28.20",
+    "typescript": "6.0.3",
+    "typescript-7": "npm:typescript@7.0.2",
+    "vite": "^8.3.0"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "solid-js": "^1.9.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    },
+    "solid-js": {
+      "optional": true
+    }
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "packageManager": "yarn@4.18.0"
+}

@@ -1,0 +1,40 @@
+.body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  /* Without this the card is as wide as its widest demo — a grid child's `min-width` is `auto`,
+     so a step graph that does not wrap pushed the whole page sideways on a phone. */
+  min-width: 0;
+  padding: var(--app-space-5) var(--app-space-6) var(--app-space-6);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-2);
+  margin-bottom: var(--app-space-2);
+}
+
+.title {
+  flex: 1;
+  margin: 0;
+  font-family: var(--app-font-body);
+  font-weight: 600;
+  font-size: var(--app-text-base);
+  line-height: var(--app-lh-snug);
+  letter-spacing: var(--app-tracking-snug);
+}
+
+.description {
+  margin: 0 0 var(--app-space-5);
+  max-width: var(--app-measure);
+  color: var(--app-text-secondary);
+}
+
+.example {
+  margin-top: auto;
+  /* A demo wider than the card scrolls inside it rather than widening the page. The pair is the
+     point: `min-width: 0` lets the box shrink, `overflow-x` gives the content somewhere to go. */
+  min-width: 0;
+  overflow-x: auto;
+}

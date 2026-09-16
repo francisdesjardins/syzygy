@@ -1,0 +1,140 @@
+import { ExampleGrid, ExampleSection } from '@/entities/example';
+import styles from '@/pages/api/ui/ApiIndexPage.module.css';
+import { PageLayout } from '@/shared/ui/PageLayout';
+import { SurfaceCard } from '@/shared/ui/SurfaceCard';
+import type { ApiCategory } from 'virtual:antumbra-api';
+import {
+  SPECIFIERS,
+  SYMBOLS,
+  categoriesFor,
+  categoryHref,
+  symbolAnchor,
+  symbolAt,
+} from '../model/api-index';
+import { ApiLayout } from './ApiLayout';
+import { KindBadge } from './KindBadge';
+import { RouterLink } from './RouterLink';
+
+/** Doors in: the three calls an application writes, and the one thing it reads back. */
+const START_HERE: readonly { readonly specifier: string; readonly name: string }[] = [
+  { specifier: 'antumbra', name: 'createBootstrap' },
+  { specifier: 'antumbra', name: 'defineStep' },
+  { specifier: 'antumbra', name: 'defineHostedStep' },
+  { specifier: 'antumbra', name: 'Outcome' },
+];
+
+/** What each entry point is, in the order a reader meets them. */
+const ENTRY_BLURB: Record<string, string> = {
+  antumbra:
+    'The framework-agnostic core. Plans the work, runs it, and hands back one frozen answer — with no framework installed at all.',
+  'antumbra/react':
+    'Five hooks over the core, which this entry re-exports whole, so a React app imports from this path only.',
+  'antumbra/solid':
+    'The same five names for Solid, plus `fromStore`. Live values are accessors over signals, so do not destructure what these return.',
+  'antumbra/plain':
+    'A controller for markup you wrote yourself: no provider, no hooks, no rendering — and no framework, optional or otherwise.',
+};
+
+const ENTRY_TITLE: Record<string, string> = {
+  antumbra: 'Core',
+  'antumbra/react': 'React binding',
+  'antumbra/solid': 'Solid binding',
+  'antumbra/plain': 'Controller binding',
+};
+
+const CategoryCard = ({ category }: { readonly category: ApiCategory }) => {
+  return (
+    <RouterLink to={categoryHref(category.id)} className={styles['cardLink']}>
+      <SurfaceCard interactive>
+        <div className={styles['cardContent']}>
+          <div className={styles['cardHeader']}>
+            <h3 className={styles['cardTitle']}>{category.label}</h3>
+            <span className={styles['count']}>{String(category.symbols.length)}</span>
+          </div>
+
+          <p className={styles['blurb']}>{category.blurb}</p>
+
+          <div className={styles['symbolPreview']}>
+            {category.symbols.slice(0, 4).map((symbol) => {
+              return (
+                <span key={symbol.name} className={styles['symbolPreviewName']}>
+                  {symbol.name}
+                </span>
+              );
+            })}
+            {category.symbols.length > 4 && (
+              <span className={styles['count']}>+{String(category.symbols.length - 4)}</span>
+            )}
+          </div>
+        </div>
+      </SurfaceCard>
+    </RouterLink>
+  );
+};
+
+const StartHere = () => {
+  return (
+    <div className={styles['startRow']}>
+      {START_HERE.map(({ specifier, name }) => {
+        const symbol = symbolAt(specifier, name);
+        if (symbol === undefined) {
+          return null;
+        }
+        return (
+          <RouterLink
+            key={symbol.key}
+            to={categoryHref(symbol.category)}
+            hash={symbolAnchor(name)}
+            className={styles['startChip']}
+          >
+            <span className={styles['startSpecifier']}>{specifier}</span>
+            {name}
+            <KindBadge kind={symbol.kind} />
+          </RouterLink>
+        );
+      })}
+    </div>
+  );
+};
+
+/** The front door: what the package exports, where each lives, and what is public — all of this. */
+export const ApiIndexPage = () => {
+  return (
+    <PageLayout
+      title="API Reference"
+      description="Generated from the source by typedoc and rendered with this site's own components, so the reference and the examples read as one document. It regenerates whenever the library changes."
+    >
+      <ApiLayout>
+        <div className={styles['page']}>
+          <div className={styles['intro']}>
+            <span className={styles['overline']}>Start here</span>
+            <StartHere />
+            <p className={styles['introBody']}>
+              These pages are the whole public surface: {String(SYMBOLS.length)} exports across{' '}
+              {String(SPECIFIERS.length)} entry points. Anything internal is excluded from the
+              generator, so if a name is not here it is not something the package promises — a type
+              mentioned in a signature without a link is an internal shape you never have to name
+              yourself.
+            </p>
+          </div>
+
+          {SPECIFIERS.map((specifier) => {
+            return (
+              <ExampleSection
+                key={specifier}
+                title={ENTRY_TITLE[specifier] ?? specifier}
+                description={`${specifier} — ${ENTRY_BLURB[specifier] ?? ''}`}
+              >
+                <ExampleGrid columns={2}>
+                  {categoriesFor(specifier).map((category) => {
+                    return <CategoryCard key={category.id} category={category} />;
+                  })}
+                </ExampleGrid>
+              </ExampleSection>
+            );
+          })}
+        </div>
+      </ApiLayout>
+    </PageLayout>
+  );
+};

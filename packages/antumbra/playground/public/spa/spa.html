@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>antumbra — single-spa</title>
+    <!-- The playground's own icon. Named explicitly because this page is loaded in a frame and a
+         guessed `/favicon.ico` would 404 into the parent's console — where the smoke test reads. -->
+    <link rel="icon" href="../favicon.svg" />
+
+    <!--
+      The same import map as the other frame, plus single-spa itself. One build serves all of it, so
+      the root config and both applications share one antumbra and one single-spa: two copies of
+      either would be two registries, and nothing would find anything.
+    -->
+    <script type="importmap">
+      {
+        "imports": {
+          "antumbra": "../mfe/antumbra.mjs",
+          "antumbra/plain": "../mfe/antumbra-plain.mjs",
+          "single-spa": "../mfe/single-spa.mjs"
+        }
+      }
+    </script>
+
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: light-dark(#f8fafc, #0b1120);
+        --panel: light-dark(#ffffff, #131c2e);
+        --ink: light-dark(#0f172a, #e2e8f0);
+        --muted: light-dark(#64748b, #94a3b8);
+        --line: light-dark(#e2e8f0, #24314a);
+        --accent: light-dark(#4338ca, #a5b4fc);
+        --ok: light-dark(#047857, #34d399);
+        --bad: light-dark(#b91c1c, #f87171);
+        --root: light-dark(#0d9488, #2dd4bf);
+        --dashboard: light-dark(#b45309, #f59e0b);
+        --reports: light-dark(#7c3aed, #a78bfa);
+      }
+      :root[data-theme='light'] {
+        color-scheme: light;
+      }
+      :root[data-theme='dark'] {
+        color-scheme: dark;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      /* Same reason as the other frame: the log beside the demo instead of under it, and a fixed
+         height rather than a growing one, so nothing on the site moves while this boots. */
+      html {
+        height: 100%;
+      }
+      body {
+        height: 100%;
+        box-sizing: border-box;
+        overflow: hidden;
+        margin: 0;
+        padding: 10px;
+        display: grid;
+        grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+        grid-template-areas: 'bar bar' 'nav log' 'outlet log';
+        grid-template-rows: auto auto minmax(0, 1fr);
+        gap: 10px;
+        background: var(--bg);
+        color: var(--ink);
+        font:
+          13px/1.5 ui-sans-serif,
+          system-ui,
+          -apple-system,
+          'Segoe UI',
+          sans-serif;
+      }
+      code,
+      .mono {
+        font-family: ui-monospace, 'Cascadia Code', 'SF Mono', Menlo, monospace;
+      }
+      .bar,
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 10px 12px;
+      }
+      .bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px 16px;
+        align-items: baseline;
+      }
+      .bar strong {
+        font-size: 20px;
+        font-variant-numeric: tabular-nums;
+      }
+      .bar .note {
+        width: 100%;
+        color: var(--muted);
+      }
+      nav a {
+        color: var(--accent);
+        text-decoration: none;
+        margin-right: 12px;
+      }
+      nav a[aria-current='page'] {
+        font-weight: 700;
+        text-decoration: underline;
+      }
+      .app .name {
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-weight: 700;
+        margin-bottom: 6px;
+      }
+      .app .name span {
+        color: var(--muted);
+        font-weight: 400;
+        text-transform: none;
+        letter-spacing: 0;
+      }
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        margin-top: 8px;
+      }
+      .chip {
+        font-size: 10.5px;
+        padding: 1px 7px;
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        color: var(--muted);
+      }
+      .chip-ran {
+        border-color: var(--ok);
+        color: var(--ok);
+      }
+      .chip-adopted {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .log {
+        grid-area: log;
+        min-height: 0;
+        height: 100%;
+        overflow-y: auto;
+      }
+      .bar {
+        grid-area: bar;
+      }
+      #spa-nav {
+        grid-area: nav;
+      }
+      #spa-outlet {
+        grid-area: outlet;
+        min-height: 0;
+        overflow: hidden;
+      }
+      @media (max-width: 820px) {
+        html,
+        body {
+          height: auto;
+          overflow: visible;
+        }
+        body {
+          grid-template-columns: minmax(0, 1fr);
+          grid-template-areas: 'bar' 'nav' 'outlet' 'log';
+          grid-template-rows: auto;
+        }
+        #spa-outlet {
+          overflow: visible;
+        }
+        .log {
+          height: auto;
+          max-height: 150px;
+        }
+      }
+      .log {
+        scrollbar-width: thin;
+        scrollbar-color: var(--line) transparent;
+        scrollbar-gutter: stable;
+      }
+      .log::-webkit-scrollbar {
+        width: 10px;
+      }
+      .log::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .log::-webkit-scrollbar-thumb {
+        background: var(--line);
+        border: 3px solid transparent;
+        border-radius: 999px;
+        background-clip: padding-box;
+      }
+      .log::-webkit-scrollbar-thumb:hover {
+        background: var(--muted);
+        background-clip: padding-box;
+      }
+      .log p {
+        margin: 1px 0;
+        font-size: 11.5px;
+      }
+      .log .who {
+        font-weight: 700;
+      }
+      .status-blocked {
+        color: var(--bad);
+      }
+      .status-ready,
+      .status-degraded {
+        color: var(--ok);
+      }
+      button {
+        font: inherit;
+        padding: 5px 12px;
+        border-radius: 6px;
+        border: 1px solid var(--accent);
+        background: var(--accent);
+        color: light-dark(#fff, #0b1120);
+        cursor: pointer;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="bar">
+      <span>Requests sent by the root and both applications:</span>
+      <strong id="calls">0</strong>
+      <span id="verdict"></span>
+      <span class="note" id="hosted">single-spa has mounted nothing yet.</span>
+    </div>
+
+    <div class="panel" id="spa-nav">
+      <nav>
+        <a href="#/" id="nav-dashboard">Dashboard</a>
+        <a href="#/reports" id="nav-reports">Reports</a>
+      </nav>
+    </div>
+
+    <div class="panel" id="spa-outlet"></div>
+
+    <div class="panel log" id="log"></div>
+
+    <script>
+      /*
+       * The page's plumbing. `api` lives here so the counter is honest: it counts requests that
+       * actually left, which is the only number that says whether anything was shared.
+       */
+      const wait = (ms) => {
+        return new Promise((resolve) => {
+          setTimeout(resolve, ms);
+        });
+      };
+
+      let calls = 0;
+      const bump = (value) => {
+        calls += 1;
+        document.getElementById('calls').textContent = String(calls);
+        return value;
+      };
+
+      const signedOut = new URLSearchParams(location.search).get('session') === 'none';
+
+      window.demo = {
+        api: {
+          async session() {
+            await wait(320);
+            return bump(signedOut ? null : { userId: 'u-4821', displayName: 'F. Desjardins' });
+          },
+          async access() {
+            await wait(240);
+            return bump(['dashboard:read', 'reports:read']);
+          },
+          async config() {
+            await wait(300);
+            return bump({ workspaceName: 'Acme Workspace' });
+          },
+          async filters() {
+            await wait(260);
+            return bump(['This quarter', 'By owner', 'Archived']);
+          },
+        },
+
+        log(who, message) {
+          const line = document.createElement('p');
+          const tag = document.createElement('span');
+          tag.className = 'who';
+          tag.style.color = `var(--${who})`;
+          tag.textContent = `${who} `;
+          line.append(tag, document.createTextNode(message));
+          document.getElementById('log').append(line);
+        },
+
+        line(text) {
+          const node = document.createElement('div');
+          node.textContent = text;
+          return node;
+        },
+
+        header(name, role) {
+          const head = document.createElement('div');
+          head.className = 'name';
+          head.style.color = `var(--${name.toLowerCase()})`;
+          head.append(document.createTextNode(`${name} `));
+          const note = document.createElement('span');
+          note.textContent = role;
+          head.append(note);
+          return head;
+        },
+
+        chips(outcome, emptyLabel) {
+          const row = document.createElement('div');
+          row.className = 'chips';
+          if (outcome.timeline.length === 0) {
+            const chip = document.createElement('span');
+            chip.className = 'chip';
+            chip.textContent = emptyLabel;
+            row.append(chip);
+            return row;
+          }
+          for (const trace of outcome.timeline) {
+            const chip = document.createElement('span');
+            const adopted = trace.shared === true;
+            chip.className = `chip ${adopted ? 'chip-adopted' : 'chip-ran'}`;
+            chip.textContent = `${trace.id} · ${adopted ? 'adopted' : 'ran it'}`;
+            row.append(chip);
+          }
+          return row;
+        },
+
+        status(outcome) {
+          const node = document.getElementById('verdict');
+          node.className = `status-${outcome.status}`;
+          node.textContent = `bootstrap: ${outcome.status}`;
+        },
+
+        mounted(names) {
+          document.getElementById('hosted').textContent =
+            names.length === 0
+              ? 'single-spa has mounted nothing.'
+              : `single-spa reports mounted: ${names.join(', ')} — its signal, not the library's.`;
+        },
+
+        signIn(intent) {
+          const panel = document.getElementById('spa-outlet');
+          const message = document.createElement('p');
+          message.textContent =
+            'No session, so single-spa was never started and no application was asked to mount.';
+          const button = document.createElement('button');
+          button.textContent = 'Pretend to sign in';
+          button.onclick = () => {
+            location.search = '';
+          };
+          panel.replaceChildren(message, button);
+          document.getElementById('hosted').textContent =
+            `The intent the guard queued is still here: ${intent.type}.`;
+        },
+      };
+
+      const markCurrent = () => {
+        const onReports = location.hash.startsWith('#/reports');
+        document
+          .getElementById('nav-reports')
+          .setAttribute('aria-current', onReports ? 'page' : 'false');
+        document
+          .getElementById('nav-dashboard')
+          .setAttribute('aria-current', onReports ? 'false' : 'page');
+      };
+      window.addEventListener('hashchange', markCurrent);
+      markCurrent();
+    </script>
+
+    <script type="module" src="./root-config.js"></script>
+  </body>
+</html>

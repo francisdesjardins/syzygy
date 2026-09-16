@@ -1,0 +1,75 @@
+/*
+ * The in-page jump bar, on umbra's rules so a reader moving between the two playgrounds meets the
+ * same control. Sticky under the top bar, and it owns the space under itself.
+ */
+.nav {
+  position: sticky;
+  top: var(--app-topbar-height);
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding-block: var(--app-space-3);
+  margin-bottom: var(--app-space-6);
+  /* The bar paints the page ground, not the paper: a sticky strip in a different tone bands
+     against the content scrolling under it. */
+  background: var(--app-bg);
+  border-bottom: 1px solid var(--app-divider);
+}
+
+/* A two-pixel bleed of *background only*: the column's width is fractional, so a card's 1px border
+   straddles this bar's edge and stays half-lit as a hairline. The background widens, not the box —
+   negative margins would take the border-bottom past the cards. */
+.nav::before {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  left: -2px;
+  right: -2px;
+  background: var(--app-bg);
+  z-index: -1;
+}
+
+/* A 24px pill. Keyboard focus is the global ring. */
+.chip {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 100%;
+  height: 24px;
+  padding: 0 7px;
+  overflow: hidden;
+  border: 1px solid var(--app-control-border);
+  border-radius: 16px;
+  background: transparent;
+  color: var(--app-text);
+  font-family: var(--app-font-mono);
+  font-size: 0.7rem;
+  line-height: 1.5;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-decoration: none;
+  vertical-align: middle;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color var(--app-duration) var(--app-ease),
+    box-shadow var(--app-duration) var(--app-ease);
+}
+
+.chip:hover {
+  background: var(--app-hover);
+}
+
+/* It presses. */
+.chip:active {
+  box-shadow: var(--app-lift);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chip {
+    transition: none;
+  }
+}

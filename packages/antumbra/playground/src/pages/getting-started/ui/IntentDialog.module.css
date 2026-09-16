@@ -1,0 +1,61 @@
+/*
+ * The app's own dialog. The library ships none, so this file is the demonstration as much as the
+ * component is: the wording, the buttons and the look all belong to the app.
+ */
+
+/* The layout is on `[open]`, not on the element: a bare `display` here beats the user agent's
+   `dialog:not([open]) { display: none }` and leaves a closed dialog painted on the page. */
+.dialog[open] {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Both ends stay put and the message between them scrolls. The element itself never scrolls —
+   two scrollbars on one sheet is what happens when it does. */
+.dialog {
+  overflow: hidden;
+  border: 1px solid var(--app-divider);
+  border-radius: var(--app-radius-lg);
+  background: var(--app-paper);
+  color: var(--app-text);
+  padding: var(--app-space-6);
+  width: min(440px, 92vw);
+  max-height: 84dvh;
+  box-shadow: var(--app-lift);
+}
+
+.title,
+.actions {
+  flex-shrink: 0;
+}
+
+.message {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
+.dialog::backdrop {
+  background: var(--app-scrim);
+}
+
+.title {
+  margin: 0 0 var(--app-space-2);
+  font-family: var(--app-font-display);
+  font-size: var(--app-text-lg);
+  line-height: var(--app-lh-tight);
+}
+
+.message {
+  margin: 0;
+  color: var(--app-text-secondary);
+  font-size: var(--app-text-md);
+  line-height: var(--app-lh-body);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--app-space-2);
+  margin-top: var(--app-space-5);
+}

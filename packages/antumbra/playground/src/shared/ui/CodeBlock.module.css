@@ -1,0 +1,18 @@
+.frame {
+  position: relative;
+  border: 1px solid var(--app-divider);
+  border-radius: var(--app-radius-md);
+  overflow: hidden;
+}
+
+.copy {
+  position: absolute;
+  top: var(--app-space-2);
+  right: var(--app-space-2);
+  z-index: 1;
+}
+
+.scroll {
+  overflow: auto;
+  max-height: 420px;
+}

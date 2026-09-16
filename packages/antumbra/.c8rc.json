@@ -1,0 +1,19 @@
+{
+  "all": true,
+  "include": ["src/**/*.ts"],
+  "exclude": [
+    "src/**/*.d.ts",
+    "src/**/__tests__/**",
+    "src/core/types.ts",
+    "src/core/registry.ts",
+    "src/index.ts",
+    "src/react.ts",
+    "src/solid.ts",
+    "src/plain.ts",
+    "src/react/**",
+    "src/solid/**"
+  ],
+  "reporter": ["text-summary", "html", "lcov", "json"],
+  "reportsDir": "coverage",
+  "checkCoverage": false
+}

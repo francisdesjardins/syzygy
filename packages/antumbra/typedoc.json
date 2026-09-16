@@ -1,0 +1,32 @@
+{
+  "$schema": "https://typedoc.app/schema.json",
+  // Validation only, no HTML output: `docs:check` runs the two validations below and nothing
+  // renders a site yet.
+  "entryPoints": ["src/index.ts", "src/react.ts", "src/solid.ts", "src/plain.ts"],
+  "name": "antumbra",
+  "excludePrivate": true,
+  "excludeInternal": true,
+  "excludeExternals": true,
+  "validation": {
+    "notExported": true,
+    "invalidLink": true,
+    "notDocumented": false
+  },
+  // The two internal shapes the public types are built from. Both are the shared half of a pair —
+  // the preflight and mounted contexts, and the four outcome variants — so documenting them too
+  // would put a second, open version of each in the reference and make the reader pick.
+  "intentionallyNotExported": [
+    "antumbra/src/core/types.ts:BaseContext",
+    "antumbra/src/core/types.ts:OutcomeBase",
+    // The arithmetic behind the step-list check. A reader meets its result as an error message
+    // naming their own typo, which is the only form of it worth documenting.
+    "antumbra/src/core/types.ts:MissingNeeds",
+    "antumbra/src/core/types.ts:DuplicateIds"
+  ],
+  // No source tracking at all. typedoc resolves source links through the git remote, so a repo with
+  // no remote yet — or a CI checkout that fetched without one — turns `docs:check` red for a reason
+  // that has nothing to do with the docs. This validates the JSDoc, which is the whole job here;
+  // turn it back on with a `sourceLinkTemplate` once the remote is permanent.
+  "disableSources": true,
+  "treatWarningsAsErrors": true
+}

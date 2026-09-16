@@ -1,0 +1,89 @@
+/*
+ * The page itself: the reset, the element defaults, and nothing that belongs to a component.
+ *
+ * Every value here is a token. A literal in this file is a token that was never added, and the next
+ * person to need it invents a second one.
+ */
+
+@import './fonts.css';
+@import './tokens.system.css';
+@import './tokens.skin.css';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: light dark;
+}
+
+:root[data-color-scheme='light'] {
+  color-scheme: light;
+}
+
+:root[data-color-scheme='dark'] {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  background: var(--app-bg);
+  color: var(--app-text);
+  font-family: var(--app-font-body);
+  font-size: var(--app-text-md);
+  line-height: var(--app-lh-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--app-font-display);
+  font-weight: 600;
+  letter-spacing: var(--app-tracking-tight);
+  line-height: var(--app-lh-tight);
+  margin: 0;
+}
+
+h1 {
+  font-size: var(--app-text-2xl);
+}
+
+h2 {
+  font-size: var(--app-text-lg);
+}
+
+h3 {
+  font-size: var(--app-text-base);
+}
+
+p {
+  margin: 0;
+}
+
+code,
+pre,
+.mono {
+  font-family: var(--app-font-mono);
+}
+
+a {
+  color: var(--app-accent);
+}
+
+::selection {
+  background: var(--app-selected);
+}
+
+/* The scrollbar is a surface too, and a default one reads as a different application's. */
+* {
+  scrollbar-color: var(--app-scrollbar-thumb) var(--app-scrollbar-track);
+  scrollbar-width: thin;
+}
+
+:focus-visible {
+  outline: 2px solid var(--app-ring);
+  outline-offset: 2px;
+}

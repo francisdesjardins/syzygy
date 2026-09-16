@@ -1,0 +1,41 @@
+/* The demo frames, and the row of controls that switches what is inside them. */
+
+.frame {
+  width: 100%;
+  /* Set per demo by the page that renders it; the fallback is here so a frame is never zero-high
+     if the custom property does not make it through. */
+  height: var(--frame-height, 480px);
+  border: 1px solid var(--app-divider);
+  border-radius: var(--app-radius-lg);
+  background: var(--app-bg);
+  display: block;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--app-space-2);
+  margin: 0 0 var(--app-space-4);
+}
+
+/* Two groups above one frame. The groups keep their own spacing between buttons; the row owns the
+   gap between the groups and the margin under them, so a group nested here drops its own. */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--app-space-2) var(--app-space-6);
+  align-items: center;
+  margin: 0 0 var(--app-space-4);
+}
+
+.toolbar .controls {
+  margin: 0;
+}
+
+/* Stacked, the page inside is taller than any one number — and this is the one place it scrolls. */
+@media (max-width: 820px) {
+  .frame {
+    height: 70vh;
+    min-height: 420px;
+  }
+}

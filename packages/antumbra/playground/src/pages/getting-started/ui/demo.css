@@ -1,0 +1,386 @@
+/*
+ * What the one-application page draws: the graph, the time chart, the outcome table.
+ *
+ * Owned by this route rather than global, and every colour is a token — the version that lived
+ * at the root carried its own palette, which is how the site came to have two.
+ */
+
+/* ── The teaching widgets ─────────────────────────────────────────────────── */
+
+.glossary dl {
+  /* The list sat flush on its own heading. Every other block on the site gets a step of the
+     scale between a heading and what it introduces; this one was the exception. */
+  margin: var(--app-space-4) 0 0;
+  display: grid;
+  gap: var(--app-space-3);
+}
+
+.glossary dl > div {
+  display: grid;
+  grid-template-columns: 170px minmax(0, 1fr);
+  gap: 14px;
+  align-items: baseline;
+}
+
+.glossary dt {
+  font-weight: 600;
+}
+
+.glossary dd {
+  margin: 0;
+  color: var(--app-text-secondary);
+}
+
+@media (max-width: 720px) {
+  .glossary dl > div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2px;
+  }
+}
+
+.split {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  gap: 22px;
+  align-items: start;
+}
+
+@media (max-width: 980px) {
+  .split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* The graphs scroll on their own rather than pushing the page sideways. */
+.graph-scroll {
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.node {
+  fill: var(--app-paper);
+  stroke: var(--app-divider);
+  stroke-width: 1.5;
+}
+
+.node-success {
+  stroke: var(--app-ok);
+}
+
+.node-failed,
+.node-timed-out {
+  stroke: var(--app-error);
+}
+
+.node-skipped,
+.node-cancelled {
+  stroke-dasharray: 4 3;
+  opacity: 0.62;
+}
+
+.node-phase-mounted {
+  stroke: var(--app-accent);
+}
+
+.node-id {
+  font-family: ui-monospace, 'Cascadia Code', 'SF Mono', Menlo, monospace;
+  font-size: 12.5px;
+  fill: var(--app-text);
+}
+
+.node-meta {
+  font-size: 10.5px;
+  fill: var(--app-text-secondary);
+  letter-spacing: 0.03em;
+}
+
+.edge {
+  fill: none;
+  stroke: var(--app-text-secondary);
+  stroke-width: 1.3;
+  opacity: 0.55;
+}
+
+.edge-long {
+  stroke-dasharray: 5 4;
+}
+
+.edge-head {
+  fill: var(--app-text-secondary);
+  opacity: 0.55;
+}
+
+.bar-label {
+  font-family: ui-monospace, 'Cascadia Code', 'SF Mono', Menlo, monospace;
+  font-size: 12px;
+  fill: var(--app-text);
+}
+
+.bar-value {
+  font-size: 11px;
+  fill: var(--app-text-secondary);
+}
+
+.bar {
+  fill: var(--app-text-tertiary);
+}
+
+.bar-success {
+  fill: var(--app-ok);
+}
+
+.bar-failed,
+.bar-timed-out {
+  fill: var(--app-error);
+}
+
+.bar-cancelled {
+  fill: var(--app-warn);
+}
+
+.bar-shared {
+  fill: var(--app-accent);
+}
+
+.axis {
+  stroke: var(--app-divider);
+  stroke-width: 1;
+}
+
+table.switches {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0 0 16px;
+}
+
+table.switches th:first-child,
+table.switches td:first-child {
+  width: 1%;
+  white-space: nowrap;
+  padding-right: 26px;
+}
+
+table.switches th {
+  text-align: left;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--app-text-secondary);
+  font-weight: 600;
+  padding: 0 0 6px;
+  border-bottom: 1px solid var(--app-divider);
+}
+
+table.switches td {
+  padding: 7px 14px 7px 0;
+  border-bottom: 1px solid var(--app-divider);
+  vertical-align: baseline;
+}
+
+table.switches label {
+  display: flex;
+  gap: 9px;
+  align-items: baseline;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+details.panel summary {
+  cursor: pointer;
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--app-text-secondary);
+}
+
+details.panel[open] summary {
+  margin-bottom: 12px;
+}
+
+.solid-readout {
+  font-family: ui-monospace, 'Cascadia Code', 'SF Mono', Menlo, monospace;
+  font-size: 13px;
+}
+
+/* ── The readouts: one row per record, with the record's word carrying the colour ── */
+
+.readout {
+  display: grid;
+  gap: var(--app-space-2);
+}
+
+/* A mono eyebrow over each list, at the rank the reference uses for the same job. */
+.group-label {
+  margin-top: var(--app-space-2);
+  color: var(--app-text-tertiary);
+  font-family: var(--app-font-mono);
+  font-size: var(--app-text-xs);
+  font-weight: 500;
+  letter-spacing: var(--app-tracking-label);
+  line-height: var(--app-lh-snug);
+  text-transform: uppercase;
+}
+
+.data,
+.notices,
+.intents,
+.errors,
+.events {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.data li,
+.notices li,
+.intents li,
+.errors li,
+.events li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--app-space-2);
+  padding: var(--app-space-1) 0;
+  border-bottom: 1px solid var(--app-divider);
+  font-size: var(--app-text-md);
+}
+
+.data li:last-child,
+.notices li:last-child,
+.intents li:last-child,
+.errors li:last-child,
+.events li:last-child {
+  border-bottom: 0;
+}
+
+/* Tall enough to show the shape of a run, short enough that the page below stays reachable. */
+.events {
+  max-height: 340px;
+  overflow-y: auto;
+}
+
+.value,
+.from,
+.duration,
+.meaning,
+.reason,
+.tolerated,
+.empty {
+  color: var(--app-text-secondary);
+  font-size: var(--app-text-md);
+}
+
+.empty {
+  margin: 0;
+  color: var(--app-text-tertiary);
+}
+
+.verdict {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--app-space-3);
+  margin: 0;
+}
+
+.blocked-by {
+  margin: 0;
+  color: var(--app-text-secondary);
+}
+
+/* The one word that says how something ended, wherever it appears. Uppercased rather than coloured
+   alone: colour is the second signal, and about one reader in twelve does not get it. */
+.status,
+.step-status,
+.intent-status {
+  font-size: var(--app-text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: var(--app-tracking-label);
+}
+
+.verdict .status {
+  font-size: var(--app-text-base);
+}
+
+.status-ready,
+.step-status-success,
+.intent-handled {
+  color: var(--app-ok);
+}
+
+.step-status-skipped,
+.intent-pending {
+  color: var(--app-text-tertiary);
+}
+
+.status-degraded,
+.status-aborted,
+.step-status-timed-out,
+.intent-forwarded {
+  color: var(--app-warn);
+}
+
+.status-failed,
+.status-blocked,
+.step-status-failed,
+.intent-dropped {
+  color: var(--app-error);
+}
+
+/* The two events that bracket a run read as the brackets they are. */
+.event-run-start,
+.event-run-settle {
+  font-weight: 600;
+}
+
+/* A step that took the page's answer rather than doing the work. */
+.shared {
+  padding: 1px var(--app-space-2);
+  border: 1px solid var(--app-accent);
+  border-radius: var(--app-radius-pill);
+  color: var(--app-accent);
+  font-size: var(--app-text-xs);
+  letter-spacing: var(--app-tracking-label);
+  text-transform: uppercase;
+}
+
+/* The boot control, beside the switches it acts on. Wraps rather than truncates: on a phone the
+   hint goes under the button instead of squeezing it. */
+.switches-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--app-space-3);
+  margin-top: var(--app-space-4);
+}
+
+.switches-hint {
+  color: var(--app-text-secondary);
+  font-size: var(--app-text-sm);
+}
+
+/*
+ * The card every block on this page sits in.
+ *
+ * `Glossary` and `SolidPanel` both ask for `className="panel"`, but the only `.panel` rule in the
+ * project lives in a CSS *module*, where the name is hashed — so the class matched nothing and the
+ * markup rendered as bare text on the page ground with no padding, no edge and no separation from
+ * what came before it. Same surface the cards use, so a page of panels and a page of cards read as
+ * one page.
+ */
+.panel {
+  padding: var(--app-space-5);
+  background: var(--app-paper);
+  border: 1px solid var(--app-divider);
+  border-radius: var(--app-radius-lg);
+}
+
+/* The heading a panel opens with owns the space under it, the way a card's title does. */
+.panel > h2:first-child,
+.panel > h3:first-child {
+  margin-top: 0;
+  margin-bottom: var(--app-space-4);
+}

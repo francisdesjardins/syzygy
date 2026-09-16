@@ -1,0 +1,98 @@
+/* Fixed above the sidebar (its 30) and below anything a dialog would raise. */
+.appBar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--app-z-topbar);
+  border-bottom: 1px solid var(--app-divider);
+  background: var(--app-paper);
+  color: var(--app-text);
+}
+
+.toolbar {
+  height: var(--app-topbar-height);
+  display: flex;
+  align-items: center;
+  padding: 0 var(--app-space-4);
+}
+
+@media (min-width: 600px) {
+  .toolbar {
+    padding: 0 var(--app-space-6);
+  }
+}
+
+/* The icon's padding hangs into the gutter so the glyph aligns with the content below it. */
+.menuButton {
+  margin-left: -8px;
+  margin-right: var(--app-space-2);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-3);
+  text-decoration: none;
+  color: inherit;
+  border-radius: var(--app-radius);
+}
+
+/* No `--app-lockup-rise` here on purpose: in a row the mark stays on the shared midline and the
+   text is trimmed to meet it instead — see the token. */
+
+.brand:hover .wordmark {
+  color: var(--app-accent);
+}
+
+/* The wordmark is the one place the display serif does brand work rather than editorial work. */
+.wordmark {
+  font-family: var(--app-font-display);
+  font-size: var(--app-text-lg);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: var(--app-tracking-snug);
+  /* Cap band, so centring the box centres the letters: "antumbra" reserves descender room it never
+     uses, and the ring beside it reads low. Trimming the text keeps every item in the row on one
+     midline; nudging the mark would not. */
+  text-box: trim-both cap alphabetic;
+}
+
+/* The annular ring — antumbra's mark, and the one thing in this bar that is not umbra's.
+   26px, which is what umbra renders its own mark at: the two bars differ in what the mark *is*,
+   never in how much room it takes. The stroke scales with it, or a ring this wide reads as a
+   hairline next to a filled disc of the same size. */
+.ring {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--app-radius-pill);
+  border: 5px solid var(--app-flame);
+  /* The disc under the ring, as umbra paints it. Without it the mark is an outline, and an outline
+     reads a size smaller than a solid object of the same diameter however the box measures. An
+     annular eclipse is a dark disc with a complete ring around it, so the fill is also the truth. */
+  background: var(--app-body);
+}
+
+.pill {
+  display: none;
+  align-self: center;
+  padding: 2px var(--app-space-2);
+  border: 1px solid var(--app-divider);
+  border-radius: var(--app-radius-sm);
+  color: var(--app-text-tertiary);
+  font-family: var(--app-font-mono);
+  font-size: var(--app-text-xs);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+@media (min-width: 600px) {
+  .pill {
+    display: inline-flex;
+  }
+}
+
+.spacer {
+  flex: 1;
+}
