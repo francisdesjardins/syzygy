@@ -7,7 +7,7 @@ import { DemoControls, DemoFrame, DemoToolbar } from '@/shared/ui/DemoFrame';
 import { PageLayout } from '@/shared/ui/PageLayout';
 import { SectionNav } from '@/shared/ui/SectionNav';
 
-const INITIAL_HEIGHT = 560;
+const FRAME_HEIGHT = 500;
 
 const SECTIONS = [
   { id: 'the-demo', label: 'The demo' },
@@ -69,7 +69,7 @@ export function MicrofrontendsPage() {
           title="Four fragments on one page"
           src={`${import.meta.env.BASE_URL}mfe/host.html?scope=${scope}`}
           reloadKey={`${scope}-${String(reloadKey)}`}
-          initialHeight={INITIAL_HEIGHT}
+          height={FRAME_HEIGHT}
         />
       </ExampleSection>
 

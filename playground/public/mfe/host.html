@@ -63,7 +63,21 @@
       * {
         box-sizing: border-box;
       }
+      /* The frame is a fixed viewport on a desktop, not a page that grows into one.
+         It was the second: every fragment that rendered and every line the log added made the
+         document taller, the host measured it, and the site shifted under the reader four times in
+         two seconds — 205px of it. Here the page is exactly the height it was given, the log
+         scrolls inside its own panel, and nothing outside moves. Below 820px the columns stack and
+         the page is honestly taller than any fixed height, so it goes back to growing. */
+      html {
+        height: 100%;
+      }
       body {
+        height: 100%;
+        box-sizing: border-box;
+        display: grid;
+        grid-template-rows: auto auto minmax(0, 1fr);
+        overflow: hidden;
         margin: 0;
         background: var(--bg);
         color: var(--ink);
@@ -85,6 +99,7 @@
          the panels were going to be anyway. Three sevenths of what the two content columns share, which lands on a third of the frame, because
          its lines are long and wrapping them is what made it hard to read in the first place. */
       .shell {
+        min-height: 0;
         display: grid;
         grid-template-columns: 190px minmax(0, 4fr) minmax(0, 3fr);
         grid-template-rows: auto minmax(0, 1fr);
@@ -93,9 +108,21 @@
         padding: 10px;
       }
       @media (max-width: 820px) {
+        html,
+        body {
+          height: auto;
+          overflow: visible;
+        }
         .shell {
           grid-template-columns: minmax(0, 1fr);
           grid-template-areas: 'top' 'nav' 'main' 'log';
+        }
+        .main {
+          overflow: visible;
+        }
+        .log {
+          height: auto;
+          max-height: 170px;
         }
       }
 
@@ -118,8 +145,12 @@
       .main {
         grid-area: main;
         display: grid;
+        /* The list takes what it needs and the panel under it takes the rest, so the three columns
+           end on one line instead of the middle one stopping wherever its content did. */
+        grid-template-rows: auto minmax(0, 1fr);
         gap: 10px;
-        align-content: start;
+        min-height: 0;
+        overflow: hidden;
       }
       #list {
         --own: var(--list);
@@ -214,16 +245,32 @@
         background: var(--panel);
         border: 1px solid var(--line);
         border-radius: 8px;
-        /* Capped so a long run cannot make the log the tallest thing in the row and take back the
-           height this arrangement exists to save. It scrolls; the last line is what matters. */
-        max-height: 340px;
-        align-self: start;
+        /* Its cell, in full, whatever it holds: a log that sized itself is a log that resizes the
+           page under the reader. It scrolls; the last line is the one that matters. */
+        min-height: 0;
+        height: 100%;
         overflow-y: auto;
       }
-      @media (max-width: 820px) {
-        .log {
-          max-height: 170px;
-        }
+      .log {
+        scrollbar-width: thin;
+        scrollbar-color: var(--line) transparent;
+        scrollbar-gutter: stable;
+      }
+      .log::-webkit-scrollbar {
+        width: 10px;
+      }
+      .log::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .log::-webkit-scrollbar-thumb {
+        background: var(--line);
+        border: 3px solid transparent;
+        border-radius: 999px;
+        background-clip: padding-box;
+      }
+      .log::-webkit-scrollbar-thumb:hover {
+        background: var(--muted);
+        background-clip: padding-box;
       }
       .log p {
         margin: 1px 0;

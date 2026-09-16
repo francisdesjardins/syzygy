@@ -5,7 +5,7 @@ import { DemoControls, DemoFrame, DemoToolbar } from '@/shared/ui/DemoFrame';
 import { PageLayout } from '@/shared/ui/PageLayout';
 import { SectionNav } from '@/shared/ui/SectionNav';
 
-const INITIAL_HEIGHT = 520;
+const FRAME_HEIGHT = 340;
 
 const SECTIONS = [
   { id: 'the-demo', label: 'The demo' },
@@ -79,7 +79,7 @@ export function SingleSpaPage() {
           title="single-spa loading two applications"
           src={`${import.meta.env.BASE_URL}spa/spa.html${signedOut ? '?session=none' : ''}`}
           reloadKey={`${String(signedOut)}-${String(reloadKey)}`}
-          initialHeight={INITIAL_HEIGHT}
+          height={FRAME_HEIGHT}
         />
       </ExampleSection>
 

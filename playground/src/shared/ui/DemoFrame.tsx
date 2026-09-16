@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useRef, useState } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import styles from '@/shared/ui/DemoFrame.module.css';
 
 /**
@@ -28,60 +28,43 @@ export function DemoToolbar({ children }: { readonly children: ReactNode }) {
 }
 
 /**
- * A demo that is genuinely another page, in a frame, sized to what it renders.
+ * A demo that is genuinely another page, in a frame of a fixed size.
  *
  * The page inside is deliberately not part of this app: plain HTML, an import map, script tags. A
  * build step that resolved `antumbra` for everything on it would prove nothing about what the
  * import map does — and one fragment's whole point is that it is *not* on the shared build and
  * shares anyway.
+ *
+ * **The frame sets the height; the page inside does not.** It used to be the other way around — a
+ * poll every 400ms read the inner `scrollHeight` and resized the frame to it — and the result was
+ * the site moving under the reader while the demo booted: four different heights in two seconds,
+ * 205px apart, because every fragment that rendered and every line the log added made the document
+ * taller. Handing the page a viewport instead is what lets the log scroll in its own panel and the
+ * page around it hold still. Under 820px the page inside stacks and grows past this, which is the
+ * one place it is allowed to scroll.
  */
 export function DemoFrame({
   title,
   src,
   reloadKey,
-  initialHeight,
+  height,
 }: {
   readonly title: string;
   readonly src: string;
   /** Changing it remounts the frame, which is the only way to boot the page inside again. */
   readonly reloadKey: string;
-  readonly initialHeight: number;
+  /** What the page inside is given, on a desktop. Narrow screens take the one in the stylesheet. */
+  readonly height: number;
 }) {
-  const frameRef = useRef<HTMLIFrameElement>(null);
-  const [height, setHeight] = useState(initialHeight);
-
-  useEffect(() => {
-    const frame = frameRef.current;
-    if (frame === null) {
-      return;
-    }
-    // Measured from the body rather than the document element: `documentElement.scrollHeight` is
-    // never less than its own viewport, which here *is* the frame this sets the height of, so it
-    // could grow and never shrink.
-    const measure = (): void => {
-      const inner = frame.contentDocument?.body;
-      if (inner !== undefined) {
-        setHeight(inner.scrollHeight + 4);
-      }
-    };
-    const timer = setInterval(measure, 400);
-    frame.addEventListener('load', measure);
-    return () => {
-      clearInterval(timer);
-      frame.removeEventListener('load', measure);
-    };
-  }, []);
-
   return (
     <iframe
-      ref={frameRef}
       key={reloadKey}
       title={title}
       src={src}
       className={styles['frame']}
       // The class name is hashed by the CSS module, so the smoke test needs a hook that survives it.
       data-testid="demo-frame"
-      style={{ height }}
+      style={{ '--frame-height': `${String(height)}px` } as CSSProperties}
     />
   );
 }
