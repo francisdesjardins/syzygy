@@ -102,6 +102,15 @@ ran.
 **`plan()` returns levels, not waves.** It is a static analysis of the graph, computed before
 anything runs. `outcome.timeline` is what actually happened, and the two are allowed to differ.
 
+**The graph is declared, not discovered, and there is no way to add a step mid-run.** A process
+whose shape is only known once it has started talking — a robot assembling an arm from whatever the
+base reports, a worker reading its queues out of its own configuration — gets **one bootstrap per
+tier** instead: a tier that discovers the next one hands its outcome over, and the next
+`createBootstrap` is declared from that answer. Growing a compiled graph would make `plan()` a
+description of something that did not happen, which is the only promise the planner makes. An id no
+registry names is still a legal id, which is what lets a tier be built from data;
+`src/core/__tests__/discovered-tiers.test.ts` is the worked example, and it runs in Node.
+
 **Two phases, two context types.** A preflight step has `block` and no `host`; a hosted step has `host`
 and `awaitIntent` and no `block`. This is why there are two `define*` functions rather than a `phase`
 field: one generic signature would hand every step the union of both contexts, which takes `block`

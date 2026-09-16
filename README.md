@@ -17,11 +17,17 @@ No framework in the core, no UI, no dependencies.
 The graph and the timeline of a real run, four fragments on one page sharing a bootstrap, a
 single-spa host that waits on it, and the generated API reference for all four entry points.
 
-Every front end starts the same way. Validate a token. Check what this user may do. Prefetch the
-configuration and the reference lists the modules will ask for on their first render. Then decide
-whether the app may mount at all. Almost nobody orchestrates it, and the two usual shapes are both
-bad: a chain of `await` on the critical path, where each call waits for one that had nothing to do
-with it, or a block of promises fired and never awaited, with no status and no failure handling.
+Applications start the same way, whatever they run on. Validate a token. Check what this caller may
+do. Fetch the configuration and the reference lists the modules will ask for the moment they come
+up. Then decide whether the thing may start at all. Almost nobody orchestrates it, and the two usual
+shapes are both bad: a chain of `await` on the critical path, where each call waits for one that had
+nothing to do with it, or a block of promises fired and never awaited, with no status and no failure
+handling.
+
+A browser calls the end of that "mounting" and a server calls it "listening", which is a difference
+in what happens next rather than in the work. The core imports no framework and touches no DOM —
+`src/__tests__/entry-isolation.test.ts` walks the real import graph to keep it that way, and the
+unit suite runs in Node with no browser at all.
 
 antumbra takes that work, derives the parallelism from the dependencies you declare, and hands back
 a typed result — plus the two things a bootstrap always produces and nobody has anywhere to put:
@@ -67,6 +73,60 @@ if (outcome.status === 'ready' || outcome.status === 'degraded') {
   mountTheApp(outcome.data);
 }
 ```
+
+### When the graph is not known in advance
+
+The steps above were written by someone who knew what they were. Plenty of processes do not have
+that: a robot whose arm is assembled from whatever the base reports at power-on, a worker whose
+queues come from its own configuration, a server whose plugins are a directory listing. The obvious
+ask is a way to add steps while the run is going.
+
+**There isn't one, and that is the design.** `createBootstrap` compiles the graph once, and
+`plan()` hands that compilation back — a step added mid-run would make the plan a description of
+something that did not happen, and the plan is the one promise the planner makes.
+
+What replaces it is **one bootstrap per tier**. A tier that discovers the next one hands its outcome
+over, and the next `createBootstrap` is declared from that answer:
+
+```ts
+// Tier one: what is true of every robot, whatever it turns out to be made of.
+const base = createBootstrap({ steps: [bus, baseConfig, discoverTree] });
+const powered = await base.run();
+if (powered.status !== 'ready') {
+  return refuseToMove(powered);
+}
+
+// Tier two, declared from what tier one found. These ids did not exist when the file was written.
+const tree = powered.data.tree;
+const arm = createBootstrap({
+  steps: [
+    ...tree.joints.map((joint) => {
+      return defineStep({
+        id: `joint:${joint.id}`,
+        run: () => {
+          return home(joint);
+        },
+      });
+    }),
+    defineStep({
+      id: 'end-effector',
+      needs: tree.joints.map((joint) => {
+        return `joint:${joint.id}`;
+      }),
+      run: () => {
+        return attach(tree.endEffector);
+      },
+    }),
+  ],
+});
+```
+
+Seven joints that need nothing from each other go out on one level; the end effector waits for all
+seven. Every tier keeps the whole model — derived parallelism, refusals, timeouts, notices, intents
+— and a tier that cannot describe itself refuses, so the next one is never built.
+
+An id a registry does not name is still a legal id, which is what lets a graph be built from data at
+all. `src/core/__tests__/discovered-tiers.test.ts` is this example, run.
 
 `access` and `config` both depend on `session` and on nothing else, so they go out together. You did
 not ask for that and there is no flag for it: it is what the graph you wrote already said.

@@ -85,11 +85,11 @@ export function HomePage() {
             Bootstrap orchestration for an application made of modules.
           </p>
           <p className={styles['heroBody']}>
-            Every front end starts the same way: validate a token, check what this user may do,
-            prefetch what the first screen will ask for, then decide whether to mount at all. Almost
-            nobody orchestrates it, and the two usual shapes are both bad — a chain of awaits where
-            each call waits on one that had nothing to do with it, or a block of promises nobody
-            awaits, with no status and no failure handling.
+            Applications start the same way, whatever they run on: validate a token, check what this
+            caller may do, fetch what the first screen — or the first request — will ask for, then
+            decide whether to start at all. Almost nobody orchestrates it, and the two usual shapes
+            are both bad — a chain of awaits where each call waits on one that had nothing to do
+            with it, or a block of promises nobody awaits, with no status and no failure handling.
           </p>
           <p className={styles['heroBody']}>
             antumbra takes that work, derives the parallelism from the dependencies you declared,
