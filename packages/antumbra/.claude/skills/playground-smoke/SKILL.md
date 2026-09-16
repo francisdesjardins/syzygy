@@ -41,7 +41,7 @@ yarn smoke                      # all routes + all flows
 yarn smoke --flow service       # one flow
 yarn smoke --shots <tmpdir>     # screenshot every route
 yarn smoke --theme dark         # run in dark mode
-yarn smoke --base http://localhost:3000
+yarn smoke --base http://localhost:3001
 ```
 
 Run it from the repo root so Node resolves `@playwright/test` from `node_modules`.

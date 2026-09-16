@@ -59,5 +59,10 @@ export default defineConfig({
   // a specifier only the frames' import map knows — and gives up on pre-bundling for the whole dev
   // server. The app's entry is the only one it needs.
   optimizeDeps: { entries: ['index.html'] },
-  server: { port: 3000 },
+  // Ports are assigned across the repository rather than negotiated at startup, and the table lives
+  // in the root README. `strictPort` is the half that matters: without it Vite slides quietly to the
+  // next free port, and a Playwright run then reuses whatever answers -- which for an SPA is a 200
+  // and the wrong application.
+  server: { port: 3002, strictPort: true },
+  preview: { port: 4002, strictPort: true },
 });

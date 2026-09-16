@@ -3,7 +3,7 @@
  * Playground smoke probe: walks every route the sidebar advertises (discovered, not hardcoded),
  * asserts each renders free of console/page errors, then drives the named interaction flows. Exists
  * because `yarn test` never renders the playground, so a broken page is otherwise green. Needs a
- * server on :3000; exit code is non-zero if any check fails.
+ * server on :3001; exit code is non-zero if any check fails.
  *
  * Usage: yarn smoke [--base <url>] [--flow <name>] [--shots <dir>] [--theme dark|light]
  */
@@ -15,7 +15,7 @@ const arg = (name, fallback = null) => {
   const i = process.argv.indexOf(`--${name}`);
   return i !== -1 && process.argv[i + 1] ? process.argv[i + 1] : fallback;
 };
-const BASE = arg('base', 'http://localhost:3000');
+const BASE = arg('base', 'http://localhost:3001');
 const SHOTS = arg('shots');
 const FLOW = arg('flow');
 const THEME = arg('theme');

@@ -12,7 +12,7 @@ Node ≥ 24 and Yarn 4 via [Corepack](https://nodejs.org/api/corepack.html):
 ```bash
 corepack enable
 yarn install       # one install at the root covers the playground workspace too
-yarn dev           # playground on :3000
+yarn dev           # playground on :3001
 ```
 
 ## Before a PR

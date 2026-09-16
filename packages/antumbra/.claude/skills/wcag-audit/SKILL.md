@@ -29,7 +29,7 @@ The audit found 28 distinct failures across nine routes that a careful read of t
 ## Usage
 
 ```bash
-node .claude/skills/wcag-audit/audit.mjs --attach --base http://localhost:3000 \
+node .claude/skills/wcag-audit/audit.mjs --attach --base http://localhost:3001 \
   --route / --route /getting-started --route /api \
   --focus
 ```
@@ -40,7 +40,7 @@ unhelpful `Cannot navigate to invalid URL`.
 
 | Flag              | Does                                                                      |
 | ----------------- | ------------------------------------------------------------------------- |
-| `--base <url>`    | Origin to audit (default `http://localhost:3000`)                         |
+| `--base <url>`    | Origin to audit (default `http://localhost:3001`)                         |
 | `--route <path>`  | Route to visit; repeatable                                                |
 | `--crawl <sel>`   | Harvest same-origin hrefs from a nav selector on the first route          |
 | `--scheme <name>` | `light` \| `dark`; repeatable. Default: both                              |

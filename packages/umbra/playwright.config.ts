@@ -8,10 +8,10 @@ const IS_CI = Boolean(process.env['CI']);
  * A coverage run needs **its own** dev server: reusing one already on the ordinary port would
  * serve an uninstrumented bundle and produce a green run with no counters at all — which reads as
  * a forgotten flag rather than as a wrong answer. So it takes a port of its own and refuses to
- * reuse anything, which also means a sibling playground sitting on 3000 cannot poison it.
+ * reuse anything. Ports are assigned per workspace now, so a sibling cannot poison this one either.
  */
 const WITH_COVERAGE = process.env['CT_COVERAGE'] === '1';
-const PORT = WITH_COVERAGE ? 3177 : 3000;
+const PORT = WITH_COVERAGE ? 3102 : 3002;
 const BASE_URL = `http://localhost:${String(PORT)}`;
 
 /**

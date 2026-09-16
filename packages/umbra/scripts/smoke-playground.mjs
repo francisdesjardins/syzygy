@@ -10,7 +10,7 @@ import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { setTimeout as delay } from 'node:timers/promises';
 
-const PORT = 4173;
+const PORT = 4002;
 const PAGE_URL = `http://localhost:${PORT}/`;
 
 // Resolved from this file rather than from the cwd: Yarn hoists `node_modules` to the repo root,

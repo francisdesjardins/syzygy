@@ -86,8 +86,13 @@ export default defineConfig({
     // behind an optimizer cache and stop an edit in `src/` from showing up here.
     exclude: ['antumbra'],
   },
+  // Ports are assigned across the repository rather than negotiated at startup, and the table lives
+  // in the root README. `strictPort` is the half that matters: without it Vite slides quietly to the
+  // next free port, and a Playwright run then reuses whatever answers -- which for an SPA is a 200
+  // and the wrong application.
   server: {
-    port: 3000,
+    port: 3001,
+    strictPort: true,
     open: true,
     allowedHosts: ['.ngrok-free.app', '.ngrok.io'],
     // Transformed at startup rather than on the click that needs it. Each route is a lazy chunk,
@@ -109,7 +114,8 @@ export default defineConfig({
     },
   },
   preview: {
-    port: 3000,
+    port: 4001,
+    strictPort: true,
     allowedHosts: ['.ngrok-free.app', '.ngrok.io'],
   },
   build: {

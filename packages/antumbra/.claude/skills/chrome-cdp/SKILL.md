@@ -47,7 +47,7 @@ chrome --remote-debugging-port=9222
 …or let the script start a throwaway one, which is usually what you want:
 
 ```bash
-node .claude/skills/chrome-cdp/cdp.mjs --launch http://localhost:3000/ --do "shot:landing"
+node .claude/skills/chrome-cdp/cdp.mjs --launch http://localhost:3001/ --do "shot:landing"
 ```
 
 **A Chrome already running on your normal profile ignores `--remote-debugging-port`** and simply

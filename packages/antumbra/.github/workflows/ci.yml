@@ -207,14 +207,14 @@ jobs:
           echo "bin=$bin" >> "$GITHUB_OUTPUT"
       - run: node ${{ steps.yarn.outputs.bin }} install --immutable
       - run: node ${{ steps.yarn.outputs.bin }} playground:build
-      # `preview` serves the built bundle on :3000. Backgrounded, then polled — a fixed sleep is
+      # `preview` serves the built bundle on :4001. Backgrounded, then polled — a fixed sleep is
       # either a flake or wasted minutes, and the poll fails with the server's own log rather
       # than as a 30-second Playwright timeout with nothing to read.
       - name: Serve the playground
         run: |
           node ${{ steps.yarn.outputs.bin }} playground:preview > preview.log 2>&1 &
           for i in $(seq 1 60); do
-            if curl -sfo /dev/null http://localhost:3000/; then
+            if curl -sfo /dev/null http://localhost:4001/; then
               echo "up after ${i}s"
               exit 0
             fi

@@ -49,11 +49,17 @@ export default defineConfig({
       },
     },
   },
+  // Ports are assigned across the repository rather than negotiated at startup, and the table lives
+  // in the root README. `strictPort` is the half that matters: without it Vite slides quietly to the
+  // next free port, and a Playwright run then reuses whatever answers -- which for an SPA is a 200
+  // and the wrong application.
   server: {
     port: 3000,
+    strictPort: true,
     open: true,
   },
   preview: {
-    port: 4173,
+    port: 4000,
+    strictPort: true,
   },
 });

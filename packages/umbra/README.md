@@ -378,7 +378,7 @@ no framework at all.
 
 ```sh
 yarn install
-yarn dev            # the playground on :3000
+yarn dev            # the playground on :3002
 yarn check          # type-check, lint, format, docs
 yarn test           # the unit and component suites, both on Playwright
 yarn verify:all     # everything above plus the build, the package checks and a browser smoke test

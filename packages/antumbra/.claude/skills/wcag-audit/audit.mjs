@@ -17,7 +17,7 @@ const HELP = `
 Usage: node .claude/skills/wcag-audit/audit.mjs --base <url> [options]
 
 Target
-  --base <url>         Origin to audit (default http://localhost:3000)
+  --base <url>         Origin to audit (default http://localhost:3001)
   --route <path>       Route to visit; repeatable (default "/")
   --crawl <selector>   Harvest same-origin hrefs from this selector on the first route
   --scheme <name>      light | dark; repeatable (default: both)
@@ -49,7 +49,7 @@ if (argv.includes('--help')) {
 }
 
 const opt = {
-  base: 'http://localhost:3000',
+  base: 'http://localhost:3001',
   routes: [],
   schemes: [],
   viewports: [],

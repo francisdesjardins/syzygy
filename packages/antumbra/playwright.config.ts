@@ -15,12 +15,12 @@ const IS_CI = Boolean(process.env['CI']);
  * A coverage run gets its **own** server, on its own port.
  *
  * The instrumenter is a plugin in the playground's Vite, switched on by `CT_COVERAGE=1` — so a dev
- * server already up on 3000 was started without it, and reusing that one produces a report with no
+ * server already up on 3001 was started without it, and reusing that one produces a report with no
  * counters in it at all rather than a low number. That is the quiet failure
  * gnomon's coverage report exists to name, and this is the arrangement that stops it: a
  * separate port, never reused, so the two servers cannot be mistaken for each other.
  */
-const PORT = withCoverage ? 3101 : 3000;
+const PORT = withCoverage ? 3101 : 3001;
 const GALLERY_URL = `http://localhost:${String(PORT)}/stories?gallery=1`;
 
 /**
@@ -28,7 +28,7 @@ const GALLERY_URL = `http://localhost:${String(PORT)}/stories?gallery=1`;
  *
  * `webServer` is config-level rather than per project, so a unit-only run would start Vite and wait
  * for the gallery before running tests that never open a page. The wait is small — **1.9s** measured
- * cold to first response, and nothing at all here, where :3000 is up to be reused — so the reason is
+ * cold to first response, and nothing at all here, where :3001 is up to be reused — so the reason is
  * the other one: a unit run that a broken playground can fail is a unit run reporting on something it
  * does not test. Every script that selects a project names it on the command line, so a selection of
  * `unit` alone is the one case that can skip the server; no selection, or `--ui` where the reader
@@ -150,7 +150,7 @@ export default defineConfig({
     // exactly what a leaked registry looks like. A context per test is the isolation this suite
     // has always had, and it costs about a second across the whole project.
   },
-  // Reused when one is already up — the dev server on :3000 is usually the one being worked in.
+  // Reused when one is already up — the dev server on :3001 is usually the one being worked in.
   // Never for coverage: see `PORT`. Absent entirely for a unit-only run: see `needsServer`.
   ...(needsServer
     ? {

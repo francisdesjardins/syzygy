@@ -34,7 +34,7 @@ both quote styles now, and why every negative assertion in this repo has a posit
 
 ```bash
 yarn install         # from the repository root; Yarn 4 is vendored in .yarn/releases
-yarn dev             # the playground on :3000
+yarn dev             # the playground on :3002
 yarn build           # ESM bundle (Vite) + .d.ts (tsc)
 yarn type-check      # library, playground and type fixtures
 yarn test            # the unit suite

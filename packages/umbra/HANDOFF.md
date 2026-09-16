@@ -111,7 +111,7 @@ Le playground est un site routé en couches Feature-Sliced (`app` → `pages` �
 corepack enable          # le yarn global est le 1.22 classique; le dépôt épingle Yarn 4.18
 yarn install
 yarn check && yarn test  # devrait être vert tel quel
-yarn dev                 # le playground sur :3000
+yarn dev                 # le playground sur :3002
 ```
 
 Deux choses à savoir avant de toucher aux outils :

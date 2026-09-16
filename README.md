@@ -15,6 +15,24 @@ shadows it casts.
 | --- | --- |
 | [`home`](apps/home) | francisdesjardins.ca — one page, and the door to the packages above |
 
+## Ports
+
+Assigned here, not negotiated at startup. Every config sets `strictPort`, so a taken port fails
+loudly instead of sliding to the next one.
+
+| workspace | dev | preview | component coverage |
+| --- | --- | --- | --- |
+| [`home`](apps/home) | 3000 | 4000 | — |
+| [`antumbra`](packages/antumbra)'s playground | 3001 | 4001 | 3101 |
+| [`umbra`](packages/umbra)'s playground | 3002 | 4002 | 3102 |
+
+The slide is what made three separate failures silent, and one of them cost an afternoon: a
+component suite reuses a server that is already answering, the home is an SPA whose fallback returns
+**200** for any path, so `/stories?gallery=1` looked healthy and every test failed on a missing
+`window.mount()`. Distinct ports remove the ambiguity; `strictPort` removes the slide that created
+it. A coverage run takes its own port besides, because instrumentation is opt-in and a server
+started without it reports zero counters rather than a low number.
+
 `yarn deploy` at this root builds both playgrounds, assembles them under the home at
 `/playground/dialog` and `/playground/boot`, and leaves the Cloudflare zip. **Destinations are
 named after the capability, sources after the package** — a library gets renamed, and these two
