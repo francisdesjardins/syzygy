@@ -8,11 +8,11 @@ import type { Plugin } from 'vite';
 // synchronously freezes the thread Rolldown transforms modules on — half a build spent single-file.
 const execFileAsync = promisify(execFile);
 
-// ── virtual:dialog-api ───────────────────────────────────────────────────────
+// ── virtual:api-model ───────────────────────────────────────────────────────
 // Projects typedoc's ~470 kB graph over the library's entry points into a compact model, so the API
 // page renders with this site's own components rather than an iframed second design system.
 
-const VIRTUAL_ID = 'virtual:dialog-api';
+const VIRTUAL_ID = 'virtual:api-model';
 const RESOLVED_ID = `\0${VIRTUAL_ID}`;
 
 const CORE = 'antumbra';
@@ -1116,7 +1116,7 @@ export function apiModelPlugin(): Plugin {
   };
 
   return {
-    name: 'dialog-api-model',
+    name: 'api-model',
 
     // Started here and awaited in `load`, so typedoc runs alongside the rest of the graph rather
     // than in the middle of it. Deliberately not returned: Rolldown awaits `buildStart` before it

@@ -1,6 +1,6 @@
 import styles from '@/pages/api/ui/DocText.module.css';
 import type { ReactNode } from 'react';
-import type { DocPart } from 'virtual:dialog-api';
+import type { DocPart } from 'virtual:api-model';
 import { categoryHref, symbolAnchor, symbolFor } from '../model/api-index';
 import { RouterLink } from './RouterLink';
 

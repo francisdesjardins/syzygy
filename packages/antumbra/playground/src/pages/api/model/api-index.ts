@@ -1,5 +1,5 @@
 import { fuzzyRank, type FuzzyMatch } from 'limb/fuzzy-match';
-import apiModel, { type ApiCategory, type ApiSymbol } from 'virtual:dialog-api';
+import apiModel, { type ApiCategory, type ApiSymbol } from 'virtual:api-model';
 
 export const CATEGORIES: readonly ApiCategory[] = apiModel;
 

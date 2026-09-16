@@ -8,11 +8,11 @@ import type { Plugin } from 'vite';
 // synchronously would freeze the thread the rest of the graph is transformed on.
 const execFileAsync = promisify(execFile);
 
-// ── virtual:umbra-api ─────────────────────────────────────────────────────
+// ── virtual:api-model ─────────────────────────────────────────────────────
 // Projects typedoc's graph over the library's entry points into a compact model, so the reference
 // renders with this site's own components rather than an iframed second design system.
 
-const VIRTUAL_ID = 'virtual:umbra-api';
+const VIRTUAL_ID = 'virtual:api-model';
 const RESOLVED_ID = `\0${VIRTUAL_ID}`;
 
 const CORE = 'umbra';
@@ -1038,7 +1038,7 @@ export function apiModelPlugin(): Plugin {
   };
 
   return {
-    name: 'umbra:api-model',
+    name: 'api-model',
 
     // Started here and awaited in `load`, so typedoc runs alongside the rest of the graph rather
     // than in the middle of it. Deliberately not returned: Rolldown awaits `buildStart` before it

@@ -1,7 +1,7 @@
 import styles from '@/pages/api/ui/MemberList.module.css';
 import { AppButton } from '@/shared/ui/AppButton';
 import { Fragment, useState } from 'react';
-import type { ApiMember } from 'virtual:dialog-api';
+import type { ApiMember } from 'virtual:api-model';
 import { InlineCode, SymbolLink } from './DocText';
 
 /** Above this, a list is a wall — `Key` alone has 67 entries. */

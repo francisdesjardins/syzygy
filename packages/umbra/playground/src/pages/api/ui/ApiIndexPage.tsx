@@ -2,7 +2,7 @@ import { ExampleGrid, ExampleSection } from '@/entities/example';
 import styles from '@/pages/api/ui/ApiIndexPage.module.css';
 import { PageLayout } from '@/shared/ui/PageLayout';
 import { SurfaceCard } from '@/shared/ui/SurfaceCard';
-import type { ApiCategory } from 'virtual:umbra-api';
+import type { ApiCategory } from 'virtual:api-model';
 import {
   SPECIFIERS,
   SYMBOLS,

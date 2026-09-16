@@ -1,5 +1,5 @@
 import styles from '@/pages/api/ui/KindBadge.module.css';
-import type { ApiSymbol } from 'virtual:dialog-api';
+import type { ApiSymbol } from 'virtual:api-model';
 
 /**
  * What a symbol *is*, where the word does not fit. Two accents and a neutral: the palette's

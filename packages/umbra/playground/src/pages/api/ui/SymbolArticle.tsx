@@ -2,7 +2,7 @@ import styles from '@/pages/api/ui/SymbolArticle.module.css';
 import { CodeBlock } from '@/shared/ui/CodeBlock';
 import { LinkIcon } from '@/shared/ui/icons';
 import { SurfaceCard } from '@/shared/ui/SurfaceCard';
-import type { ApiSymbol } from 'virtual:umbra-api';
+import type { ApiSymbol } from 'virtual:api-model';
 import { categoryHref, symbolAnchor } from '../model/api-index';
 import { DocProse } from './DocText';
 import { KindBadge } from './KindBadge';

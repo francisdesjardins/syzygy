@@ -1,5 +1,5 @@
 import styles from '@/pages/api/ui/Signature.module.css';
-import type { DocPart } from 'virtual:umbra-api';
+import type { DocPart } from 'virtual:api-model';
 import { SymbolLink } from './DocText';
 
 /**

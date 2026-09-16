@@ -32,7 +32,7 @@ declare module 'virtual:mfe-sources' {
 
 // Re-exported from the emitting plugin rather than restated, so the page cannot type-check against
 // a stale projection.
-declare module 'virtual:dialog-api' {
+declare module 'virtual:api-model' {
   export type { ApiCategory, ApiMember, ApiSymbol, DocPart } from '../vite-plugins/api-model.ts';
 
   const model: readonly import('../vite-plugins/api-model.ts').ApiCategory[];
