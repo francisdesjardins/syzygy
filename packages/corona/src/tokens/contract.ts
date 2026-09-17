@@ -56,7 +56,10 @@ export const SYSTEM_GROUPS = {
     '--app-scrollbar-width',
     '--app-icon-sm',
   ],
-  stacking: ['--app-z-backdrop', '--app-z-sidebar', '--app-z-topbar', '--app-z-mascot'],
+  // Listed bottom to top, and `check-token-coverage.mjs` holds it there: this group is the only
+  // one whose order is a claim about the values rather than a reading order, and a page that
+  // prints the layers out of sequence tells the reader the opposite of what the sheet does.
+  stacking: ['--app-z-mascot', '--app-z-backdrop', '--app-z-sidebar', '--app-z-topbar'],
 } as const satisfies Record<string, readonly string[]>;
 
 export type SystemGroup = keyof typeof SYSTEM_GROUPS;

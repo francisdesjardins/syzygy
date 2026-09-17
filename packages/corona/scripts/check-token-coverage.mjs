@@ -88,6 +88,37 @@ if (twice.length > 0) {
   );
 }
 
+/**
+ * The stacking group is printed in the order it is written, and for that one group the order is a
+ * claim: a reader takes the list as bottom-to-top and reasons about which layer covers which. Every
+ * other group is a reading order and editorial. So this is the one that can be wrong, and it was —
+ * the mascot sat last, reading as the topmost thing on the page, while the sheet had it tied with
+ * the sidebar and then moved it to the bottom.
+ */
+const valueOf = (name) => {
+  const pattern = new RegExp(`${name}\\s*:\\s*([^;]+)`);
+  return Number(pattern.exec(readFileSync(SYSTEM, 'utf8'))?.[1]?.trim() ?? NaN);
+};
+const stacking = [
+  ...(/stacking:\s*\[([^\]]*)\]/.exec(groups)?.[1] ?? '').matchAll(/'([^']+)'/g),
+].map((match) => {
+  return match[1];
+});
+const values = stacking.map(valueOf);
+const ascending = values.every((value, index) => {
+  return index === 0 || value > (values[index - 1] ?? -Infinity);
+});
+if (!ascending) {
+  failures.push(
+    `The stacking group is not in ascending order, so the page prints the layers in an order the\n  sheet contradicts:\n    ${stacking.map((name, index) => `${name} = ${String(values[index])}`).join('\n    ')}`
+  );
+}
+if (stacking.length < 4 || values.some(Number.isNaN)) {
+  failures.push(
+    `Read ${String(stacking.length)} stacking tokens and ${String(values.filter(Number.isNaN).length)} unreadable values. The order check is\n  matching less than the group holds, which would let a wrong order through.`
+  );
+}
+
 if (failures.length > 0) {
   console.error('\ncorona: the system half and its table of contents disagree.\n');
   for (const failure of failures) {

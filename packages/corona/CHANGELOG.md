@@ -5,6 +5,21 @@ Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No s
 **This file is the package's memory.** The code states what holds now; why it came to hold lives
 here.
 
+## 2026-09-17, the stacking table said the opposite of the sheet
+
+### Fixed
+
+`SYSTEM_GROUPS.stacking` listed the mascot last, which on a design-system page reads as the topmost
+layer. It was tied with the sidebar at the time and is now the bottom one, so the table had been
+telling both playgrounds' readers the reverse of what the CSS did.
+
+### Added
+
+`check-token-coverage.mjs` now holds that group in ascending order, reading each value out of
+penumbra's sheet. Every other group's order is a reading order and editorial; this one is a claim
+about the numbers, which makes it the only one that can be wrong. A guard beside it fails if the
+list or the values stop being readable, so a regex that stops matching cannot pass as a tidy scale.
+
 ## 2026-09-17, the site link collapses on a phone
 
 ### Fixed

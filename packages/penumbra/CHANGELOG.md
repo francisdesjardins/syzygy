@@ -5,6 +5,27 @@ Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No s
 **This file is the package's memory.** The code states what holds now; why it came to hold lives
 here.
 
+## 2026-09-17, a tie in the stacking scale is now a failure
+
+### Fixed
+
+`--app-z-mascot` was `30`, the same number as `--app-z-sidebar`, and is now `10`.
+
+Equal values do not order anything. Whichever element renders last wins, and both playground shells
+render the mascot after the shell, so it sat above the drawer's backdrop. That is not a paint
+problem: the backdrop is `pointer-events: auto` so a tap outside the drawer closes it, and the
+mascot is fixed, clickable, and drifts across the viewport. A tap landing on it at phone width did
+nothing at all — the drawer stayed open.
+
+Below the backdrop rather than beside the sidebar, because that answers both halves: an open drawer
+now dims the mascot along with the page and takes the tap meant for it.
+
+### Added
+
+**No two `--app-z-*` tokens may share a value**, checked by `check-tokens.mjs`, with a guard beside
+it that fails if the pattern stops matching the scale. The bug was reachable because the scale had
+a tie in it, not because one token had the wrong number, so that is what the gate refuses.
+
 ## 2026-09-17, the contrast gate comes to the vocabulary
 
 ### Added
