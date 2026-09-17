@@ -53,6 +53,18 @@ export default defineConfig({
       // Absolute imports inside the playground, so a file that moves between layers does not drag a
       // trail of `../../..` with it.
       { find: '@', replacement: resolve(import.meta.dirname, 'src') },
+      // The sibling library, aliased to source like this playground's own. Through its `exports` it
+      // would resolve to `dist/`, which reads as the more honest consumption right up to the moment
+      // a clean checkout runs `yarn deploy`: nothing builds antumbra before this, and the failure is
+      // an unresolved import rather than a stale bundle.
+      {
+        find: /^antumbra\/react$/,
+        replacement: resolve(import.meta.dirname, '../../antumbra/src/react.ts'),
+      },
+      {
+        find: /^antumbra$/,
+        replacement: resolve(import.meta.dirname, '../../antumbra/src/index.ts'),
+      },
       { find: /^umbra\/react$/, replacement: resolve(import.meta.dirname, '../src/react.ts') },
       { find: /^umbra\/solid$/, replacement: resolve(import.meta.dirname, '../src/solid.ts') },
       {

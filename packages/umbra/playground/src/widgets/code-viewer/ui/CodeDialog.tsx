@@ -1,60 +1,59 @@
-import { type Ref, useEffect } from 'react';
+import type { DialogHandle } from 'antumbra/react';
 import { AppButton } from '@/shared/ui/AppButton';
 import { CopyButton } from '@/shared/ui/CopyButton';
 import { type CodeLanguage, HighlightedCode } from '@/shared/ui/HighlightedCode';
 import styles from '@/widgets/code-viewer/ui/CodeDialog.module.css';
 
 /**
- * The source of whatever card asked, in the browser's own top layer.
+ * The source of whatever card asked.
  *
- * A native `<dialog>` with `showModal`, so the backdrop, the dismiss key and the focus trap are the
- * platform's rather than three more things to get wrong.
+ * Only the contents: the panel, the top layer, the dismiss key and the focus trap belong to the
+ * slide that renders this, so nothing here opens or closes anything except through `handle`.
  */
-export function CodeDialog({
-  ref,
-  title,
-  source,
+export function CodeDialogContent({
+  handle,
+  isLoading,
   language,
-  onClose,
+  source,
+  title,
+  titleId,
 }: {
-  readonly ref: Ref<HTMLDialogElement>;
-  readonly title: string;
-  readonly source: string;
+  readonly handle: DialogHandle;
+  readonly isLoading: boolean;
   readonly language: CodeLanguage;
-  readonly onClose: () => void;
+  readonly source: string;
+  readonly title: string;
+  readonly titleId: string;
 }) {
-  const open = title !== '';
   const body = source.trimEnd();
   const lineCount = body.split(/\r?\n/).length;
 
-  useEffect(() => {
-    const node = typeof ref === 'object' && ref !== null ? ref.current : null;
-    if (node === null) {
-      return;
-    }
-    if (open && !node.open) {
-      node.showModal();
-    }
-    if (!open && node.open) {
-      node.close();
-    }
-  }, [open, ref]);
-
   return (
-    <dialog ref={ref} className={styles['dialog']} onClose={onClose} aria-label="Source">
+    <>
       <div className={styles['head']}>
-        <span className={styles['key']}>{title}</span>
-        <span className={styles['lines']}>{String(lineCount)} lines</span>
-        <CopyButton text={body} />
+        <span className={styles['key']} id={titleId}>
+          {title}
+        </span>
+        {isLoading ? null : <span className={styles['lines']}>{String(lineCount)} lines</span>}
+        {isLoading ? null : <CopyButton text={body} />}
       </div>
       <div className={styles['body']}>
-        <HighlightedCode source={body} language={language} />
+        {isLoading ? (
+          <p className={styles['loading']}>Loading source…</p>
+        ) : (
+          <HighlightedCode source={body} language={language} />
+        )}
       </div>
       <div className={styles['foot']}>
-        <AppButton variant="outlined" onClick={onClose}>
+        <AppButton
+          variant="outlined"
+          onClick={() => {
+            handle.close('close');
+          }}
+        >
           Close
         </AppButton>
       </div>
-    </dialog>
+    </>
   );
 }

@@ -1,32 +1,9 @@
 /*
- * A modal with both ends pinned: the head and the foot stay, the source between them scrolls.
+ * Both ends pinned: the head and the foot stay, the source between them scrolls.
  *
- * `overflow: hidden` on the dialog is what makes that true. Without it the element scrolls as well
- * as the body inside it, and a long file gets two scrollbars that fight over the same gesture.
+ * The slide owns the panel, the top layer, the backdrop and the dismiss key. What this file states
+ * is the arrangement of three rows inside it.
  */
-
-/* The layout is on `[open]`, not on the element: a bare `display` here beats the user agent's
-   `dialog:not([open]) { display: none }` and leaves a closed dialog painted on the page. */
-.dialog[open] {
-  display: flex;
-  flex-direction: column;
-}
-
-.dialog {
-  overflow: hidden;
-  border: 1px solid var(--app-divider);
-  border-radius: var(--app-radius-lg);
-  background: var(--app-paper);
-  color: var(--app-text);
-  padding: 0;
-  width: min(900px, 92vw);
-  max-height: 84dvh;
-  box-shadow: var(--app-lift);
-}
-
-.dialog::backdrop {
-  background: var(--app-scrim);
-}
 
 .head,
 .foot {
@@ -74,4 +51,14 @@
   padding: var(--app-space-5);
   font-size: var(--app-text-sm);
   line-height: var(--app-lh-body);
+}
+
+/* `prepare` runs with the panel already on screen, so this replaces the source rather than the
+   whole panel — the reader sees the frame arrive first and the text fill it. */
+.loading {
+  margin: 0;
+  padding: var(--app-space-6);
+  color: var(--app-text-secondary);
+  font-family: var(--app-font-mono);
+  font-size: var(--app-text-sm);
 }
