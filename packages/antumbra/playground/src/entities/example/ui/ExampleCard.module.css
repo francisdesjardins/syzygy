@@ -2,7 +2,9 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: var(--app-space-6);
+  /* Less above than below: a title sits closer to the edge it hangs from than the content does to
+     the one it rests on. */
+  padding: var(--app-space-5) var(--app-space-6) var(--app-space-6);
 }
 
 .head {
@@ -13,21 +15,23 @@
 }
 
 /* h3, under the section's h2 — a card title is a level of the page, not a sixth one. The body face
-   is stated because the global heading rule reaches h3. */
+   is stated because the global heading rule reaches h3.
+   Heading leading, not body leading: a card title that runs to two lines reads as one thing at
+   --app-lh-snug and as two paragraphs at --app-lh-body. */
 .title {
   flex: 1;
   margin: 0;
   font-family: var(--app-font-body);
   font-weight: 600;
-  /* Off-scale: between --app-text-base and --app-text-lg. */
-  font-size: 1.1rem;
-  line-height: 1.6;
-  letter-spacing: -0.01em;
+  font-size: var(--app-text-base);
+  line-height: var(--app-lh-snug);
+  letter-spacing: var(--app-tracking-snug);
 }
 
+/* No `flex` of its own: `.example` already claims the free space with `margin-top: auto`, and a
+   paragraph that grows is a paragraph whose box stops matching its text. */
 .description {
-  flex: 1;
-  margin: 0 0 var(--app-space-6);
+  margin: 0 0 var(--app-space-5);
   /* The same measure `PageLayout` holds its own prose to. A full-width card runs 98 characters to
      the line without it, which is past where the eye finds the next one. */
   max-width: var(--app-measure);
