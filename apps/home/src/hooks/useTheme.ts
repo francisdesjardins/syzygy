@@ -26,55 +26,76 @@ if (typeof window !== 'undefined') {
   }
 }
 
-// Helper to create theme
-const createTheme = (isDark: boolean) => {
-  const scrollbarColors = {
-    track: isDark ? '#2d2d2d' : '#f1f1f1',
-    thumb: isDark ? '#666' : '#888',
-    thumbHover: isDark ? '#808080' : '#555',
-  };
+/**
+ * The attribute the token sheets answer to. Penumbra's dark block is
+ * `:root[data-color-scheme='dark']`, so setting this is what switches the whole palette — and it
+ * has to happen before the theme is read, since the theme is read *from* the palette.
+ */
+const applyScheme = (dark: boolean): void => {
+  if (typeof document !== 'undefined') {
+    document.documentElement.dataset['colorScheme'] = dark ? 'dark' : 'light';
+  }
+};
+
+/**
+ * One value, read from where it is declared.
+ *
+ * `src/styles/tokens.skin.css` and penumbra's two sheets are the palette; this is MUI being told
+ * what it is rather than being given a second copy. A component asking for `primary.main` and a
+ * stylesheet asking for `var(--app-primary)` cannot disagree, which they did for as long as the
+ * hexadecimal lived in both.
+ *
+ * The fallback is for a document that has not parsed the sheets — a test renderer, a server. It is
+ * deliberately wrong-looking rather than plausible: a theme built on it is a bug to see, not a
+ * palette to ship.
+ */
+const token = (name: string): string => {
+  if (typeof document === 'undefined') {
+    return '#ff00ff';
+  }
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || '#ff00ff';
+};
+
+const createTheme = (dark: boolean) => {
+  applyScheme(dark);
 
   return createMuiTheme({
     palette: {
-      mode: isDark ? 'dark' : 'light',
-      primary: isDark
-        ? {
-            main: '#FF8BC4', // Lighter hot pink for dark mode — better legibility on dark backgrounds
-            light: '#FFAED5',
-            dark: '#FF69B4',
-            contrastText: '#fff',
-          }
-        : {
-            // Deepened from #FF69B4, which measured 2.65:1 on white — below the 3:1 floor for
-            // large text, so the h1, every link and white-on-pink buttons all failed WCAG 1.4.3.
-            // This is the same fuchsia at 5.11:1. The original stays available as `light`.
-            main: '#C13584',
-            light: '#FF69B4',
-            dark: '#9D2A6B',
-            contrastText: '#fff',
-          },
-      // White card on a white page gave the layout nothing to sit on. In light mode the ground is
-      // knocked back to a near-neutral carrying a trace of the brand fuchsia — 1.13:1 against the
-      // paper, enough to read as a surface without becoming a colour of its own. Paper stays pure
-      // white, so every contrast ratio measured against it still holds. Dark mode keeps the
-      // defaults, which already separate.
-      ...(isDark
-        ? {}
-        : {
-            background: {
-              default: '#F4F0F2',
-              paper: '#FFFFFF',
-            },
-          }),
-      secondary: {
-        main: '#9C27B0', // Purple to complement fuschia
-        light: '#BA68C8',
-        dark: '#7B1FA2',
-        contrastText: '#fff',
+      mode: dark ? 'dark' : 'light',
+      // `main` and `dark` only; MUI derives `light` from `main`, and nothing on this site asks for
+      // it. `dark` is what a contained button hovers to, which is the token's whole job.
+      primary: {
+        main: token('--app-primary'),
+        dark: token('--app-primary-hover'),
+        contrastText: token('--app-primary-ink'),
+      },
+      // The ring: the hue this site's fuchsia was deepened from, kept for what is never text.
+      secondary: { main: token('--app-ring') },
+      background: {
+        default: token('--app-bg'),
+        paper: token('--app-paper'),
+      },
+      text: {
+        primary: token('--app-text'),
+        secondary: token('--app-text-secondary'),
+        disabled: token('--app-text-tertiary'),
+      },
+      divider: token('--app-divider'),
+      error: {
+        main: token('--app-error'),
+        dark: token('--app-error-hover'),
+        contrastText: token('--app-error-ink'),
+      },
+      success: { main: token('--app-ok') },
+      info: { main: token('--app-info') },
+      warning: { main: token('--app-warn') },
+      action: {
+        hover: token('--app-hover'),
+        selected: token('--app-selected'),
       },
     },
-    // Penumbra, system half. `src/styles/tokens.system.css` is the source of truth; these mirror
-    // the handful of values MUI wants as JS rather than as a custom property.
+    // Penumbra, system half. These mirror the handful of values MUI wants as JS rather than as a
+    // custom property.
     //
     // `spacing` is deliberately left at MUI's 8px default: its steps (8/16/24/32) are already
     // points on the token file's 4px grid, so rebasing it to 4 would halve every gap on the site
@@ -103,11 +124,10 @@ const createTheme = (isDark: boolean) => {
       MuiCssBaseline: {
         styleOverrides: {
           '*::-webkit-scrollbar': { width: '8px', height: '8px' },
-          '*::-webkit-scrollbar-track': { background: scrollbarColors.track },
+          '*::-webkit-scrollbar-track': { background: 'var(--app-scrollbar-track)' },
           '*::-webkit-scrollbar-thumb': {
-            background: scrollbarColors.thumb,
+            background: 'var(--app-scrollbar-thumb)',
             borderRadius: '4px',
-            '&:hover': { background: scrollbarColors.thumbHover },
           },
         },
       },

@@ -4,6 +4,62 @@ Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No s
 
 **This file is the app's memory.** The code states what holds now; why it came to hold lives here.
 
+## 2026-09-17, the palette stops being MUI's
+
+### Changed
+
+`src/styles/tokens.skin.css` is the palette now — eleven declarations, three typefaces and the
+eight colours this site paints itself with — over `penumbra/tokens.skin.base.css`, which
+`main.tsx` imports between the system half and it.
+
+**`useTheme` resolves the token names off the document instead of carrying hexadecimal.**
+`primary.main` is `--app-primary`, `background.paper` is `--app-paper`, `divider` is
+`--app-divider`, and so on down to the scrollbar. The argument for keeping colour in MUI was that
+components have to read it from the theme anyway and two sources drift apart; that was right about
+the drift and wrong about which source. The theme reads the palette; it is not one.
+
+`main.tsx` imports the three sheets before `./App`, because a theme built at module scope out of
+values the document has not parsed is a theme built out of nothing.
+
+**`data-color-scheme` is stamped on `:root`.** Penumbra's dark block answers to it, so the toggle
+now switches the whole palette rather than only the MUI half — and the attribute is set before the
+theme is read, since the theme is read from the palette.
+
+### Changed — what moved on screen
+
+The brand did not: the fuchsia, both faces and every type size came through byte-identical, measured
+element by element in both schemes before and after. What moved is the neutral half, which is now
+the base's:
+
+- **Light** shifts from a fuchsia-traced ground (`#F4F0F2`) to the base's slate-traced `#f4f6fa`,
+  and the text ranks from black at 87% and 60% to `#0b1120` and `#4a5568`. Side by side the ground
+  reads a shade cooler; alone it reads the same.
+- **Dark stops being flat.** MUI's dark defaults give `background.default` and `background.paper`
+  the same `#121212`, so the card was separated from the page by nothing but a 12%-white hairline.
+  The base gives `#0b1120` and `#111a2b`, which separate.
+
+The ground's fuchsia trace was a decision this site made while it owned its palette alone. It is one
+of three surfaces sharing a design system now, and reading as their sibling is worth more than a
+trace nobody could name. One declaration puts it back.
+
+The dark scheme's `primary` also gained an ink it could carry: MUI paired `contrastText: #fff` with
+`#FF8BC4`, which is **1.94:1**. Nothing on this site fills with primary, so it never shipped — and
+nothing would have caught it either, which is the other half of why the palette moved.
+
+### Added
+
+`yarn check:literals` — a hexadecimal in `src/**/*.tsx` fails the check. A colour in a component is
+a second palette starting: correct the day it is written, blind to the colour scheme, and invisible
+to `check:contrast`, which measures the tokens. Stylesheets are exempt by definition.
+
+It caught the one that was left — the card's `0 4px 20px rgba(0,0,0,0.08)`, now `--app-lift`.
+
+### Added — the preview resets what it does not own
+
+`/design-system`'s specimen unsets all eleven skin names, not just the three faces. This site
+declares every one of them on `:root` now, and a custom property inherits — so "the base ships
+neither a typeface nor a brand" was a claim its own page had started to contradict.
+
 ## 2026-09-17, a second page, and two palettes that are not this site's
 
 ### Added

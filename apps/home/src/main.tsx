@@ -1,12 +1,14 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
-import { App } from './App';
-
-// Penumbra. The system half is the package now, not a copy of it; the skin beside it is this
-// site's own and sets typefaces only — colour stays in the MUI palette.
+// Penumbra, and it is imported before anything that reads it. The three sheets are this site's
+// palette outright — `useTheme` builds the MUI theme by resolving these names — so a module that
+// evaluated first would build a theme out of values the document did not have yet.
 import 'penumbra/tokens.system.css';
+import 'penumbra/tokens.skin.base.css';
 import './styles/tokens.skin.css';
+
+import { App } from './App';
 
 import './i18n';
 

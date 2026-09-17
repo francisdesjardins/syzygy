@@ -5,6 +5,18 @@ keeps its own `CHANGELOG.md` for changes to itself.
 
 Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No semver.
 
+## 2026-09-17, the last palette maintained twice
+
+### Changed
+
+`apps/home` runs on penumbra. Its colour was the MUI palette, written in hexadecimal in
+`useTheme.ts`; it is `tokens.skin.css` over the base now, and the theme is built by resolving
+those names off the document. The three surfaces this repository ships finally answer one question
+one way, and the site's own [CHANGELOG](apps/home/CHANGELOG.md) carries what that moved on screen.
+
+That leaves nothing in the repository declaring a colour outside a token sheet — which is a claim,
+so it has a gate: `yarn check:literals` in the home, beside the two that already guard the package.
+
 ## 2026-09-17, the design system gets a page, and the gate a home
 
 ### Added

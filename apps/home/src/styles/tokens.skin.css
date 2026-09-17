@@ -1,20 +1,53 @@
 /**
- * Penumbra — the skin, written for francisdesjardins.ca. **This is the file a project rewrites**;
- * `tokens.system.css` beside it was lifted from the playgrounds unchanged.
+ * Penumbra — the brand half of the skin, written for francisdesjardins.ca. **This is the file a
+ * project rewrites**; the system half and the neutral base come from the `penumbra` package
+ * unchanged.
  *
- * Only the typefaces are set here. Colour stays in the MUI palette (`src/hooks/useTheme.ts`),
- * because this site's identity is the fuchsia and MUI components have to read it from the theme
- * anyway — two sources for one colour is how they drift apart.
+ * Eleven declarations: three typefaces and the eight colours a project paints itself with. The
+ * surfaces, the three text ranks, the divider, the control edge, the states, the four semantics,
+ * the scrim and the lift are the base's and are not restated here.
  *
- * The pairing is the playgrounds': a Palatino-class serif for display over a grotesque, with mono
- * for anything that is an identifier. antumbra runs it on system faces; umbra puts Newsreader and
- * Geist in front of the same fallbacks. This site takes the system spelling — no font files to
- * fetch on a page that is mostly one screen of text. The pairing is what makes the three read as
- * siblings; the palettes deliberately differ, and so does this one.
+ * **This file is the palette, and there is no second one.** MUI reads these names rather than
+ * carrying its own hexadecimal — `src/hooks/useTheme.ts` builds the theme out of the resolved
+ * values — because two sources for one colour is how they drift apart, and the site, the two
+ * playgrounds and the design-system page all have to agree on what this site's fuchsia is.
+ *
+ * The rule the token names carry: **`--app-flame` is a fill and `--app-accent` is the ink.** Here
+ * they are the same value, which is a fact about this hue rather than an exception — the deep
+ * fuchsia measures 5.11:1 on paper, so it can do both jobs. The hot pink it was deepened from
+ * measures 2.65:1 and is spent on the ring, which is never text.
+ *
+ * The pairing is the playgrounds' — a Palatino-class serif for display over a grotesque, mono for
+ * identifiers — on system faces here, because this page is one screen of text and has no reason to
+ * fetch a font file. The pairing makes the three read as siblings; the palettes deliberately do not.
  */
 
 :root {
   --app-font-display: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
   --app-font-body: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
   --app-font-mono: ui-monospace, 'Cascadia Code', 'SF Mono', Menlo, Consolas, monospace;
+
+  --app-primary: #c13584;
+  --app-primary-ink: #ffffff;
+  --app-primary-hover: #9d2a6b;
+  --app-accent: #c13584;
+
+  --app-flame: #c13584;
+  --app-flame-wash: rgb(193 53 132 / 0.1);
+  --app-ring: #ff69b4;
+  --app-glow: 0 0 0 1px rgb(255 105 180 / 0.55), 0 0 32px -10px rgb(255 105 180 / 0.4);
+}
+
+:root[data-color-scheme='dark'] {
+  --app-primary: #ff8bc4;
+  /* The light fuchsia cannot carry white — 1.94:1 — so the ink goes dark and the hover brightens
+     rather than deepening. The direction is the scheme's, not a preference. */
+  --app-primary-ink: #3d0b28;
+  --app-primary-hover: #ffaed5;
+  --app-accent: #ff8bc4;
+
+  --app-flame: #ff8bc4;
+  --app-flame-wash: rgb(255 139 196 / 0.14);
+  --app-ring: #ffaed5;
+  --app-glow: 0 0 0 1px rgb(255 174 213 / 0.5), 0 0 32px -8px rgb(255 174 213 / 0.35);
 }

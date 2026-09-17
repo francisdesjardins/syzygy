@@ -10,7 +10,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "check": "yarn type-check && yarn lint --deny-warnings && yarn format:check && yarn check:contrast",
+    "check": "yarn type-check && yarn lint --deny-warnings && yarn format:check && yarn check:contrast && yarn check:literals",
     "type-check": "node node_modules/typescript-7/bin/tsc --noEmit",
     "lint": "oxlint --type-aware",
     "lint:fix": "oxlint --type-aware --fix",
@@ -18,7 +18,8 @@
     "format:check": "oxfmt --check .",
     "test": "echo \"home: no-op — no test files yet\"",
     "verify:all": "yarn check && yarn build",
-    "check:contrast": "penumbra-contrast src/styles/skins/tint.css && penumbra-contrast --no-base src/styles/skins/replaced.css"
+    "check:contrast": "penumbra-contrast src/styles/tokens.skin.css && penumbra-contrast src/styles/skins/tint.css && penumbra-contrast --no-base src/styles/skins/replaced.css",
+    "check:literals": "node scripts/check-literals.mjs"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

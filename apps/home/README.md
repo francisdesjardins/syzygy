@@ -26,19 +26,30 @@ own document, and the sub-site quietly serves the wrong page.
 
 ## What it takes from the packages
 
-[`penumbra`](../../packages/penumbra) — the system tokens, as a dependency. `src/styles/tokens.skin.css`
-beside it is this site's own and sets **typefaces only**; colour lives in the MUI palette in
-`src/hooks/useTheme.ts`, because MUI components have to read it from the theme anyway and two
-sources for one colour is how they drift apart.
+[`penumbra`](../../packages/penumbra) — both sheets, as a dependency, and `src/styles/tokens.skin.css`
+beside them is this site's own: eleven declarations, three typefaces and the eight colours a project
+paints itself with.
 
-The neutral base is **not** imported at `:root` here, for the same reason: 24 colour names nothing
-on this site reads. `/design-system` loads it as text and rewrites `:root` to the preview's own
-selector, which is what lets three layerings share one page — the base alone, the base under
-`src/styles/skins/tint.css`, and `src/styles/skins/replaced.css` with no base at all.
+**Those three files are the palette, and there is no second one.** `src/hooks/useTheme.ts` builds
+the MUI theme by _resolving_ the token names off the document rather than carrying its own
+hexadecimal — `primary.main` is `--app-primary`, `background.paper` is `--app-paper`, and so on
+down. A component asking MUI for a colour and a stylesheet asking for `var(--app-*)` cannot
+disagree. `yarn check:literals` keeps it that way: a hexadecimal anywhere in `src/**/*.tsx` fails
+the check, because it would be a second palette starting — correct the day it was written, blind to
+the colour scheme, and invisible to `yarn check:contrast`, which measures the tokens.
 
-Those two are demonstration material, so they live here rather than in the package, which ships
-nothing that would read as a default. Both are held to WCAG AA by `penumbra-contrast`, penumbra's
-own gate, and `yarn check` runs it over each.
+`useTheme` also stamps `data-color-scheme` on `:root`, which is the attribute penumbra's dark block
+answers to. The toggle switches the whole palette, then rebuilds the theme from it.
+
+`/design-system` loads the sheets as text and rewrites `:root` to the preview's own selector, which
+is what lets three layerings share one page — the base alone, the base under
+`src/styles/skins/tint.css`, and `src/styles/skins/replaced.css` with no base at all. The preview
+resets the eleven names a skin declares, because a custom property inherits and this site declares
+all eleven.
+
+Those two example skins are demonstration material, so they live here rather than in the package,
+which ships nothing that would read as a default. All three skins are held to WCAG AA by
+`penumbra-contrast`, penumbra's own gate, which `yarn check` runs over each.
 
 The pairing is the playgrounds' — a Palatino-class serif for display over a grotesque, mono for
 identifiers — on system faces here, because this page is one screen of text and has no reason to

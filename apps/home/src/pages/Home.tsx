@@ -18,9 +18,8 @@ const Container = styled(Stack)(({ theme }) => {
     maxWidth: 960,
     margin: '0 auto',
     padding: 'var(--app-space-4)',
-    // Flat, not a gradient. It ran default → paper, and in dark those are the same #121212, so it
-    // rendered as a no-op that still cost a paint; in light it washed the ground out just where the
-    // card needed to sit against it.
+    // Flat, not a gradient: a wash from the ground to the paper is either invisible, when the two
+    // are close, or it lightens the ground exactly where the card needs something to sit against.
     backgroundColor: theme.palette.background.default,
     [theme.breakpoints.down('sm')]: {
       padding: 'var(--app-space-3)',
@@ -44,7 +43,7 @@ const ContentStack = styled(Stack)(({ theme }) => {
     border: `1px solid ${theme.palette.divider}`,
     borderRadius: 'var(--app-radius-xl)',
     backgroundColor: theme.palette.background.paper,
-    boxShadow: `0 4px 20px rgba(0,0,0,0.08)`,
+    boxShadow: 'var(--app-lift)',
     [theme.breakpoints.down('sm')]: {
       padding: 'var(--app-space-6)',
     },

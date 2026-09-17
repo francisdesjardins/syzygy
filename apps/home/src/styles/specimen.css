@@ -11,16 +11,28 @@
  */
 
 [data-penumbra-preview] {
-  /* A custom property inherits, and the site around this preview is a project too: its three faces
-     are declared on `:root`. Without this reset the state that declares no typeface would show the
-     site's, and "the base ships none" would be a sentence the screen contradicts. Colour needs no
-     such reset — this site keeps its palette in MUI and declares none of these names.
+  /* A custom property inherits, and the site around this preview is a project too — it declares
+     all eleven of these on `:root`. Without the reset, the state that declares no skin would show
+     this site's, and "the base ships neither a typeface nor a brand" would be a sentence the screen
+     contradicts.
+
+     The base's own 24 names need no reset: every state's sheet declares them, scoped here and
+     therefore winning. These eleven are exactly the ones a state is allowed to leave out.
 
      A skin injected into the preview re-declares them at equal specificity and later in the
      document, so it wins; the fallbacks below are what is left when nothing does. */
   --app-font-display: initial;
   --app-font-body: initial;
   --app-font-mono: initial;
+
+  --app-primary: initial;
+  --app-primary-ink: initial;
+  --app-primary-hover: initial;
+  --app-accent: initial;
+  --app-flame: initial;
+  --app-flame-wash: initial;
+  --app-ring: initial;
+  --app-glow: initial;
 
   font-family: var(--app-font-body, sans-serif);
   background: var(--app-bg);
