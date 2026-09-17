@@ -94,31 +94,39 @@ and not a choice; the comment in each file says so.
 
 ## Not done
 
-**What is still written twice is stylesheets whose components legitimately differ.** This line used
-to read "the showcase shell", which was an impression and a wrong one: `showcases/` is antumbra's
-alone and has no umbra counterpart, so there was never anything there to deduplicate. The two
-playgrounds hold 54 files at the same relative path; 8 are byte-identical, 289 lines in total.
+**The two playgrounds share a shell, and the number published here was wrong.**
 
-Of those 8, three are settled: `fonts.css` is each project's own skin,
-`react-syntax-highlighter-subpaths.d.ts` is a shim for somebody else's package, and
-`useCodeDialog.module.css` is 18 lines under a hook whose two copies are 38% alike — too little
-shared behaviour to carry a component across. The rest divide into two shapes.
+This entry used to say "8 byte-identical files, 289 lines", and concluded that what remained was a
+few stylesheets under components that legitimately differ. Both halves came from a probe with a
+blind spot: it paired files by their path relative to each `src/`, and antumbra is
+folder-per-component where umbra is flat. `PageLayout/PageLayout.tsx` and `PageLayout.tsx` are the
+same component and never met. Pairing by **file name**, across the 62 names present on both sides:
 
-`DesignSystemPage.module.css` is 80 lines, 11 rules, and **all 11 are declaration-identical** — a
-miss from the extraction that moved that page's components to corona. `HomePage.module.css` is the
-same shape one step weaker: 20 selectors in both, **18 with identical declarations**, against 13
-rules only antumbra has and 6 only umbra has.
+|                | By path            | By name                   |
+| -------------- | ------------------ | ------------------------- |
+| Byte-identical | 8 files, 289 lines | **10 files, 384 lines**   |
+| 60% or more    | 11 files           | **19 files, 1 512 lines** |
+| 80% or more    | not measured       | **18 files**              |
 
-**Neither can move, for the same reason.** All 13 of corona's stylesheets are consumed by a corona
-component, and no host imports a corona class name — the `./src/*` export path would allow it, and
-nothing uses it. Moving a bare CSS module would make class names a public surface corona has never
-had, which is a new seam rather than an extraction. A stylesheet reaches corona the way every other
-one did: behind a component. If those two pages ever converge on one, the CSS follows it.
+The largest item is `PeekingMoon.tsx` at **339 of 343 lines**, which the old method never saw.
+Behind it: `SelectionDropdown.tsx` and `useDocumentTitle.ts` at 98%, `AppButton.tsx` 96%,
+`AppIconButton.module.css` 94%, `RootLayout.module.css` 93%, `PageLayout.module.css` 84%,
+`TopBar.module.css` 80%, `SectionNav.module.css` 79%.
 
-`entities/example` is the counter-example that confirms the shape. `ExampleCard.tsx` forks on
-behaviour — antumbra treats `children` and `example` as alternatives and wraps children in
-`.controls`, umbra stacks them — and the stylesheet forks with it: 3 shared selectors, 2 identical,
-`.body` different on both sides for reasons each file states. Moving `ExampleSection` and
+**The method was the defect, so the method is the entry.** A similarity probe is a measuring
+instrument, and this one reported the repository far cleaner than it is. Pair by what a reader means
+by "the same component", not by what the filesystem happens to agree on.
+
+What follows is not a list of files to move one by one. It is that the playground _shell_ — the bar,
+the layout, the buttons, the dropdown, the mascot — is written twice and is about to be wanted a
+third time. Each candidate still has to pass corona's entry rule, _does this exist identically in
+both and does it need to know which library it is showing_, rather than a percentage: `PeekingMoon`
+scores 99% and fails that rule read naively, because the drawing inside it is each project's and
+only the behaviour around it is shared.
+
+`entities/example` stays regardless. `ExampleCard.tsx` forks on behaviour — antumbra treats
+`children` and `example` as alternatives and wraps children in `.controls`, umbra stacks them — and
+its stylesheet forks with it, 3 shared selectors and 2 identical. Moving `ExampleSection` and
 `ExampleGrid` without the card would split a family every page composes as a unit.
 
 **A smaller thing found on the way.** `shared/ui` in antumbra is folder-per-component with a barrel;
