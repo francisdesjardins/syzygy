@@ -5,6 +5,40 @@ keeps its own `CHANGELOG.md` for changes to itself.
 
 Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No semver.
 
+## 2026-09-17, the gates were not linted either
+
+### Added
+
+`yarn lint` at this root, over the whole tree. **oxc reads a nested config on a run started above
+it**, so every workspace is still held to its own rules — the root command adds coverage rather than
+replacing anyone's.
+
+It is the same hole the formatter had, found the same way and one size larger. `penumbra` and
+`gnomon` have no build, so neither has a `check` that runs a linter, and neither had a config;
+**gnomon is 869 lines of the gates themselves and oxlint had never seen one of them.** Nor had it
+seen `deploy.mjs` or `yarn.config.cjs`, the two files this repository is actually driven by.
+
+Each workspace keeps its own `lint` so it runs standalone. What the root's adds is that "every file"
+is true.
+
+### Fixed — what the first run found
+
+Four real things, in code nothing had ever checked:
+
+- Two unused imports in `gnomon/check-examples.mjs`.
+- `deploy.mjs` broke the two-parameter rule twice, in `run` and `step`. Both are its own helpers
+  rather than a signature handed to it, so both took the options object the rule asks for.
+- `gnomon/oxfmt.mjs` had brace-less `if` and `while` bodies. It is a module, not a one-shot script,
+  so the house style applies to it.
+- One deliberate exception, now written down: `ctCoverage<TPlugin>` uses its type parameter once,
+  and that is the mechanism — it is inferred from the call's position so the return type is the
+  _consumer's_ `Plugin`, which is the whole reason the declaration exists.
+
+The rest was `no-console` in files whose output _is_ their contract. The root already exempts
+`**/scripts/**`; `deploy.mjs` joins it by name, and gnomon's three CLIs by a config of its own —
+scoped to those three, because the modules beside them are not one-shot scripts. `**/*.cjs` joins
+the untyped-JavaScript glob, which is what `yarn.config.cjs` needed.
+
 ## 2026-09-17, one name, one command
 
 ### Added

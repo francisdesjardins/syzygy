@@ -3544,6 +3544,8 @@ __metadata:
   dependencies:
     "@playwright/test": "npm:1.63.0"
     oxfmt: "npm:0.68.0"
+    oxlint: "npm:^1.83.0"
+    oxlint-tsgolint: "npm:7.0.2001"
   languageName: unknown
   linkType: soft
 

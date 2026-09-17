@@ -47,9 +47,13 @@ const stripComments = (text) => {
     const character = text[i];
     if (inString) {
       out += character;
-      if (escaped) escaped = false;
-      else if (character === '\\') escaped = true;
-      else if (character === '"') inString = false;
+      if (escaped) {
+        escaped = false;
+      } else if (character === '\\') {
+        escaped = true;
+      } else if (character === '"') {
+        inString = false;
+      }
       continue;
     }
     if (character === '"') {
@@ -58,13 +62,17 @@ const stripComments = (text) => {
       continue;
     }
     if (character === '/' && text[i + 1] === '/') {
-      while (i < text.length && text[i] !== '\n') i += 1;
+      while (i < text.length && text[i] !== '\n') {
+        i += 1;
+      }
       out += '\n';
       continue;
     }
     if (character === '/' && text[i + 1] === '*') {
       i += 2;
-      while (i < text.length && !(text[i] === '*' && text[i + 1] === '/')) i += 1;
+      while (i < text.length && !(text[i] === '*' && text[i + 1] === '/')) {
+        i += 1;
+      }
       i += 1;
       continue;
     }

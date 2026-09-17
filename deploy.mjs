@@ -80,7 +80,7 @@ function quote(part) {
   return `"${escaped}"`;
 }
 
-function run(cmd, args, cwd) {
+function run(cmd, { args, cwd }) {
   const full = [cmd, ...args].map(quote).join(' ');
 
   return new Promise((ok, fail) => {
@@ -135,7 +135,7 @@ async function resolveYarn() {
   for (const release of candidates) {
     try {
       await access(release);
-      return (args) => run(process.execPath, [release, ...args], ROOT);
+      return (args) => run(process.execPath, { args: [release, ...args], cwd: ROOT });
     } catch {
       // Declared but not on disk — try the next candidate.
     }
@@ -144,7 +144,7 @@ async function resolveYarn() {
   console.log(
     `  ${c.dim}No vendored Yarn release found, falling back to \`yarn\` on PATH.${c.reset}`
   );
-  return (args) => run('yarn', args, ROOT);
+  return (args) => run('yarn', { args, cwd: ROOT });
 }
 
 /**
@@ -278,11 +278,11 @@ async function timed(label, fn) {
   timings.push({ label, ms: performance.now() - start });
 }
 
-async function step(message, label, fn) {
+async function step(message, { label, work }) {
   stepNumber += 1;
   const n = stepNumber;
   console.log(`  ${c.magenta}[${n}/${TOTAL_STEPS}]${c.reset} ${message}`);
-  await timed(label, fn);
+  await timed(label, work);
   console.log(
     `  ${c.green}[${n}/${TOTAL_STEPS}] \u2713${c.reset} ${c.dim}${label} done.${c.reset}`
   );
@@ -305,9 +305,10 @@ async function main() {
   const yarn = await resolveYarn();
 
   // One install for every workspace, which is the whole reason these projects share a repository.
-  await step(`${icon.install} Installing ${c.yellow}every workspace${c.reset}...`, 'Install', () =>
-    yarn(['install', '--immutable'])
-  );
+  await step(`${icon.install} Installing ${c.yellow}every workspace${c.reset}...`, {
+    label: 'Install',
+    work: () => yarn(['install', '--immutable']),
+  });
 
   for (const { workspace, capability, label } of PLAYGROUNDS) {
     const dist = resolve(ROOT, 'packages', workspace, 'playground', 'dist');
@@ -320,46 +321,55 @@ async function main() {
     // rather than as an error anyone can read.
     await step(
       `${icon.build} Building ${c.yellow}${workspace}${c.reset}'s playground (${label})...`,
-      `Build ${workspace} playground`,
-      () => yarn(['workspace', workspace, 'run', 'playground:build:file'])
+      {
+        label: `Build ${workspace} playground`,
+        work: () => yarn(['workspace', workspace, 'run', 'playground:build:file']),
+      }
     );
 
-    await step(
-      `${icon.clean}Removing existing public/playground/${capability}...`,
-      `Remove old ${capability}`,
-      () => rm(destination, { recursive: true, force: true })
-    );
+    await step(`${icon.clean}Removing existing public/playground/${capability}...`, {
+      label: `Remove old ${capability}`,
+      work: () => rm(destination, { recursive: true, force: true }),
+    });
 
     await step(
       `${icon.copy} Copying dist \u2192 ${c.yellow}public/playground/${capability}${c.reset}`,
-      `Copy ${workspace} dist`,
-      async () => {
-        await ensureDist(dist, `${workspace}'s playground:build:file`);
-        await cp(dist, destination, { recursive: true });
+      {
+        label: `Copy ${workspace} dist`,
+        work: async () => {
+          await ensureDist(dist, `${workspace}'s playground:build:file`);
+          await cp(dist, destination, { recursive: true });
+        },
       }
     );
   }
 
   // Whatever now sits in apps/home/public/playground/ is carried into dist/ by Vite.
-  await step(`${icon.build} Building ${c.yellow}the home${c.reset}...`, 'Build home', () =>
-    yarn(['workspace', 'home', 'run', 'build'])
-  );
+  await step(`${icon.build} Building ${c.yellow}the home${c.reset}...`, {
+    label: 'Build home',
+    work: () => yarn(['workspace', 'home', 'run', 'build']),
+  });
 
   await step(
     `${icon.zip}Zipping dist \u2192 ${c.yellow}francisdesjardins.ca-dist.zip${c.reset}...`,
-    'Zip dist',
-    async () => {
-      await ensureDist(HOME_DIST, 'the home build');
-      await rm(DEPLOY_ZIP, { force: true });
+    {
+      label: 'Zip dist',
+      work: async () => {
+        await ensureDist(HOME_DIST, 'the home build');
+        await rm(DEPLOY_ZIP, { force: true });
 
-      if (process.platform === 'win32') {
-        // Relative to the repository root, not absolute: tar reads `host:path` as a remote
-        // archive, and a Windows drive letter is exactly that shape — `D:\…` fails with
-        // "Cannot connect to D".
-        await run('tar', ['-a', '-cf', ZIP_NAME, '-C', relative(ROOT, HOME_DIST), '.'], ROOT);
-      } else {
-        await run('zip', ['-r', DEPLOY_ZIP, '.'], HOME_DIST);
-      }
+        if (process.platform === 'win32') {
+          // Relative to the repository root, not absolute: tar reads `host:path` as a remote
+          // archive, and a Windows drive letter is exactly that shape — `D:\…` fails with
+          // "Cannot connect to D".
+          await run('tar', {
+            args: ['-a', '-cf', ZIP_NAME, '-C', relative(ROOT, HOME_DIST), '.'],
+            cwd: ROOT,
+          });
+        } else {
+          await run('zip', { args: ['-r', DEPLOY_ZIP, '.'], cwd: HOME_DIST });
+        }
+      },
     }
   );
 

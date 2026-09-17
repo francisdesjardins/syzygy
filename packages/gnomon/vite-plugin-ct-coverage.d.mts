@@ -15,6 +15,10 @@
  * the consumer's own `Plugin`, and the `unknown` default makes a context-free call fail loudly
  * rather than silently widen.
  */
+// Appearing once is the mechanism, not an oversight: the parameter exists to be inferred from the
+// call's position, so the return type is the *consumer's* `Plugin`. Naming a type here is the one
+// thing the comment above refuses to do.
+// oxlint-disable-next-line typescript/no-unnecessary-type-parameters
 export declare function ctCoverage<TPlugin = unknown>(options: {
   /** The library package's directory. Its `src/` is what gets instrumented. */
   root: string;

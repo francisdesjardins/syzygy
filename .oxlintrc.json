@@ -168,7 +168,7 @@
       // worse than no finding, because it reads the same.
       //
       // The syntax-level rules stay, and they are what these files are linted for.
-      "files": ["**/*.mjs", "**/*.js"],
+      "files": ["**/*.mjs", "**/*.js", "**/*.cjs"],
       "env": { "browser": true, "node": true },
       "rules": {
         "typescript/await-thenable": "off",
@@ -218,7 +218,10 @@
       // concise arrow in a 20-line script is not the readability problem it is in the library.
       // Narrower than the extension glob above, which is why it is a second entry — the demo code
       // in a `public/` directory is shipped code and keeps `no-console`.
-      "files": ["**/scripts/**/*.{mjs,js}", "**/.claude/**/*.{mjs,js}"],
+      //
+      // `deploy.mjs` is this root's own one-shot script; it just does not live in a `scripts/`
+      // directory, being the one command the repository is driven by.
+      "files": ["**/scripts/**/*.{mjs,js}", "**/.claude/**/*.{mjs,js}", "deploy.mjs"],
       "rules": {
         "no-console": "off",
         "curly": "off",

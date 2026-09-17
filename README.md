@@ -113,7 +113,7 @@ involved — which matters, because Node 26 unbundled Corepack and the `yarn` on
 that refuses to run this project at all.
 
 ```sh
-yarn check              # format, type-check and lint every package
+yarn check              # format and lint every file, then each package's own gate
 yarn test               # unit and component tests
 yarn verify:all         # the full gate each package defines for itself
 yarn playgrounds:build  # the relocatable playground builds the site serves
@@ -179,10 +179,14 @@ none has a formatter config at all, because oxfmt walks up.
 
 **What a workspace still declares for itself is the interesting part of each file**, and what it no
 longer declares is the part that had drifted: the same 82 lint rules were maintained in five places,
-and `apps/home` was quietly missing four of the strictness options every package had. The root's own
-`format:check` covers the whole tree rather than only the root, which is how `penumbra` and `gnomon`
-— the two packages with no build, and therefore no `check` that ran a formatter — turn out to have
-been formatted by nothing at all.
+and `apps/home` was quietly missing four of the strictness options every package had.
+
+**The root's own `format:check` and `lint` cover the whole tree**, not just the root — and oxc reads
+a nested config on a run started above it, so each workspace is still linted by its own rules. That
+is how `penumbra` and `gnomon` turn out to have been formatted and linted by nothing at all: neither
+has a build, so neither has a `check` that ran either tool, and gnomon is 869 lines of the gates
+themselves. Each workspace keeps its own `lint` and `format` so it runs standalone; the root's are
+what make "every file" true.
 
 ## AI involvement
 

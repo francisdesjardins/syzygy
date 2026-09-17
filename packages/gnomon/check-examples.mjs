@@ -13,7 +13,7 @@
 
 import { execFileSync } from 'node:child_process';
 import { mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
-import { dirname, join, relative, resolve } from 'node:path';
+import { join, relative } from 'node:path';
 import { formatAs } from './oxfmt.mjs';
 
 /*

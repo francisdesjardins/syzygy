@@ -1,0 +1,40 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oxc-project/oxc/main/npm/oxlint/configuration_schema.json",
+
+  // The shared surface is the repository root's [.oxlintrc.json](../../.oxlintrc.json).
+  //
+  // This package is linted by the root's `yarn lint` rather than by one of its own: it has no
+  // build, no tsconfig and no dependencies beyond the tools it runs as binaries, and giving it a
+  // script would mean giving it a copy of those tools to satisfy. oxc reads a nested config on a
+  // run started anywhere above it, so this file still applies.
+  "extends": ["../../.oxlintrc.json"],
+  "overrides": [
+    {
+      // The three CLIs, which happen to sit at the package root rather than under `scripts/`
+      // because they are what the package *is* — `bin` entries and a Playwright `globalSetup`.
+      // The root's rule for a one-shot script is theirs; the modules beside them are not one-shot
+      // scripts and keep the house style.
+      "files": ["check-examples.mjs", "ct-coverage-report.mjs", "ct-coverage-reset.mjs"],
+      "rules": {
+        "no-console": "off",
+        "curly": "off",
+        "arrow-body-style": "off"
+      }
+    }
+  ],
+  // **Not inherited through `extends`** — not even by a child that declares none — so the list is
+  // written out here and in every sibling, identically. Measured against oxlint 1.83.0.
+  "ignorePatterns": [
+    "**/dist/**",
+    "**/node_modules/**",
+    "**/playwright-report/**",
+    "**/playwright/.cache/**",
+    "**/playwright/.cache-coverage/**",
+    "**/test-results/**",
+    "**/coverage/**",
+    "playground/dist/**",
+    "**/.vite/**",
+    "**/*.d.ts",
+    ".yarn/**"
+  ]
+}
