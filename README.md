@@ -188,6 +188,15 @@ has a build, so neither has a `check` that ran either tool, and gnomon is 869 li
 themselves. Each workspace keeps its own `lint` and `format` so it runs standalone; the root's are
 what make "every file" true.
 
+## What is shared, and what is not
+
+[NORMALIZATION.md](NORMALIZATION.md) is the register: what has been unified and which gate holds it,
+what is deliberately still different and why, and what is simply not done yet.
+
+It exists because the second list is the one that rots. A divergence nobody decided on and nobody is
+tracking reads exactly like one that was argued for — which is what every row in the first list used
+to be.
+
 ## AI involvement
 
 Substantial parts of this repository were written with AI assistance, reviewed and directed by a
