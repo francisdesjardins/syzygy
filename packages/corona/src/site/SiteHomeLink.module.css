@@ -1,0 +1,18 @@
+/* Quieter than the brand beside it: this is the way out, not the subject. */
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--app-space-2);
+  padding: var(--app-space-1) var(--app-space-2);
+  border-radius: var(--app-radius-sm);
+  color: var(--app-text-secondary);
+  font-family: var(--app-font-body);
+  font-size: var(--app-text-sm);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.link:hover {
+  color: var(--app-text);
+  background: var(--app-hover);
+}

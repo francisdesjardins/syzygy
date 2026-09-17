@@ -1,4 +1,5 @@
 import { Link } from '@tanstack/react-router';
+import { SiteHomeLink } from 'corona';
 import { AppIconButton } from '@/shared/ui/AppIconButton';
 import { MenuIcon } from '@/shared/ui/icons';
 import { ThemeToggleButton } from '@/shared/ui/ThemeToggleButton';
@@ -32,6 +33,8 @@ export const TopBar = ({ isMobile, onMenuClick }: TopBarProps) => {
         </Link>
 
         <div className={styles['spacer']} />
+
+        <SiteHomeLink label="francisdesjardins.ca" />
 
         <ThemeToggleButton />
       </div>

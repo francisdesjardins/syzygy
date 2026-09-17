@@ -4,6 +4,7 @@ import { AppIconButton } from '@/shared/ui/AppButton';
 import { MenuIcon } from '@/shared/ui/icons';
 import styles from '@/widgets/top-bar/ui/TopBar.module.css';
 import { Link } from '@tanstack/react-router';
+import { SiteHomeLink } from 'corona';
 
 type TopBarProps = {
   readonly isMobile: boolean;
@@ -35,6 +36,8 @@ export const TopBar = ({ isMobile, onMenuClick }: TopBarProps) => {
         </Link>
 
         <div className={styles['spacer']} />
+
+        <SiteHomeLink label="francisdesjardins.ca" />
 
         <ThemeToggleButton />
       </div>
