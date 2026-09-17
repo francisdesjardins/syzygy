@@ -22,6 +22,11 @@
   // replacing them. **`ignorePatterns` is not inherited at all** — not even by a child that
   // declares none — so that list is written out in each workspace, and that duplication is the
   // tool's, not a choice. Measured against oxlint 1.83.0; re-measure before trusting it again.
+  //
+  // The copy below is this root's own, for the files that belong to no workspace — `deploy.mjs`,
+  // `scripts/`, `yarn.config.cjs`. `yarn lint` starts here and walks the whole tree, and oxc reads
+  // each workspace's nested config on the way down, so every package is still held to its own
+  // rules rather than to these.
   "plugins": ["react", "typescript", "unicorn"],
   // Type-aware lives here rather than only on the CLI, because the editor never sees the CLI.
   // Every invocation in this repo already passes `--type-aware`, so this changes nothing for a
@@ -246,5 +251,17 @@
         "typescript/no-non-null-assertion": "off"
       }
     }
+  ],
+  "ignorePatterns": [
+    "**/dist/**",
+    "**/node_modules/**",
+    "**/playwright-report/**",
+    "**/playwright/.cache/**",
+    "**/playwright/.cache-coverage/**",
+    "**/test-results/**",
+    "**/coverage/**",
+    "**/.vite/**",
+    "**/*.d.ts",
+    ".yarn/**"
   ]
 }

@@ -87,6 +87,16 @@ entry-isolation test. Worth doing, and worth doing on its own.
 been measured properly. Unlike the design-system page, it was never inventoried, so "how much of it
 is the same" is currently an impression rather than a number.
 
+**The agent-instruction budget is one package's gate, and that package is at its ceiling.**
+antumbra's `doc-budget.test.ts` holds a word budget per `CLAUDE.md`, checks that every path those
+files name exists and that every `yarn` script they mention is a real script. umbra has none of it,
+at 3 484 words. And antumbra's own set is at **13 498 of 13 500** — against the rule written in that
+same test, "land at 90% of a budget, not at it", which makes the set a word hunt for every session
+that touches it. Two separate pieces of work: the gate is `gnomon`-shaped and would give umbra all
+three checks the way `penumbra-contrast` gave antumbra a colour gate for free; the trim is an
+editorial pass over prose, and whether a document earns its words is the author's call, not a
+script's.
+
 **`verbatimModuleSyntax` is on in `apps/home` and nowhere else.** The lint rule
 `typescript/consistent-type-imports` asks for the same shape everywhere, so nothing is actually
 unchecked — but one workspace is held to it by the compiler and four by the linter, and that is a

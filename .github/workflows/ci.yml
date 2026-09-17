@@ -80,10 +80,16 @@ jobs:
           echo "Playwright $version"
 
   # ── Check ────────────────────────────────────────────────────────────────────
-  # `yarn check` at the root: `workspaces foreach --all --topological-dev run check`. Six of the ten
-  # workspaces answer to it today — umbra, antumbra, penumbra, limb, corona, home — and between them
+  # `yarn check` at the root: the constraints, `dedupe --check`, then oxfmt and oxlint over the whole
+  # tree, then `workspaces foreach --all --topological-dev run check`. Six of the ten workspaces
+  # answer to that last part today — umbra, antumbra, penumbra, limb, corona, home — and between them
   # that is type-check, oxlint `--type-aware`, oxfmt, the token gate, the contrast gate, typedoc with
   # `treatWarningsAsErrors`, and the JSDoc-example gate.
+  #
+  # **The two root passes are not redundant with the six.** They are what covers the files no
+  # workspace owns — `deploy.mjs`, `yarn.config.cjs`, `scripts/` — and the packages whose `check`
+  # runs neither tool. oxc reads each workspace's nested config on the way down, so a package is
+  # still held to its own rules rather than to the root's.
   #
   # **The aggregate is named on purpose.** The day gnomon grows a `check` script, or a playground
   # does, this job covers it with no edit to this file — which is the whole reason not to spell out
