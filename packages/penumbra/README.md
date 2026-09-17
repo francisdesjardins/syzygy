@@ -45,8 +45,19 @@ a comment to obey them:
   backwards is not a taste question — it is a contrast failure, and the first indigo tried for one
   of these skins measured 4.22:1 and was refused.
 
-Pairs are measured rather than chosen, and a project measuring its own runs the base underneath it:
-most of the pairs a contrast audit checks have a base colour on one side.
+Pairs are measured rather than chosen, and the gate is `penumbra-contrast`, shipped here for the
+same reason the pair table is: `--app-primary-ink on --app-primary` owes 4.5:1 because of what
+those two names mean, and a consumer keeping its own copy of that table would be maintaining a
+definition it does not own.
+
+```bash
+penumbra-contrast tokens.skin.css             # the base, then your skin over it
+penumbra-contrast --no-base tokens.skin.css   # you replaced the base outright
+penumbra-contrast                             # the base alone; brand pairs do not apply
+```
+
+Sixteen pairs in both schemes, eleven of which are the base's own — which is why the eleven are
+measured on every run and the five that need a brand token only once a skin exists.
 
 ## Not shipped here, on purpose
 

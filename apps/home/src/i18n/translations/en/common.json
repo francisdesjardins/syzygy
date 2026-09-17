@@ -36,6 +36,10 @@
       "boot": {
         "name": "umbra",
         "description": "Bootstrap orchestrator. You declare what each step needs and the parallelism is derived from the graph — no flag, no concurrency ceiling."
+      },
+      "designSystem": {
+        "name": "penumbra",
+        "description": "The design system both playgrounds wear — and the page that takes it apart, one layer at a time."
       }
     },
     "location": {
@@ -57,6 +61,50 @@
     "formPlayground": {
       "title": "Form Components - Francis Desjardins",
       "description": "Interactive playground for FormComponents system with live demos and examples"
+    },
+    "designSystem": {
+      "title": "Design system — Francis Desjardins",
+      "description": "penumbra, layer by layer: a scale with no colour, a palette with no brand, and a skin over it. Three layerings of the same specimen, switchable.",
+      "ogTitle": "The design system, layer by layer",
+      "ogDescription": "A scale with no colour, a palette with no brand, and what a project writes over them."
+    }
+  },
+  "designSystem": {
+    "back": "Back to the home",
+    "title": "The design system, layer by layer",
+    "intro": "penumbra ships two stylesheets and no brand. The first is scale, rhythm, motion and stacking, with no colour in it at all. The second is colour, and carries only what every project needs and none of them decides differently. What is left for a project to write is a typeface and eight names — or, if it would rather, all of it.",
+    "switchHeading": "What is over the base",
+    "states": {
+      "base": {
+        "name": "The base alone",
+        "note": "Nothing over it. No typeface is declared and neither are the eight brand names, so the type falls back to the browser’s own faces and the filled button to the text ink. This is what a project has before it writes a line of its own."
+      },
+      "tint": {
+        "name": "A tint over it",
+        "note": "Eleven declarations: three typefaces and the eight colours a project paints itself with. The surfaces, the three text ranks, the divider, the control edge, the states, the four semantics, the scrim and the lift are all still the base’s. This is the shape both playgrounds use."
+      },
+      "replaced": {
+        "name": "The base replaced",
+        "note": "No base at all. This skin declares the 24 neutral and semantic names itself, so the only thing left of the package is the scale. Light mode is dark here, elevation is a hard edge rather than a soft lift, and every face is monospaced — and not one line of the specimen below changed."
+      }
+    },
+    "specimen": {
+      "title": "One card, nothing else",
+      "body": "The same markup in all three states: every value in it is a variable, and there is no literal and no branch on the colour scheme.",
+      "link": "Both playgrounds run these sheets.",
+      "secondary": "Secondary text, one rank down — the rank a caption or a hint is written in.",
+      "save": "Save",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "live": "Live",
+      "listLabel": "The names a skin declares",
+      "caption": "Switch the page between light and dark: each state answers for both.",
+      "tones": {
+        "ok": "Ready",
+        "info": "Note",
+        "warn": "Careful",
+        "error": "Failed"
+      }
     }
   }
 }

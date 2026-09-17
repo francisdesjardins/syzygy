@@ -15,10 +15,11 @@ Every name that moved was identical to antumbra's, in both schemes, and had been
 second skin was written — so the palette that was "meant to look nothing like" the other one was
 two thirds a shared ground. The ring is the third that was ever this project's.
 
-**`scripts/check-contrast.mjs` reads the base underneath the skin now.** Fourteen of its sixteen
+**The contrast gate reads the base underneath the skin now, and it moved.** Fourteen of its sixteen
 pairs have a base colour on at least one side; measuring the skin alone would report on a palette
-the browser never shows. It resolves `penumbra/tokens.skin.base.css` through the playground's
-manifest rather than by a path up the tree, since that is the workspace the dependency belongs to.
+the browser never shows. `scripts/check-contrast.mjs` is gone and `check:contrast` is
+`penumbra-contrast` — the pair table is a statement about what penumbra's names mean, and it was one
+copy away from living in two places.
 
 ## 2026-09-16, the gates moved to gnomon
 

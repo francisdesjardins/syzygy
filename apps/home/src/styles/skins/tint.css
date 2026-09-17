@@ -1,0 +1,45 @@
+/**
+ * Example skin — a tint over the base, the shape both playgrounds use.
+ *
+ * Eleven declarations per scheme at most: three typefaces and the eight colours a project paints
+ * itself with. Everything else — surfaces, the three text ranks, the divider, the control edge, the
+ * states, the four semantics, the scrim and the lift — is `penumbra/tokens.skin.base.css`
+ * underneath, untouched.
+ *
+ * It lives here rather than in penumbra because it is demonstration material: the package ships the
+ * two sheets a consumer imports and nothing that would read as a default.
+ *
+ * `:root` is rewritten to the preview's own selector before this reaches the document — see
+ * `scopeSkin` in `DesignSystem.tsx`.
+ */
+
+:root {
+  --app-font-display: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+  --app-font-body: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+  --app-font-mono: ui-monospace, 'Cascadia Code', 'SF Mono', Menlo, Consolas, monospace;
+
+  --app-primary: #7e22ce;
+  --app-primary-ink: #ffffff;
+  --app-primary-hover: #6b21a8;
+  --app-accent: #7e22ce;
+
+  /* Brass as a fill and as the ring; never as text, which is the rule the two names carry. */
+  --app-flame: #a16207;
+  --app-flame-wash: rgb(161 98 7 / 0.1);
+  --app-ring: #a16207;
+  --app-glow: 0 0 0 1px rgb(161 98 7 / 0.5), 0 0 32px -10px rgb(161 98 7 / 0.4);
+}
+
+:root[data-color-scheme='dark'] {
+  --app-primary: #d8b4fe;
+  /* The light plum cannot carry white, so the ink goes dark and the hover brightens rather than
+     deepening — the direction is the scheme's, not a preference. */
+  --app-primary-ink: #2e1065;
+  --app-primary-hover: #e9d5ff;
+  --app-accent: #d8b4fe;
+
+  --app-flame: #fbbf24;
+  --app-flame-wash: rgb(251 191 36 / 0.13);
+  --app-ring: #fbbf24;
+  --app-glow: 0 0 0 1px rgb(251 191 36 / 0.5), 0 0 32px -8px rgb(251 191 36 / 0.35);
+}

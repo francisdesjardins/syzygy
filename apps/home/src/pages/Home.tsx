@@ -6,6 +6,7 @@ import Typography from '@mui/material/Typography';
 import { styled } from '@mui/material/styles';
 import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link as RouterLink } from 'react-router-dom';
 
 import { useDocumentHead } from '../hooks/useDocumentHead';
 
@@ -113,19 +114,22 @@ type WorkItemProps = {
   readonly href: string;
   readonly name: string;
   readonly description: string;
+  /** A separate build, so the link leaves this application rather than routing inside it. */
+  readonly ownBuild?: boolean;
 };
 
 /**
- * One library and the playground that demonstrates it.
+ * One library and the surface that demonstrates it.
  *
- * A plain anchor, not a RouterLink: each playground is its own build served out of
- * `public/playground/`, so it has to leave this SPA rather than be matched by its router.
+ * Each playground is its own build served out of `public/playground/`, so its link has to leave
+ * this SPA as a plain anchor rather than be matched by the router. A page that belongs to this
+ * application takes a RouterLink, which is the difference `ownBuild` names.
  */
-const WorkItem = ({ href, name, description }: WorkItemProps) => {
+const WorkItem = ({ href, name, description, ownBuild = false }: WorkItemProps) => {
   return (
     <Stack component="li" spacing={0.5}>
       <Link
-        href={href}
+        {...(ownBuild ? { href } : { component: RouterLink, to: href })}
         variant="body2"
         underline="hover"
         sx={{
@@ -231,14 +235,21 @@ export const Home = memo(() => {
               </Typography>
               <Stack component="ul" spacing={1.5} sx={{ listStyle: 'none', m: 0, p: 0 }}>
                 <WorkItem
+                  ownBuild
                   href="/playground/dialog/"
                   name={t('home.work.dialog.name')}
                   description={t('home.work.dialog.description')}
                 />
                 <WorkItem
+                  ownBuild
                   href="/playground/boot/"
                   name={t('home.work.boot.name')}
                   description={t('home.work.boot.description')}
+                />
+                <WorkItem
+                  href="/design-system"
+                  name={t('home.work.designSystem.name')}
+                  description={t('home.work.designSystem.description')}
                 />
               </Stack>
             </Stack>

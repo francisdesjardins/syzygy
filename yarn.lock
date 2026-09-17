@@ -1636,6 +1636,7 @@ __metadata:
     oxfmt: "npm:0.68.0"
     oxlint: "npm:^1.83.0"
     oxlint-tsgolint: "npm:7.0.2001"
+    penumbra: "workspace:^"
     react: "npm:^19.3.0"
     react-dom: "npm:^19.3.0"
     rolldown: "npm:^1.2.8"
@@ -3050,6 +3051,8 @@ __metadata:
 "penumbra@workspace:^, penumbra@workspace:packages/penumbra":
   version: 0.0.0-use.local
   resolution: "penumbra@workspace:packages/penumbra"
+  bin:
+    penumbra-contrast: ./scripts/check-contrast.mjs
   languageName: unknown
   linkType: soft
 
@@ -3732,6 +3735,7 @@ __metadata:
     oxfmt: "npm:0.68.0"
     oxlint: "npm:^1.83.0"
     oxlint-tsgolint: "npm:7.0.2001"
+    penumbra: "workspace:^"
     react: "npm:^19.3.0"
     react-dom: "npm:^19.3.0"
     rolldown: "npm:^1.2.8"

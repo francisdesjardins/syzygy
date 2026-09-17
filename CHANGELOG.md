@@ -5,6 +5,20 @@ keeps its own `CHANGELOG.md` for changes to itself.
 
 Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No semver.
 
+## 2026-09-17, the design system gets a page, and the gate a home
+
+### Added
+
+`apps/home` grows a second route, `/design-system`, where penumbra is taken apart: one specimen,
+three layerings, a switch. The base alone; eleven declarations over it, which is the shape both
+playgrounds use; and a skin that declares all 24 base names itself, so nothing is left of the
+package but the scale. Its own [CHANGELOG](apps/home/CHANGELOG.md) carries how it stays honest.
+
+`penumbra-contrast` — the contrast gate, which was umbra's script and was one copy away from being
+two. It went to penumbra rather than to `gnomon`: the pair table is a statement about what
+`--app-primary-ink` and `--app-primary` mean, and those names belong to the design system, not to
+the tooling. antumbra, which had no static colour gate at all, gained the line for free.
+
 ## 2026-09-17, the ground under two palettes
 
 ### Changed

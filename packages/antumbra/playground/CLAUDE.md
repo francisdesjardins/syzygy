@@ -247,10 +247,11 @@ carries a comment guarding this.
 
 ## Colour is measured, not chosen
 
-The palette is held to **WCAG 2.2 AA**, checked in a real browser rather than by reading the theme:
-`node .claude/skills/wcag-audit/audit.mjs --attach --route … --focus` (PowerShell on Windows — Git
-Bash rewrites a bare `/` argument into a path). Run it after any edit to colours, tokens or a
-component's theme. Ten routes × both schemes is currently clean, dialogs and focus rings included.
+The palette is held to **WCAG 2.2 AA** by two gates. `yarn check:contrast` measures sixteen token
+pairs on every run, with no browser. `node .claude/skills/wcag-audit/audit.mjs --attach --route …
+--focus` (PowerShell on Windows — Git Bash rewrites a bare `/` argument into a path) sees a
+rendered pixel, and is the one to run after any colour, token or theme edit. Ten routes × both
+schemes is clean.
 
 Two things it caught that source review had not, and both are the reason it exists:
 
@@ -269,8 +270,8 @@ Three rules follow, and they are where a new colour goes:
   the rule. The ink on it is dark, so a deeper amber underneath is 2.5:1.
 - **The vanilla templates are copied into other people's apps**, so a failure there propagates.
   Their control boundaries (`--*-control-border`) are a separate token from the layout hairline
-  (`--*-border`) because 1.4.11 asks 3:1 of the first and nothing of the second; the shell makes the
-  same split (`--app-control-border` against `--app-divider`).
+  (`--*-border`) because 1.4.11 asks 3:1 of the first and nothing of the second; the shell splits
+  the same way (`--app-control-border` against `--app-divider`).
 
 Keyboard focus is part of the same gate. There is **one** global ring, declared in `app.css` as
 `body :focus-visible` — the descendant selector is load-bearing, since `.MuiButtonBase-root` zeroes

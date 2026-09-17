@@ -20,7 +20,8 @@ output and is not tracked; `yarn build` here alone produces the home with no pla
 
 **A destination name is carried in four places** — the table in `deploy.mjs`, the rule in
 `public/_redirects`, the dev rewrite in `vite.config.ts`, and the link on the page. They move
-together or not at all. Missing one does not give a 404: the SPA fallback answers with this app's
+together or not at all. A route of this app's own, like `/design-system`, is in none of them: the
+SPA fallback already answers for it. Missing one does not give a 404: the SPA fallback answers with this app's
 own document, and the sub-site quietly serves the wrong page.
 
 ## What it takes from the packages
@@ -29,6 +30,15 @@ own document, and the sub-site quietly serves the wrong page.
 beside it is this site's own and sets **typefaces only**; colour lives in the MUI palette in
 `src/hooks/useTheme.ts`, because MUI components have to read it from the theme anyway and two
 sources for one colour is how they drift apart.
+
+The neutral base is **not** imported at `:root` here, for the same reason: 24 colour names nothing
+on this site reads. `/design-system` loads it as text and rewrites `:root` to the preview's own
+selector, which is what lets three layerings share one page — the base alone, the base under
+`src/styles/skins/tint.css`, and `src/styles/skins/replaced.css` with no base at all.
+
+Those two are demonstration material, so they live here rather than in the package, which ships
+nothing that would read as a default. Both are held to WCAG AA by `penumbra-contrast`, penumbra's
+own gate, and `yarn check` runs it over each.
 
 The pairing is the playgrounds' — a Palatino-class serif for display over a grotesque, mono for
 identifiers — on system faces here, because this page is one screen of text and has no reason to

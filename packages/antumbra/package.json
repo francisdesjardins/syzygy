@@ -72,7 +72,7 @@
     "format": "oxfmt .",
     "lint": "oxlint --type-aware",
     "lint:fix": "oxlint --type-aware --fix",
-    "check": "yarn type-check && yarn lint --deny-warnings && yarn format:check && yarn docs:check && yarn docs:examples",
+    "check": "yarn type-check && yarn lint --deny-warnings && yarn format:check && yarn check:contrast && yarn docs:check && yarn docs:examples",
     "build:moons": "node scripts/build-moons.mjs",
     "docs:examples": "gnomon-examples",
     "docs:examples:fix": "gnomon-examples --fix",
@@ -103,7 +103,8 @@
     "bench": "node scripts/bench.mjs",
     "test:component:focus": "playwright test -c playwright.config.ts --project=component-focus --workers=1",
     "type-check:registry": "node node_modules/typescript-7/bin/tsc --noEmit -p tsconfig.registry.json",
-    "story-ids": "node scripts/generate-story-ids.mjs && oxfmt src/__tests__/story-ids.d.ts playground/src/__tests__/story-ids.d.ts playground/src/pages/stories/model/story-loaders.ts"
+    "story-ids": "node scripts/generate-story-ids.mjs && oxfmt src/__tests__/story-ids.d.ts playground/src/__tests__/story-ids.d.ts playground/src/pages/stories/model/story-loaders.ts",
+    "check:contrast": "penumbra-contrast playground/src/app/styles/tokens.skin.css"
   },
   "devDependencies": {
     "@babel/core": "^8.0.5",
@@ -119,6 +120,7 @@
     "oxfmt": "0.68.0",
     "oxlint": "^1.83.0",
     "oxlint-tsgolint": "7.0.2001",
+    "penumbra": "workspace:^",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "rolldown": "^1.2.8",

@@ -36,6 +36,10 @@
       "boot": {
         "name": "umbra",
         "description": "Orchestrateur de démarrage. Tu déclares ce dont chaque étape a besoin, le parallélisme se déduit du graphe — pas de flag, pas de plafond de concurrence."
+      },
+      "designSystem": {
+        "name": "penumbra",
+        "description": "Le design system que portent les deux playgrounds — et la page qui le démonte, une couche à la fois."
       }
     },
     "location": {
@@ -57,6 +61,50 @@
     "formPlayground": {
       "title": "Composants de formulaires - Francis Desjardins",
       "description": "Terrain de jeu interactif pour le système FormComponents avec démos en direct et exemples"
+    },
+    "designSystem": {
+      "title": "Design system — Francis Desjardins",
+      "description": "penumbra, couche par couche : une échelle sans couleur, une palette sans marque, et une skin par-dessus. Trois empilements du même spécimen, au choix.",
+      "ogTitle": "Le design system, couche par couche",
+      "ogDescription": "Une échelle sans couleur, une palette sans marque, et ce qu’un projet écrit par-dessus."
+    }
+  },
+  "designSystem": {
+    "back": "Retour à l’accueil",
+    "title": "Le design system, couche par couche",
+    "intro": "penumbra livre deux feuilles de style et aucune marque. La première, c’est l’échelle, le rythme, le mouvement et l’empilement, sans une seule couleur. La seconde, c’est la couleur, et elle ne porte que ce dont tout projet a besoin et qu’aucun ne tranche autrement. Il reste à écrire une typographie et huit noms — ou, si on préfère, la totalité.",
+    "switchHeading": "Ce qui est posé par-dessus la base",
+    "states": {
+      "base": {
+        "name": "La base seule",
+        "note": "Rien par-dessus. Aucune typographie n’est déclarée, ni les huit noms de marque : le texte retombe sur les fontes du navigateur et le bouton plein sur l’encre du texte. C’est ce qu’un projet a avant d’écrire une seule ligne à lui."
+      },
+      "tint": {
+        "name": "Une teinte par-dessus",
+        "note": "Onze déclarations : trois typographies et les huit couleurs dont un projet se peint. Les surfaces, les trois rangs de texte, le filet, le bord de contrôle, les états, les quatre sémantiques, le voile et l’ombre restent ceux de la base. C’est la forme qu’utilisent les deux playgrounds."
+      },
+      "replaced": {
+        "name": "La base remplacée",
+        "note": "Aucune base. Cette feuille déclare elle-même les 24 noms neutres et sémantiques, alors il ne reste du paquet que l’échelle. Le mode clair est sombre ici, l’élévation est une arête franche plutôt qu’une ombre douce, et tout est en chasse fixe — et pas une ligne du spécimen n’a changé."
+      }
+    },
+    "specimen": {
+      "title": "Une carte, rien d’autre",
+      "body": "Le même balisage dans les trois états : chaque valeur y est une variable, sans littérale et sans branchement sur le schéma de couleurs.",
+      "link": "Les deux playgrounds tournent sur ces feuilles.",
+      "secondary": "Texte secondaire, un rang plus bas — celui d’une légende ou d’une indication.",
+      "save": "Enregistrer",
+      "cancel": "Annuler",
+      "delete": "Supprimer",
+      "live": "En cours",
+      "listLabel": "Les noms qu’une skin déclare",
+      "caption": "Basculez la page entre clair et sombre : chaque état répond des deux.",
+      "tones": {
+        "ok": "Prêt",
+        "info": "Note",
+        "warn": "Attention",
+        "error": "Échec"
+      }
     }
   }
 }

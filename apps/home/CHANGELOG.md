@@ -4,6 +4,48 @@ Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No s
 
 **This file is the app's memory.** The code states what holds now; why it came to hold lives here.
 
+## 2026-09-17, a second page, and two palettes that are not this site's
+
+### Added
+
+`/design-system` — penumbra taken apart, with a switch over three layerings of one specimen: the
+base alone, an eleven-declaration tint over it, and a skin that replaces the base outright.
+
+The specimen is plain markup styled entirely through `var(--app-*)` — no MUI inside it, no literal,
+no branch on the colour scheme — which is what makes the switch a demonstration rather than three
+hand-drawn pictures. The same 24 base names and the same 8 brand names are all exercised by it, so a
+state that fails to declare one shows the gap instead of hiding it.
+
+**The sheets are read as text and their `:root` is rewritten to the preview's own selector.** A
+token sheet says `:root` because that is where a design system lives; a preview is the one place it
+is not true. Rewriting rather than keeping scoped copies is what keeps the page honest — the bytes
+on screen are `penumbra/tokens.skin.base.css` and the two example skins as they sit on disk.
+
+`src/styles/skins/tint.css` and `src/styles/skins/replaced.css` are that demonstration material and
+live here rather than in the package, which ships nothing a project would inherit as a default.
+
+**A custom property inherits, which nearly made the page lie.** This site declares its three faces
+on `:root`, so the state that declares no typeface was showing them — "the base ships none" is a
+claim the screen would have contradicted. The preview resets the three names to `initial` and a
+skin re-declares them; colour needed no such reset, this site keeping its palette in MUI.
+
+### Added — the palettes are measured
+
+`yarn check` runs `penumbra-contrast` over both example skins, the second with `--no-base` since it
+declares everything itself. Sixteen pairs each, both schemes.
+
+The page's own chrome was measured in a browser with alpha composited, six configurations —
+three states times two schemes — and one thing turned up that reading the source would not have:
+MUI spends `rgba(0, 0, 0, 0.54)` on an unselected toggle button, which composites to **4.42:1** on
+this page's ground. Under AA, on the page that argues colour should be measured.
+
+### Changed
+
+`/` is no longer the only route, so `App` splits: the landing page stays in the entry chunk, where
+a second round trip before first paint would be paid by every visitor, and `/design-system` is
+lazy. penumbra joins the two playgrounds in "What's running" — a `RouterLink`, not an anchor,
+because unlike them it is a page of this application rather than its own build.
+
 ## 2026-09-16, the front door moves in
 
 ### Added

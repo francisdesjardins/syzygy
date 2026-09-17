@@ -297,8 +297,8 @@ playground/src/
 project takes unchanged — spacing, radii, shadows and type scale in `tokens.system.css`, then
 neutrals, semantics and the lift in `tokens.skin.base.css`. `tokens.skin.css` here is twelve
 declarations: the three faces, the lockup rise, and the eight colours that are umbra's.
-`scripts/check-contrast.mjs` reads the base underneath it and measures 32 token pairs across both
-schemes, so a palette edit that fails WCAG AA fails `yarn check` rather than review.
+`penumbra-contrast`, penumbra's own gate, reads the base underneath it and measures 32 token pairs
+across both schemes, so a palette edit that fails WCAG AA fails `yarn check` rather than review.
 
 **Every example is a card with a `codeKey`**, and one dialog in the layout shows the source. A dialog
 per card would be sixty dialogs in the DOM on the reference page, holding the largest text the site

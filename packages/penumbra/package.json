@@ -10,7 +10,8 @@
   ],
   "files": [
     "tokens.system.css",
-    "tokens.skin.base.css"
+    "tokens.skin.base.css",
+    "scripts/check-contrast.mjs"
   ],
   "exports": {
     "./tokens.system.css": "./tokens.system.css",
@@ -30,10 +31,13 @@
     "theming"
   ],
   "scripts": {
-    "check": "node scripts/check-tokens.mjs",
+    "check": "node scripts/check-tokens.mjs && node scripts/check-contrast.mjs",
     "test": "echo \"penumbra: no-op — pure CSS tokens; the contract is asserted by check (scripts/check-tokens.mjs)\""
   },
   "engines": {
     "node": ">=24"
+  },
+  "bin": {
+    "penumbra-contrast": "./scripts/check-contrast.mjs"
   }
 }

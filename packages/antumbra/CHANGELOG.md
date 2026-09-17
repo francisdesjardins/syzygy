@@ -10,6 +10,21 @@ its own past is a story, not a record. The package has been renamed twice, so ol
 by older names: `@yourorg/dialog` before 2026-08-04, then `umbra` until 2026-09-15. It is
 `antumbra` now.
 
+## 2026-09-17, the palette gets a gate
+
+### Added
+
+`yarn check:contrast`, from `penumbra-contrast`. Sixteen token pairs, both schemes, and it fails
+the check rather than review.
+
+This palette was measured by `.claude/skills/wcag-audit`, in a real browser, which sees things a
+sheet cannot — a component library resolving `contrastText` against you, an `opacity` that never
+appears in a computed colour. It is still the better instrument and is still the one to run after a
+component change. What it is not is automatic: nothing failed when nobody remembered.
+
+The static gate answers the other half. It cannot see a rendered pixel; it can see every pair the
+token names promise, on every run, for free.
+
 ## 2026-09-17
 
 ### Changed — the skin is twelve declarations

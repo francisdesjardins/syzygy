@@ -5,6 +5,30 @@ Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No s
 **This file is the package's memory.** The code states what holds now; why it came to hold lives
 here.
 
+## 2026-09-17, the contrast gate comes to the vocabulary
+
+### Added
+
+`penumbra-contrast` — a bin, moved here from umbra, where it was about to be copied a second time.
+
+The pair table is the reason it belongs to this package and not to `gnomon` with the other gates:
+`--app-primary-ink on --app-primary` owes 4.5:1 because of what those two names mean, and the names
+are penumbra's. A consumer holding its own copy of that table would be maintaining a definition it
+does not own — which is the same argument that moved `tokens.system.css` here, arriving from the
+tooling side.
+
+Sixteen pairs, split by what they need. Eleven have both tokens in the base and are measured on
+every run, including a run with no skin at all. Five need a brand token and are measured only once
+a skin exists — **and the split is stated in the output**, because silently dropping five would
+make an unskinned run read like a full one.
+
+`--no-base` measures a project that replaced the base outright rather than layering over it.
+
+### Changed
+
+umbra's `check:contrast` is the bin now and its script is gone. antumbra gained the same line: its
+palette had no gate in `yarn check` at all, only a browser audit somebody had to remember to run.
+
 ## 2026-09-17, the half of a palette that is not a brand
 
 ### Added

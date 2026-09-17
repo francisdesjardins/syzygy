@@ -7,14 +7,14 @@ shadows it casts.
 | --- | --- |
 | [`umbra`](packages/umbra) | a framework-free bootstrap orchestrator over a declared step graph |
 | [`antumbra`](packages/antumbra) | a headless dialog manager on the native `<dialog>` top layer |
-| [`penumbra`](packages/penumbra) | the portable half of a design system: a scale with no colour, and a palette with no brand |
+| [`penumbra`](packages/penumbra) | the portable half of a design system: a scale with no colour, a palette with no brand, and the contrast gate over both |
 | [`limb`](packages/limb) | the framework-free helpers both playgrounds need and neither owns |
 | [`corona`](packages/corona) | the API reference: the contract a generated model satisfies, and its viewer |
 | [`gnomon`](packages/gnomon) | the gates: the example checker, the coverage instrumenter, the formatter |
 
 | app | what it is |
 | --- | --- |
-| [`home`](apps/home) | francisdesjardins.ca — one page, and the door to the packages above |
+| [`home`](apps/home) | francisdesjardins.ca — the landing page, the design-system demo, and the door to the packages above |
 
 ## Ports
 

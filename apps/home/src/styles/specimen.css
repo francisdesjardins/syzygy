@@ -1,0 +1,245 @@
+/**
+ * The specimen the skin switch paints.
+ *
+ * Every declaration below is `var(--app-*)` and nothing else — no MUI, no literal, no branch on the
+ * colour scheme. That is what makes the switch a demonstration rather than three hand-drawn
+ * pictures: the markup and these rules never change, only the variables above them do.
+ *
+ * Scoped to `[data-penumbra-preview]` because the token sheets are rewritten to that same selector
+ * before they are injected. Outside the preview none of these names is declared on this site, whose
+ * own colour lives in the MUI palette.
+ */
+
+[data-penumbra-preview] {
+  /* A custom property inherits, and the site around this preview is a project too: its three faces
+     are declared on `:root`. Without this reset the state that declares no typeface would show the
+     site's, and "the base ships none" would be a sentence the screen contradicts. Colour needs no
+     such reset — this site keeps its palette in MUI and declares none of these names.
+
+     A skin injected into the preview re-declares them at equal specificity and later in the
+     document, so it wins; the fallbacks below are what is left when nothing does. */
+  --app-font-display: initial;
+  --app-font-body: initial;
+  --app-font-mono: initial;
+
+  font-family: var(--app-font-body, sans-serif);
+  background: var(--app-bg);
+  /* The frame is the preview's own hairline, so the window into another project is drawn in that
+     project's ink rather than in this site's. */
+  border: 1px solid var(--app-divider);
+  border-radius: var(--app-radius-lg);
+  padding: var(--app-space-6);
+  container-type: inline-size;
+}
+
+[data-penumbra-preview] .specimen-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-4);
+  background: var(--app-paper);
+  border: 1px solid var(--app-divider);
+  border-radius: var(--app-radius-md);
+  box-shadow: var(--app-lift);
+  padding: var(--app-space-5);
+}
+
+[data-penumbra-preview] .specimen-title {
+  margin: 0;
+  font-family: var(--app-font-display, serif);
+  font-size: var(--app-text-lg);
+  line-height: var(--app-lh-snug);
+  letter-spacing: var(--app-tracking-snug);
+  font-weight: 600;
+  color: var(--app-text);
+}
+
+/* The ink half of the fill/ink pair: what a link is written in, never the fill beside it. */
+[data-penumbra-preview] .specimen-body a {
+  color: var(--app-accent, var(--app-text));
+  text-underline-offset: 0.2em;
+}
+
+[data-penumbra-preview] .specimen-body {
+  margin: 0;
+  font-size: var(--app-text-base);
+  line-height: var(--app-lh-body);
+  color: var(--app-text);
+}
+
+[data-penumbra-preview] .specimen-secondary {
+  margin: 0;
+  font-size: var(--app-text-sm);
+  line-height: var(--app-lh-body);
+  color: var(--app-text-secondary);
+}
+
+[data-penumbra-preview] .specimen-rule {
+  height: 1px;
+  border: 0;
+  margin: 0;
+  background: var(--app-divider);
+}
+
+[data-penumbra-preview] .specimen-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--app-space-3);
+  align-items: center;
+}
+
+[data-penumbra-preview] button {
+  font: inherit;
+  font-size: var(--app-text-sm);
+  border-radius: var(--app-radius-sm);
+  padding: var(--app-space-2) var(--app-space-4);
+  cursor: pointer;
+  transition: background-color var(--app-quick) var(--app-ease);
+}
+
+/* The eight brand names are the skin's, so a preview showing the base alone has none of them. The
+   fallback is the text ink: a button that still reads, and visibly not a brand. */
+[data-penumbra-preview] .specimen-primary {
+  background: var(--app-primary, var(--app-text));
+  color: var(--app-primary-ink, var(--app-paper));
+  border: 1px solid transparent;
+}
+
+[data-penumbra-preview] .specimen-primary:hover {
+  background: var(--app-primary-hover, var(--app-text-secondary));
+}
+
+[data-penumbra-preview] .specimen-outline {
+  background: transparent;
+  color: var(--app-text);
+  border: 1px solid var(--app-control-border);
+}
+
+[data-penumbra-preview] .specimen-outline:hover {
+  background: var(--app-hover);
+}
+
+[data-penumbra-preview] .specimen-danger {
+  background: var(--app-error);
+  color: var(--app-error-ink);
+  border: 1px solid transparent;
+}
+
+[data-penumbra-preview] .specimen-danger:hover {
+  background: var(--app-error-hover);
+}
+
+[data-penumbra-preview] .specimen-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--app-space-2);
+  font-family: var(--app-font-mono, monospace);
+  font-size: var(--app-text-xs);
+  letter-spacing: var(--app-tracking-label);
+  text-transform: uppercase;
+  border-radius: var(--app-radius-sm);
+  padding: var(--app-space-1) var(--app-space-3);
+}
+
+[data-penumbra-preview] .specimen-badge[data-tone='ok'] {
+  color: var(--app-ok);
+  background: var(--app-ok-wash);
+}
+
+[data-penumbra-preview] .specimen-badge[data-tone='info'] {
+  color: var(--app-info);
+  background: var(--app-info-wash);
+}
+
+[data-penumbra-preview] .specimen-badge[data-tone='warn'] {
+  color: var(--app-warn);
+  background: var(--app-warn-wash);
+}
+
+[data-penumbra-preview] .specimen-badge[data-tone='error'] {
+  color: var(--app-error);
+  background: color-mix(in srgb, var(--app-error) 12%, transparent);
+}
+
+/* The fill and the ring, which are one colour used the two ways its names allow. A skin that has
+   not been written leaves both unset, so the chip falls back to the control edge. */
+[data-penumbra-preview] .specimen-ring {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--app-space-2);
+  font-size: var(--app-text-sm);
+  color: var(--app-text);
+  border: 1px solid var(--app-ring, var(--app-control-border));
+  border-radius: var(--app-radius-pill);
+  padding: var(--app-space-1) var(--app-space-3);
+  background: var(--app-flame-wash, transparent);
+  box-shadow: var(--app-glow, none);
+}
+
+[data-penumbra-preview] .specimen-dot {
+  width: var(--app-space-3);
+  height: var(--app-space-3);
+  border-radius: 50%;
+  background: var(--app-flame, var(--app-text-tertiary));
+}
+
+[data-penumbra-preview] .specimen-caption {
+  margin: 0;
+  font-family: var(--app-font-mono, monospace);
+  font-size: var(--app-text-xs);
+  color: var(--app-text-tertiary);
+}
+
+/* The mark: a shape drawn in ink rather than in the brand, which is why its two names are the
+   base's and not the skin's. */
+[data-penumbra-preview] .specimen-mark {
+  width: var(--app-space-8);
+  height: var(--app-space-8);
+  border-radius: 50%;
+  background: var(--app-body);
+  box-shadow: 0 0 0 2px var(--app-body-edge);
+  flex: none;
+}
+
+[data-penumbra-preview] .specimen-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--app-divider);
+  border-radius: var(--app-radius-sm);
+  /* Three rows of eight: short enough to scroll, which is the only way to see what the two
+     scrollbar tokens do, and tall enough to read as a list rather than as a clipped line. */
+  max-height: calc(var(--app-space-14) * 2);
+  overflow-y: auto;
+  scrollbar-color: var(--app-scrollbar-thumb) var(--app-scrollbar-track);
+  scrollbar-width: thin;
+}
+
+[data-penumbra-preview] .specimen-list li {
+  font-size: var(--app-text-sm);
+  color: var(--app-text);
+  padding: var(--app-space-2) var(--app-space-3);
+}
+
+[data-penumbra-preview] .specimen-list li + li {
+  border-top: 1px solid var(--app-divider);
+}
+
+[data-penumbra-preview] .specimen-list li[aria-selected='true'] {
+  background: var(--app-selected);
+}
+
+[data-penumbra-preview] .specimen-list li:not([aria-selected='true']):hover {
+  background: var(--app-hover);
+}
+
+/* A scrim is an absence of light rather than a colour, so it is shown over the paper it dims. */
+[data-penumbra-preview] .specimen-scrim {
+  flex: none;
+  width: var(--app-space-12);
+  height: var(--app-space-6);
+  border-radius: var(--app-radius-sm);
+  background:
+    linear-gradient(var(--app-scrim), var(--app-scrim)) right / 50% 100% no-repeat,
+    var(--app-paper);
+  border: 1px solid var(--app-divider);
+}
