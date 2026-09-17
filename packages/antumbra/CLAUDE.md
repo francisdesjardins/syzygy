@@ -3,20 +3,20 @@
 Framework-agnostic dialog manager, with React, Solid and vanilla shipped as three bindings
 over it. No UI components exported; users bring their own.
 
-**Every `CLAUDE.md` carries a word budget, and they are near full** — measure first, then trade a
-sentence out rather than raising a cap. See [doc-budget.test.ts](src/__tests__/doc-budget.test.ts).
+**Every `CLAUDE.md` carries a word budget and a headroom line below it** — `yarn doc-budget` prints
+both. Trade a sentence out rather than raising a cap. Numbers in [doc-budget.json](doc-budget.json).
 
 ## Entry points
 
 The package root is plain TypeScript and **must resolve with no framework installed**; bindings are
 the optional layer.
 
-| Specifier          | Contents                                                                                                                                                                                                                         |
-| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `antumbra`         | The manager, `DialogRegistry`, placement and style, the store engine, the hotkey utilities, `normalizeError`, `setLogLevel`. No framework; `src/index.ts` is the list.                                                           |
-| `antumbra/react`   | `useDialog`, `useMessageDialog`, `useSlideDialog`, `DialogOutlet`, `DialogManagerProvider`, `useDialogManager`, `useLookup` — **plus a wholesale re-export of the root**, so a React app imports from this path only.            |
-| `antumbra/solid`   | The same names, for Solid, plus `fromStore` — and the same wholesale re-export of the root.                                                                                                                                      |
-| `antumbra/vanilla` | `bindDialog` — a _controller_ for a `<dialog>` you wrote yourself, whose `bindAction` is a member of the returned controller rather than an export. No `render`, no `Dialog`, no outlet, no framework. Same wholesale re-export. |
+| Specifier          | Contents                                                                                                                                                                                                              |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `antumbra`         | The manager, `DialogRegistry`, placement and style, the store engine, the hotkey utilities, `normalizeError`, `setLogLevel`. No framework; `src/index.ts` is the list.                                                |
+| `antumbra/react`   | `useDialog`, `useMessageDialog`, `useSlideDialog`, `DialogOutlet`, `DialogManagerProvider`, `useDialogManager`, `useLookup` — **plus a wholesale re-export of the root**, so a React app imports from this path only. |
+| `antumbra/solid`   | The same names, for Solid, plus `fromStore` — and the same wholesale re-export of the root.                                                                                                                           |
+| `antumbra/vanilla` | `bindDialog` — a _controller_ for a `<dialog>` you wrote yourself, whose `bindAction` is a member of the returned controller rather than an export. Same wholesale re-export.                                         |
 
 **There are two kinds of binding, and the distinction is load-bearing.**
 
@@ -124,9 +124,8 @@ its whole module out of reach. And **hard to unit-test because it is tangled wit
 finding**: extract the framework-free half into `core/`.
 
 **Coverage is a local command, not a CI job, deliberately.** GitHub's upload is Cobertura-only and
-404s here (Code Quality needs an enterprise owner; this is a personal repo), and publishing an
-artifact nobody opens costs the component job ~45% more runtime. Do not re-add it unless the repo
-moves under an enterprise **and** something renders the result.
+404s on a personal repo, and publishing an artifact nobody opens costs the component job ~45% more
+runtime. Do not re-add it unless the repo moves under an enterprise **and** something renders it.
 
 **Every way the CT report has failed has failed quietly**, so each failure mode is documented where
 it bites and gnomon's coverage report prints them all when it finds nothing.
@@ -170,13 +169,13 @@ it bites and gnomon's coverage report prints them all when it finds nothing.
   ES2024, ESNext modules | Vite v8. **The peer ranges are the requirement, not this repo's
   `devDependencies`**, which sit far above them; quoting a dev pin asks for more than the package
   does. **The browser floor is derived** — `browserslist` is the per-engine max of `FLOOR_ROWS`’
-  `required` rows, asserted by a gate. That inventory cannot see an **option** on a method already
-  called, which is why those rows split required from enhancing.
-- **Package manager**: Yarn only — `yarn.lock` is authoritative and `yarn install --immutable` is the CI form. Dependency pins go in `resolutions`; npm's `overrides` is ignored.
-- **Yarn workspaces**: this package and `antumbra-playground` (`playground/`, private) are monorepo
-  workspaces; one `yarn install` at its root installs everything. **The published
-  dependency list is this manifest**, so anything the demo needs belongs in `playground/package.json` and
-  never in the root, whose `dependencies` stay empty. Root `dev`/`playground:*` scripts delegate.
+  `required` rows, asserted by a gate; those rows split required from enhancing because an inventory
+  cannot see an **option** on a method already called.
+- **Yarn workspaces**: this package and `antumbra-playground` (`playground/`, private); one
+  `yarn install` at the monorepo root installs both. `yarn.lock` is authoritative, pins go in
+  `resolutions`, and npm's `overrides` is ignored. **The published dependency list is this
+  manifest**, so anything the demo needs belongs in `playground/package.json` and never here, whose
+  `dependencies` stay empty. Root `dev`/`playground:*` scripts delegate.
 - **Declarations**: emitted by `tsc -p tsconfig.build.json`, not a Vite plugin, so published types can't drift from what `type-check` validates. **Every relative import in shipped `src/` carries a `.js` extension** (tests are exempt — nothing emits them) — `tsc` copies specifiers into the `.d.ts` verbatim and an extensionless one is invalid on `moduleResolution: node16`/`nodenext`, silently under `skipLibCheck`. `yarn verify:package` fails on any that slip through.
 - **TypeScript 7, and nothing beside it in the lint path**: every `tsc` call in `scripts` is
   `node node_modules/typescript-7/bin/tsc`, and `oxlint --type-aware` runs its type-aware half
@@ -189,12 +188,11 @@ it bites and gnomon's coverage report prints them all when it finds nothing.
 
 ## Design Philosophy
 
-- **Core is framework-agnostic**: anything that does not need a framework goes under the root
-  and stays importable without a renderer. A binding should be thin enough that writing a second
-  one is unremarkable, and `antumbra/solid` is what holds that claim honest. **The test is
-  mechanical**: if adding it to one binding would mean adding it to the other, it is core — which
-  is how the `attach*` functions, the action factory, the dialog attributes, the slide geometry
-  and the default animation ended up there.
+- **Core is framework-agnostic**: anything that does not need a framework goes under the root and
+  stays importable without a renderer, and `antumbra/solid` is what keeps that honest. **The test is
+  mechanical**: if adding it to one binding would mean adding it to the other, it is core — which is
+  how the `attach*` functions, the action factory, the dialog attributes, the slide geometry and the
+  default animation ended up there.
 - **Headless-first**: zero shipped UI — never add UI components
 - **Minimal surface**: extend `useDialog` over adding template hooks
 - **No abstraction leakage**: templates must not expose core internals
@@ -203,38 +201,20 @@ it bites and gnomon's coverage report prints them all when it finds nothing.
 ## What works with what
 
 **Before writing a sentence about one feature meeting another, look in
-[src/\_\_tests\_\_/compatibility-matrix.ts](src/__tests__/compatibility-matrix.ts).** It is the table
-of options against options, capabilities against the three bindings, and features against the
+[src/\_\_tests\_\_/compatibility-matrix.ts](src/__tests__/compatibility-matrix.ts).** It is the
+table of options against options, capabilities against the three bindings, and features against the
 platform — as data, rendered into `API.md`'s _Compatibility_ chapter by `yarn docs:matrix`, with a
-test that fails when the document and the table disagree.
+test that fails when the document and the table disagree. **`yarn todo` prints the backlog from the
+same data**, which is why there is no `TODO.md` to drift from it.
 
-It exists because these facts were spread over five places that disagreed with each other:
-**inventorying the rows produced seven defects before a cell was written.** So a new compatibility
-fact goes in the table, not in prose here — and if it is about one module, in that module's JSDoc.
+It exists because these facts were spread over five places that disagreed: **inventorying the rows
+produced seven defects before a cell was written.** So a new compatibility fact goes in the table,
+not in prose here — and if it is about one module, in that module's JSDoc.
 
-Five things the vocabulary buys:
-
-- **The two kinds of ✗ are different facts.** `✗ platform` is a browser law; `✗ by design` is a
-  refusal that owes a reason — carried in `why`, which the gate requires of it and of `~`. Neither is
-  a to-do, and without the split a list of what does not work fills with items nobody can act on.
-- **`✓ untested` and `~` are declared states, so they enumerate.** **`yarn todo`** prints them and
-  that list _is_ the backlog, from the same data. A `TODO.md` would be a second answer that drifts.
-- **A `✓` can still carry an open question**, through `caveat` — a claim proven on one binding and
-  not the others. The enumeration reads the _state_, and the state says done, so in a note it would
-  reach a reader of the table and not the backlog. `yarn todo` lists caveats prefixed `?`. **A
-  caveat owes a `question` and a `nextStep`**, both gated: one nobody can name a next step for is a
-  `note`, which is what two of the first four turned out to be.
-- **`⏸ blocked` is not work and does not print as work.** A cell waiting on typedoc's peer range or
-  on a WebKit release is neither half-working nor fixable here, so it owes a `recheck` — what to look
-  at, and the ISO date someone last did — and `yarn todo` returns it in a **second** list. Filing
-  those beside real work is what made a ten-item backlog unfinishable by construction.
-- **Every open cell carries a `since`**, and `yarn todo` sorts by it and prints the age —
-  deliberately instead of a threshold on the count: six `~` for ten days reads exactly like six
-  closed and six opened.
-
-The gate checks that every option has a row, that no row names an option that no longer exists, that
-every cited test resolves to a real file and title, that a refusal carries its `why`, that a
-`⏸` carries its `recheck`, and that a caveat carries both halves. It cannot check that the cited
+**The seven cell states, what each one owes, and which of them count as work are in that file's own
+doc comment**, beside the types they describe. The gate holds them: every option has a row, no row
+names an option that no longer exists, every cited test resolves to a real file and title, a refusal
+carries its `why`, a `⏸` its `recheck`, a caveat both its halves. It cannot check that the cited
 test proves the cell; that part stays human.
 
 ## Deeper Context

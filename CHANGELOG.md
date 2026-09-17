@@ -5,6 +5,48 @@ keeps its own `CHANGELOG.md` for changes to itself.
 
 Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No semver.
 
+## 2026-09-17, a budget nobody could land under
+
+### Added
+
+`gnomon-doc-budget` — the agent-instruction gate, now shared. It was one package's Playwright test;
+umbra had none of it, at 3 484 unbudgeted words. Six checks, each proved lethal: a file over its
+ceiling, a file past its headroom line, a `CLAUDE.md` nobody budgeted, a budget pointing at a file
+that was renamed away, a broken link, and a `yarn` script that no longer exists.
+
+### Fixed — the budgets were snapshots, not targets
+
+**antumbra's set sat at 13 498 words of 13 500, and its top-level file at 2 999 of 3 000.** Those are
+not coincidences: each budget was set to the file's size on the day it was written, rounded up. A
+budget fitted to the document is not a budget — it reads 99% from the first commit, and every
+session after that pays a word hunt before it can add a sentence. That is the whole of why "we keep
+ending up at the limit".
+
+So there are two lines per file now. The **ceiling** is unchanged in meaning; the **headroom line**
+at 90% fails as well, which is the rule the old test already stated in prose and never enforced. The
+**total stays a hard ceiling** and did not move — applying the fraction to it too would make the real
+limit a number nobody chose.
+
+### Changed — where 500 words went instead of being deleted
+
+Passing a budget is meant to be a move, not a delete, and most of it was:
+
+- The compatibility-matrix vocabulary was a second copy of `compatibility-matrix.ts`'s own doc
+  comment. The `CLAUDE.md` section is a pointer now.
+- How a callback refuses — the three `on…Request` / `on…` / `onClose` rules — moved onto the options
+  themselves, at the top of `core/types.ts`.
+- Registering a story is three playground files, so it moved to the playground's `CLAUDE.md`.
+
+**One of those moves found a contradiction.** `prepare`'s JSDoc said "**A gate, not a
+notification**"; `src/CLAUDE.md` said "**`prepare` is awaited, not a gate** — a gate says no, and
+`prepare` cannot." Both were describing the same option, and the project's own one-word-one-act rule
+says `gate` has exactly one meaning. The JSDoc was the one spending the word wrongly, and now says
+what it does: awaited, and not a gate.
+
+`src/CLAUDE.md`'s budget moved 6000 → 6500, deliberately and for the reason above — 6000 was its own
+size, rounded. The reasoning is in `doc-budget.json` beside the number. Every file now sits between
+71% and 90% of its ceiling, and the set is at 13 010 of 13 500.
+
 ## 2026-09-17, the gates were not linted either
 
 ### Added

@@ -3,6 +3,18 @@
 Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No semver: names change
 between commits when a better one shows up, and the entry says which and why.
 
+## 2026-09-17, the instruction file gets a budget
+
+### Added
+
+`yarn doc-budget`, from [gnomon](../gnomon). This package's `CLAUDE.md` had no budget and no checks
+at all — 3 484 words that nothing measured, no link verified, and no `` `yarn <script>` `` mention
+held to being a real script. The sibling had all of it as a Playwright test; this is that test made
+shared, which is the same move `penumbra-contrast` made for colour.
+
+Nothing had to change to pass: 3 484 against a ceiling of 4 000, comfortably under the 90% headroom
+line. The numbers are in [doc-budget.json](doc-budget.json).
+
 ## 2026-09-17, the design-system page keeps only what is umbra's
 
 ### Changed

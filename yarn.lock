@@ -2136,6 +2136,7 @@ __metadata:
       optional: true
   bin:
     gnomon-ct-coverage-report: ./ct-coverage-report.mjs
+    gnomon-doc-budget: ./check-doc-budget.mjs
     gnomon-examples: ./check-examples.mjs
   languageName: unknown
   linkType: soft

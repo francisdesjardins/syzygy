@@ -49,23 +49,12 @@ four layers that publish it. It does **not** move under `action`: the controller
 factory to move it to, so one fact would end up with two names across the seam built to give it one.
 
 **`direction` is the slide axis and nothing else.** `SlideDirection` is public and means one of four
-edges, so the word is spent: Tab order is _forwards / backwards_, an assertion's positive and
-negative cases are its **halves**. `handle.moveFocus(step)` is the public surface that has to spell
-it — a step is `'forwards'` or `'backwards'`, which is also what `focusStep` calls its boolean.
+edges, so the word is spent: Tab order is _forwards / backwards_ (`handle.moveFocus(step)`, and what
+`focusStep` calls its boolean), and an assertion's positive and negative cases are its **halves**.
 
-**A callback's name says how it refuses**, and there are exactly three answers. **`on…Request` asks,
-and the answer is the return value** — `onOpenRequest` through `request.refuse(reason)`,
-`onDismissRequest` by returning `false`; the suffix marks a door, where `on…` alone reads as being
-told after the fact. **A plain `on…` on a user gesture refuses through the event**: `onKeyDown` and
-an action's `onClick` take the whole press with `preventDefault()` and return `void`, a boolean
-being a second protocol for what the DOM already has. **`onClose` is a notification** and the only
-one — its result is ignored, because the close has happened.
-
-**`prepare` is awaited, not a gate.** A gate says no — `canDismiss`, `ActionGate`, `DismissGate`,
-`OpenGate` — and `prepare` cannot: `syncOpenSequence` shows the dialog and schedules the phase's frame **before**
-starting it, so the dialog reaches `'open'` either way and one that throws is logged and settles
-like any other. What waits on it is `open()`'s promise, `isPreparing` and therefore `aria-busy`,
-`dismissWhilePreparing`, and the labelling diagnostic.
+**How a callback refuses is three rules, and they are on the options themselves** — on
+`UseDialogBaseOptions` in [core/types.ts](core/types.ts). Same for **`prepare`, which is awaited and
+is not a gate**: that one sits on `prepare`, where the word was being spent the other way round.
 
 **`dialog` is the noun, `modal` is the adjective.** The library drives one thing — a native
 `<dialog>` — and drives it in two variants, so the element gets the name and the variant gets the
@@ -75,15 +64,14 @@ the adjective and must stay that way. **There is no third word**: the state reco
 are one concept here, and splitting them again is what this rule replaced.
 
 The adjective is easy to sweep away by accident, so it is worth knowing where it hides: inside
-`non-modal` (where a hyphen is the only boundary), inside `dialog:modal` (a platform selector, not
-a namespace), and in front of `dialog` (`a modal dialog` is correct English; `a dialog dialog` is
-how you find out a pattern went too far).
+`non-modal` (a hyphen is the only boundary), inside `dialog:modal` (a platform selector, not a
+namespace), and in front of `dialog` — `a modal dialog` is correct English, and `a dialog dialog` is
+how you find out a sweep went too far.
 
-Two near-misses kept on purpose, so the next pass does not re-open them: `ActionGate`/`DismissGate`
-are "gate" in two senses — a port and an inputs shape — and the alternatives cost more than the
-ambiguity, while `OpenGate` is the refusing act itself and adds no third; `DialogRenderArgs` and
-`BaseRenderContext` are one shape under two words because the alias is the seam
-`SlideDialogRenderContext` intersects.
+Two near-misses are kept on purpose, so the next pass does not re-open them: `ActionGate` and
+`DismissGate` are "gate" in two senses, a port and an inputs shape, and the alternatives cost more
+than the ambiguity; `DialogRenderArgs` and `BaseRenderContext` are one shape under two words because
+the alias is the seam `SlideDialogRenderContext` intersects.
 
 **`sync*` decides, `run*` does.** A `sync*` function is handed a phase and may decide there is
 nothing to do, so it is safe on every pass; a `run*` function performs what it names, every time.
@@ -380,26 +368,23 @@ that function and on the coordinator in [core/attach-focus.ts](core/attach-focus
 **Closing focus is a floor, not a policy**, and knowing that is what makes `restoreFocusTo` legible.
 The platform restores the element focused before the open — for `show()` as well as `showModal()`,
 but only when focus is still inside at `close()` time — and `restoreOpenerFocus`
-([core/dialog-lifecycle.ts](core/dialog-lifecycle.ts)) covers the case where it did not. So the
-option is consulted **only where the restore already owns the focus**, which
-`restoreOwnsTheFocus` decides: stranded, or landed back on the captured opener. Anywhere else is a
-caret the reader placed, and taking it would be theft rather than repair. That guard is the whole
-reason this is not `onClose` plus a `focus()` — user-land can express the move but not the
-condition, since the opener is a `WeakMap` nobody outside can read.
+([core/dialog-lifecycle.ts](core/dialog-lifecycle.ts)) covers the case where it did not. The option
+is consulted only where that restore already owns the focus, which `restoreOwnsTheFocus` decides;
+the rule and its reason are on the option itself. That guard is the whole reason this is not
+`onClose` plus a `focus()` — user-land can express the move but not the condition, since the opener
+is a `WeakMap` nobody outside can read.
 
-**The floor has two holes the engines dig, and both are patched where they are measurable.** WebKit
-focuses no clicked `<button>`, so a pointer-opened dialog has no invoker to capture and its close
-stranded the keyboard on `<body>` — `watchOpenerActivation` records the last control activated and
-the show falls back to it. And the platform's own restore rings by input modality, so the same close
-came back visible from the keyboard and invisible from the mouse; the restore now blurs and refocuses
-where the ring is missing, the dance `settleOpeningFocus` already makes on the way in.
+**The floor has two holes the engines dig**, both patched where they are measurable and both
+explained where they are patched: WebKit focuses no clicked `<button>`, so `watchOpenerActivation`
+records the last control activated; and the platform's own restore rings by input modality, so the
+restore blurs and refocuses where the ring is missing — the dance `settleOpeningFocus` already makes
+on the way in.
 
 **`handle.moveFocus` is that same scan, offered outward**, and the only public focus move the
 library makes on request. It exists for an input device the browser does not turn into Tab: the
 Gamepad API delivers no events, and a synthetic `Tab` runs no default action. Closing and activating
-from such a device need nothing new — `handle.close` and `.click()` are already public — so the
-scan is the whole of what was missing, and it is the part user-land gets wrong: scoping past a
-nested dialog, the containment markers, the per-candidate check, and the ring.
+need nothing new — `handle.close` and `.click()` are already public — so the scan is the whole of
+what was missing, and it is the part user-land gets wrong.
 
 ### Never hold an element across something that replaces it
 
@@ -584,7 +569,8 @@ dialogManager.open('other-dialog'); // ✅ context-aware
 
 **Harness rules**: declare at module scope, not inside `test()`; follow React Compiler constraints.
 
-**Stories page registration**: Export from barrel → add `StoryEntry` in `StoriesPage.tsx` → register `?raw` import in `codeSamples.ts`. A story off the page is invisible: it builds, runs in CT, and nobody reaches it — **gated** by `stories-registration.test.ts`, whose exemption list is empty, so an omission is a written decision. A harness sharing a file is cut out of it by name (`sliceDeclaration`). The exception is a **parameterised** harness: `StoryEntry.component` takes no props, so one requiring them is a fixture rather than a demo and the gate skips it — give it a prop-free default if it is worth showing.
+**Putting a harness on the `/stories` page** is three playground files and a gate, and is in
+[playground/CLAUDE.md](../playground/CLAUDE.md#registering-a-story).
 
 **Selectors**: `<dialog data-testid="dialog-{id}">`; prefer `getByTestId`/`getByRole` to CSS, with `{ exact: true }` for partial label matches.
 

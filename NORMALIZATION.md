@@ -16,23 +16,24 @@ Last measured 2026-09-17.
 A rule without a gate is a preference, so each row names the thing that fails when the row stops
 being true.
 
-| What                     | Where it lives now                       | What holds it                                           |
-| ------------------------ | ---------------------------------------- | ------------------------------------------------------- |
-| Lint rules               | `.oxlintrc.json`, each workspace extends | `yarn lint` at the root, over every file                |
-| Formatting               | `.oxfmtrc.json`, one for the tree        | `yarn format:check` at the root, over every file        |
-| TypeScript strictness    | `tsconfig.base.json`, each extends       | each workspace's `type-check`                           |
-| Script bodies            | each manifest, checked against the rest  | `yarn constraints` — one name, one command              |
-| Dependency versions      | one range per ident                      | `yarn constraints` — one version per dependency         |
-| A workspace being seen   | every workspace has `check` and `test`   | `yarn constraints` — an explicit no-op counts           |
-| The hoisting boundary    | `installConfig.hoistingLimits`           | `yarn constraints`, asymmetric and commented            |
-| Design tokens            | `penumbra`                               | `check-tokens.mjs`, both halves, both directions        |
-| Colour contrast          | `penumbra`                               | `penumbra-contrast`, 32 pairs × both schemes            |
-| The token tables         | `corona`                                 | `check-token-coverage.mjs` — every token is on a page   |
-| The API reference viewer | `corona`                                 | the two playgrounds' smoke suites                       |
-| The way back to the site | `corona`                                 | `yarn check:mobile`                                     |
-| Framework-free helpers   | `limb`                                   | its entry rule: if it needs a framework, it is not limb |
-| The gates themselves     | `gnomon`                                 | `yarn check` in each consumer                           |
-| Phone layout             | —                                        | `yarn check:mobile`, 16 routes × 2 widths               |
+| What                      | Where it lives now                       | What holds it                                           |
+| ------------------------- | ---------------------------------------- | ------------------------------------------------------- |
+| Lint rules                | `.oxlintrc.json`, each workspace extends | `yarn lint` at the root, over every file                |
+| Formatting                | `.oxfmtrc.json`, one for the tree        | `yarn format:check` at the root, over every file        |
+| TypeScript strictness     | `tsconfig.base.json`, each extends       | each workspace's `type-check`                           |
+| Script bodies             | each manifest, checked against the rest  | `yarn constraints` — one name, one command              |
+| Dependency versions       | one range per ident                      | `yarn constraints` — one version per dependency         |
+| A workspace being seen    | every workspace has `check` and `test`   | `yarn constraints` — an explicit no-op counts           |
+| The hoisting boundary     | `installConfig.hoistingLimits`           | `yarn constraints`, asymmetric and commented            |
+| Design tokens             | `penumbra`                               | `check-tokens.mjs`, both halves, both directions        |
+| Colour contrast           | `penumbra`                               | `penumbra-contrast`, 32 pairs × both schemes            |
+| The token tables          | `corona`                                 | `check-token-coverage.mjs` — every token is on a page   |
+| The API reference viewer  | `corona`                                 | the two playgrounds' smoke suites                       |
+| The way back to the site  | `corona`                                 | `yarn check:mobile`                                     |
+| Framework-free helpers    | `limb`                                   | its entry rule: if it needs a framework, it is not limb |
+| The gates themselves      | `gnomon`                                 | `yarn check` in each consumer                           |
+| Agent-instruction budgets | `gnomon-doc-budget`                      | `yarn doc-budget`, a ceiling and a headroom line each   |
+| Phone layout              | —                                        | `yarn check:mobile`, 16 routes × 2 widths               |
 
 **Devtools are one decision, not seven.** Every workspace runs oxlint with its type-aware half on
 tsgolint, oxfmt, and TypeScript 7 — the same versions, enforced by the dependency constraint. There
@@ -86,16 +87,6 @@ entry-isolation test. Worth doing, and worth doing on its own.
 **The showcase shell.** The last page-shaped duplication between the two playgrounds that has not
 been measured properly. Unlike the design-system page, it was never inventoried, so "how much of it
 is the same" is currently an impression rather than a number.
-
-**The agent-instruction budget is one package's gate, and that package is at its ceiling.**
-antumbra's `doc-budget.test.ts` holds a word budget per `CLAUDE.md`, checks that every path those
-files name exists and that every `yarn` script they mention is a real script. umbra has none of it,
-at 3 484 words. And antumbra's own set is at **13 498 of 13 500** — against the rule written in that
-same test, "land at 90% of a budget, not at it", which makes the set a word hunt for every session
-that touches it. Two separate pieces of work: the gate is `gnomon`-shaped and would give umbra all
-three checks the way `penumbra-contrast` gave antumbra a colour gate for free; the trim is an
-editorial pass over prose, and whether a document earns its words is the author's call, not a
-script's.
 
 **`verbatimModuleSyntax` is on in `apps/home` and nowhere else.** The lint rule
 `typescript/consistent-type-imports` asks for the same shape everywhere, so nothing is actually

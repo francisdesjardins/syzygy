@@ -10,6 +10,38 @@ its own past is a story, not a record. The package has been renamed twice, so ol
 by older names: `@yourorg/dialog` before 2026-08-04, then `umbra` until 2026-09-15. It is
 `antumbra` now.
 
+## 2026-09-17, the instruction set gets room to breathe
+
+### Changed
+
+The doc budget is [gnomon](../gnomon)'s now — `yarn doc-budget`, the same six checks as the test it
+replaces plus a headroom line at 90% of each ceiling. `doc-budget.test.ts` is gone; the numbers are
+in [doc-budget.json](doc-budget.json).
+
+**The set was at 13 498 words of 13 500**, and `CLAUDE.md` at 2 999 of 3 000. Each budget had been
+set to the file's size on the day it was written, so every one of them read full from its first
+commit — which is why adding a sentence here has always meant hunting for one to remove first.
+
+About 500 words left these files, and most of them moved rather than went:
+
+- The compatibility-matrix vocabulary was a second copy of
+  [compatibility-matrix.ts](src/__tests__/compatibility-matrix.ts)'s own doc comment. The section is
+  a pointer now.
+- How a callback refuses — the three `on…Request` / `on…` / `onClose` rules — is on
+  `UseDialogBaseOptions`, where the options are.
+- Registering a story is three playground files, so it is in the playground's `CLAUDE.md`.
+
+### Fixed
+
+**`prepare`'s JSDoc and `src/CLAUDE.md` contradicted each other on the word `gate`.** The JSDoc said
+"a gate, not a notification"; the vocabulary said "`prepare` is awaited, **not** a gate — a gate says
+no, and `prepare` cannot". One act, one word is this project's own rule, and `gate` is spent on
+`canDismiss`, `ActionGate`, `DismissGate` and `OpenGate`. The JSDoc now says what `prepare` does:
+awaited, refusing nothing, holding `open()`'s promise and `isPreparing`.
+
+`src/CLAUDE.md`'s budget moved 6000 → 6500, deliberately — 6000 was its own size, rounded up. Every
+file now sits between 71% and 90% of its ceiling and the set is at 13 010.
+
 ## 2026-09-17, the design-system page keeps only what is antumbra's
 
 ### Changed

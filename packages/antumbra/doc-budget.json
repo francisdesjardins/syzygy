@@ -1,0 +1,20 @@
+{
+  "notes": [
+    "The per-file numbers sum higher than the total on purpose: what costs a session is all of them",
+    "together, and the per-file line is only there to stop one document eating the whole allowance.",
+    "The total is the real constraint and is a hard ceiling.",
+    "src/CLAUDE.md moved from 6000 to 6500 deliberately. 6000 was the file's size on the day the",
+    "budget was written, rounded up — a snapshot rather than a target, which is why it read 99% from",
+    "the first commit and every session since paid a word hunt to add a sentence. 6500 is chosen to",
+    "leave the document real working room. The total did not move."
+  ],
+  "total": 13500,
+  "headroom": 0.9,
+  "files": {
+    "CLAUDE.md": 3000,
+    "src/CLAUDE.md": 6500,
+    "src/store/CLAUDE.md": 1400,
+    "playground/CLAUDE.md": 4200
+  },
+  "alsoNamingScripts": ["README.md", "API.md", "CONTRIBUTING.md"]
+}

@@ -7,6 +7,7 @@ import type { DialogStyle } from './style.js';
 // The model a binding instantiates. Only the style-object and rendered-node types vary per
 // framework, so they are type parameters with framework-free defaults that each binding pins once
 // (`src/react/types.ts`, `src/solid/types.ts`); a third binding is two aliases and a renderer.
+//
 
 // ── Close Results ─────────────────────────────────────────────────────────────
 
@@ -276,6 +277,12 @@ export type DialogVariant =
  * `UseDialogOptions` is `UseDialogBaseOptions & DialogVariant`; template hooks
  * also `Pick` from this flat type without intersecting with `DialogVariant`.
  *
+ * **A callback's name here says how it refuses, and there are three answers.** `on…Request` asks and
+ * the answer is the return value — the suffix marks a door, where a plain `on…` reads as being told
+ * after the fact. A plain `on…` on a user gesture refuses through the *event* instead, taking the
+ * whole press with `preventDefault()`, because a boolean would be a second protocol for what the DOM
+ * already has. `onClose` is a notification and the only one: its result is ignored.
+ *
  * @typeParam TStyle - The style object type this binding speaks.
  * @typeParam TNode - What this binding's `render` returns and what it renders.
  */
@@ -486,10 +493,15 @@ export type UseDialogBaseOptions<
    * `isPreparing` stays `true` until it settles; that is the loading window the render callback
    * is given, and `open()` resolves only once this has.
    *
-   * **A gate, not a notification**, which is why it is not called `onOpen`: it holds the dialog's
-   * `isPreparing` and the promise `open()` returns. To be *told* a dialog opened — without
-   * gating anything — use `dialogManager.subscribe` or the `dialog:open` DOM event, which fires
-   * at the start of the sequence and is the one that genuinely means "on open".
+   * **Awaited, not a gate** — and not a notification either, which is why it is not called
+   * `onOpen`. A gate says no (`canDismiss`, `ActionGate`, `DismissGate`, `OpenGate`); this cannot:
+   * `syncOpenSequence` shows the dialog and schedules the phase's frame *before* starting it, so
+   * the dialog reaches `'open'` either way and one that throws is logged and settles like any
+   * other. What waits on it is `open()`'s promise, `isPreparing` and therefore `aria-busy`,
+   * `dismissWhilePreparing`, and the labelling diagnostic.
+   *
+   * To be *told* a dialog opened, use `dialogManager.subscribe` or the `dialog:open` DOM event,
+   * which fires at the start of the sequence and is the one that genuinely means "on open".
    *
    * Handed an `AbortSignal` that fires when the dialog closes, so work started here can be
    * dropped when nobody is waiting for it any more. A dialog dismissed while it is still loading

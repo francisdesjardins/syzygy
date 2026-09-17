@@ -1,0 +1,8 @@
+{
+  "total": 4000,
+  "headroom": 0.9,
+  "files": {
+    "CLAUDE.md": 4000
+  },
+  "alsoNamingScripts": ["README.md"]
+}

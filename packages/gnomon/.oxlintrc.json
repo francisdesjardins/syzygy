@@ -10,11 +10,16 @@
   "extends": ["../../.oxlintrc.json"],
   "overrides": [
     {
-      // The three CLIs, which happen to sit at the package root rather than under `scripts/`
-      // because they are what the package *is* — `bin` entries and a Playwright `globalSetup`.
-      // The root's rule for a one-shot script is theirs; the modules beside them are not one-shot
-      // scripts and keep the house style.
-      "files": ["check-examples.mjs", "ct-coverage-report.mjs", "ct-coverage-reset.mjs"],
+      // The CLIs, which sit at the package root rather than under `scripts/` because they are what
+      // the package *is* — `bin` entries and a Playwright `globalSetup`. The root's rule for a
+      // one-shot script is theirs; the modules beside them are not one-shot scripts and keep the
+      // house style.
+      "files": [
+        "check-examples.mjs",
+        "check-doc-budget.mjs",
+        "ct-coverage-report.mjs",
+        "ct-coverage-reset.mjs"
+      ],
       "rules": {
         "no-console": "off",
         "curly": "off",

@@ -71,7 +71,7 @@ yarn playwright test -c playwright.config.ts --project=unit --grep "the agent in
 
 **Why?** Long documentation drifts and becomes unreadable. The budget (e.g., 1800 words for `CLAUDE.md`) forces concision and clarity.
 
-**Test location:** [src/**tests**/doc-budget.test.ts](../src/__tests__/doc-budget.test.ts) — lists each file, its limit, and the cutoff point.
+**Budgets:** [doc-budget.json](../doc-budget.json) — each file, its ceiling, and the headroom line below it. `yarn doc-budget` prints both.
 
 ---
 
@@ -186,7 +186,7 @@ Example:
 **"Doc budget exceeded"**
 
 - Your prose documentation got too long
-- Fix: Trim to the limit (shown in test output) or raise the budget in [doc-budget.test.ts](../src/__tests__/doc-budget.test.ts)
+- Fix: trim to the headroom line (`yarn doc-budget` prints how far past it you are) or raise the budget in [doc-budget.json](../doc-budget.json), deliberately, in the same commit
 - Budget is intentional; increase only if you're documenting a complex new feature
 
 **Hook doesn't run after edit**
@@ -202,4 +202,4 @@ Example:
 - **[.claude/commands/add-example.md](add-example.md)** — Adds example; triggers PostToolUse hook
 - **[.claude/commands/store-engineer.md](store-engineer.md)** — Generates store code; triggers PostToolUse hook
 - **[.claude/skills/](.)** — Each skill's code is also formatted + validated by these hooks
-- **[src/**tests**/doc-budget.test.ts](../src/__tests__/doc-budget.test.ts)** — Define budgets for CLAUDE.md files
+- **[doc-budget.json](../doc-budget.json)** — Define budgets for CLAUDE.md files

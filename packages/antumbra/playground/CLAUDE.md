@@ -170,6 +170,18 @@ boots from `app/bootstrap.tsx` into `#app`, the gallery from `pages/stories/mode
 **Generated, not listed**: `yarn story-ids` writes the typed `Stories` augmentation and one lazy
 loader per id.
 
+### Registering a story
+
+Export from the barrel → add a `StoryEntry` in `StoriesPage.tsx` → register the `?raw` import in
+`codeSamples.ts`. A story off the page is invisible: it builds, it runs in CT, and nobody reaches
+it — **gated** by `stories-registration.test.ts`, whose exemption list is empty, so an omission is a
+written decision rather than an oversight. A harness sharing a file is cut out of it by name
+(`sliceDeclaration`).
+
+The exception is a **parameterised** harness. `StoryEntry.component` takes no props, so one that
+requires them is a fixture rather than a demo and the gate skips it — give it a prop-free default if
+it is worth showing.
+
 ## The API reference is generated
 
 `/api` is **half this playground, half [`corona`](../../corona)**. The generator stays here:
