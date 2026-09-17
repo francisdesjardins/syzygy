@@ -5,6 +5,31 @@ Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No s
 **This file is the package's memory.** The code states what holds now; why it came to hold lives
 here.
 
+## 2026-09-17, the shell primitives move here
+
+### Added
+
+`src/shell/` — `AppButton`, `AppIconButton`, `appButtonClass`, `SelectionDropdown`, `SectionNav`
+and `useDocumentTitle`.
+
+Each pair differed by its import path and nothing else, except where one copy had quietly drifted —
+and every drift was the same shape, one side keeping a fix or a token the other never got:
+
+- `AppButton.module.css` — umbra carries `line-height: 1.25` with the bug it fixes written beside
+  it: a `<button>` takes `normal` from the user agent while an `<a>` inherits the page's, which made
+  two links 38px tall beside a 33px button. antumbra never had it.
+- `AppIconButton.module.css` — antumbra had `200ms` where a token exists, and an `outline: none`,
+  against its own instructions on both counts.
+- `SectionNav.module.css` — antumbra had `monospace` and `300ms` as literals, and **no
+  `prefers-reduced-motion` block at all**. umbra's comment says it was copied "on antumbra's rules";
+  it was then improved and the improvement never went back.
+
+So the better copy won each time, which is the whole argument for one of them existing.
+
+`useDocumentTitle` takes `product` and `routes` rather than importing the host's nav table. The rule
+— longest prefix wins, the distinguishing half first because a tab strip truncates from the right —
+is the same everywhere; the table is not.
+
 ## 2026-09-17, the mascot moves here, and its face does not
 
 ### Added

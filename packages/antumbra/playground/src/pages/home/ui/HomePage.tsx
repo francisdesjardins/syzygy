@@ -1,6 +1,6 @@
 import styles from '@/pages/home/ui/HomePage.module.css';
 import { useTheme } from '@/shared/lib/theme-context';
-import { AppButton, appButtonClass } from '@/shared/ui/AppButton';
+import { AppButton, appButtonClass } from 'corona';
 import { CodeBlock } from '@/shared/ui/CodeBlock/CodeBlock';
 import { MoonPhase, type Phase } from '@/shared/ui/MoonPhase';
 import { AntumbraMoon } from '@/shared/ui/PeekingMoon/AntumbraMoon';

@@ -117,7 +117,7 @@ import {
 import { ExampleGrid, ExampleSection, StoryCard } from '@/entities/example';
 import { sectionSlug } from '@/shared/lib/section-slug';
 import { PageLayout } from '@/shared/ui/PageLayout';
-import { SectionNav } from '@/shared/ui/SectionNav';
+import { SectionNav } from 'corona';
 import { useEffect } from 'react';
 import type { ComponentType } from 'react';
 import {

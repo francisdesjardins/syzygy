@@ -1,5 +1,5 @@
 import { Link, useRouterState } from '@tanstack/react-router';
-import styles from '@/shared/ui/SectionNav.module.css';
+import styles from './SectionNav.module.css';
 
 /**
  * A sticky jump bar for long pages.

@@ -1,4 +1,4 @@
-import styles from '@/shared/ui/AppButton.module.css';
+import styles from './AppButton.module.css';
 
 export type AppButtonLook = {
   readonly variant?: 'contained' | 'outlined' | 'text' | undefined;

@@ -3,7 +3,7 @@ import * as MessageDialog from '@/entities/dialog-template/ui/vanilla/message-di
 import * as Shared from '@/entities/dialog-template/ui/vanilla/shared';
 import { createResultStore } from '@/shared/lib/createResultStore';
 import { useStore } from '@/shared/lib/use-store';
-import { AppButton } from '@/shared/ui/AppButton';
+import { AppButton } from 'corona';
 import { useState } from 'react';
 import { useMessageDialog } from 'antumbra/react';
 import type { DialogFailure } from 'antumbra/react';

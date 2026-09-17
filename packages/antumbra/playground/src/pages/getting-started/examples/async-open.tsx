@@ -4,7 +4,7 @@ import * as Shared from '@/entities/dialog-template/ui/vanilla/shared';
 import { ContentTransition } from '@/entities/dialog-template/ui/vanilla/shared/content/ContentTransition';
 import { createResultStore } from '@/shared/lib/createResultStore';
 import { createQuery, useQuery } from '@/shared/lib/use-query';
-import { AppButton } from '@/shared/ui/AppButton';
+import { AppButton } from 'corona';
 import { useMessageDialog } from 'antumbra/react';
 import { useStore } from '@/shared/lib/use-store';
 

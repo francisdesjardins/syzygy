@@ -1,9 +1,8 @@
 import { EclipseMark } from '@/shared/ui/EclipseMark';
 import { ThemeToggleButton } from '@/shared/ui/ThemeToggleButton';
-import { AppIconButton } from '@/shared/ui/AppButton';
+import { AppIconButton, PlaygroundPath } from 'corona';
 import { MenuIcon } from '@/shared/ui/icons';
 import styles from '@/widgets/top-bar/ui/TopBar.module.css';
-import { PlaygroundPath } from 'corona';
 
 type TopBarProps = {
   readonly isMobile: boolean;

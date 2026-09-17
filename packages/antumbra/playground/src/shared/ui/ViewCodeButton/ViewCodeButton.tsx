@@ -1,4 +1,4 @@
-import { AppIconButton } from '@/shared/ui/AppButton';
+import { AppIconButton } from 'corona';
 import { CodeIcon } from '@/shared/ui/icons';
 import styles from '@/shared/ui/ViewCodeButton/ViewCodeButton.module.css';
 import { useCodePane } from '@/shared/lib/code-pane-context';

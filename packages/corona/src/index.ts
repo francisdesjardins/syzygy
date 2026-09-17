@@ -3,5 +3,6 @@
 // here rather than a decision about where anything goes.
 export * from './api/index.ts';
 export * from './mascot/index.ts';
+export * from './shell/index.ts';
 export * from './site/index.ts';
 export * from './tokens/index.ts';

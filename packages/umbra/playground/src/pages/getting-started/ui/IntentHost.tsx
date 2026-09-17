@@ -2,7 +2,7 @@ import { useIntentHost } from 'umbra/react';
 import type { ForwardedIntent, Intent } from 'umbra/react';
 import { useEffect, useRef, useState } from 'react';
 import { dialog, uiPort } from '@/pages/getting-started/examples/ui-port.js';
-import { AppButton } from '@/shared/ui/AppButton';
+import { AppButton } from 'corona';
 import styles from '@/pages/getting-started/ui/IntentDialog.module.css';
 
 type Question =

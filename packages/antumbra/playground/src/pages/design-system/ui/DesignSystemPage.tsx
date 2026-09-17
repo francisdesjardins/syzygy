@@ -1,11 +1,16 @@
-import { isOnSite, TokenScale, TokenSwatches, TokenTablesProvider } from 'corona';
+import {
+  AppButton,
+  isOnSite,
+  SectionNav,
+  SelectionDropdown,
+  TokenScale,
+  TokenSwatches,
+  TokenTablesProvider,
+} from 'corona';
 import type { TokenNote } from 'corona';
 import { ExampleSection } from '@/entities/example';
-import { AppButton } from '@/shared/ui/AppButton';
-import { SelectionDropdown } from '@/shared/ui/SelectionDropdown';
 import { CodeIcon, PlayArrowIcon } from '@/shared/ui/icons';
 import { PageLayout } from '@/shared/ui/PageLayout';
-import { SectionNav } from '@/shared/ui/SectionNav';
 import { SurfaceCard } from '@/shared/ui/SurfaceCard';
 import styles from '@/pages/design-system/ui/DesignSystemPage.module.css';
 

@@ -2,9 +2,8 @@ import { type AnyStep, type Bootstrap, clearSharedScope, createBootstrap } from 
 import { BootstrapProvider, useBootstrapContext } from 'umbra/react';
 import { useCallback, useState } from 'react';
 import { ExampleCard, ExampleGrid, ExampleSection } from '@/entities/example';
-import { AppButton } from '@/shared/ui/AppButton';
+import { AppButton, SectionNav } from 'corona';
 import { PageLayout } from '@/shared/ui/PageLayout';
-import { SectionNav } from '@/shared/ui/SectionNav';
 import { type Faults, createApi, defaultFaults } from '@/pages/getting-started/examples/fake-api';
 import { createSteps } from '@/pages/getting-started/examples/steps';
 import { FaultSwitches } from '@/pages/getting-started/ui/FaultSwitches';

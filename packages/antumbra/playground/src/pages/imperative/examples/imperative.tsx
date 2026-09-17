@@ -1,7 +1,7 @@
 import { ExampleLayout } from '@/entities/example';
 import * as MessageDialog from '@/entities/dialog-template/ui/vanilla/message-dialog';
 import * as Shared from '@/entities/dialog-template/ui/vanilla/shared';
-import { AppButton } from '@/shared/ui/AppButton';
+import { AppButton } from 'corona';
 import { dialogManager, useMessageDialog } from 'antumbra/react';
 import { useStore } from '@/shared/lib/use-store';
 import { createImmerStore } from '@/shared/lib/immer-store';

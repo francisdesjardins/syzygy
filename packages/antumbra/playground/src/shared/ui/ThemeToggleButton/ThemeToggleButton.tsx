@@ -1,4 +1,4 @@
-import { AppIconButton } from '@/shared/ui/AppButton';
+import { AppIconButton } from 'corona';
 import { DarkModeIcon, LightModeIcon } from '@/shared/ui/icons';
 import styles from '@/shared/ui/ThemeToggleButton/ThemeToggleButton.module.css';
 import { useTheme } from '@/shared/lib/theme-context';

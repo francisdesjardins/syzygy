@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { AppIconButton } from '@/shared/ui/AppIconButton';
+import { AppIconButton } from 'corona';
 import { CheckIcon, ContentCopyIcon } from '@/shared/ui/icons';
 import styles from '@/shared/ui/CopyButton.module.css';
 

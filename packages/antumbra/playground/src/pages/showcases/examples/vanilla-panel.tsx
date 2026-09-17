@@ -1,12 +1,11 @@
 import { ExampleLayout } from '@/entities/example';
-import { AppButton } from '@/shared/ui/AppButton';
+import { AppButton, SelectionDropdown } from 'corona';
 import * as FormDialog from '@/entities/dialog-template/ui/vanilla/form-dialog';
 import * as PanelDialog from '@/entities/dialog-template/ui/vanilla/panel-dialog';
 import * as Shared from '@/entities/dialog-template/ui/vanilla/shared';
 import { createResultStore } from '@/shared/lib/createResultStore';
 import { createImmerStore } from '@/shared/lib/immer-store';
 import { simulateApiCall } from '@/shared/lib/simulate-api-call';
-import { SelectionDropdown } from '@/shared/ui/SelectionDropdown';
 import type { ReactNode } from 'react';
 import { Key, useMessageDialog } from 'antumbra/react';
 import { useStore } from '@/shared/lib/use-store';

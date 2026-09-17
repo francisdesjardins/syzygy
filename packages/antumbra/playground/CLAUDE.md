@@ -60,7 +60,7 @@ playground/src/
 ├── widgets/     # root-layout, top-bar, sidebar, code-viewer
 ├── entities/    # example (Card/Grid/Layout/Section/StoryCard), dialog-template (vanilla)
 ├── shared/
-│   ├── ui/      # PageLayout, SectionNav, CodeBlock, LoadingButton, ResultDisplay, ViewCodeButton
+│   ├── ui/      # PageLayout, CodeBlock, ResultDisplay, ViewCodeButton, EclipseMark, SurfaceCard
 │   └── lib/     # simulate-api-call, use-overflow, createResultStore, section-slug,
 │                 # async-state, safe-await, use-query, use-form (copyable patterns)
 ```
@@ -117,15 +117,17 @@ Porting Penumbra elsewhere is: depend on the package, write a skin.
   Regenerate with `scripts/fetch-fonts.mjs`.
 - **Sentence case, except a mono eyebrow** — uppercase on a button is a component library's
   signature; on a mono group label it is a typographic device.
-- **Primitives** live in `shared/ui` — `AppButton`/`AppIconButton` + `appButtonClass`, the `icons`
-  set, `EclipseMark`, `MoonPhase`, `SurfaceCard`, `SelectionDropdown` and the layout pieces.
+- **The shared primitives come from [corona](../../corona)** — `AppButton`/`AppIconButton` +
+  `appButtonClass`, `SelectionDropdown`, `SectionNav`, the mascot and the playground path. What
+  stays in `shared/ui` is what only this playground has: the `icons` set, `EclipseMark`, `MoonPhase`,
+  `SurfaceCard`, `PageLayout` and `ResultDisplay`.
 - **The MUI island** (`shared/ui/MuiIsland` + `shared/lib/mui-theme.ts`) is **the subject, not a
   leftover**, and stays Material-looking on purpose. Scoped to the one card that needs it.
 - The vanilla **templates** keep their own token families, are deliberately unbranded, and may not
   touch the shell's sheet — they are copied into apps where it does not exist.
 
-**One button recipe**: what cannot be an `AppButton` takes
-[`appButtonClass`](src/shared/ui/AppButton/buttonRecipe.ts).
+**One button recipe**: what cannot be an `AppButton` takes `appButtonClass`, from
+[corona](../../corona/src/shell/button-recipe.ts).
 
 **The three marks are not interchangeable** — see
 [`EclipseMark`](src/shared/ui/EclipseMark/EclipseMark.tsx).
@@ -151,7 +153,7 @@ decides where a new example goes:
 | `/api`             | Generated reference — a map, then a page per category     |
 | `/stories`         | Live `*.story.tsx` harnesses, and the suite’s gallery     |
 
-**`PeekingMoon` is suppressed on two of them**, for reasons that do not generalise: `/` already
+**corona's `PeekingMoon` is suppressed on two of them**, for reasons that do not generalise: `/` already
 shows the same moon still, and `/stories` portals panels to the body edges where a mascot reads as
 a fixture misbehaving. `RootLayout` holds the pair.
 
@@ -392,7 +394,7 @@ renaming it silently downgrades a stylesheet to TSX highlighting.
 ## Shared Utilities
 
 - `ExampleCard` / `ExampleGrid` / `ExampleLayout` / `ExampleSection` / `StoryCard` — `@/entities/example`
-- `PageLayout`, `SectionNav` — `@/shared/ui/…`
+- `PageLayout` — `@/shared/ui/…`; `SectionNav`, `AppButton`, `SelectionDropdown` — `corona`
 - `simulateApiCall` — mock async helper (`@/shared/lib/simulate-api-call`)
 - `asyncState` / `safeAwait` / `useQuery` / `useForm` (`@/shared/lib/…`), and `createMutex` /
   `createSingleFlight` / `shallowEqual` from [`limb`](../../limb) — patterns a user copies,

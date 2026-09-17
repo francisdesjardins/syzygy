@@ -1,5 +1,5 @@
 import type { ComponentProps } from 'react';
-import styles from '@/shared/ui/AppIconButton.module.css';
+import styles from './AppIconButton.module.css';
 
 /**
  * A round hover target around a lone icon.

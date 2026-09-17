@@ -1,5 +1,4 @@
-import { PlaygroundPath } from 'corona';
-import { AppIconButton } from '@/shared/ui/AppIconButton';
+import { AppIconButton, PlaygroundPath } from 'corona';
 import { MenuIcon } from '@/shared/ui/icons';
 import { ThemeToggleButton } from '@/shared/ui/ThemeToggleButton';
 import styles from '@/widgets/top-bar/ui/TopBar.module.css';

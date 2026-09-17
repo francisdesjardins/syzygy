@@ -1,4 +1,4 @@
-import { appButtonClass, type AppButtonLook } from '@/shared/ui/button-recipe';
+import { appButtonClass, type AppButtonLook } from './button-recipe.ts';
 import type { ButtonHTMLAttributes } from 'react';
 
 /**

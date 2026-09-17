@@ -1,6 +1,6 @@
 import { readableSyntaxStyle } from 'limb/readable-syntax';
 import { useTheme } from '@/shared/lib/theme-context';
-import { AppIconButton } from '@/shared/ui/AppButton';
+import { AppIconButton } from 'corona';
 import styles from '@/shared/ui/CodeBlock/CodeBlock.module.css';
 import { CheckIcon, ContentCopyIcon } from '@/shared/ui/icons';
 import { useState } from 'react';

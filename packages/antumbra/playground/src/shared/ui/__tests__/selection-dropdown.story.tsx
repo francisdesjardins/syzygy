@@ -1,5 +1,5 @@
 import '@/entities/dialog-template/ui/vanilla/form-dialog/styles.module.css';
-import { SelectionDropdown } from '@/shared/ui/SelectionDropdown';
+import { SelectionDropdown } from 'corona';
 
 /** The form tokens live on `:root` in the stylesheet imported above, so the harness only has to
  * flip the attribute they key on. */

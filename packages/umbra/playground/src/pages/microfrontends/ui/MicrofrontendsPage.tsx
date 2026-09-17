@@ -1,11 +1,9 @@
 import { Link, useSearch } from '@tanstack/react-router';
 import { useState } from 'react';
 import { ExampleCard, ExampleGrid, ExampleSection } from '@/entities/example';
-import { AppButton } from '@/shared/ui/AppButton';
-import { appButtonClass } from '@/shared/ui/button-recipe';
+import { AppButton, appButtonClass, SectionNav } from 'corona';
 import { DemoControls, DemoFrame, DemoToolbar } from '@/shared/ui/DemoFrame';
 import { PageLayout } from '@/shared/ui/PageLayout';
-import { SectionNav } from '@/shared/ui/SectionNav';
 
 const FRAME_HEIGHT = 500;
 

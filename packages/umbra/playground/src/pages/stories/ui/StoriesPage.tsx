@@ -5,7 +5,7 @@ import { ExampleSection } from '@/entities/example/ui/ExampleSection';
 import { type StoryMount, stories } from '@/pages/stories/model/registry.js';
 import { sectionSlug } from '@/shared/lib/section-slug.js';
 import { PageLayout } from '@/shared/ui/PageLayout';
-import { SectionNav } from '@/shared/ui/SectionNav';
+import { SectionNav } from 'corona';
 
 /**
  * The component suite's fixtures, rendered live and grouped by what they are trying to prove.

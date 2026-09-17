@@ -7,7 +7,7 @@ import { DialogOutletExample } from '@/pages/imperative/examples/dialog-outlet';
 import { OpenRequestExample } from '@/pages/imperative/examples/open-request';
 import { ServiceLayerExample } from '@/pages/imperative/examples/service-layer';
 import { PageLayout } from '@/shared/ui/PageLayout';
-import { SectionNav } from '@/shared/ui/SectionNav';
+import { SectionNav } from 'corona';
 
 const SECTIONS = [
   { id: 'imperative-control', label: 'Imperative control' },

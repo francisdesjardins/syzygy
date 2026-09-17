@@ -7,7 +7,7 @@ import {
 } from 'corona';
 import { useParams } from '@tanstack/react-router';
 import { ExampleGrid, ExampleSection } from '@/entities/example';
-import { AppButton } from '@/shared/ui/AppButton';
+import { AppButton } from 'corona';
 import { CodeBlock } from '@/shared/ui/CodeBlock/CodeBlock';
 import { PageLayout } from '@/shared/ui/PageLayout';
 import { SurfaceCard } from '@/shared/ui/SurfaceCard';

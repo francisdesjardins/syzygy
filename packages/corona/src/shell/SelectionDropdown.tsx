@@ -1,4 +1,4 @@
-import styles from '@/shared/ui/SelectionDropdown.module.css';
+import styles from './SelectionDropdown.module.css';
 import type { ReactNode, SelectHTMLAttributes } from 'react';
 
 type SelectionDropdownProps = SelectHTMLAttributes<HTMLSelectElement> & {
