@@ -1,23 +1,52 @@
 # corona
 
-The sun's outer atmosphere — what you can see of a body once the disc itself is covered. The public
-surface of a library, and the page that shows it.
+The sun's outer atmosphere — what you can see of a body once the disc itself is covered. What a
+playground shows of a library, minus the part that is about which library it is.
 
-Both playgrounds ship a generated API reference. This package is the half of it that does not
-depend on which library is being documented: the contract a generated model must satisfy, and the
-viewer that renders one.
+**One directory per area**, each owning its barrel, its slot contract and its stylesheets. The entry
+rule is the same for all of them and a file can fail it: **does this exist identically in both
+playgrounds, and does it need to know which library it is showing?**
 
-**One directory per area.** The reference lives in `src/api/`, and owns its barrel, its slot
-contract and its stylesheets. A second area is a second directory and one line in `src/index.ts` —
-which is the point of the layout: where something goes stops being a decision. The entry rule is
-the same for every area and a file can fail it: **does this exist identically in both playgrounds,
-and does it need to know which library it is showing?**
+| Area          | What it is                                                                                          |
+| ------------- | --------------------------------------------------------------------------------------------------- |
+| `src/api/`    | The generated reference: the contract a model must satisfy, and the viewer that renders one.        |
+| `src/site/`   | The two things a playground can only do when it is being served inside a site.                      |
+| `src/tokens/` | The design-system tables — the system half's names, their grouping, and the layout that shows them. |
+
+A fourth is a fourth directory and one line in `src/index.ts`, which is the point of the layout:
+where something goes stops being a decision.
 
 ```tsx
 <ApiReferenceProvider slots={SLOTS} entryPoints={ENTRY_POINTS}>
   <ApiIndexPage />
 </ApiReferenceProvider>
 ```
+
+## The token tables
+
+```tsx
+<TokenTablesProvider slots={{ Card: SurfaceCard }}>
+  <TokenSwatches tokens={PALETTE} /> {/* yours: colour is what a project rewrites */}
+  <TokenScale groups={['type', 'leading']} /> {/* penumbra's: the same in every project */}
+</TokenTablesProvider>
+```
+
+The seam is the one the token files already make. `SYSTEM_GROUPS` holds the system half's names and
+the family each belongs to — editorial, because a reader wants leading beside the ramp rather than
+beside whatever the sheet declares next to it — and **`yarn check:tokens` fails on a declaration in
+`penumbra/tokens.system.css` that no group claims.** A token nobody can see is a token nobody uses.
+The rule lives here rather than in penumbra because it is the viewer that owes it: the package ships
+two stylesheets and should not be answerable for a consumer's table of contents.
+
+Colour goes the other way. It is the half a project rewrites, so each playground passes its own list
+with its own notes, and the chip is painted `background: var(--name)` rather than with the value the
+row prints beside it — the two would have to disagree visibly for a wrong swatch to exist at all.
+
+**The tables watch `data-color-scheme` rather than being told when to re-read**, and that
+distinction cost a defect. A provider that writes the attribute from an ordinary effect writes it
+_after_ its descendants' effects have run, so a table asking React when the scheme changed measures
+the outgoing scheme and keeps it until the next flip. One playground used a layout effect and was
+right by accident; the other was wrong the whole time.
 
 ## The generator stays with the library
 

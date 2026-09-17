@@ -1,4 +1,5 @@
 import styles from './SiteHomeLink.module.css';
+import { isOnSite } from './on-site.ts';
 
 /**
  * The way out of a playground and back to the site around it.
@@ -13,10 +14,7 @@ import styles from './SiteHomeLink.module.css';
  * rather than navigating inside it.
  */
 export function SiteHomeLink({ label }: { readonly label: string }) {
-  if (typeof window === 'undefined') {
-    return null;
-  }
-  if (!window.location.pathname.startsWith('/playground/')) {
+  if (!isOnSite()) {
     return null;
   }
 

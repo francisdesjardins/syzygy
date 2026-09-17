@@ -3,6 +3,30 @@
 Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No semver: names change
 between commits when a better one shows up, and the entry says which and why.
 
+## 2026-09-17, the design-system page keeps only what is umbra's
+
+### Changed
+
+`DesignSystemPage` renders [corona](../corona)'s tables. The swatch, the row, the card of rows and
+the hook that reads the live values were the same code as antumbra's, and the 221-line stylesheet
+under them was byte-identical. What stays here is what is this project's: the two colour lists with
+their notes, the recipes — the shell's own controls — and the rules.
+
+### Added
+
+A **Layout & stacking** section. corona's gate found that eleven system tokens were on no page in
+the repository, and these were most of them.
+
+The page links across to the site's own `/design-system` when it is being served inside the site,
+and does not when it is standalone, which `isOnSite` decides from where the build is being served.
+
+### Fixed
+
+**The token tables showed the outgoing scheme's values after a theme flip, and always had.** The
+provider writes `data-color-scheme` from an ordinary effect, and React runs a child's effects before
+its parent's — so the tables measured before the attribute moved. corona's `useTokens` watches the
+attribute now. Nothing in the provider changed; nothing needed to.
+
 ## 2026-09-17, the skin is twelve declarations
 
 ### Changed

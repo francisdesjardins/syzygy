@@ -10,6 +10,23 @@ its own past is a story, not a record. The package has been renamed twice, so ol
 by older names: `@yourorg/dialog` before 2026-08-04, then `umbra` until 2026-09-15. It is
 `antumbra` now.
 
+## 2026-09-17, the design-system page keeps only what is antumbra's
+
+### Changed
+
+`DesignSystemPage` renders [corona](../corona)'s tables. The swatch, the row, the card of rows and
+the hook that reads the live values were the same code as umbra's, and the 221-line stylesheet under
+them was byte-identical. What stays here is this project's: the two colour lists with their notes,
+the recipes and the rules.
+
+### Added
+
+A **Layout & stacking** section, and `--app-warn` / `--app-warn-wash` joined the semantic list. The
+fourth member of the family was added to the sheet and never to the page that claims to show the
+family.
+
+The page links across to the site's own `/design-system` when it is being served inside the site.
+
 ## 2026-09-17, the palette gets a gate
 
 ### Changed

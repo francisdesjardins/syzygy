@@ -1858,6 +1858,7 @@ __metadata:
     oxfmt: "npm:0.68.0"
     oxlint: "npm:^1.83.0"
     oxlint-tsgolint: "npm:7.0.2001"
+    penumbra: "workspace:^"
     react: "npm:^19.3.0"
     react-dom: "npm:^19.3.0"
     typescript-7: "npm:typescript@7.0.2"

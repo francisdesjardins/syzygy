@@ -5,6 +5,24 @@ keeps its own `CHANGELOG.md` for changes to itself.
 
 Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No semver.
 
+## 2026-09-17, the last page written twice
+
+### Changed
+
+The two design-system pages were 221 lines of byte-identical CSS and about 120 lines of the same
+components. They are [corona](packages/corona)'s third area now, beside the API reference and the
+site links — the same entry rule each time: does this exist identically in both playgrounds, and
+does it need to know which library it is showing?
+
+The seam inside the page is the one the token files already make. The system half's names and their
+grouping travel; colour stays with the project, which is why the notes beside each swatch were never
+the same anyway.
+
+**Two things fell out of doing it.** corona's new `check:tokens` found eleven system tokens on no
+page in the repository — every line height, every tracking step, and the whole of layout and
+stacking — and a browser probe found that one playground had been showing the outgoing scheme's
+values after every theme flip since the page was written.
+
 ## 2026-09-17, what the work is, said once
 
 ### Changed

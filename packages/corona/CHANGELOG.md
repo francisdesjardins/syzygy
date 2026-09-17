@@ -5,6 +5,56 @@ Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No s
 **This file is the package's memory.** The code states what holds now; why it came to hold lives
 here.
 
+## 2026-09-17, the design-system tables become the third area
+
+### Added
+
+`src/tokens/` — `TokenSwatches`, `TokenScale`, `useTokens`, `SYSTEM_GROUPS` and one stylesheet.
+
+The two design-system pages were 221 lines of byte-identical CSS and about 120 lines of the same
+component written twice: a swatch, a row, a card of rows, and a hook that reads
+`getComputedStyle(document.documentElement)`. None of it knew which library it was under, which is
+exactly the entry rule this package already had.
+
+The seam is the one the token files make. **The system half's names and their grouping are here**,
+because they are the same in every project that imports penumbra; **colour is the host's**, because
+it is the half a project rewrites — so each playground passes its own list and its own notes, and
+the notes were never the same anyway.
+
+`SurfaceCard` is a slot rather than a component this package owns. The two are genuinely different:
+one is a hairline and a radius, the other lifts on hover behind a corona.
+
+### Added — the table of contents is checked
+
+`yarn check:tokens` reads `penumbra/tokens.system.css` and fails on a declaration no group claims,
+on a group naming a token the sheet no longer declares, and on a token filed in two groups.
+
+Which group a token belongs to is editorial — a reader wants leading beside the ramp rather than
+beside whatever the sheet declares next to it — but whether it appears at all is not. **Eleven of
+the forty-seven were on neither page**: every line height, every tracking step, `--app-radius-pill`,
+and the whole of layout and stacking. Both pages gained a _Layout & stacking_ section for them, and
+it immediately showed one thing prose had not: `--app-z-sidebar` and `--app-z-mascot` are both 30,
+so which paints over which is source order rather than a decision. Left as it is and now visible.
+
+### Fixed
+
+**The tables read the outgoing scheme's values on a theme flip, in one of the two playgrounds.**
+
+`useTokens` took the scheme from the host's context and re-read when React said it changed. React
+runs a child's effects before its parent's, so a provider that writes `data-color-scheme` from an
+ordinary effect writes it _after_ the table has already measured. antumbra's provider uses a layout
+effect and was right by accident; umbra's does not and was wrong from the day the page was written.
+
+It watches the attribute with a `MutationObserver` now, which is true whoever sets it and whenever
+they do — and the `scheme` prop the provider used to need is gone, so the host has one less thing to
+pass correctly.
+
+### Added — `isOnSite`
+
+The rule `SiteHomeLink` already carried, as a function. A playground is a standalone build: run on
+its own, a link to `/design-system` points at a page that is not there. Both design-system pages use
+it for their way across to the site's.
+
 ## 2026-09-17, the reference becomes an area rather than the package
 
 ### Changed

@@ -2,7 +2,7 @@
   "name": "corona",
   "version": "1.0.0",
   "private": true,
-  "description": "The API reference: the contract a generated model must satisfy, and the viewer that renders it.",
+  "description": "What a playground shows of a library, minus the part that is about which library it is: the API reference, the design-system tables, and the way back to the site.",
   "license": "MIT",
   "author": "Francis Desjardins <francis.desjardins@gmail.com>",
   "repository": {
@@ -18,17 +18,19 @@
     "./package.json": "./package.json"
   },
   "scripts": {
-    "check": "yarn type-check && yarn lint --deny-warnings && yarn format:check",
+    "check": "yarn type-check && yarn lint --deny-warnings && yarn format:check && yarn check:tokens",
     "type-check": "node node_modules/typescript-7/bin/tsc --noEmit",
     "lint": "oxlint --type-aware",
     "lint:fix": "oxlint --type-aware --fix",
     "format": "oxfmt .",
     "format:check": "oxfmt --check .",
     "test": "echo \"corona: no-op — no test files yet; the viewer is exercised by both playgrounds smoke suites\"",
-    "verify:all": "yarn check"
+    "verify:all": "yarn check",
+    "check:tokens": "node scripts/check-token-coverage.mjs"
   },
   "dependencies": {
-    "limb": "workspace:^"
+    "limb": "workspace:^",
+    "penumbra": "workspace:^"
   },
   "devDependencies": {
     "@tanstack/react-router": "^1.170.36",
