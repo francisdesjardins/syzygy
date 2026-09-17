@@ -3,8 +3,7 @@ import { ThemeToggleButton } from '@/shared/ui/ThemeToggleButton';
 import { AppIconButton } from '@/shared/ui/AppButton';
 import { MenuIcon } from '@/shared/ui/icons';
 import styles from '@/widgets/top-bar/ui/TopBar.module.css';
-import { Link } from '@tanstack/react-router';
-import { SiteHomeLink } from 'corona';
+import { PlaygroundPath } from 'corona';
 
 type TopBarProps = {
   readonly isMobile: boolean;
@@ -24,20 +23,18 @@ export const TopBar = ({ isMobile, onMenuClick }: TopBarProps) => {
             <MenuIcon />
           </AppIconButton>
         )}
-        {/* The brand is the way home — the landing page is the one route not in the sidebar. */}
-        <Link to="/" aria-label="Antumbra — home" className={styles['brand']}>
-          {/* The flat mark, not the mascot and not a moon phase: the bar says what the product is,
-              and says the same thing the browser tab does. `MoonPhase` keeps its real job as a
-              heading ornament — a lunar phase is a different drawing from an eclipse. */}
-          <EclipseMark size={26} />
-          {/* Not an <h1>: the page's own title owns that, and two leave no unique document heading. */}
-          <span className={[styles['wordmark'], 'antumbra-wordmark'].join(' ')}>Antumbra</span>
-          <span className={styles['pill']}>Playground</span>
-        </Link>
+        {/* The path is the brand: its current segment carries this playground's mark and name, and
+            links to the landing page — the one route the sidebar omits. A separate wordmark beside
+            it would say the name twice, which is what the bar used to do. */}
+        <PlaygroundPath
+          current="dialog"
+          /* The flat mark, not the mascot and not a moon phase: the bar says what the product is,
+             and says the same thing the browser tab does. `MoonPhase` keeps its real job as a
+             heading ornament — a lunar phase is a different drawing from an eclipse. */
+          mark={<EclipseMark size={22} />}
+        />
 
         <div className={styles['spacer']} />
-
-        <SiteHomeLink label="francisdesjardins.ca" />
 
         <ThemeToggleButton />
       </div>

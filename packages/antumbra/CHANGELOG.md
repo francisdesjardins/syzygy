@@ -10,6 +10,17 @@ its own past is a story, not a record. The package has been renamed twice, so ol
 by older names: `@yourorg/dialog` before 2026-08-04, then `umbra` until 2026-09-15. It is
 `antumbra` now.
 
+## 2026-09-17, the top bar is a path
+
+### Changed
+
+The bar's brand and its link out are one component now, [corona](../../corona)'s `PlaygroundPath`:
+`Home / playground / Antumbra · Umbra`. The mark stays here — an eclipse and an annular ring are not
+the same drawing — and the words come from corona, which is what makes the three surfaces agree.
+
+The same path repeats in a new page footer, for a reader who reached the bottom of a long reference
+page rather than the top.
+
 ## 2026-09-17, the instruction set gets room to breathe
 
 ### Changed

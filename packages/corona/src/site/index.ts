@@ -1,2 +1,2 @@
 export { isOnSite } from './on-site.ts';
-export { SiteHomeLink } from './SiteHomeLink.tsx';
+export { PlaygroundPath, type PlaygroundSlug } from './PlaygroundPath.tsx';

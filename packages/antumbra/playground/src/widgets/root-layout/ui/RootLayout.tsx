@@ -5,6 +5,7 @@ import { useMediaQuery } from '@/shared/lib/use-media-query';
 import { Sidebar } from '@/widgets/sidebar';
 import { TopBar } from '@/widgets/top-bar';
 import styles from '@/widgets/root-layout/ui/RootLayout.module.css';
+import { PlaygroundPath } from 'corona';
 import { Outlet, useRouterState } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
@@ -32,6 +33,9 @@ const MainContent = () => {
         <Outlet />
       </div>
       {codeDialog.Dialog}
+      <footer className={styles['footer']}>
+        <PlaygroundPath current="dialog" variant="footer" />
+      </footer>
     </main>
   );
 };

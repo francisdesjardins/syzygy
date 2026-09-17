@@ -5,6 +5,34 @@ Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No s
 **This file is the package's memory.** The code states what holds now; why it came to hold lives
 here.
 
+## 2026-09-17, the way out becomes a path
+
+### Added
+
+`PlaygroundPath` — `Home / playground / Antumbra · Umbra`, where the current one carries this
+project's mark and the others are links. It replaces `SiteHomeLink`, which was removed.
+
+**It is also the only place the playgrounds are named.** Three surfaces had been naming the same
+things differently: the bar said `francisdesjardins.ca`, a URL where everything else was a name;
+home's work section said `antumbra`; the design-system pages said `Back to the home`. A table of
+two entries here is what makes them agree, and it keeps the two registers apart on purpose — a
+**slug is a capability** (`dialog`, `boot`) and a **name is a package**. A package is renamed the
+day a better word turns up; a deployed URL that followed it would break every link anybody kept.
+`deploy.mjs` already said so from the other end.
+
+**It never renders nothing**, which is the difference from what it replaces. Off the site there is
+no `/` and no sibling, so the same path renders as plain text instead of disappearing. A component
+that vanished under `yarn dev` would be invisible for the whole of the work that changes it.
+
+The `Playground` pill went with it: the path's own middle segment says `playground`, and the bar was
+otherwise printing the project's name twice — once as a wordmark, once inside the path.
+
+### Fixed
+
+Below 900px the bar keeps only the segment saying where you are. Nothing in that row can shrink — a
+flex item's `min-width` is `auto` — and the full path at 360px is what pushed the theme toggle off
+the right edge when it was a text link.
+
 ## 2026-09-17, the stacking table said the opposite of the sheet
 
 ### Fixed

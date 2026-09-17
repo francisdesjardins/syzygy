@@ -1,5 +1,6 @@
 import { useRouterState } from '@tanstack/react-router';
 import { PeekingMoon } from '@/shared/ui/PeekingMoon';
+import { PlaygroundPath } from 'corona';
 import { Outlet } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 import { useCodePane } from '@/shared/lib/code-pane-context';
@@ -30,6 +31,9 @@ function MainContent() {
         <Outlet />
       </div>
       {codeDialog.Dialog}
+      <footer className={styles['footer']}>
+        <PlaygroundPath current="boot" variant="footer" />
+      </footer>
     </main>
   );
 }

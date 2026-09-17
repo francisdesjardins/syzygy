@@ -3,6 +3,17 @@
 Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No semver: names change
 between commits when a better one shows up, and the entry says which and why.
 
+## 2026-09-17, the top bar is a path
+
+### Changed
+
+The bar's brand and its link out are one component now, [corona](../../corona)'s `PlaygroundPath`:
+`Home / playground / Antumbra · Umbra`. The mark stays here — an eclipse and an annular ring are not
+the same drawing — and the words come from corona, which is what makes the three surfaces agree.
+
+The same path repeats in a new page footer, for a reader who reached the bottom of a long reference
+page rather than the top.
+
 ## 2026-09-17, `normalizeError` is `serializeError`
 
 ### Changed — renamed export
