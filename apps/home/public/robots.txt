@@ -1,9 +1,4 @@
 User-agent: *
 Allow: /
 
-# Sitemap
 Sitemap: https://francisdesjardins.ca/sitemap.xml
-
-# Disallow development and testing routes
-Disallow: /playground/
-

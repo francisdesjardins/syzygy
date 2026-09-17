@@ -5,6 +5,19 @@ keeps its own `CHANGELOG.md` for changes to itself.
 
 Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No semver.
 
+## 2026-09-17, what the work is, said once
+
+### Changed
+
+The landing page presented this as front-end work. The repository has not been that for a while:
+umbra's core reaches no framework and needs no DOM, which its own tests assert, and one declared
+graph boots a page, a worker or a service. The copy says so now, in both languages and in the
+static head a link scraper reads — and `yarn check:head` in the home keeps those two from drifting
+apart again, which is how they came to disagree.
+
+The two playgrounds are no longer disallowed in `robots.txt`. They were filed as "development and
+testing routes"; they are the work.
+
 ## 2026-09-17, the last palette maintained twice
 
 ### Changed

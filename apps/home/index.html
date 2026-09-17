@@ -5,27 +5,37 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- SEO Meta Tags -->
-    <title>Francis Desjardins - Web Developer</title>
+    <!--
+      This head is the whole page as far as a link scraper is concerned: `#root` is empty until the
+      bundle runs, and Slack, LinkedIn, X and iMessage do not run it. So the four strings below are
+      the same four the application renders — `seo.home.*` in `src/i18n/translations/en/common.json`
+      — and `yarn check:head` fails when they drift apart, which is how they came to disagree in the
+      first place.
+    -->
+    <title>Francis Desjardins — building blocks, client side and server side</title>
     <meta
       name="description"
-      content="Web developer who builds reactive state systems and composable primitives. Prefers explicit contracts and zero dependencies. Breathing air since 1980."
+      content="Infrastructure engineer. Framework-free cores with thin bindings over them: the core is plain TypeScript that runs in a browser, a worker or a service, and the binding is the only part that knows which. Zero runtime dependencies."
     />
     <meta
       name="keywords"
-      content="Francis Desjardins, web developer, reactive state, composable primitives, zero-dependency, developer experience, TypeScript, React, Quebec"
+      content="Francis Desjardins, infrastructure engineer, building blocks, framework-agnostic, headless libraries, bootstrap orchestration, dependency graph, concurrency, cancellation, design tokens, zero-dependency, TypeScript, React, Solid, Node, Quebec"
     />
     <meta name="author" content="Francis Desjardins" />
     <meta name="robots" content="index, follow" />
-    <meta name="theme-color" content="#1976d2" />
+    <!-- --app-primary, light scheme. `yarn check:literals` holds it to the token sheet. -->
+    <meta name="theme-color" content="#c13584" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://francisdesjardins.ca/" />
-    <meta property="og:title" content="Francis Desjardins - Web Developer" />
+    <meta
+      property="og:title"
+      content="Francis Desjardins — building blocks, client side and server side"
+    />
     <meta
       property="og:description"
-      content="Builds reactive systems and composable tooling. Measures things in nanoseconds when nobody is watching."
+      content="Framework-free cores, thin bindings, zero runtime dependencies. What a library refuses to do is the first decision, not the last."
     />
     <meta property="og:image" content="https://francisdesjardins.ca/og-image.png" />
     <meta property="og:site_name" content="Francis Desjardins" />
@@ -33,10 +43,13 @@
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:url" content="https://francisdesjardins.ca/" />
-    <meta name="twitter:title" content="Francis Desjardins - Web Developer" />
+    <meta
+      name="twitter:title"
+      content="Francis Desjardins — building blocks, client side and server side"
+    />
     <meta
       name="twitter:description"
-      content="Builds reactive systems and composable tooling. Measures things in nanoseconds when nobody is watching."
+      content="Framework-free cores, thin bindings, zero runtime dependencies. What a library refuses to do is the first decision, not the last."
     />
     <meta name="twitter:image" content="https://francisdesjardins.ca/og-image.png" />
 
@@ -47,40 +60,74 @@
     <link rel="manifest" href="/manifest.json" />
 
     <!-- Additional SEO -->
-    <meta name="revisit-after" content="7 days" />
-    <meta name="rating" content="general" />
     <meta name="geo.region" content="CA-QC" />
     <meta name="geo.country" content="CA" />
 
-    <!-- Performance hints -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
-
-    <!-- JSON-LD Structured Data -->
+    <!--
+      Structured data. The person, then the three pieces as their own nodes, each pointing at the
+      surface a reader can actually open — a `codeRepository` would be the obvious field and is
+      deliberately absent until the repository is public, a 404 being worse than a gap.
+    -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "Person",
-        "name": "Francis Desjardins",
-        "description": "Web developer who builds reactive state systems, composable UI primitives, and zero-dependency tooling. Prefers explicit contracts over magic.",
-        "url": "https://francisdesjardins.ca",
-        "sameAs": ["https://github.com/francisdesjardins"],
-        "knowsAbout": [
-          "React",
-          "TypeScript",
-          "JavaScript",
-          "Reactive State",
-          "Composable Primitives",
-          "Zero-Dependency Libraries",
-          "Accessibility",
-          "Performance Engineering",
-          "Developer Experience"
-        ],
-        "address": {
-          "@type": "PostalAddress",
-          "addressRegion": "QC",
-          "addressCountry": "CA"
-        }
+        "@graph": [
+          {
+            "@type": "Person",
+            "@id": "https://francisdesjardins.ca/#person",
+            "name": "Francis Desjardins",
+            "jobTitle": "Infrastructure engineer",
+            "description": "Builds the blocks other software is built from: framework-free cores with thin bindings over them, the core plain TypeScript that runs in a browser, a worker or a service. Prefers explicit contracts over magic, and writes down what a library refuses to do before what it does.",
+            "url": "https://francisdesjardins.ca",
+            "sameAs": ["https://github.com/francisdesjardins"],
+            "knowsAbout": [
+              "Software architecture",
+              "Bootstrap orchestration",
+              "Dependency graphs",
+              "Concurrency and cancellation",
+              "Framework-agnostic library design",
+              "TypeScript",
+              "Node.js",
+              "React",
+              "Solid",
+              "Design tokens",
+              "Accessibility",
+              "Performance engineering",
+              "Developer experience"
+            ],
+            "address": {
+              "@type": "PostalAddress",
+              "addressRegion": "QC",
+              "addressCountry": "CA"
+            }
+          },
+          {
+            "@type": "SoftwareSourceCode",
+            "name": "umbra",
+            "author": { "@id": "https://francisdesjardins.ca/#person" },
+            "url": "https://francisdesjardins.ca/playground/boot/",
+            "programmingLanguage": "TypeScript",
+            "runtimePlatform": ["Browser", "Node.js", "Web Worker"],
+            "description": "Bootstrap orchestration over a declared step graph. The core needs no DOM, so one graph boots a page, a worker or a service; parallelism is derived from what each step declares it needs rather than configured."
+          },
+          {
+            "@type": "SoftwareSourceCode",
+            "name": "antumbra",
+            "author": { "@id": "https://francisdesjardins.ca/#person" },
+            "url": "https://francisdesjardins.ca/playground/dialog/",
+            "programmingLanguage": "TypeScript",
+            "runtimePlatform": "Browser",
+            "description": "A headless dialog manager on the native top layer. The framework-agnostic core owns the stack, the focus and the scroll lock; React, Solid and vanilla bindings do the rendering, and no UI ships."
+          },
+          {
+            "@type": "SoftwareSourceCode",
+            "name": "penumbra",
+            "author": { "@id": "https://francisdesjardins.ca/#person" },
+            "url": "https://francisdesjardins.ca/design-system",
+            "programmingLanguage": "CSS",
+            "description": "The portable half of a design system: a scale with no colour in it, a neutral palette with no brand in it, and a contrast gate over both."
+          }
+        ]
       }
     </script>
   </head>

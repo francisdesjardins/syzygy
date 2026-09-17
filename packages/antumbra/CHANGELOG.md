@@ -12,6 +12,13 @@ by older names: `@yourorg/dialog` before 2026-08-04, then `umbra` until 2026-09-
 
 ## 2026-09-17, the palette gets a gate
 
+### Changed
+
+The playground's `<title>` names the capability — "antumbra — headless dialogs on the native top
+layer" — rather than the package and the word _playground_. The site now lists it in its sitemap and
+no longer disallows `/playground/`, so the title is the first line of a search result rather than a
+tab label.
+
 ### Added
 
 `yarn check:contrast`, from `penumbra-contrast`. Sixteen token pairs, both schemes, and it fails

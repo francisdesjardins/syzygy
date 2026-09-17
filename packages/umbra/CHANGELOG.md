@@ -7,6 +7,12 @@ between commits when a better one shows up, and the entry says which and why.
 
 ### Changed
 
+The playground's `<title>` names what the library does — "umbra — bootstrap orchestration over a
+declared step graph" — rather than the package and the word _playground_. The site lists it in its
+sitemap now, so the title is the first line of a search result rather than a tab label.
+
+### Changed
+
 `playground/src/app/styles/tokens.skin.css` lost 47 declarations to
 [penumbra](../penumbra)'s new `tokens.skin.base.css`, and `app.css` imports that file between the
 system half and this one. What is left is the ring: three faces, the lockup rise, and eight colours.

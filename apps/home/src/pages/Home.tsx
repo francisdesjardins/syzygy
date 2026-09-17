@@ -194,6 +194,9 @@ export const Home = memo(() => {
                 <Typography variant="body2" color="text.secondary" component="p">
                   {t('home.skills.description')}
                 </Typography>
+                <Typography variant="body2" color="text.secondary" component="p">
+                  {t('home.skills.thinking')}
+                </Typography>
                 <Typography
                   variant="body2"
                   color="text.secondary"

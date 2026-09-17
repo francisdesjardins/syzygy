@@ -4,6 +4,61 @@ Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No s
 
 **This file is the app's memory.** The code states what holds now; why it came to hold lives here.
 
+## 2026-09-17, building blocks, and the head says so too
+
+### Changed
+
+The page called this front-end work. It is not, and the libraries behind it had been saying so for
+months: umbra's core reaches no framework and needs no DOM — `entry-isolation.test.ts` walks the
+import graph and fails if it ever does — so one declared graph boots a page, a worker or a service
+equally. The copy now says what the code already proved.
+
+- The lead line is **"Infrastructure engineer — building blocks, client side and server side"**.
+- _What I build_ gained a second paragraph, because the claim is about the habits and not only the
+  runtime: derive behaviour from what was declared rather than adding a flag for it, write the
+  refusals down before the features, and put a gate where a convention would otherwise be a comment
+  nobody re-reads.
+- _What's running_ said "two libraries" over a list of three, and umbra's blurb led with the
+  orchestration rather than with the fact that it is not a front-end one.
+
+antumbra is still a front-end library — it is dialogs on the native top layer, and pretending
+otherwise would be the same overclaim in the other direction.
+
+### Changed — the robot half says the same thing
+
+`#root` is empty until the bundle runs. Googlebot runs it; Slack, LinkedIn, X and iMessage do not,
+so for them `index.html`'s head **is** the page. It said "Web Developer" and described reactive
+state systems, which is neither what the application said nor what the work is.
+
+The head now carries the same four sentences the application renders, and the structured data is a
+`@graph` rather than a lone `Person`: the person with a `jobTitle`, then umbra, antumbra and
+penumbra as `SoftwareSourceCode` nodes, each pointing at the surface a reader can open. umbra's
+`runtimePlatform` is `["Browser", "Node.js", "Web Worker"]`, which is the claim stated where a
+machine can read it. `codeRepository` is deliberately absent: the repository is not public, and a
+field pointing at a 404 is worse than a missing one.
+
+`knowsAbout` was nine front-end topics. It is thirteen now, and orchestration, dependency graphs
+and concurrency are among them.
+
+**`robots.txt` no longer disallows `/playground/`.** It called them "development and testing
+routes"; they are the work this page exists to point at, each a built and documented site, and the
+landing page has linked to them the whole time. They are in the sitemap now, along with
+`/design-system`, whose `lastmod` dates had been a year stale.
+
+### Added
+
+`yarn check:head` — the head, the application's `seo.home.*` and the token sheet have to agree.
+Four sentences compared verbatim across `index.html` and `en/common.json`, the French checked for
+presence, and the two colours in `index.html` and `manifest.json` compared against
+`--app-primary` and `--app-bg`. Both were still MUI's default blue, `#1976d2`, which is exactly the
+drift the gate exists to catch — a palette outside the token sheets, one layer below where
+`check:literals` can see.
+
+### Changed — the manifest
+
+Its description had no relation to the page, `lang: "en"` on a bilingual site was a claim it could
+not keep, and its two colours are tokens now.
+
 ## 2026-09-17, the palette stops being MUI's
 
 ### Changed

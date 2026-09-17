@@ -18,24 +18,25 @@
   },
   "home": {
     "name": "Francis Desjardins",
-    "breathing": "Ingénieur en infrastructure front-end · Respire de l'air depuis 1980.",
-    "enough": "Préfère l'explicite à l'implicite, le prévisible au magique. Écrit des primitives sur lesquelles les autres construisent — ce qui est soit très utile, soit très humiliant, selon les jours. Ce qu'une librairie refuse de faire est la première décision, pas la dernière.",
+    "breathing": "Ingénieur en infrastructure — des blocs de construction, côté client comme côté serveur · Respire de l’air depuis 1980.",
+    "enough": "Préfère l’explicite à l’implicite, le prévisible au magique. Écrit des primitives sur lesquelles les autres construisent — ce qui est soit très utile, soit très humiliant, selon les jours. Ce qu’une librairie refuse de faire est la première décision, pas la dernière.",
     "expiry": "... toujours en développement actif",
     "skills": {
       "title": "Ce que je fais",
-      "description": "Des cores sans framework, avec des bindings React, Solid et vanilla par-dessus. Zéro dépendance runtime, trois fois sur trois. Mesure les choses en nanosecondes quand personne ne regarde.",
-      "secondary": "Aussi : félinophile assumé. Sans appel."
+      "description": "Des cores sans framework, avec des bindings minces par-dessus. Le core est du TypeScript ordinaire qui tourne dans un navigateur, un worker ou un service, et le binding est la seule partie qui sait lequel — un test parcourt le graphe d’imports et échoue si le core touche un framework. Zéro dépendance d’exécution, trois fois sur trois.",
+      "thinking": "Les mêmes réflexes des deux côtés du fil : dériver le comportement de ce qui a été déclaré plutôt que d’ajouter un drapeau, écrire les refus avant les fonctionnalités, et mettre une porte là où une convention ne serait qu’un commentaire que personne ne relit. Mesure des choses en nanosecondes quand personne ne regarde.",
+      "secondary": "Aussi : amateur de chats autoproclamé. Pas d’autres questions."
     },
     "work": {
       "title": "Ce qui tourne",
-      "description": "Deux librairies agnostiques au framework, chacune avec son playground. Les noms viennent des trois ombres que projette une éclipse. Ce qu'elles refusent de faire est documenté aussi soigneusement que le reste.",
+      "description": "Trois pièces, chacune avec une surface à essayer. Les noms viennent des ombres que projette une éclipse. Ce qu’elles refusent de faire est documenté aussi soigneusement que le reste.",
       "dialog": {
         "name": "antumbra",
         "description": "Gestionnaire de dialogues sur le top layer natif. Zéro UI livrée : le renderer reste le tien. Bindings React, Solid et vanilla."
       },
       "boot": {
         "name": "umbra",
-        "description": "Orchestrateur de démarrage. Tu déclares ce dont chaque étape a besoin, le parallélisme se déduit du graphe — pas de flag, pas de plafond de concurrence."
+        "description": "Orchestration de démarrage, et pas du genre front-end : le core n’a besoin d’aucun DOM, alors un seul graphe déclaré démarre une page, un worker ou un service. Vous dites ce dont chaque étape a besoin ; le parallélisme en est dérivé — aucun drapeau, aucun plafond de concurrence."
       },
       "designSystem": {
         "name": "penumbra",
@@ -49,10 +50,10 @@
   },
   "seo": {
     "home": {
-      "title": "Francis Desjardins - Développeur Web",
-      "description": "Ingénieur logiciel senior spécialisé en systèmes réactifs et outillage développeur composable. Respire de l'air depuis 1980.",
-      "ogTitle": "Francis Desjardins - Ingénieur Logiciel Senior",
-      "ogDescription": "Systèmes réactifs, outillage zéro-dépendance, et félinophile assumé."
+      "title": "Francis Desjardins — des blocs de construction, côté client comme côté serveur",
+      "description": "Ingénieur en infrastructure. Des cores sans framework, avec des bindings minces par-dessus : le core est du TypeScript ordinaire qui tourne dans un navigateur, un worker ou un service, et le binding est la seule partie qui sait lequel. Zéro dépendance d’exécution.",
+      "ogTitle": "Francis Desjardins — des blocs de construction, côté client comme côté serveur",
+      "ogDescription": "Des cores sans framework, des bindings minces, zéro dépendance d’exécution. Ce qu’une librairie refuse de faire est la première décision, pas la dernière."
     },
     "playground": {
       "title": "Terrain de jeu - Francis Desjardins",

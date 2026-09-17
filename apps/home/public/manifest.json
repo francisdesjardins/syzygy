@@ -1,11 +1,11 @@
 {
-  "name": "Francis Desjardins - Portfolio",
+  "name": "Francis Desjardins — building blocks",
   "short_name": "Francis Desjardins",
-  "description": "Software developer breathing air since 1980. Good enough for now, expiry date unknown.",
+  "description": "Infrastructure engineer. Framework-free cores with thin bindings over them, client side and server side. Breathing air since 1980.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#1976d2",
+  "background_color": "#f4f6fa",
+  "theme_color": "#c13584",
   "orientation": "portrait-primary",
   "icons": [
     {
@@ -15,6 +15,5 @@
     }
   ],
   "categories": ["business", "productivity", "utilities"],
-  "lang": "en",
   "dir": "ltr"
 }

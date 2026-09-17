@@ -56,6 +56,26 @@ identifiers — on system faces here, because this page is one screen of text an
 fetch a font file. The pairing is what makes the three read as siblings; the palettes deliberately
 do not.
 
+## The head is the page, for half the readers
+
+`#root` is empty until the bundle runs. Googlebot runs it; Slack, LinkedIn, X and iMessage do not —
+they read `index.html`'s head and stop. So the head carries the same four sentences the application
+renders (`seo.home.*` in `src/i18n/translations/en/common.json`) rather than a second version of
+them, and **`yarn check:head` fails when they drift apart**, which is how they came to disagree for
+a year.
+
+English only, because the head has one language and `defaultLng` is `en`. French is checked for
+presence; a translated head would need a server this site does not have.
+
+The structured data is a `@graph`: the person, then umbra, antumbra and penumbra as
+`SoftwareSourceCode` nodes, each pointing at a surface a reader can open. **`codeRepository` is
+absent on purpose** — the repository is private, and a field pointing at a 404 is worse than a
+missing one. It is the one thing waiting on the push.
+
+The same gate compares `theme-color` and the manifest's two colours against `--app-primary` and
+`--app-bg`, because a colour in a `.json` or a `<meta>` is a palette one layer below where
+`check:literals` can see.
+
 ## No React Compiler
 
 Every component here is wrapped in `memo()`, and the compiler's rule is that you stop doing that by
