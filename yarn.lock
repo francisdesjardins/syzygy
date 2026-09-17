@@ -583,7 +583,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mui/icons-material@npm:^9.3.1, @mui/icons-material@npm:^9.4.0":
+"@mui/icons-material@npm:^9.3.1":
   version: 9.4.0
   resolution: "@mui/icons-material@npm:9.4.0"
   dependencies:
@@ -675,7 +675,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mui/system@npm:9.4.0, @mui/system@npm:^9.4.0":
+"@mui/system@npm:^9.4.0":
   version: 9.4.0
   resolution: "@mui/system@npm:9.4.0"
   dependencies:
@@ -1635,9 +1635,7 @@ __metadata:
   dependencies:
     "@emotion/react": "npm:^11.14.0"
     "@emotion/styled": "npm:^11.14.1"
-    "@mui/icons-material": "npm:^9.4.0"
     "@mui/material": "npm:^9.4.0"
-    "@mui/system": "npm:9.4.0"
     "@tanstack/react-router": "npm:1.170.35"
     "@types/react": "npm:^19.3.0"
     "@types/react-dom": "npm:^19.3.0"
@@ -1668,7 +1666,6 @@ __metadata:
     babel-plugin-react-compiler: "npm:1.0.0"
     c8: "npm:12.0.0"
     gnomon: "workspace:^"
-    istanbul-lib-instrument: "npm:^6.0.3"
     oxfmt: "npm:0.68.0"
     oxlint: "npm:^1.82.0"
     oxlint-tsgolint: "npm:7.0.2001"
@@ -2250,7 +2247,6 @@ __metadata:
     "@emotion/styled": "npm:^11.14.1"
     "@mui/icons-material": "npm:^9.3.1"
     "@mui/material": "npm:^9.3.1"
-    "@playwright/test": "npm:1.63.0"
     "@types/node": "npm:^24.10.1"
     "@types/react": "npm:^19.3.0"
     "@types/react-dom": "npm:^19.3.0"
@@ -3762,7 +3758,6 @@ __metadata:
     "@types/react-dom": "npm:^19.3.0"
     c8: "npm:12.0.0"
     gnomon: "workspace:^"
-    istanbul-lib-instrument: "npm:^6.0.3"
     oxfmt: "npm:0.68.0"
     oxlint: "npm:^1.83.0"
     oxlint-tsgolint: "npm:7.0.2001"
