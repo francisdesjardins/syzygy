@@ -10,6 +10,10 @@ import { isOnSite } from './on-site.ts';
  * already on. Assembled under `/playground/<capability>/` it is one surface of a larger site, and
  * the way back is the only thing missing from it.
  *
+ * Below 600px the label is hidden and the arrow carries the link alone — the top bar cannot shrink,
+ * so the longest item in it decides whether the theme toggle stays on screen. `aria-label` holds
+ * the name either way, since a visually hidden label is still the accessible one.
+ *
  * A plain anchor, not a router link: the site is a different build, so this leaves the application
  * rather than navigating inside it.
  */
@@ -19,9 +23,9 @@ export function SiteHomeLink({ label }: { readonly label: string }) {
   }
 
   return (
-    <a className={styles['link']} href="/">
+    <a className={styles['link']} href="/" aria-label={label}>
       <span aria-hidden="true">←</span>
-      {label}
+      <span className={styles['label']}>{label}</span>
     </a>
   );
 }

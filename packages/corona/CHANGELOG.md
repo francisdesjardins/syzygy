@@ -5,6 +5,27 @@ Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No s
 **This file is the package's memory.** The code states what holds now; why it came to hold lives
 here.
 
+## 2026-09-17, the site link collapses on a phone
+
+### Fixed
+
+**`SiteHomeLink` was pushing the theme toggle off the top bar at 360px**, on every route of one
+playground. Nothing in that row can shrink — a flex item's `min-width` is `auto` — so the longest
+item decides whether the last one stays on screen, and `← francisdesjardins.ca` is the longest item
+in it. The two shells are the same markup; antumbra's longer wordmark and wider mark are the thirty
+pixels between passing and failing, which is why one playground showed it and the other did not.
+
+Below 600px the label is hidden and the arrow carries the link alone, with the name on `aria-label`
+— a visually hidden label is still the accessible one. **The link itself stays**: it is the only way
+out of a playground, and dropping it on a phone would be the same failure one size down.
+
+The fix belongs here rather than in either shell for the reason the component does: it exists
+identically in both, and it does not need to know which library it is showing. A future third shell
+gets it without being told.
+
+Found by the repository's new `yarn check:mobile`, which measures the assembled site at two phone
+widths.
+
 ## 2026-09-17, the design-system tables become the third area
 
 ### Added

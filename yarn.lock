@@ -3542,6 +3542,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "syzygy@workspace:."
   dependencies:
+    "@playwright/test": "npm:1.63.0"
     oxfmt: "npm:0.68.0"
   languageName: unknown
   linkType: soft

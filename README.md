@@ -113,13 +113,25 @@ involved — which matters, because Node 26 unbundled Corepack and the `yarn` on
 that refuses to run this project at all.
 
 ```sh
-yarn check              # type-check and lint every package
+yarn check              # format, type-check and lint every package
 yarn test               # unit and component tests
 yarn verify:all         # the full gate each package defines for itself
 yarn playgrounds:build  # the relocatable playground builds the site serves
+yarn deploy             # assemble the site, then:
+yarn check:mobile       # drive the assembled site at two phone widths
 ```
 
 Each package also runs standalone: `yarn workspace umbra run test`, and so on.
+
+**`check:mobile` is separate because it needs the assembled site**, not a package. It loads
+`apps/home/dist` — the playgrounds included, at the paths the site serves them from — in a real
+browser at 390px and 360px, and asserts three things per route: nothing crosses the right edge, the
+drawer opens with its links on screen, and every dialog the page can open stays inside the viewport.
+
+It exists because both halves have gone wrong here and nothing else could see either. A unit test, a
+type-check and a contrast measurement all pass through a navigation drawer that never slides in.
+Writing it found one: at 360px the shared site link pushed the theme toggle eleven pixels off the
+top bar, on every route of one playground.
 
 ## History across the import
 

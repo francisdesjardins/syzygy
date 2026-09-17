@@ -5,6 +5,44 @@ keeps its own `CHANGELOG.md` for changes to itself.
 
 Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No semver.
 
+## 2026-09-17, the phone is a gate now
+
+### Added
+
+`yarn check:mobile` — the assembled site, in a real browser, at 390px and 360px. Sixteen routes
+across all three surfaces, and three assertions on each: nothing crosses the right edge, the drawer
+opens with its links **on screen**, and every dialog the page can open stays inside the viewport.
+
+It runs on `apps/home/dist` rather than on a dev server, because the shell is what is being measured
+and a playground served on its own is a different layout from the one a reader gets.
+
+Nothing else here could see either failure. A unit test, a type-check and a contrast measurement all
+pass through a navigation drawer that never slides in.
+
+### Fixed
+
+**At 360px the site link pushed the theme toggle eleven pixels off the top bar**, on every route of
+antumbra's playground. Nothing in the row can shrink — a flex item's `min-width` is `auto` — so the
+longest item decides whether the last one stays on screen, and `← francisdesjardins.ca` is the
+longest item. The two shells are the same markup; antumbra has a longer wordmark and a wider mark,
+which is the thirty pixels between passing and failing.
+
+The fix is in [corona](packages/corona)'s `SiteHomeLink`, where the link already lives, so both
+shells and any future one get it: below 600px the label is hidden and the arrow carries the link
+alone, with the name on `aria-label`. **The way back to the site stays reachable on a phone** —
+removing it would be the failure this gate is for, at a smaller size.
+
+### Each half was proved lethal
+
+Overflow: the real 360px defect. Dialog geometry: a `min-width: 500px` forced onto `dialog[open]`,
+which the gate reported by name, by route and by pixel. Navigation: the drawer pinned at
+`translateX(-100%)`.
+
+That third mutation is the one that improved the gate. It failed on two routes out of ten, because
+the check counted `nav a` — and a page with its own section list has links that are visible while
+the drawer is not. Scoped to `aside a`, which is where both shells put the drawer, and to links
+actually **inside the viewport** rather than merely laid out.
+
 ## 2026-09-17, one strictness, and the app was not holding it
 
 ### Added
