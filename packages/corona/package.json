@@ -1,0 +1,53 @@
+{
+  "name": "corona",
+  "version": "1.0.0",
+  "private": true,
+  "description": "The API reference: the contract a generated model must satisfy, and the viewer that renders it.",
+  "license": "MIT",
+  "author": "Francis Desjardins <francis.desjardins@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/francisdesjardins/syzygy.git",
+    "directory": "packages/corona"
+  },
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./contract": "./src/contract.ts",
+    "./src/*": "./src/*",
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "check": "yarn type-check && yarn lint --deny-warnings && yarn format:check",
+    "type-check": "node node_modules/typescript-7/bin/tsc --noEmit",
+    "lint": "oxlint --type-aware",
+    "lint:fix": "oxlint --type-aware --fix",
+    "format": "oxfmt .",
+    "format:check": "oxfmt --check ."
+  },
+  "dependencies": {
+    "limb": "workspace:^"
+  },
+  "devDependencies": {
+    "@tanstack/react-router": "^1.170.36",
+    "@types/node": "^24.10.1",
+    "@types/react": "^19.3.0",
+    "oxfmt": "0.68.0",
+    "oxlint": "^1.82.0",
+    "oxlint-tsgolint": "7.0.2001",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "typescript-7": "npm:typescript@7.0.2"
+  },
+  "peerDependencies": {
+    "@tanstack/react-router": "^1.170.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "installConfig": {
+    "hoistingLimits": "workspaces"
+  }
+}

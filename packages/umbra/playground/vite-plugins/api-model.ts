@@ -3,6 +3,7 @@ import { mkdirSync, readFileSync, rmSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { promisify } from 'node:util';
 import type { Plugin } from 'vite';
+import type { ApiCategory, ApiMember, ApiSymbol, DocPart } from 'corona/contract';
 
 // Asynchronous, and that is the point: typedoc is a subprocess of a few seconds, and spawning it
 // synchronously would freeze the thread the rest of the graph is transformed on.
@@ -236,43 +237,9 @@ type CategoryDef = {
 type Declaration = { readonly node: Node; readonly specifier: string };
 
 /** A named thing inside a symbol: a parameter, a type parameter, or an object member. */
-export type ApiMember = {
-  readonly name: string;
-  readonly summary: string;
-  readonly type: readonly DocPart[];
-  readonly optional: boolean;
-};
-
-/** `link` is a {@link symbolKey} when exported, a bare name when not (rendered as inline code). */
-export type DocPart = { readonly text: string; readonly link?: string };
-
-export type ApiSymbol = {
-  /** `specifier#name` — see {@link symbolKey}. */
-  readonly key: string;
-  readonly name: string;
-  readonly kind: 'function' | 'variable' | 'type' | 'class';
-  /** Which page it lives on — the `id` of its {@link ApiCategory}. */
-  readonly category: string;
-  readonly specifier: string;
-  /** The declaration as a reader would write it, with referenced symbols kept linkable. */
-  readonly signature: readonly DocPart[];
-  readonly summary: readonly DocPart[];
-  readonly remarks: readonly DocPart[];
-  readonly see: readonly (readonly DocPart[])[];
-  readonly examples: readonly string[];
-  readonly typeParams: readonly ApiMember[];
-  readonly params: readonly ApiMember[];
-  readonly returns: readonly DocPart[];
-  readonly members: readonly ApiMember[];
-};
-
-export type ApiCategory = {
-  readonly id: string;
-  readonly label: string;
-  readonly specifier: string;
-  readonly blurb: string;
-  readonly symbols: readonly ApiSymbol[];
-};
+// The four types are corona's: the viewer and this generator agree on a shape neither owns
+// alone. Re-exported because `virtual:api-model` is declared against them.
+export type { ApiCategory, ApiMember, ApiSymbol, DocPart } from 'corona/contract';
 
 type CommentPart = { kind: string; text?: string; tag?: string; target?: unknown };
 type Comment = { summary?: CommentPart[]; blockTags?: { tag: string; content: CommentPart[] }[] };

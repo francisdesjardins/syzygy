@@ -56,7 +56,11 @@ export default defineConfig({
     mfeAntumbraPlugin(),
   ],
   resolve: {
-    dedupe: ['react', 'react-dom'],
+    dedupe: ['react', 'react-dom', '@tanstack/react-router'],
+    // The router belongs on that list for the same reason and it is not obvious: a router is
+    // a *value*, registered by the provider this app renders. A second copy resolves to an
+    // empty one, and every hook reading it throws on null — type-checked, built, and dead on
+    // the page. The smoke test is what saw it.
     alias: {
       antumbra: resolve(import.meta.dirname, '../src'),
       '@': resolve(import.meta.dirname, 'src'),

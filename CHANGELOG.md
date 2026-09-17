@@ -5,6 +5,45 @@ keeps its own `CHANGELOG.md` for changes to itself.
 
 Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No semver.
 
+## 2026-09-16, corona, and the error that had left it unshared
+
+### Added
+
+`packages/corona` — the generated API reference, which had existed twice. 25 files per playground,
+1443 lines byte-identical by the time it moved. Its own [CHANGELOG](packages/corona/CHANGELOG.md)
+carries the design; this entry carries the mistake.
+
+**The extraction was refused in the limb phase, and the refusal was a method error.** The route's
+imports were measured as a flat set across all its files, so the worst dependency — five UI
+components that genuinely differ between the two products — vetoed the whole directory. Nobody
+asked *which* files needed them. Five of twenty-five; the rest need nothing that differs.
+
+The seam was never between two directories. It runs between the **generated model** and the **page
+that shows it**: each playground keeps its typedoc generator, corona holds the contract and the
+viewer, and the host lends its components through named slots.
+
+### Changed
+
+`virtual:dialog-api` and `virtual:umbra-api` are both `virtual:api-model`. One specifier, and 8
+files stopped diverging — the rule this repository already applied to URLs, deploy destinations and
+translation keys, applied where it had been missed.
+
+Four more primitives moved to [limb](packages/limb): `mutex`, `single-flight`, `shallow-equal`,
+`slice-declaration`. Those were never duplicated; they existed **once**, reachable only by the
+playground that wrote them, which is the other half of what a shared package is for.
+
+Ports are assigned across the repository with `strictPort`, after a stray home dev server on the
+shared :3000 answered a component suite's readiness check with the home page's own HTML and made
+every test fail on a missing `window.mount()`.
+
+### The failure worth keeping
+
+A second copy of `@tanstack/react-router`. Each workspace group is its own hoisting boundary; a
+router is a *value* registered by the host's provider, so the second copy is empty and every hook
+throws on null. `react` had been deduplicated in both consumers beforehand; the router had not,
+because it did not look like the same problem. Type-check passed, build passed, the page rendered
+"Something went wrong" — and `yarn smoke` is what said so.
+
 ## 2026-09-16, the site is built here now
 
 ### Added

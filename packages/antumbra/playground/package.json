@@ -17,6 +17,7 @@
     "@mui/material": "^9.4.0",
     "@mui/system": "9.4.0",
     "@tanstack/react-router": "1.170.35",
+    "corona": "workspace:^",
     "immer": "^11.1.18",
     "limb": "workspace:^",
     "penumbra": "workspace:^",

@@ -62,7 +62,7 @@ playground/src/
 ├── shared/
 │   ├── ui/      # PageLayout, SectionNav, CodeBlock, LoadingButton, ResultDisplay, ViewCodeButton
 │   └── lib/     # simulate-api-call, use-overflow, createResultStore, section-slug,
-│                 # async-state, safe-await, mutex, single-flight (copyable patterns)
+│                 # async-state, safe-await, use-query, use-form (copyable patterns)
 ```
 
 Cross-slice imports use the `@/<layer>/<slice>` alias and never reach into `ui/`/`model/` segments.
@@ -172,11 +172,12 @@ loader per id.
 
 ## The API reference is generated
 
-`/api` is not hand-written. `vite-plugins/api-model.ts` runs typedoc over the library's entry points,
-projects its ~470 kB graph down to what a reference page shows, and serves it as
-`virtual:dialog-api`. The pages render with `SurfaceCard` and `CodeBlock` like every other — one
-design system rather than an iframed second one. It regenerates when `src/` changes, so a JSDoc edit
-appears in about five seconds and an added `@example` needs no playground change.
+`/api` is **half this playground, half [`corona`](../../corona)**. The generator stays here:
+`vite-plugins/api-model.ts` runs typedoc over _this_ library's entry points, projects its ~470 kB
+graph down to what a page shows, and serves it as `virtual:api-model`, regenerating when `src/`
+changes: a JSDoc edit appears in about five seconds. corona is the viewer, rendering through
+components `pages/api/index.tsx` lends it, so the reference wears this design system, not an
+iframed second one.
 
 **Two routes**: `/api` is the map (start-here links, a card per category) and `/api/$category` is a
 chapter — around ten symbols, each with its signature, prose, members and examples. Both render
@@ -208,7 +209,7 @@ than printing a plausible-but-wrong line), **members with their types**, and **r
 the 100-column source wrap becomes browser wrapping, while blank lines, list markers and every
 newline inside an `@example` are left alone.
 
-A symbol is a URL, built by `categoryHref` + `symbolAnchor` in `pages/api/model/api-index.ts`. The
+A symbol is a URL, built by `categoryHref` + `symbolAnchor` in [`corona`](../../corona). The
 page never constructs a key — the plugin mints them and the page resolves one with `symbolFor`. The
 **anchor** stays the bare name: a category renders one specifier, so `api-useDialog` is unique on its
 page and is what a reader can guess and share.
@@ -380,10 +381,10 @@ renaming it silently downgrades a stylesheet to TSX highlighting.
 - `ExampleCard` / `ExampleGrid` / `ExampleLayout` / `ExampleSection` / `StoryCard` — `@/entities/example`
 - `PageLayout`, `SectionNav` — `@/shared/ui/…`
 - `simulateApiCall` — mock async helper (`@/shared/lib/simulate-api-call`)
-- `asyncState` / `safeAwait` / `createMutex` / `createSingleFlight` / `useQuery` / `useForm`
-  (`@/shared/lib/…`) — patterns a user copies, deliberately not shipped. `useForm` is the one the
-  two `/ui-integrations` form cards share, which makes that pair's claim — same hook, two markups —
-  literally true rather than two implementations that agree.
+- `asyncState` / `safeAwait` / `useQuery` / `useForm` (`@/shared/lib/…`), and `createMutex` /
+  `createSingleFlight` / `shallowEqual` from [`limb`](../../limb) — patterns a user copies,
+  deliberately not shipped. The two `/ui-integrations` form cards share `useForm`, which makes that
+  pair's claim — same hook, two markups — true rather than two implementations that agree.
 - `CodePaneProvider` (`@/app/providers/…`) + `useCodePane` (`@/shared/lib/code-pane-context` —
   `ViewCodeButton` is `shared/ui` and may not reach a widget, so the code-viewer barrel names the
   rule and deliberately does not re-export it)
@@ -392,8 +393,8 @@ renaming it silently downgrades a stylesheet to TSX highlighting.
 
 **Pages and examples do not need tests; `shared/lib/` does.** A card that renders a dialog is covered
 by the library's own suite and by `yarn smoke`. A helper in `shared/lib/` is different in kind: it is
-written to be **copied into someone else's project**, which is a claim that it works, and thirteen
-already carry tests in `shared/lib/__tests__/`.
+written to be **copied into someone else's project**, which is a claim that it works. The ones that
+stayed carry tests in `shared/lib/__tests__/`; the framework-free ones took theirs to `limb`.
 
 A pure helper gets a `*.test.ts` in the unit project; a hook gets a `*.ct.tsx` with a story beside
 it, the way `use-store` and `use-form` do. Anything under `pages/` is out of scope — see root

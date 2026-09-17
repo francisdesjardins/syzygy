@@ -39,7 +39,11 @@ export default defineConfig({
     // One React in the bundle whatever the layout of node_modules. Each workspace group is its own
     // hoisting boundary, so a shared package resolves `react` from its own position and a second
     // copy reaches the page as "Invalid hook call" at run time, not as a build error.
-    dedupe: ['react', 'react-dom'],
+    dedupe: ['react', 'react-dom', '@tanstack/react-router'],
+    // The router belongs on that list for the same reason and it is not obvious: a router is
+    // a *value*, registered by the provider this app renders. A second copy resolves to an
+    // empty one, and every hook reading it throws on null — type-checked, built, and dead on
+    // the page. The smoke test is what saw it.
     // The array form, because the four entry points have to match *exactly*: as bare string keys
     // they match by prefix, so `umbra/react/__tests__/x` would resolve against `react.ts` and
     // land on a path inside a file. Anchored patterns say what each one means, and the trailing
