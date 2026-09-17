@@ -20,13 +20,7 @@ type ExampleCardProps = {
  * `example` and `children` are alternatives rather than slots that stack: a card either shows a
  * rendered demo or lays out its own controls, and the two want different arrangements.
  */
-export const ExampleCard = ({
-  title,
-  description,
-  codeKey,
-  children,
-  example,
-}: ExampleCardProps) => {
+export function ExampleCard({ title, description, codeKey, children, example }: ExampleCardProps) {
   return (
     <SurfaceCard interactive>
       <div className={styles['body']}>
@@ -43,4 +37,4 @@ export const ExampleCard = ({
       </div>
     </SurfaceCard>
   );
-};
+}

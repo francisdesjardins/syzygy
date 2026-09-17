@@ -2,6 +2,9 @@
   flex: 1;
   display: flex;
   flex-direction: column;
+  /* Without this the card is as wide as its widest demo — a grid child's `min-width` is `auto`, so
+     a diagram that does not wrap takes the whole page sideways on a phone. */
+  min-width: 0;
   /* Less above than below: a title sits closer to the edge it hangs from than the content does to
      the one it rests on. */
   padding: var(--app-space-5) var(--app-space-6) var(--app-space-6);
@@ -35,13 +38,15 @@
   /* The same measure `PageLayout` holds its own prose to. A full-width card runs 98 characters to
      the line without it, which is past where the eye finds the next one. */
   max-width: var(--app-measure);
-  font-size: var(--app-text-md);
-  line-height: 1.6;
   color: var(--app-text-secondary);
 }
 
 .example {
   margin-top: auto;
+  /* A demo wider than the card scrolls inside it rather than widening the page. The pair is the
+     point: `min-width: 0` lets the box shrink, `overflow-x` gives the content somewhere to go. */
+  min-width: 0;
+  overflow-x: auto;
 }
 
 /* Controls, which a card lays out in a row that wraps. `example` and `children` never appear on the

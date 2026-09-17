@@ -1,7 +1,10 @@
+/* The section owns the space under it, so the page frame needs no gap and every page gets the
+   same rhythm whatever it puts between its bands. */
 .section {
   margin-bottom: var(--app-space-10);
-  /* Anchor jumps must clear the fixed 64px top bar. */
-  scroll-margin-top: 80px;
+  /* Anchor jumps must clear the fixed top bar, whose height is a token — a jump that lands under
+     it is the bug either way, and a literal here only holds while nobody moves the bar. */
+  scroll-margin-top: calc(var(--app-topbar-height) + var(--app-space-6));
 }
 
 .section:last-of-type {

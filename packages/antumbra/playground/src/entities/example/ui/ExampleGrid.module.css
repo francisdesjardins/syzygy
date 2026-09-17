@@ -2,10 +2,13 @@
   display: grid;
   gap: var(--app-space-4);
   align-items: stretch;
-  grid-template-columns: 1fr;
+  /* `minmax(0, …)` and not `1fr`: a track sized `1fr` is `minmax(auto, 1fr)`, so a demo that does
+     not wrap widens its own column and takes the page sideways with it. */
+  grid-template-columns: minmax(0, 1fr);
 }
 
-/* Collapses to one column below the sm breakpoint. */
+/* Mobile-first, and two columns from the sm breakpoint. Stated this way round so the narrow case
+   is the default rather than an override, which is what a phone gets first. */
 @media (min-width: 600px) {
   .twoColumns {
     grid-template-columns: repeat(2, minmax(0, 1fr));
