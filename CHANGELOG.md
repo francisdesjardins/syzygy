@@ -5,6 +5,48 @@ keeps its own `CHANGELOG.md` for changes to itself.
 
 Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No semver.
 
+## 2026-09-17, the lint surface is one file
+
+### Changed
+
+`.oxlintrc.json` at this root holds the rules, the plugins and the overrides every workspace shares.
+Each workspace's own config is `extends` plus the part that is genuinely its own — antumbra keeps
+its generated-examples and microfrontend entries, umbra its stories and type fixtures, and
+[corona](packages/corona) and [limb](packages/limb) are four lines each, which is the honest length
+for a package that adds nothing.
+
+Four of the five configs were **byte-identical, 314 lines**, including overrides for a `playground/`
+and a `public/mfe/` that two of them do not have. The fifth, umbra's, was the same 82 rules at 223
+lines, and it had drifted where drift is invisible: its untyped-JavaScript override switched off
+**19** type-aware rules against antumbra's 40, so the two linted their own build scripts to
+different standards and nothing said so.
+
+Two changes of behaviour, both deliberate. The untyped-JavaScript override is now globbed by **file
+extension** rather than by a list of directories, because that is the actual rule — every `.js` and
+`.mjs` here lives outside `src/` and is in no tsconfig, so tsgolint infers nothing and then judges
+what it inferred. And `no-restricted-imports`, the MUI barrel lock, moved to the two workspaces that
+depend on MUI; a restriction on an import the other three cannot resolve is a rule that cannot fail.
+
+### Added — how the change was proved
+
+**The repository lints clean, so a diff of findings before and after is a diff of two empty lists**,
+and `--print-config` cannot answer it either: for an extended config it drops rule *options*,
+printing `max-params: "deny"` where the behaviour is still `2`. Either would have signed off a rule
+that quietly lost its teeth.
+
+So: plant one violation per rule class per location — `src/`, a test, a build script, a `dist/` that
+should be ignored, a playground, the microfrontend fragments — in all five workspaces, and diff
+**which rule fires on which file**. Fifty-two assertions, and the run caught a real regression
+before the commit: umbra's microfrontend fragments had fallen from `no-console: error` to the root's
+`warn`, which no other check in the repository would have reported.
+
+### Learned about the tool
+
+`rules`, `plugins`, `env` and `options` are inherited through `extends`, and a child's `overrides`
+are **appended** to the parent's rather than replacing them. **`ignorePatterns` is not inherited at
+all** — not even by a child that declares none — so that one list is written out identically in all
+five, and that duplication is the tool's rather than a choice. Measured against oxlint 1.83.0.
+
 ## 2026-09-17, the last page written twice
 
 ### Changed

@@ -1,0 +1,247 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oxc-project/oxc/main/npm/oxlint/configuration_schema.json",
+
+  // The lint surface every workspace shares. Each one's `.oxlintrc.json` is `extends` plus the part
+  // that is genuinely its own, so a rule exists here once and a diff to it is a diff to the repo.
+  //
+  // `oxlint --type-aware` runs the type-aware half through **tsgolint**, built on the TypeScript 7
+  // compiler — so the linter and `tsc` are one compiler generation, which the old eslint +
+  // typescript-eslint pair could not be.
+  //
+  // The rule list below is `typescript-eslint`'s `strictTypeChecked` set, enumerated rather than
+  // inherited from a preset: every one of its 72 rules exists here, and spelling them out is what
+  // makes a rule that silently stops existing visible in a diff. Categories are deliberately not
+  // used — `-D suspicious` alone reports 2 725 findings from rules nobody chose.
+  //
+  // Formatting is oxfmt's, not a lint rule's. `arrow-parens` is dropped for that reason;
+  // `arrow-body-style` and `curly` stay because they change what the code *means* to read, not how
+  // it is spaced.
+  //
+  // **Three of the four sections inherit and the fourth does not.** `rules`, `plugins`, `env` and
+  // `options` are inherited, and a child's `overrides` are *appended* to these rather than
+  // replacing them. **`ignorePatterns` is not inherited at all** — not even by a child that
+  // declares none — so that list is written out in each workspace, and that duplication is the
+  // tool's, not a choice. Measured against oxlint 1.83.0; re-measure before trusting it again.
+  "plugins": ["react", "typescript", "unicorn"],
+  // Type-aware lives here rather than only on the CLI, because the editor never sees the CLI.
+  // Every invocation in this repo already passes `--type-aware`, so this changes nothing for a
+  // terminal; what it changes is the language server, which runs the syntax half by default and
+  // would otherwise leave the 72 rules below — the entire point of the config — silent in the IDE.
+  "options": {
+    "typeAware": true
+  },
+  "env": {
+    "browser": true,
+    "es2024": true
+  },
+  "rules": {
+    "no-console": "warn",
+    "eqeqeq": "error",
+    "curly": ["error", "all"],
+    // No implicit returns — every arrow function uses a block body with an explicit `return`.
+    // A concise body hides the return value and makes the arrow awkward to extend.
+    "arrow-body-style": ["error", "always"],
+    // Two parameters, and **an options object is one of the two** — `f(a, { b, c })`, never
+    // `f(a, b, { c })`. Deno's rule, and the reason to take it whole rather than as "2 + options"
+    // is that the second form has no stopping point: every parameter added positionally reads as
+    // the last one that could be. So a third thing to say goes in the object, where it is named at
+    // the call site, and the call reads the same whether it passes two of them or six.
+    //
+    // A signature a framework calls is the exception, and the only one: a Playwright fixture and a
+    // Connect middleware are shapes handed to us. Both carry `oxlint-disable-next-line max-params`
+    // and a line saying whose signature it is.
+    "max-params": ["error", 2],
+    "no-unused-vars": "off",
+    "typescript/no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_"
+      }
+    ],
+    "typescript/consistent-type-imports": [
+      "error",
+      { "prefer": "type-imports", "fixStyle": "inline-type-imports" }
+    ],
+    "typescript/no-floating-promises": "error",
+    "typescript/await-thenable": "error",
+    "typescript/switch-exhaustiveness-check": "error",
+    "typescript/no-misused-promises": [
+      "error",
+      // A JSX attribute and an object property are where a plain `onClick={submit}` lives, and
+      // flagging those costs more than it catches. An *argument* to a void-returning function
+      // stays checked, which is the shape that actually loses a rejection.
+      { "checksVoidReturn": { "attributes": false, "properties": false } }
+    ],
+    // `void` in a union is how a callback return type says "I do not care what you return".
+    "typescript/no-invalid-void-type": "off",
+
+    // ── strictTypeChecked, enumerated ────────────────────────────────────────
+    "typescript/ban-ts-comment": "error",
+    "typescript/no-array-constructor": "error",
+    "typescript/no-array-delete": "error",
+    "typescript/no-base-to-string": "error",
+    "typescript/no-confusing-void-expression": "error",
+    "typescript/no-deprecated": "error",
+    "typescript/no-duplicate-enum-values": "error",
+    "typescript/no-duplicate-type-constituents": "error",
+    "typescript/no-dynamic-delete": "error",
+    "typescript/no-empty-object-type": "error",
+    "typescript/no-explicit-any": "error",
+    "typescript/no-extra-non-null-assertion": "error",
+    "typescript/no-extraneous-class": "error",
+    "typescript/no-for-in-array": "error",
+    "typescript/no-implied-eval": "error",
+    "typescript/no-meaningless-void-operator": "error",
+    "typescript/no-misused-new": "error",
+    "typescript/no-misused-spread": "error",
+    "typescript/no-mixed-enums": "error",
+    "typescript/no-namespace": "error",
+    "typescript/no-non-null-asserted-nullish-coalescing": "error",
+    "typescript/no-non-null-asserted-optional-chain": "error",
+    "typescript/no-non-null-assertion": "error",
+    "typescript/no-redundant-type-constituents": "error",
+    "typescript/no-require-imports": "error",
+    "typescript/no-this-alias": "error",
+    "typescript/no-unnecessary-boolean-literal-compare": "error",
+    "typescript/no-unnecessary-condition": "error",
+    "typescript/no-unnecessary-template-expression": "error",
+    "typescript/no-unnecessary-type-arguments": "error",
+    "typescript/no-unnecessary-type-assertion": "error",
+    "typescript/no-unnecessary-type-constraint": "error",
+    "typescript/no-unnecessary-type-conversion": "error",
+    "typescript/no-unnecessary-type-parameters": "error",
+    "typescript/no-unsafe-argument": "error",
+    "typescript/no-unsafe-assignment": "error",
+    "typescript/no-unsafe-call": "error",
+    "typescript/no-unsafe-declaration-merging": "error",
+    "typescript/no-unsafe-enum-comparison": "error",
+    "typescript/no-unsafe-function-type": "error",
+    "typescript/no-unsafe-member-access": "error",
+    "typescript/no-unsafe-return": "error",
+    "typescript/no-unsafe-unary-minus": "error",
+    "typescript/no-unused-expressions": "error",
+    "typescript/no-useless-constructor": "error",
+    "typescript/no-useless-default-assignment": "error",
+    "typescript/no-wrapper-object-types": "error",
+    "typescript/only-throw-error": "error",
+    "typescript/prefer-as-const": "error",
+    "typescript/prefer-literal-enum-member": "error",
+    "typescript/prefer-namespace-keyword": "error",
+    "typescript/prefer-promise-reject-errors": "error",
+    "typescript/prefer-reduce-type-parameter": "error",
+    "typescript/prefer-return-this-type": "error",
+    "typescript/related-getter-setter-pairs": "error",
+    "typescript/require-await": "error",
+    "typescript/restrict-plus-operands": "error",
+    "typescript/restrict-template-expressions": "error",
+    "typescript/return-await": "error",
+    "typescript/triple-slash-reference": "error",
+    "typescript/unbound-method": "error",
+    "typescript/unified-signatures": "error",
+    "typescript/use-unknown-in-catch-callback-variable": "error",
+    "no-var": "error",
+    "prefer-const": "error",
+    "prefer-rest-params": "error",
+    "prefer-spread": "error",
+
+    // React 19 + the React Compiler: the hooks rules are the set that catches real bugs.
+    // `eslint-plugin-react`'s recommended config is largely PropTypes/legacy checks that
+    // TypeScript already answers.
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn"
+  },
+  "overrides": [
+    {
+      // ── Plain JavaScript, which in this repo means untyped ──
+      //
+      // Every `.js` and `.mjs` file here lives outside `src/` and is in no tsconfig: the build
+      // tooling, the audit scripts, the microfrontend demo served verbatim. The glob is the file
+      // extension rather than a list of directories because that is the actual rule, and a list
+      // would go stale the first time a workspace grows a new script directory.
+      //
+      // The type-aware rules are **off, and that is a statement about honesty rather than noise**.
+      // These files carry no annotations, so tsgolint infers nothing: it reports their values as
+      // the `error` type and then judges them, which produces 1 528 `no-unsafe-*` findings that say
+      // "this file is untyped" and nothing else — plus a handful of confident claims ("value is
+      // always nullish") derived from that same absence. A finding built on a failed inference is
+      // worse than no finding, because it reads the same.
+      //
+      // The syntax-level rules stay, and they are what these files are linted for.
+      "files": ["**/*.mjs", "**/*.js"],
+      "env": { "browser": true, "node": true },
+      "rules": {
+        "typescript/await-thenable": "off",
+        "typescript/no-array-delete": "off",
+        "typescript/no-base-to-string": "off",
+        "typescript/no-confusing-void-expression": "off",
+        "typescript/no-deprecated": "off",
+        "typescript/no-duplicate-type-constituents": "off",
+        "typescript/no-floating-promises": "off",
+        "typescript/no-for-in-array": "off",
+        "typescript/no-implied-eval": "off",
+        "typescript/no-meaningless-void-operator": "off",
+        "typescript/no-misused-promises": "off",
+        "typescript/no-misused-spread": "off",
+        "typescript/no-mixed-enums": "off",
+        "typescript/no-redundant-type-constituents": "off",
+        "typescript/no-unnecessary-boolean-literal-compare": "off",
+        "typescript/no-unnecessary-condition": "off",
+        "typescript/no-unnecessary-template-expression": "off",
+        "typescript/no-unnecessary-type-arguments": "off",
+        "typescript/no-unnecessary-type-assertion": "off",
+        "typescript/no-unnecessary-type-conversion": "off",
+        "typescript/no-unnecessary-type-parameters": "off",
+        "typescript/no-unsafe-argument": "off",
+        "typescript/no-unsafe-assignment": "off",
+        "typescript/no-unsafe-call": "off",
+        "typescript/no-unsafe-enum-comparison": "off",
+        "typescript/no-unsafe-member-access": "off",
+        "typescript/no-unsafe-return": "off",
+        "typescript/no-unsafe-unary-minus": "off",
+        "typescript/only-throw-error": "off",
+        "typescript/prefer-promise-reject-errors": "off",
+        "typescript/prefer-reduce-type-parameter": "off",
+        "typescript/prefer-return-this-type": "off",
+        "typescript/related-getter-setter-pairs": "off",
+        "typescript/require-await": "off",
+        "typescript/restrict-plus-operands": "off",
+        "typescript/restrict-template-expressions": "off",
+        "typescript/return-await": "off",
+        "typescript/switch-exhaustiveness-check": "off",
+        "typescript/unbound-method": "off",
+        "typescript/use-unknown-in-catch-callback-variable": "off"
+      }
+    },
+    {
+      // One-shot Node scripts: reporting to stdout is their entire output contract, and a
+      // concise arrow in a 20-line script is not the readability problem it is in the library.
+      // Narrower than the extension glob above, which is why it is a second entry — the demo code
+      // in a `public/` directory is shipped code and keeps `no-console`.
+      "files": ["**/scripts/**/*.{mjs,js}", "**/.claude/**/*.{mjs,js}"],
+      "rules": {
+        "no-console": "off",
+        "curly": "off",
+        "arrow-body-style": "off"
+      }
+    },
+    {
+      // Build and test configuration: Node rather than the browser, and stdout is the contract.
+      "files": ["**/vite.config.esm.ts", "**/vite.config.ts", "**/playwright.config.ts"],
+      "env": { "node": true },
+      "rules": {
+        "no-console": "off"
+      }
+    },
+    {
+      "files": ["**/*.test.ts", "**/*.test-d.ts", "**/*.ct.tsx", "**/*.story.tsx"],
+      "rules": {
+        "no-console": "off",
+        // A test reads a method off a page object and passes it on; and a fixture that asserts a
+        // value exists is documenting the harness, not risking a null.
+        "typescript/unbound-method": "off",
+        "typescript/no-non-null-assertion": "off"
+      }
+    }
+  ]
+}
