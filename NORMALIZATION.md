@@ -84,9 +84,39 @@ not an extraction; it is deciding whether one of them should be called something
 change to antumbra's published surface — its README, its `CHANGELOG`, the positive halves of its
 entry-isolation test. Worth doing, and worth doing on its own.
 
-**The showcase shell.** The last page-shaped duplication between the two playgrounds that has not
-been measured properly. Unlike the design-system page, it was never inventoried, so "how much of it
-is the same" is currently an impression rather than a number.
+**What is still written twice is stylesheets whose components legitimately differ.** This line used
+to read "the showcase shell", which was an impression and a wrong one: `showcases/` is antumbra's
+alone and has no umbra counterpart, so there was never anything there to deduplicate. The two
+playgrounds hold 54 files at the same relative path; 8 are byte-identical, 289 lines in total.
+
+Of those 8, three are settled: `fonts.css` is each project's own skin,
+`react-syntax-highlighter-subpaths.d.ts` is a shim for somebody else's package, and
+`useCodeDialog.module.css` is 18 lines under a hook whose two copies are 38% alike — too little
+shared behaviour to carry a component across. The rest divide into two shapes.
+
+`DesignSystemPage.module.css` is 80 lines, 11 rules, and **all 11 are declaration-identical** — a
+miss from the extraction that moved that page's components to corona. `HomePage.module.css` is the
+same shape one step weaker: 20 selectors in both, **18 with identical declarations**, against 13
+rules only antumbra has and 6 only umbra has.
+
+**Neither can move, for the same reason.** All 13 of corona's stylesheets are consumed by a corona
+component, and no host imports a corona class name — the `./src/*` export path would allow it, and
+nothing uses it. Moving a bare CSS module would make class names a public surface corona has never
+had, which is a new seam rather than an extraction. A stylesheet reaches corona the way every other
+one did: behind a component. If those two pages ever converge on one, the CSS follows it.
+
+`entities/example` is the counter-example that confirms the shape. `ExampleCard.tsx` forks on
+behaviour — antumbra treats `children` and `example` as alternatives and wraps children in
+`.controls`, umbra stacks them — and the stylesheet forks with it: 3 shared selectors, 2 identical,
+`.body` different on both sides for reasons each file states. Moving `ExampleSection` and
+`ExampleGrid` without the card would split a family every page composes as a unit.
+
+**A smaller thing found on the way.** `shared/ui` in antumbra is folder-per-component with a barrel;
+umbra's is flat files. Antumbra's barrels are not a convention yet — 4 of 15 components have none,
+so the 10 imports that name a file directly have no alternative. Exactly one import bypasses a
+barrel that does exist: `entities/example/ui/ExampleCard.tsx` reaching
+`@/shared/ui/SurfaceCard/SurfaceCard`. `fsd-layers.test.ts` does not catch it and is right not to —
+its rule is the stated one, _cross-slice_ imports, and `shared` is segments with no slices in it.
 
 **`verbatimModuleSyntax` is on in `apps/home` and nowhere else.** The lint rule
 `typescript/consistent-type-imports` asks for the same shape everywhere, so nothing is actually
