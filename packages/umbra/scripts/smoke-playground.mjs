@@ -261,6 +261,51 @@ try {
     failures.push(`Opening reports took the count to ${afterReports}; four is one new request.`);
   }
 
+  // ── The source panel ────────────────────────────────────────────────────────
+  //
+  // It is the sibling library's slide, and the only surface here that neither suite reaches: a
+  // component test never renders the shell, and the assertions above are about the bootstrap's own
+  // dialogs. `prepare` fetches the samples after the panel is on screen, so an empty panel is the
+  // shape a broken fetch takes.
+  const viewer = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+  const viewerErrors = [];
+  viewer.on('console', (message) => {
+    if (message.type() === 'error') viewerErrors.push(message.text());
+  });
+  viewer.on('pageerror', (error) => {
+    viewerErrors.push(String(error));
+  });
+
+  await viewer.goto(`${PAGE_URL}getting-started`, { waitUntil: 'networkidle' });
+  await viewer.getByRole('button', { name: /view source/i }).first().click();
+
+  const panel = viewer.locator('dialog[open]');
+  await panel.waitFor({ timeout: 25_000 });
+  await viewer.locator('dialog[open] pre, dialog[open] code').first().waitFor({ timeout: 25_000 });
+
+  const shown = (await viewer.locator('dialog[open] pre, dialog[open] code').first().innerText())
+    .trim().length;
+  if (shown < 40) {
+    failures.push(`The source panel opened holding ${shown} characters.`);
+  }
+
+  // Full width is the reading decision this panel exists to make; a rule lost to a media query
+  // narrows it back with nothing failing.
+  const box = await panel.boundingBox();
+  if (box === null || box.width < 1280 * 0.95) {
+    failures.push(`The source panel is ${Math.round(box?.width ?? 0)}px of 1280px.`);
+  }
+
+  await viewer.getByRole('button', { name: /^close$/i }).click();
+  await viewer.waitForFunction(() => {
+    return document.querySelector('dialog[open]') === null;
+  }, undefined, { timeout: 25_000 });
+
+  if (viewerErrors.length > 0) {
+    failures.push(`The source panel logged: ${viewerErrors.slice(0, 2).join(' | ')}`);
+  }
+  await viewer.close();
+
   if (failures.length === 0) {
     console.log(
       `smoke: the playground settled as "${status}", and the frame's four fragments made ${calls} requests between them.`

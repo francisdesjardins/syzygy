@@ -115,6 +115,53 @@ async function gotoRoute(page, route) {
 
 const flows = {
   /**
+   * The source panel, which is a slide from this library driving this library's own playground.
+   *
+   * Neither suite reaches it: a component test never renders the shell. `prepare` fetches the
+   * samples once the panel is on screen, so an empty panel is the shape a broken fetch takes — and
+   * full width is the reading decision the panel exists to make, which a media query can narrow
+   * back with nothing failing.
+   */
+  async viewer(page) {
+    const checks = [];
+
+    await gotoRoute(page, '/getting-started');
+    await page
+      .getByRole('button', { name: /view source/i })
+      .first()
+      .click();
+
+    const panel = page.locator('dialog[open]');
+    await panel.waitFor({ timeout: 25_000 });
+    checks.push([true, 'the panel opened']);
+
+    const code = page.locator('dialog[open] pre, dialog[open] code').first();
+    await code.waitFor({ timeout: 25_000 });
+    const shown = (await code.innerText()).trim().length;
+    checks.push([shown >= 40, 'it holds source', `${String(shown)} characters`]);
+
+    const box = await panel.boundingBox();
+    const width = page.viewportSize()?.width ?? 0;
+    checks.push([
+      box !== null && box.width >= width * 0.95,
+      'it is full width',
+      `${String(Math.round(box?.width ?? 0))}px of ${String(width)}px`,
+    ]);
+
+    await page.getByRole('button', { name: /^close$/i }).click();
+    await page.waitForFunction(
+      () => {
+        return document.querySelector('dialog[open]') === null;
+      },
+      undefined,
+      { timeout: 25_000 }
+    );
+    checks.push([true, 'Close dismissed it']);
+
+    return checks;
+  },
+
+  /**
    * A dialog that arrived open in server-rendered HTML, adopted by `antumbra/vanilla` — real server
    * rendering, and the only place this repo can do it since the playground ships static. The
    * document is built in Node and parsed before a module is fetched, on a page with no framework in
