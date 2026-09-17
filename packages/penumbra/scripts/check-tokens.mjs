@@ -97,6 +97,36 @@ refuse(
 );
 
 /**
+ * The stacking scale, where a tie is the failure.
+ *
+ * Two `--app-z-*` tokens on the same number do not order anything: whichever element the document
+ * renders last wins, so the layer a reader sees is decided by a JSX line nobody thought of as a
+ * z-index. It cost the mascot and the drawer's backdrop exactly that — the mascot rendered last,
+ * landed above the backdrop, and ate the tap that closes the drawer on a phone.
+ */
+const stacking = system.filter(({ line }) => {
+  return nameOf(line).startsWith('--app-z-');
+});
+const byValue = new Map();
+for (const declaration of stacking) {
+  const value = /:\s*([^;]+)/.exec(declaration.line)?.[1]?.trim() ?? '';
+  byValue.set(value, [...(byValue.get(value) ?? []), declaration]);
+}
+refuse(
+  [...byValue.values()]
+    .filter((group) => {
+      return group.length > 1;
+    })
+    .flat(),
+  'Two stacking tokens share a value, so document order decides which paints on top. Give each\n  layer its own number, in the order a reader should see them.'
+);
+if (stacking.length < 4) {
+  failures.push(
+    `Only ${String(stacking.length)} --app-z-* tokens found. The stacking check is matching less\n  than the scale holds, which would let a tie through.`
+  );
+}
+
+/**
  * An empty file passes every rule above, which would make this check a comfort rather than a gate.
  * The numbers are floors to catch truncation, not specs — raise one if it ever gets in the way.
  */

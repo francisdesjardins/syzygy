@@ -35,6 +35,7 @@ being true.
 | The gates themselves      | `gnomon`                                 | `yarn check` in each consumer                           |
 | Agent-instruction budgets | `gnomon-doc-budget`                      | `yarn doc-budget`, a ceiling and a headroom line each   |
 | Phone layout              | —                                        | `yarn check:mobile`, 16 routes × 2 widths               |
+| The stacking scale        | `penumbra/tokens.system.css`             | `check-tokens.mjs` — no two layers share a number       |
 
 **Devtools are one decision, not seven.** Every workspace runs oxlint with its type-aware half on
 tsgolint, oxfmt, and TypeScript 7 — the same versions, enforced by the dependency constraint. There
@@ -125,10 +126,6 @@ so the 10 imports that name a file directly have no alternative. Exactly one imp
 barrel that does exist: `entities/example/ui/ExampleCard.tsx` reaching
 `@/shared/ui/SurfaceCard/SurfaceCard`. `fsd-layers.test.ts` does not catch it and is right not to —
 its rule is the stated one, _cross-slice_ imports, and `shared` is segments with no slices in it.
-
-**`--app-z-sidebar` and `--app-z-mascot` are both `30`.** Which paints over which is source order
-rather than a decision. Visible on both design-system pages since the layout section was added, and
-left as it is.
 
 **Two stale directories sit beside this repository** — `dialogManager/` and `antumbra/` in
 `D:\workspace\francisdesjardins\2025\` — holding the pre-monorepo copies of code that now lives in

@@ -75,7 +75,9 @@ export const RootLayout = () => {
   return (
     <>
       <ResponsiveShell />
-      {/* z-index 1200, below the 1300+ the manager assigns dialogs, so it never covers a panel. */}
+      {/* Rendered last, so `--app-z-mascot` is what keeps it under the shell rather than document
+          order. A dialog is out of reach either way: the manager assigns 1300+ and a modal one
+          paints in the top layer, where no `z-index` reaches it. */}
       {!hidesPeekingMoon && <PeekingMoon />}
     </>
   );

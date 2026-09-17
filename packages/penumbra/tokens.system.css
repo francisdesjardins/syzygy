@@ -80,9 +80,15 @@
      Small numbers, deliberately. The dialog manager assigns 1300+ and a dialog `<dialog>` paints
      in the top layer where no `z-index` reaches it at all, so the shell only ever has to order
      itself against itself. */
+  /* The mascot sits below the backdrop, not beside the sidebar. It is fixed, clickable and drifts
+     across the viewport, so a tie with the drawer is not decided by the scale at all — it is
+     decided by document order, and the shells render the mascot last. What that costs is the tap:
+     the drawer's backdrop is `pointer-events: auto` so a tap outside closes it, and a mascot above
+     the backdrop eats that tap while the drawer stays open. Under it, the same tap closes the
+     drawer and the open drawer dims the mascot along with the page. */
+  --app-z-mascot: 10;
   --app-z-backdrop: 20;
   --app-z-sidebar: 30;
-  --app-z-mascot: 30;
   --app-z-topbar: 40;
 
   --app-scrollbar-width: 10px;
