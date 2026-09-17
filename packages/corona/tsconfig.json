@@ -1,26 +1,10 @@
 {
+  // The shared strictness is [tsconfig.base.json](../../tsconfig.base.json) at the repository root.
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "target": "ES2024",
+    // `DOM.Iterable` because the viewer walks a `NodeList` rather than indexing one.
     "lib": ["ES2024", "DOM", "DOM.Iterable"],
     "types": ["node"],
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "isolatedModules": true,
-    "moduleDetection": "force",
-    "noEmit": true,
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedIndexedAccess": true,
-    "noPropertyAccessFromIndexSignature": true,
-    "allowUnusedLabels": false,
-    "allowUnreachableCode": false,
-    "exactOptionalPropertyTypes": true,
-    "noImplicitOverride": true,
-    "noImplicitReturns": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
     "jsx": "react-jsx",
     "allowImportingTsExtensions": true
   },

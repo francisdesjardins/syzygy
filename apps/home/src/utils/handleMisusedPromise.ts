@@ -44,7 +44,7 @@ export const handleMisusedPromise = <TArgs extends unknown[], TReturn>(
   const {
     onError,
     context,
-    logErrors = process.env.NODE_ENV === 'development',
+    logErrors = process.env['NODE_ENV'] === 'development',
     rethrow = false,
   } = options;
 

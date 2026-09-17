@@ -146,6 +146,7 @@ from before the move needs the tag.
 ```
 packages/          every library, published or not
 apps/              what is deployed
+tsconfig.base.json the strictness; each workspace extends it
 .oxlintrc.json     the lint surface; each workspace extends it
 .oxfmtrc.json      the house style, for the whole tree
 yarn.config.cjs    what the manifests are not allowed to disagree about
@@ -158,13 +159,18 @@ still a package, and giving it a folder that announces its privacy buys nothing.
 `apps/` holds the one surface that is deployed. Each playground still builds and runs inside its own
 package, because a demo that cannot run without the site is a demo that stops being run.
 
-**The three files at the root are one tool decision each, made once.** Every workspace runs the same
-oxc pair — oxlint with its type-aware half on tsgolint, and oxfmt — against the same TypeScript 7;
-there is no eslint and no prettier anywhere in the tree. A workspace's `.oxlintrc.json` is `extends`
-plus what is genuinely its own, and none has a formatter config at all, because oxfmt walks up. The
-root's own `format:check` covers the whole tree rather than only the root, which is how `penumbra`
-and `gnomon` — the two packages with no build to speak of, and therefore no `check` that ran a
-formatter — turn out to have been formatted by nothing at all.
+**The files at the root are one tool decision each, made once.** Every workspace runs the same oxc
+pair — oxlint with its type-aware half on tsgolint, and oxfmt — against the same TypeScript 7; there
+is no eslint and no prettier anywhere in the tree. A workspace's `tsconfig.json` and `.oxlintrc.json`
+are `extends` plus what is genuinely its own — the libraries it needs, the globs only it has — and
+none has a formatter config at all, because oxfmt walks up.
+
+**What a workspace still declares for itself is the interesting part of each file**, and what it no
+longer declares is the part that had drifted: the same 82 lint rules were maintained in five places,
+and `apps/home` was quietly missing four of the strictness options every package had. The root's own
+`format:check` covers the whole tree rather than only the root, which is how `penumbra` and `gnomon`
+— the two packages with no build, and therefore no `check` that ran a formatter — turn out to have
+been formatted by nothing at all.
 
 ## AI involvement
 

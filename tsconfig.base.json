@@ -1,0 +1,54 @@
+{
+  // What every workspace compiles the same way. A package's own `tsconfig.json` extends this and
+  // adds only what is genuinely its: the libraries it needs, the ambient types it loads, whether it
+  // emits declarations.
+  //
+  // **Nothing here is a preference.** Each option either fails a build that would otherwise ship,
+  // or narrows a type that would otherwise be a lie — which is why the list is stated rather than
+  // inherited from `@tsconfig/strictest`: a strictness that arrives from a dependency is a
+  // strictness nobody in this repository has agreed to, and the day it changes is a day the gates
+  // move without a commit.
+  //
+  // The compiler is TypeScript 7 (`node_modules/typescript-7/bin/tsc`), and oxlint's type-aware
+  // half runs on the same one through tsgolint, so the linter and the type-checker are one
+  // generation. `.oxlintrc.json` at this root carries that half.
+  "compilerOptions": {
+    "target": "ES2024",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    // Every file is a module, even one with no import or export. Without it a file that happens to
+    // have neither lands in the global scope and its declarations collide with everybody's.
+    "moduleDetection": "force",
+    "isolatedModules": true,
+    "noEmit": true,
+
+    // ── The strictness, and it is the whole point of the file ────────────────
+    "strict": true,
+    // An index access can miss, so it yields `T | undefined`. This is the option that turns a
+    // lookup into something the code has to answer for, and most of the `?? ` in this repository
+    // exist because of it.
+    "noUncheckedIndexedAccess": true,
+    // `{ a?: string }` cannot be assigned `{ a: undefined }`. Optional means the key may be absent,
+    // which is not the same fact as the value being undefined, and a library whose options object
+    // reads the difference is a library that has to be told it.
+    "exactOptionalPropertyTypes": true,
+    // A name that came from an index signature is reached with brackets. The dot reads as a
+    // declared property and is how a typo on an env var type-checks.
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    // Both are errors rather than the compiler's default warning: a warning in a repository whose
+    // gates are all pass/fail is a finding nothing acts on.
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+
+    // `node_modules` is not this repository's to fix, and checking it costs the whole graph on
+    // every run. What ships from here is checked by the package's own build config.
+    "skipLibCheck": true,
+    // The case a file is named is part of its identity, even on a filesystem that disagrees.
+    "forceConsistentCasingInFileNames": true
+  }
+}

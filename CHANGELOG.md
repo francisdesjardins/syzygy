@@ -5,6 +5,35 @@ keeps its own `CHANGELOG.md` for changes to itself.
 
 Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No semver.
 
+## 2026-09-17, one strictness, and the app was not holding it
+
+### Added
+
+`tsconfig.base.json` at this root: the twenty options every workspace compiles the same way. Each
+`tsconfig.json` is `extends` plus what is genuinely its own — the libraries it needs, the ambient
+types it loads, whether it emits declarations. The chains below them are untouched: the two
+`tsconfig.build.json`, the two `tsconfig.registry.json` and both playgrounds already extended their
+package's config and now inherit through it.
+
+It is written out rather than taken from `@tsconfig/strictest`, for the reason the lint config is:
+a strictness that arrives from a dependency is one nobody here has agreed to, and the day it changes
+is a day the gates move without a commit.
+
+### Fixed
+
+**`apps/home` was missing four of them** — `exactOptionalPropertyTypes`,
+`noPropertyAccessFromIndexSignature`, `allowUnusedLabels: false` and `allowUnreachableCode: false` —
+which is what a strictness maintained in five files by hand eventually looks like. Turning them on
+cost two lines: `process.env.NODE_ENV` twice, now bracketed. `exactOptionalPropertyTypes`, the one
+that usually hurts, produced nothing.
+
+### How it was proved
+
+`tsc --showConfig` prints the resolved configuration with the extends chain applied, and that is the
+acceptance test — a clean type-check is not, because a strictness option that silently stopped
+applying passes exactly like one that was never on. Before and after, per workspace: four resolve
+byte-identically, and the site's gains those four lines and nothing else.
+
 ## 2026-09-17, the formatter has one config and finally reaches everything
 
 ### Changed
