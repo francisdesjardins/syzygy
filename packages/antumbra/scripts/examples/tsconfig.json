@@ -23,6 +23,9 @@
     "exactOptionalPropertyTypes": true,
     "noUncheckedIndexedAccess": true,
     "noPropertyAccessFromIndexSignature": true,
+    // An example importing a type without `type` compiles here and fails in a consumer that has
+    // this on, which the repository's own `tsconfig.base.json` now does for everybody.
+    "verbatimModuleSyntax": true,
     "skipLibCheck": true,
 
     // Snippet allowances — see above.

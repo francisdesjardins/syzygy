@@ -20,6 +20,11 @@
     // have neither lands in the global scope and its declarations collide with everybody's.
     "moduleDetection": "force",
     "isolatedModules": true,
+    // Every import is erased or kept exactly as written, so a type-only import cannot survive into
+    // the bundle. The lint rule `typescript/consistent-type-imports` asks for the same shape
+    // everywhere; here the compiler enforces it too — and it reaches the re-exports the rule does
+    // not, there being no `consistent-type-exports` beside it.
+    "verbatimModuleSyntax": true,
     "noEmit": true,
 
     // ── The strictness, and it is the whole point of the file ────────────────

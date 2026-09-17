@@ -8,11 +8,7 @@
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "jsx": "react-jsx",
-    // Every import is erased or kept exactly as written, so a type-only import cannot survive into
-    // the bundle. The lint rule `typescript/consistent-type-imports` asks for the same shape
-    // everywhere; here the compiler enforces it too.
-    "verbatimModuleSyntax": true
+    "jsx": "react-jsx"
   },
   "include": ["src/**/*", "vite.config.ts"],
   "exclude": ["node_modules", "dist"]

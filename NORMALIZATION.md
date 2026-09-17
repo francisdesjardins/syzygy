@@ -21,6 +21,7 @@ being true.
 | Lint rules                | `.oxlintrc.json`, each workspace extends | `yarn lint` at the root, over every file                |
 | Formatting                | `.oxfmtrc.json`, one for the tree        | `yarn format:check` at the root, over every file        |
 | TypeScript strictness     | `tsconfig.base.json`, each extends       | each workspace's `type-check`                           |
+| Type-only imports         | `tsconfig.base.json`, all 13 configs     | `type-check`, and `docs:examples` for the snippets      |
 | Script bodies             | each manifest, checked against the rest  | `yarn constraints` — one name, one command              |
 | Dependency versions       | one range per ident                      | `yarn constraints` — one version per dependency         |
 | A workspace being seen    | every workspace has `check` and `test`   | `yarn constraints` — an explicit no-op counts           |
@@ -124,11 +125,6 @@ so the 10 imports that name a file directly have no alternative. Exactly one imp
 barrel that does exist: `entities/example/ui/ExampleCard.tsx` reaching
 `@/shared/ui/SurfaceCard/SurfaceCard`. `fsd-layers.test.ts` does not catch it and is right not to —
 its rule is the stated one, _cross-slice_ imports, and `shared` is segments with no slices in it.
-
-**`verbatimModuleSyntax` is on in `apps/home` and nowhere else.** The lint rule
-`typescript/consistent-type-imports` asks for the same shape everywhere, so nothing is actually
-unchecked — but one workspace is held to it by the compiler and four by the linter, and that is a
-difference nobody decided on. Turning it on in the libraries is untested.
 
 **`--app-z-sidebar` and `--app-z-mascot` are both `30`.** Which paints over which is source order
 rather than a decision. Visible on both design-system pages since the layout section was added, and
