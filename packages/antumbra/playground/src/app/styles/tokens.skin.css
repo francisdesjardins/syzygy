@@ -77,6 +77,10 @@
   --app-ok: #047857;
   --app-ok-wash: rgb(4 120 87 / 0.1);
   --app-info: #0369a1;
+  /* The fourth of the semantic family, and the one the shared API badge asks for when a symbol is
+     a class. Its value is the family's, not the brand's. */
+  --app-warn: #92400e;
+  --app-warn-wash: rgb(146 64 14 / 0.1);
   --app-info-wash: rgb(3 105 161 / 0.1);
 
   /* The scrim behind the mobile drawer. Black in both schemes on purpose: it is an absence of
@@ -124,6 +128,8 @@
   --app-ok: #34d399;
   --app-ok-wash: rgb(52 211 153 / 0.14);
   --app-info: #38bdf8;
+  --app-warn: #fbbf24;
+  --app-warn-wash: rgb(251 191 36 / 0.14);
   --app-info-wash: rgb(56 189 248 / 0.14);
 
   --app-scrim: rgb(0 0 0 / 0.62);
