@@ -70,6 +70,13 @@ does not use.
 **`no-restricted-imports`** lives in the two workspaces that depend on MUI. A restriction on an
 import the other three cannot resolve is a rule that cannot fail.
 
+**The og-image is French on an English-default site**, and that is the author writing in his own
+voice rather than a string somebody forgot to translate — "danseur de tes rêves" does not survive
+being made bilingual. It was listed as an undecided divergence, which was a misreading of a joke.
+The card works as it is: 2.5 MB sits under every scraper's 5 MB limit, and a 1.91:1 crop of a 3:2
+image keeps the whole text block. Alt text is the one thing genuinely missing, and it is copy in a
+language this repository does not get to choose.
+
 **`ignorePatterns`, written out five times.** oxlint does not inherit it through `extends` — not even
 into a child that declares none, which was measured against 1.83.0. That duplication is the tool's
 and not a choice; the comment in each file says so.
@@ -126,8 +133,6 @@ difference nobody decided on. Turning it on in the libraries is untested.
 **`--app-z-sidebar` and `--app-z-mascot` are both `30`.** Which paints over which is source order
 rather than a decision. Visible on both design-system pages since the layout section was added, and
 left as it is.
-
-**The og-image is French-only**, on a site whose default language is English.
 
 **Two stale directories sit beside this repository** — `dialogManager/` and `antumbra/` in
 `D:\workspace\francisdesjardins\2025\` — holding the pre-monorepo copies of code that now lives in
