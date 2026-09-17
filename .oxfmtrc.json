@@ -1,0 +1,23 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oxc-project/oxc/main/npm/oxfmt/configuration_schema.json",
+
+  // One house style for the whole repository. oxfmt walks up from the directory it is run in, so a
+  // workspace needs no file of its own — and a workspace that ever wants a different answer gets it
+  // by putting one beside its own manifest, which then wins. None does.
+  //
+  // This is the whole of the formatting opinion. Nothing in `.oxlintrc.json` repeats it:
+  // `arrow-parens` is a lint rule this repository does not enable, because it is settled here.
+  "semi": true,
+  "trailingComma": "es5",
+  "singleQuote": true,
+  "printWidth": 100,
+  "tabWidth": 2,
+  "useTabs": false,
+  "endOfLine": "lf",
+  "arrowParens": "always",
+  "bracketSpacing": true,
+  "jsxSingleQuote": false,
+  "proseWrap": "preserve",
+  "sortPackageJson": true,
+  "ignorePatterns": [".yarn/**", "**/*.min.js", "**/*.min.css"]
+}

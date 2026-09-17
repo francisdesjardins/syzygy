@@ -3,13 +3,13 @@
 The rod of a sundial: the thing a shadow is measured against. These are the gates the shadow
 libraries run against themselves.
 
-| module | what it does |
-| --- | --- |
-| `gnomon-examples` | extracts every JSDoc `@example`, formats, type-checks and lints it |
-| `gnomon-ct-coverage-report` | merges `.nyc_output/` and prints the component suite's coverage |
-| `gnomon/vite-plugin-ct-coverage` | Istanbul instrumentation of the **source**, at `enforce: 'pre'` |
-| `gnomon/ct-coverage-reset` | Playwright `globalSetup` that empties `.nyc_output/` once per run |
-| `gnomon/oxfmt` | the formatter, reading the calling package's own `.oxfmtrc.json` |
+| module                           | what it does                                                       |
+| -------------------------------- | ------------------------------------------------------------------ |
+| `gnomon-examples`                | extracts every JSDoc `@example`, formats, type-checks and lints it |
+| `gnomon-ct-coverage-report`      | merges `.nyc_output/` and prints the component suite's coverage    |
+| `gnomon/vite-plugin-ct-coverage` | Istanbul instrumentation of the **source**, at `enforce: 'pre'`    |
+| `gnomon/ct-coverage-reset`       | Playwright `globalSetup` that empties `.nyc_output/` once per run  |
+| `gnomon/oxfmt`                   | the formatter, reading the `.oxfmtrc.json` at or above the caller  |
 
 Private. It exists to be depended on inside this repository, not published.
 

@@ -3,17 +3,17 @@
 A syzygy is the alignment of three bodies that causes an eclipse. The packages here are the three
 shadows it casts.
 
-| package | what it is |
-| --- | --- |
-| [`umbra`](packages/umbra) | a framework-free bootstrap orchestrator over a declared step graph |
-| [`antumbra`](packages/antumbra) | a headless dialog manager on the native `<dialog>` top layer |
+| package                         | what it is                                                                                                             |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| [`umbra`](packages/umbra)       | a framework-free bootstrap orchestrator over a declared step graph                                                     |
+| [`antumbra`](packages/antumbra) | a headless dialog manager on the native `<dialog>` top layer                                                           |
 | [`penumbra`](packages/penumbra) | the portable half of a design system: a scale with no colour, a palette with no brand, and the contrast gate over both |
-| [`limb`](packages/limb) | the framework-free helpers both playgrounds need and neither owns |
-| [`corona`](packages/corona) | what a playground shows of a library, minus which library: the reference, the token tables, the site links |
-| [`gnomon`](packages/gnomon) | the gates: the example checker, the coverage instrumenter, the formatter |
+| [`limb`](packages/limb)         | the framework-free helpers both playgrounds need and neither owns                                                      |
+| [`corona`](packages/corona)     | what a playground shows of a library, minus which library: the reference, the token tables, the site links             |
+| [`gnomon`](packages/gnomon)     | the gates: the example checker, the coverage instrumenter, the formatter                                               |
 
-| app | what it is |
-| --- | --- |
+| app                 | what it is                                                                                          |
+| ------------------- | --------------------------------------------------------------------------------------------------- |
 | [`home`](apps/home) | francisdesjardins.ca — the landing page, the design-system demo, and the door to the packages above |
 
 ## Ports
@@ -21,11 +21,11 @@ shadows it casts.
 Assigned here, not negotiated at startup. Every config sets `strictPort`, so a taken port fails
 loudly instead of sliding to the next one.
 
-| workspace | dev | preview | component coverage |
-| --- | --- | --- | --- |
-| [`home`](apps/home) | 3000 | 4000 | — |
-| [`antumbra`](packages/antumbra)'s playground | 3001 | 4001 | 3101 |
-| [`umbra`](packages/umbra)'s playground | 3002 | 4002 | 3102 |
+| workspace                                    | dev  | preview | component coverage |
+| -------------------------------------------- | ---- | ------- | ------------------ |
+| [`home`](apps/home)                          | 3000 | 4000    | —                  |
+| [`antumbra`](packages/antumbra)'s playground | 3001 | 4001    | 3101               |
+| [`umbra`](packages/umbra)'s playground       | 3002 | 4002    | 3102               |
 
 The slide is what made three separate failures silent, and one of them cost an afternoon: a
 component suite reuses a server that is already answering, the home is an SPA whose fallback returns
@@ -40,9 +40,9 @@ named after the capability, sources after the package** — a library gets renam
 already have; a URL is a promise that should outlive that.
 
 Each name says what its package does, twice over. `umbra` is the root the other two derive from
-(*pen*·umbra, *ant*·umbra), so it names the package the others build on — everything boots. It is
+(_pen_·umbra, _ant_·umbra), so it names the package the others build on — everything boots. It is
 also the deep cone, the part of the shadow where the source is gone: the dark a bootstrapper works
-in, before anything has been lit. And *ante umbra*, "in front of the shadow", is the top layer a
+in, before anything has been lit. And _ante umbra_, "in front of the shadow", is the top layer a
 modal `<dialog>` renders into — while the antumbra itself is the region where the disc sits wholly
 inside the source and light gets all the way around it, which is a page still visible around the
 thing in front of it.
@@ -79,22 +79,22 @@ what settles the names here — not taste.
    penumbra is everything still shaded outside that cone — the soft edge
 ```
 
-`umbra` is the root the other two derive from — *pen*·umbra, *ant*·umbra — which is why it names the
+`umbra` is the root the other two derive from — _pen_·umbra, _ant_·umbra — which is why it names the
 package everything else boots on.
 
 **The cost of these names is real, so here is the key.** A developer arriving at this repository
 looks for `utils/` and finds `limb/`. The middle column is that translation, and the rule that keeps
-the names from being decoration is the last one: the word has to describe what the package *does*.
+the names from being decoration is the last one: the word has to describe what the package _does_.
 
-| directory | what you were looking for | the word | why it fits |
-| --- | --- | --- | --- |
-| `umbra` | `core`, `bootstrap` | the total shadow — and the root morpheme the other two derive from | the package the others build on: nothing is lit yet, everything boots |
-| `antumbra` | `dialog`, `modal` | *ante umbra*, "in front of the shadow": past the apex, light rings around the occulter | the native `<dialog>` top layer — painted in front, the page still visible around it |
-| `penumbra` | `tokens`, `theme`, `design-system` | the partial shadow, the soft half | the half of a design system that ports: a scale with no colour, a palette with no brand |
-| `limb` | **`utils`**, `shared`, `common` | the apparent edge of a disc — what an observer actually sees of a body | the framework-free primitives, and nothing that needs a renderer |
-| `corona` | `api-docs`, `reference` | the sun's outer atmosphere — what is visible of a body once the disc is covered | the pages both playgrounds render, minus the part that knows which library |
-| `gnomon` | `tooling`, `scripts`, `build` | the rod of a sundial: the instrument a shadow is measured by | the gates — example checker, coverage instrumenter, formatter |
-| `home` | `site`, `www` | — | the one surface that ships. `apps/` is deployed, `packages/` is depended on |
+| directory  | what you were looking for          | the word                                                                               | why it fits                                                                             |
+| ---------- | ---------------------------------- | -------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `umbra`    | `core`, `bootstrap`                | the total shadow — and the root morpheme the other two derive from                     | the package the others build on: nothing is lit yet, everything boots                   |
+| `antumbra` | `dialog`, `modal`                  | _ante umbra_, "in front of the shadow": past the apex, light rings around the occulter | the native `<dialog>` top layer — painted in front, the page still visible around it    |
+| `penumbra` | `tokens`, `theme`, `design-system` | the partial shadow, the soft half                                                      | the half of a design system that ports: a scale with no colour, a palette with no brand |
+| `limb`     | **`utils`**, `shared`, `common`    | the apparent edge of a disc — what an observer actually sees of a body                 | the framework-free primitives, and nothing that needs a renderer                        |
+| `corona`   | `api-docs`, `reference`            | the sun's outer atmosphere — what is visible of a body once the disc is covered        | the pages both playgrounds render, minus the part that knows which library              |
+| `gnomon`   | `tooling`, `scripts`, `build`      | the rod of a sundial: the instrument a shadow is measured by                           | the gates — example checker, coverage instrumenter, formatter                           |
+| `home`     | `site`, `www`                      | —                                                                                      | the one surface that ships. `apps/` is deployed, `packages/` is depended on             |
 
 `limb` is the one that earns the table. `utils` would have told a reader where to put things but
 nothing about what belongs there, and a directory that accepts anything fills up with everything.
@@ -138,22 +138,33 @@ git log import/boot -- src/core/types.ts     # the four commits that really touc
 git log import/dialog -- src/manager.ts
 ```
 
-Anything committed *after* the import is found the normal way, at the current path. Only history
+Anything committed _after_ the import is found the normal way, at the current path. Only history
 from before the move needs the tag.
 
 ## Layout
 
 ```
-packages/     every library, published or not
-apps/         the playgrounds, and the site's front page
+packages/          every library, published or not
+apps/              what is deployed
+.oxlintrc.json     the lint surface; each workspace extends it
+.oxfmtrc.json      the house style, for the whole tree
+yarn.config.cjs    what the manifests are not allowed to disagree about
 ```
 
 `packages/` is flat and every directory in it is one word from the same family. Whether a package
 ships is `private: true` in its manifest, not a level of the tree — a shared internal utility is
 still a package, and giving it a folder that announces its privacy buys nothing.
 
-`apps/` does not exist yet. It arrives as the duplication between the two playgrounds — 28
-byte-identical files, 2007 lines — is lifted out of them one extraction at a time.
+`apps/` holds the one surface that is deployed. Each playground still builds and runs inside its own
+package, because a demo that cannot run without the site is a demo that stops being run.
+
+**The three files at the root are one tool decision each, made once.** Every workspace runs the same
+oxc pair — oxlint with its type-aware half on tsgolint, and oxfmt — against the same TypeScript 7;
+there is no eslint and no prettier anywhere in the tree. A workspace's `.oxlintrc.json` is `extends`
+plus what is genuinely its own, and none has a formatter config at all, because oxfmt walks up. The
+root's own `format:check` covers the whole tree rather than only the root, which is how `penumbra`
+and `gnomon` — the two packages with no build to speak of, and therefore no `check` that ran a
+formatter — turn out to have been formatted by nothing at all.
 
 ## AI involvement
 

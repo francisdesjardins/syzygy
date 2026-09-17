@@ -5,6 +5,15 @@
   "description": "The gates: the JSDoc example checker, the component-coverage instrumenter and its report, and the formatter every generator shares.",
   "license": "MIT",
   "author": "Francis Desjardins <francis.desjardins@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/francisdesjardins/syzygy.git",
+    "directory": "packages/gnomon"
+  },
+  "bin": {
+    "gnomon-ct-coverage-report": "./ct-coverage-report.mjs",
+    "gnomon-examples": "./check-examples.mjs"
+  },
   "type": "module",
   "exports": {
     "./oxfmt": {
@@ -18,14 +27,9 @@
     "./ct-coverage-reset": "./ct-coverage-reset.mjs",
     "./package.json": "./package.json"
   },
-  "bin": {
-    "gnomon-ct-coverage-report": "./ct-coverage-report.mjs",
-    "gnomon-examples": "./check-examples.mjs"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/francisdesjardins/syzygy.git",
-    "directory": "packages/gnomon"
+  "scripts": {
+    "check": "echo \"gnomon: no-op for now — no tsconfig and no devDependencies to check against yet; replace this once they exist\"",
+    "test": "echo \"gnomon: no-op — no test files yet\""
   },
   "dependencies": {
     "istanbul-lib-instrument": "^6.0.3",
@@ -41,9 +45,5 @@
   },
   "engines": {
     "node": ">=24"
-  },
-  "scripts": {
-    "check": "echo \"gnomon: no-op for now — no tsconfig and no devDependencies to check against yet; replace this once they exist\"",
-    "test": "echo \"gnomon: no-op — no test files yet\""
   }
 }

@@ -3541,6 +3541,8 @@ __metadata:
 "syzygy@workspace:.":
   version: 0.0.0-use.local
   resolution: "syzygy@workspace:."
+  dependencies:
+    oxfmt: "npm:0.68.0"
   languageName: unknown
   linkType: soft
 

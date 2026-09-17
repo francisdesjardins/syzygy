@@ -1,17 +1,22 @@
 {
   "name": "syzygy",
   "private": true,
-  "packageManager": "yarn@4.18.0",
   "workspaces": [
     "packages/*",
     "apps/*"
   ],
   "scripts": {
-    "check": "yarn constraints && yarn dedupe --check && yarn workspaces foreach --all --topological-dev run check",
+    "format": "oxfmt .",
+    "format:check": "oxfmt --check .",
+    "check": "yarn constraints && yarn dedupe --check && yarn format:check && yarn workspaces foreach --all --topological-dev run check",
     "test": "yarn workspaces foreach --all --topological-dev run test",
     "verify:all": "yarn workspaces foreach --all --topological-dev run verify:all",
     "playgrounds:build": "yarn workspaces foreach --all --topological-dev run playground:build:file",
     "deploy": "node deploy.mjs",
     "build": "yarn workspaces foreach --all --topological-dev run build"
-  }
+  },
+  "devDependencies": {
+    "oxfmt": "0.68.0"
+  },
+  "packageManager": "yarn@4.18.0"
 }

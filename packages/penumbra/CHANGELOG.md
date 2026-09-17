@@ -40,7 +40,7 @@ scrim, the scrollbar and `--app-lift`, in both schemes.
 This reverses the refusal recorded below, and the measurement is what reversed it. The two skins in
 this repo were said to be "deliberately nothing alike"; they agreed **byte for byte on every one of
 the 47 declarations that moved**, and had agreed since the day the second was written. The claim
-was about a palette. What the files actually held was a palette *and* a ground, and only the palette
+was about a palette. What the files actually held was a palette _and_ a ground, and only the palette
 was ever the project's.
 
 So the refusal stands where it was aimed. A brand is still not shipped here. A neutral, a semantic

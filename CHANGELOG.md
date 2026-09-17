@@ -5,6 +5,36 @@ keeps its own `CHANGELOG.md` for changes to itself.
 
 Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No semver.
 
+## 2026-09-17, the formatter has one config and finally reaches everything
+
+### Changed
+
+Five byte-identical `.oxfmtrc.json`, one per workspace, are one at this root. oxfmt walks up from
+the directory it runs in, so nothing needed rewiring — and a workspace that ever wants a different
+answer still gets it by putting a config beside its own manifest. None does.
+
+The file set each workspace formats is unchanged: every count dropped by exactly one, which is the
+deleted config formatting itself.
+
+### Added — `yarn format:check` at the root
+
+And it found that **`penumbra` and `gnomon` have been formatted by nothing at all.** Both are
+packages with no build: their `check` runs a token gate or an explicit no-op, so neither ever
+reached a formatter, and neither had a config for one. `yarn.config.cjs` already carried this exact
+lesson — it requires a `check` script of every workspace because gnomon "was linted, formatted and
+type-checked by nothing at all" — and the rule it grew from that only fixed half of it. A script
+that exists is not a script that formats.
+
+927 files in 1.7 seconds, so the whole tree is cheaper to check than to reason about which part of
+it is covered. The root's own `README.md`, `CHANGELOG.md`, `deploy.mjs` and `package.json` were
+outside the formatter too, and are in it now.
+
+### Where the tooling stands
+
+Every workspace runs the same pair — oxlint with its type-aware half on tsgolint, and oxfmt —
+against the same TypeScript 7. There is no eslint and no prettier anywhere in the tree, and
+`apps/home` has been on oxc since it was written.
+
 ## 2026-09-17, the lint surface is one file
 
 ### Changed
@@ -30,7 +60,7 @@ depend on MUI; a restriction on an import the other three cannot resolve is a ru
 ### Added — how the change was proved
 
 **The repository lints clean, so a diff of findings before and after is a diff of two empty lists**,
-and `--print-config` cannot answer it either: for an extended config it drops rule *options*,
+and `--print-config` cannot answer it either: for an extended config it drops rule _options_,
 printing `max-params: "deny"` where the behaviour is still `2`. Either would have signed off a rule
 that quietly lost its teeth.
 
@@ -134,7 +164,7 @@ carries the design; this entry carries the mistake.
 **The extraction was refused in the limb phase, and the refusal was a method error.** The route's
 imports were measured as a flat set across all its files, so the worst dependency — five UI
 components that genuinely differ between the two products — vetoed the whole directory. Nobody
-asked *which* files needed them. Five of twenty-five; the rest need nothing that differs.
+asked _which_ files needed them. Five of twenty-five; the rest need nothing that differs.
 
 The seam was never between two directories. It runs between the **generated model** and the **page
 that shows it**: each playground keeps its typedoc generator, corona holds the contract and the
@@ -157,7 +187,7 @@ every test fail on a missing `window.mount()`.
 ### The failure worth keeping
 
 A second copy of `@tanstack/react-router`. Each workspace group is its own hoisting boundary; a
-router is a *value* registered by the host's provider, so the second copy is empty and every hook
+router is a _value_ registered by the host's provider, so the second copy is empty and every hook
 throws on null. `react` had been deduplicated in both consumers beforehand; the router had not,
 because it did not look like the same problem. Type-check passed, build passed, the page rendered
 "Something went wrong" — and `yarn smoke` is what said so.

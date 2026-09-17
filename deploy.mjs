@@ -141,7 +141,9 @@ async function resolveYarn() {
     }
   }
 
-  console.log(`  ${c.dim}No vendored Yarn release found, falling back to \`yarn\` on PATH.${c.reset}`);
+  console.log(
+    `  ${c.dim}No vendored Yarn release found, falling back to \`yarn\` on PATH.${c.reset}`
+  );
   return (args) => run('yarn', args, ROOT);
 }
 
@@ -212,10 +214,14 @@ exit 0
   const encoded = Buffer.from(ps, 'utf16le').toString('base64');
 
   return new Promise((ok) => {
-    const child = spawn('powershell.exe', ['-NoProfile', '-NonInteractive', '-EncodedCommand', encoded], {
-      stdio: 'ignore',
-      windowsHide: true,
-    });
+    const child = spawn(
+      'powershell.exe',
+      ['-NoProfile', '-NonInteractive', '-EncodedCommand', encoded],
+      {
+        stdio: 'ignore',
+        windowsHide: true,
+      }
+    );
 
     child.on('close', (code) => {
       ok(code === 0);
@@ -236,7 +242,9 @@ async function revealZip() {
   try {
     if (process.platform === 'win32') {
       if (await pulseExplorerAt(dir)) {
-        console.log(`  ${c.dim}${icon.folder} Explorer already open at ${dir} — window pulsed${c.reset}\n`);
+        console.log(
+          `  ${c.dim}${icon.folder} Explorer already open at ${dir} — window pulsed${c.reset}\n`
+        );
         return;
       }
 
@@ -275,7 +283,9 @@ async function step(message, label, fn) {
   const n = stepNumber;
   console.log(`  ${c.magenta}[${n}/${TOTAL_STEPS}]${c.reset} ${message}`);
   await timed(label, fn);
-  console.log(`  ${c.green}[${n}/${TOTAL_STEPS}] \u2713${c.reset} ${c.dim}${label} done.${c.reset}`);
+  console.log(
+    `  ${c.green}[${n}/${TOTAL_STEPS}] \u2713${c.reset} ${c.dim}${label} done.${c.reset}`
+  );
 }
 
 function formatDuration(ms) {
@@ -295,10 +305,8 @@ async function main() {
   const yarn = await resolveYarn();
 
   // One install for every workspace, which is the whole reason these projects share a repository.
-  await step(
-    `${icon.install} Installing ${c.yellow}every workspace${c.reset}...`,
-    'Install',
-    () => yarn(['install', '--immutable'])
+  await step(`${icon.install} Installing ${c.yellow}every workspace${c.reset}...`, 'Install', () =>
+    yarn(['install', '--immutable'])
   );
 
   for (const { workspace, capability, label } of PLAYGROUNDS) {
@@ -333,10 +341,8 @@ async function main() {
   }
 
   // Whatever now sits in apps/home/public/playground/ is carried into dist/ by Vite.
-  await step(
-    `${icon.build} Building ${c.yellow}the home${c.reset}...`,
-    'Build home',
-    () => yarn(['workspace', 'home', 'run', 'build'])
+  await step(`${icon.build} Building ${c.yellow}the home${c.reset}...`, 'Build home', () =>
+    yarn(['workspace', 'home', 'run', 'build'])
   );
 
   await step(
@@ -367,7 +373,9 @@ async function main() {
       `  ${c.dim}${t.label.padEnd(maxLabel)}${c.reset}  ${c.cyan}${bar}${c.reset}  ${c.bold}${formatDuration(t.ms)}${c.reset}`
     );
   }
-  console.log(`\n  ${'Total'.padEnd(maxLabel)}     ${c.green}${c.bold}${formatDuration(totalMs)}${c.reset}`);
+  console.log(
+    `\n  ${'Total'.padEnd(maxLabel)}     ${c.green}${c.bold}${formatDuration(totalMs)}${c.reset}`
+  );
   console.log(
     `\n  ${icon.done} ${c.green}${c.bold}Done! Upload ${c.yellow}francisdesjardins.ca-dist.zip${c.green} to Cloudflare.${c.reset}\n`
   );
@@ -376,6 +384,8 @@ async function main() {
 }
 
 main().catch((err) => {
-  console.error(`\n  ${icon.err} ${c.red}${c.bold}ERROR:${c.reset} ${c.red}${err.message}${c.reset}\n`);
+  console.error(
+    `\n  ${icon.err} ${c.red}${c.bold}ERROR:${c.reset} ${c.red}${err.message}${c.reset}\n`
+  );
   process.exit(1);
 });

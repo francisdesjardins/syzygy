@@ -35,12 +35,12 @@ satisfies every other rule trivially.
 ## What a skin owes
 
 A skin defines the eight brand colours, the typefaces and their dark-scheme counterparts under
-`:root[data-color-scheme='dark']`. Two rules are carried in the token *names* so nobody has to read
+`:root[data-color-scheme='dark']`. Two rules are carried in the token _names_ so nobody has to read
 a comment to obey them:
 
 - **`--app-flame` is a fill; `--app-accent` is the ink.** A brand colour bright enough to fill with
   is rarely dark enough to read as text.
-- **A filled primary hovers *away from its ink*.** Which direction that is depends on the scheme:
+- **A filled primary hovers _away from its ink_.** Which direction that is depends on the scheme:
   where the ink is white the fill deepens, where the ink is dark the fill brightens. Getting it
   backwards is not a taste question — it is a contrast failure, and the first indigo tried for one
   of these skins measured 4.22:1 and was refused.

@@ -58,9 +58,9 @@ const parse = (css, selector) => {
     return values;
   }
   const block = css.slice(start + selector.length);
-  for (const [, name, value] of block.slice(0, block.indexOf('}')).matchAll(
-    /(--app-[\w-]+)\s*:\s*([^;]+);/g
-  )) {
+  for (const [, name, value] of block
+    .slice(0, block.indexOf('}'))
+    .matchAll(/(--app-[\w-]+)\s*:\s*([^;]+);/g)) {
     values.set(name, value.trim());
   }
   return values;
@@ -151,7 +151,8 @@ for (const scheme of schemes) {
   }
 }
 
-const what = skins.length === 0 ? 'the base alone, brand pairs not applicable' : skins.join(' over ');
+const what =
+  skins.length === 0 ? 'the base alone, brand pairs not applicable' : skins.join(' over ');
 if (failures.length > 0) {
   console.error(`penumbra-contrast (${what}) found ${failures.length} pair(s) below their floor:`);
   for (const failure of failures) {

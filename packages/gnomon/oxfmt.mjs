@@ -12,10 +12,10 @@ import { dirname, resolve } from 'node:path';
 import { format } from 'oxfmt';
 
 /**
- * The config belongs to the package being formatted, and this file is not in it — so the lookup
- * walks up from the working directory the way a formatter's CLI does, rather than from its own
- * location. Reading a config sitting next to this module would silently format every package to
- * one house style, which is the opposite of what a shared tool should impose.
+ * The lookup walks up from the working directory the way the CLI does, rather than from this
+ * module's own location: the answer has to be the one `yarn format` would give in that directory,
+ * whether it comes from the repository root or from a package that put a config beside its
+ * manifest. Reading a config sitting next to this module would impose a style the gate does not.
  */
 const findConfig = () => {
   let at = process.cwd();
@@ -32,7 +32,49 @@ const findConfig = () => {
   }
 };
 
-const config = JSON.parse(readFileSync(findConfig(), 'utf8'));
+/**
+ * oxfmt's own CLI reads the config as JSONC, so this has to as well — every other config in this
+ * repository carries the reasoning for its settings in comments, and a reader that accepts only
+ * strict JSON makes writing one down a breaking change to a package that never sees it.
+ *
+ * String-aware, because the `$schema` value contains a `//` of its own.
+ */
+const stripComments = (text) => {
+  let out = '';
+  let inString = false;
+  let escaped = false;
+  for (let i = 0; i < text.length; i += 1) {
+    const character = text[i];
+    if (inString) {
+      out += character;
+      if (escaped) escaped = false;
+      else if (character === '\\') escaped = true;
+      else if (character === '"') inString = false;
+      continue;
+    }
+    if (character === '"') {
+      inString = true;
+      out += character;
+      continue;
+    }
+    if (character === '/' && text[i + 1] === '/') {
+      while (i < text.length && text[i] !== '\n') i += 1;
+      out += '\n';
+      continue;
+    }
+    if (character === '/' && text[i + 1] === '*') {
+      i += 2;
+      while (i < text.length && !(text[i] === '*' && text[i + 1] === '/')) i += 1;
+      i += 1;
+      continue;
+    }
+    out += character;
+  }
+  // A trailing comma is legal in JSONC and is what a commented-out last entry leaves behind.
+  return out.replace(/,(\s*[}\]])/g, '$1');
+};
+
+const config = JSON.parse(stripComments(readFileSync(findConfig(), 'utf8')));
 
 /**
  * Format `text` the way `yarn format` would format a file named `fileName` — the name carries the
