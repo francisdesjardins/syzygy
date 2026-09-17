@@ -1,10 +1,15 @@
 /**
- * Penumbra — the skin, written for umbra. **This is the file a project rewrites**; the system half
- * comes from the `penumbra` package unchanged.
+ * Penumbra — the brand half of the skin, written for umbra. **This is the file a project
+ * rewrites**; the system half and the neutral base come from the `penumbra` package unchanged.
  *
  * The umbra is the deep cone, the part of the shadow where the source is gone entirely — which is
  * the dark this library works in, before anything has been lit. So the palette is a core rather
  * than a crown: a cool indigo ink on slate, with gold spent only on the thing that is live.
+ *
+ * Twelve values: three typefaces, the lockup rise, and the eight colours that are this project's.
+ * Surfaces, text ranks, dividers, states, the four semantics, the scrim and the lift are the base's
+ * and are not restated here — a project that restates one of them has forked it silently. Override
+ * one by declaring it anyway, which is a deliberate act and reads as one.
  *
  * Two rules with teeth, carried in the token names so nobody has to read a comment to obey them:
  *
@@ -21,9 +26,9 @@
 
 :root {
   /* ── Typefaces ───────────────────────────────────────────────────────────────────────
-     System stacks, deliberately: a playground that ships no font files has nothing to wait for and
-     nothing to lay out twice. The serif carries display, the grotesque carries text, and the mono
-     carries anything with an identifier or a digit column in it. */
+     Skin rather than base: a project that ships font files and one that runs on system stacks
+     choose differently and both are right. The serif carries display, the grotesque carries text,
+     and the mono carries anything with an identifier or a digit column in it. */
   --app-font-display: 'Newsreader', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
   --app-font-body: 'Geist', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
   --app-font-mono: 'Geist Mono', ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, monospace;
@@ -34,97 +39,29 @@
      trim the text with `text-box: trim-both cap alphabetic` instead — see the top bar. */
   --app-lockup-rise: 0.11em;
 
-  /* ── Light — the ring, seen in daylight ──────────────────────────────────────────────
-     Neutrals carry a slate bias rather than being black at an opacity: a grey mixed toward the
-     ground reads as chosen, where an alpha ladder reads as whatever is behind it. */
+  /* ── Light — the ring, seen in daylight ────────────────────────────────────────────── */
   --app-flame: #b45309;
-  --app-body: #1e293b;
-  --app-body-edge: #475569;
+  --app-flame-wash: rgb(180 83 9 / 0.1);
   --app-accent: #4338ca;
   --app-ring: #b45309;
   --app-primary: #4338ca;
   --app-primary-ink: #ffffff;
   --app-primary-hover: #3730a3;
 
-  --app-bg: #f4f6fa;
-  --app-paper: #ffffff;
-  --app-text: #0b1120;
-  --app-text-secondary: #4a5568;
-  /* Tertiary is spent on *text* — counts, hints, placeholders — so it clears 4.5:1 rather than
-     sitting at the inactive-control tone a component library would give it. */
-  --app-text-tertiary: #5f6b7e;
-  --app-divider: rgb(15 23 42 / 0.1);
-  /* A control's edge says where the control is, so 1.4.11 asks 3:1 of it. The divider above is a
-     layout hairline and owes nothing. */
-  --app-control-border: #6b788c;
-
-  --app-hover: rgb(15 23 42 / 0.05);
-  --app-selected: rgb(15 23 42 / 0.09);
-  --app-flame-wash: rgb(180 83 9 / 0.1);
-
-  --app-error: #b91c1c;
-  --app-error-ink: #ffffff;
-  --app-error-hover: #991b1b;
-
-  --app-ok: #047857;
-  --app-ok-wash: rgb(4 120 87 / 0.1);
-  --app-info: #0369a1;
-  --app-info-wash: rgb(3 105 161 / 0.1);
-  --app-warn: #92400e;
-  --app-warn-wash: rgb(146 64 14 / 0.1);
-
-  /* The scrim behind the mobile drawer. Black in both schemes on purpose: it is an absence of light
-     rather than a colour, and tinting it slate makes it read as a surface. */
-  --app-scrim: rgb(0 0 0 / 0.5);
-  --app-scrollbar-thumb: rgb(15 23 42 / 0.16);
-  --app-scrollbar-track: transparent;
-
-  /* Edges, not elevation: one hairline and one soft shadow instead of a three-layer stack imitating
-     paper height. The glow is the ring, and it is spent on the live thing. */
-  --app-lift: 0 1px 1px rgb(15 23 42 / 0.05), 0 18px 44px -30px rgb(15 23 42 / 0.45);
+  /* The base's lift is the elevation; this is the ring, and it is spent on the live thing. */
   --app-glow: 0 0 0 1px rgb(180 83 9 / 0.55), 0 0 32px -10px rgb(180 83 9 / 0.4);
 }
 
 /* ── Dark — the ring against the shadow ───────────────────────────────────────────────
-   Slate dusk, not black: gold on #000 is a hazard label, on slate it is light. */
+   Gold on #000 is a hazard label; the base grounds it on slate dusk, where it is light. */
 :root[data-color-scheme='dark'] {
   --app-flame: #f59e0b;
-  --app-body: #0b1120;
-  --app-body-edge: #334155;
+  --app-flame-wash: rgb(245 158 11 / 0.13);
   --app-accent: #a5b4fc;
   --app-ring: #fbbf24;
   --app-primary: #818cf8;
   --app-primary-ink: #0b1120;
   --app-primary-hover: #a5b4fc;
 
-  --app-bg: #0b1120;
-  --app-paper: #111a2b;
-  --app-text: #eef2f8;
-  --app-text-secondary: #a3b0c4;
-  --app-text-tertiary: #8494ab;
-  --app-divider: rgb(148 163 184 / 0.16);
-  --app-control-border: #7d8ba1;
-
-  --app-hover: rgb(238 242 248 / 0.07);
-  --app-selected: rgb(238 242 248 / 0.12);
-  --app-flame-wash: rgb(245 158 11 / 0.13);
-
-  /* The bright red cannot carry white, so it takes a dark ink — the same fill/ink split the ring
-     makes. */
-  --app-error: #f87171;
-  --app-error-ink: #0b1120;
-  --app-error-hover: #fca5a5;
-
-  --app-ok: #34d399;
-  --app-ok-wash: rgb(52 211 153 / 0.14);
-  --app-info: #38bdf8;
-  --app-info-wash: rgb(56 189 248 / 0.14);
-  --app-warn: #fbbf24;
-  --app-warn-wash: rgb(251 191 36 / 0.14);
-
-  --app-scrim: rgb(0 0 0 / 0.62);
-  --app-scrollbar-thumb: rgb(238 242 248 / 0.14);
-
-  --app-lift: 0 1px 1px rgb(2 6 23 / 0.5), 0 18px 44px -28px rgb(2 6 23 / 0.9);
   --app-glow: 0 0 0 1px rgb(251 191 36 / 0.5), 0 0 32px -8px rgb(251 191 36 / 0.35);
 }

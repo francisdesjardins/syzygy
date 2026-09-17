@@ -8,6 +8,7 @@
 
 @import './fonts.css';
 @import 'penumbra/tokens.system.css';
+@import 'penumbra/tokens.skin.base.css';
 @import './tokens.skin.css';
 
 /* ========== Baseline ========== */

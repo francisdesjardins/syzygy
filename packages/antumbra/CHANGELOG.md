@@ -10,6 +10,23 @@ its own past is a story, not a record. The package has been renamed twice, so ol
 by older names: `@yourorg/dialog` before 2026-08-04, then `umbra` until 2026-09-15. It is
 `antumbra` now.
 
+## 2026-09-17
+
+### Changed — the skin is twelve declarations
+
+`playground/src/app/styles/tokens.skin.css` lost 47 declarations to
+[penumbra](../penumbra)'s new `tokens.skin.base.css`, and `app.css` imports that file between the
+system half and this one. What is left is the eclipse: three faces, the lockup rise, and eight
+colours.
+
+Every name that moved was identical to umbra's, in both schemes. The surfaces, the three text ranks,
+the divider, the control edge, the states, the four semantics, the scrim, the scrollbar and the lift
+were never this project's palette — they were the ground any project would have chosen, maintained
+twice by hand.
+
+Nothing computed changed: 166 resolved custom-property values were read out of the built playground
+in both schemes, before and after, and every one matched.
+
 ## 2026-09-16
 
 ### Changed — the gates moved to gnomon

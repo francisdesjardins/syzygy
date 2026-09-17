@@ -94,14 +94,14 @@ example, it belongs in `entities/`.
 
 ## The design system — Penumbra (`src/app/styles/`)
 
-**The sheet is split so the base can travel**: `tokens.system.css` is scale, motion and stacking
-with no brand in it, `tokens.skin.css` is the eclipse palette and the three typefaces, and
-`app.css` imports both and adds the baseline.
+**The sheet is split so the base can travel**: `penumbra/tokens.system.css` is scale and motion,
+`penumbra/tokens.skin.base.css` the neutrals and semantics, `tokens.skin.css` the eclipse — three
+faces and eight colours. `app.css` imports the three in that order.
 
 **The split is a gate, not prose** —
 [design-system-layering.test.ts](src/__tests__/design-system-layering.test.ts) fails on a colour or
 typeface in the system file, a `--app-*` inside the templates, or any Material easing or MD2 metric.
-Porting Penumbra elsewhere is: copy the system file, write a new skin.
+Porting Penumbra elsewhere is: depend on the package, write a skin.
 
 - **Colours** are `--app-*` on `:root`, dark overriding under `:root[data-color-scheme='dark']`
   (set by `ThemeProvider`). Components never branch on mode.

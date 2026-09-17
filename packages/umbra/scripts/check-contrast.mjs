@@ -1,12 +1,20 @@
-// Reads the skin and measures every pair the tokens promise, rather than trusting that they were
-// chosen carefully. A palette is the one part of a design system where "it looks fine" and "it
-// passes" come apart, and the failure lands on whoever has the worse screen.
+// Reads the base with the skin over it and measures every pair the tokens promise, rather than
+// trusting that they were chosen carefully. A palette is the one part of a design system where "it
+// looks fine" and "it passes" come apart, and the failure lands on whoever has the worse screen.
 //
 // Run by `yarn check:contrast`, which `yarn check` calls.
 
 import { readFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
 
 const SKIN = 'playground/src/app/styles/tokens.skin.css';
+
+// Resolved through the playground's own manifest rather than a path up the tree: penumbra is the
+// playground's dependency, and reaching for it from here by relative path would work only as long
+// as the two stay this far apart.
+const BASE = createRequire(new URL('../playground/package.json', import.meta.url)).resolve(
+  'penumbra/tokens.skin.base.css'
+);
 
 /** Text needs 4.5:1; a control edge or a large heading needs 3:1. */
 const PAIRS = [
@@ -62,10 +70,20 @@ function contrast(a, b) {
   return (light + 0.05) / (dark + 0.05);
 }
 
-const css = readFileSync(SKIN, 'utf8');
+// Cascade order, the same one app.css declares: the base lays down the neutrals and the semantics,
+// the skin writes its brand over them. Measuring the skin alone would measure a palette the browser
+// never shows.
+const sheets = [readFileSync(BASE, 'utf8'), readFileSync(SKIN, 'utf8')];
+const cascade = (selector) => {
+  const values = new Map();
+  for (const sheet of sheets) {
+    for (const [name, value] of parse(sheet, selector)) values.set(name, value);
+  }
+  return values;
+};
 const schemes = [
-  { name: 'light', values: parse(css, ':root {') },
-  { name: 'dark', values: parse(css, ":root[data-color-scheme='dark'] {") },
+  { name: 'light', values: cascade(':root {') },
+  { name: 'dark', values: cascade(":root[data-color-scheme='dark'] {") },
 ];
 
 const failures = [];

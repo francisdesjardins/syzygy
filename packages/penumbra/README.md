@@ -2,27 +2,39 @@
 
 The partial shadow — the soft half of an eclipse, and the half of a design system that ports.
 
-`tokens.system.css` is scale, rhythm, motion and stacking. **No colour and no typeface are in it**,
-which is the entire point: a project takes this file unchanged and writes its own skin beside it.
+Two sheets, and neither carries a brand. `tokens.system.css` is scale, rhythm, motion and stacking,
+with **no colour and no typeface in it at all**. `tokens.skin.base.css` is colour, and carries only
+the part every project needs and none of them decides differently: surfaces, three ranks of text, a
+divider, a control edge, the four semantics with their washes, a scrim, the scrollbar, and one soft
+lift. What is left for a project to write is a typeface and eight colours.
 
 ```css
 @import 'penumbra/tokens.system.css';
+@import 'penumbra/tokens.skin.base.css';
 @import './tokens.skin.css'; /* yours */
 ```
 
+Take the base or leave it. A project that wants none of it imports the system half alone and
+declares all 24 names itself; a project that wants most of it overrides one by declaring it anyway,
+which is a deliberate act and reads as one.
+
 ## Why the split has a gate
 
-This file existed twice — one copy per playground — and its own header predicted that the day the
-two projects shared a monorepo, the copies would collapse into one package. They had already drifted
-by then, though only in that header's wording: not one declaration differed. The prose rule held for
-months and then the file moved anyway, which is the argument for a check rather than a comment.
+`tokens.system.css` existed twice — one copy per playground — and its own header predicted that the
+day the two projects shared a monorepo, the copies would collapse into one package. They had already
+drifted by then, though only in that header's wording: not one declaration differed. The prose rule
+held for months and then the file moved anyway, which is the argument for a check rather than a
+comment.
 
-`yarn check` here refuses a colour or a typeface in the system half, and refuses a sheet that has
-become suspiciously small — an empty file satisfies every other rule trivially.
+`yarn check` runs the rule in both directions. The system half refuses a colour or a typeface. The
+base refuses a typeface, refuses the names a project paints itself with, and refuses any token the
+system half already declares — two files answering for one name means the winner is import order
+rather than intent. Both refuse a sheet that has become suspiciously small, since an empty file
+satisfies every other rule trivially.
 
 ## What a skin owes
 
-A skin defines the palette, the typefaces and their dark-scheme counterparts under
+A skin defines the eight brand colours, the typefaces and their dark-scheme counterparts under
 `:root[data-color-scheme='dark']`. Two rules are carried in the token *names* so nobody has to read
 a comment to obey them:
 
@@ -33,11 +45,14 @@ a comment to obey them:
   backwards is not a taste question — it is a contrast failure, and the first indigo tried for one
   of these skins measured 4.22:1 and was refused.
 
-Pairs are measured rather than chosen. Each consuming project runs its own contrast audit over its
-own skin; penumbra has no colours to audit.
+Pairs are measured rather than chosen, and a project measuring its own runs the base underneath it:
+most of the pairs a contrast audit checks have a base colour on one side.
 
 ## Not shipped here, on purpose
 
-A reference skin. Shipping one would make it the default, and a default palette is exactly the thing
-the next project would inherit without choosing. The two skins in this repo are worth reading as
-examples — they are deliberately nothing alike.
+A palette. The base is a ground and a set of semantics — the colours a project inherits without
+losing anything it would have chosen. A brand is the opposite, and shipping one would make it the
+default nobody picked.
+
+The two skins in this repo are what is left after that subtraction: twelve declarations each, and
+they are nothing alike.

@@ -1,0 +1,111 @@
+/**
+ * Penumbra — the neutral half of a skin: surfaces, neutrals, semantics and one shadow.
+ *
+ * **There is no brand in here.** Not a hue a project would recognise as its own, no typeface, and
+ * nothing that says which product is being painted. What it carries is the part every project needs
+ * and none of them decides differently: a paper, a ground, three ranks of text, a divider, a control
+ * edge, the four semantic colours with their washes, a scrim, the scrollbar, and the single soft
+ * lift that stands in for elevation.
+ *
+ * Import it after `tokens.system.css` and write the brand over it:
+ *
+ * ```css
+ * @import 'penumbra/tokens.system.css';
+ * @import 'penumbra/tokens.skin.base.css';
+ * @import './tokens.skin.css';       // yours: a typeface, and eight colours
+ * ```
+ *
+ * **The absence of a brand is a gate** — `yarn check` refuses a typeface here, refuses the eight
+ * names a project paints itself with, and refuses any token the system half already declares. The
+ * complementary rule guards the system file, which refuses colour.
+ *
+ * Neutrals carry a slate bias rather than being black at an opacity: a grey mixed toward the ground
+ * reads as chosen, where an alpha ladder reads as whatever is behind it.
+ */
+
+:root {
+  /* ── Surfaces ─────────────────────────────────────────────────────────────── */
+  --app-bg: #f4f6fa;
+  --app-paper: #ffffff;
+
+  /* The mark's own body and its edge — a shape drawn in ink rather than in the brand. */
+  --app-body: #1e293b;
+  --app-body-edge: #475569;
+
+  /* ── Text, in three ranks ─────────────────────────────────────────────────── */
+  --app-text: #0b1120;
+  --app-text-secondary: #4a5568;
+  /* Tertiary is spent on *text* — counts, hints, placeholders — so it clears 4.5:1 rather than
+     sitting at the inactive-control tone a component library would give it. */
+  --app-text-tertiary: #5f6b7e;
+
+  /* ── Edges ────────────────────────────────────────────────────────────────── */
+  --app-divider: rgb(15 23 42 / 0.1);
+  /* A control's edge says where the control is, so WCAG 1.4.11 asks 3:1 of it. The divider above is
+     a layout hairline and owes nothing. */
+  --app-control-border: #6b788c;
+
+  /* ── States ───────────────────────────────────────────────────────────────── */
+  --app-hover: rgb(15 23 42 / 0.05);
+  --app-selected: rgb(15 23 42 / 0.09);
+
+  /* ── The four semantics ───────────────────────────────────────────────────── */
+  --app-error: #b91c1c;
+  --app-error-ink: #ffffff;
+  --app-error-hover: #991b1b;
+
+  --app-ok: #047857;
+  --app-ok-wash: rgb(4 120 87 / 0.1);
+  --app-info: #0369a1;
+  --app-info-wash: rgb(3 105 161 / 0.1);
+  --app-warn: #92400e;
+  --app-warn-wash: rgb(146 64 14 / 0.1);
+
+  /* ── Furniture ────────────────────────────────────────────────────────────── */
+  /* Black in both schemes on purpose: a scrim is an absence of light rather than a colour, and
+     tinting it slate makes it read as a surface. */
+  --app-scrim: rgb(0 0 0 / 0.5);
+  --app-scrollbar-thumb: rgb(15 23 42 / 0.16);
+  --app-scrollbar-track: transparent;
+
+  /* Edges, not elevation: one hairline and one soft shadow instead of a three-layer stack imitating
+     paper height. A brand's own glow goes in the skin over this. */
+  --app-lift: 0 1px 1px rgb(15 23 42 / 0.05), 0 18px 44px -30px rgb(15 23 42 / 0.45);
+}
+
+/* Slate dusk, not black: a saturated accent on #000 is a hazard label, on slate it is light. */
+:root[data-color-scheme='dark'] {
+  --app-bg: #0b1120;
+  --app-paper: #111a2b;
+
+  --app-body: #0b1120;
+  --app-body-edge: #334155;
+
+  --app-text: #eef2f8;
+  --app-text-secondary: #a3b0c4;
+  --app-text-tertiary: #8494ab;
+
+  --app-divider: rgb(148 163 184 / 0.16);
+  --app-control-border: #7d8ba1;
+
+  --app-hover: rgb(238 242 248 / 0.07);
+  --app-selected: rgb(238 242 248 / 0.12);
+
+  /* The bright red cannot carry white, so it takes a dark ink — the same fill/ink split a brand's
+     primary makes. */
+  --app-error: #f87171;
+  --app-error-ink: #0b1120;
+  --app-error-hover: #fca5a5;
+
+  --app-ok: #34d399;
+  --app-ok-wash: rgb(52 211 153 / 0.14);
+  --app-info: #38bdf8;
+  --app-info-wash: rgb(56 189 248 / 0.14);
+  --app-warn: #fbbf24;
+  --app-warn-wash: rgb(251 191 36 / 0.14);
+
+  --app-scrim: rgb(0 0 0 / 0.62);
+  --app-scrollbar-thumb: rgb(238 242 248 / 0.14);
+
+  --app-lift: 0 1px 1px rgb(2 6 23 / 0.5), 0 18px 44px -28px rgb(2 6 23 / 0.9);
+}

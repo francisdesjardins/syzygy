@@ -5,6 +5,25 @@ keeps its own `CHANGELOG.md` for changes to itself.
 
 Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No semver.
 
+## 2026-09-17, the ground under two palettes
+
+### Changed
+
+The two playground skins were the last place a value was maintained twice, and the claim that
+protected them was that a palette is a project's own. Measured, 47 of their declarations were
+identical in both schemes — the surfaces, the text ranks, the edges, the states, the four semantics,
+the scrim and the lift. Those are a ground, not a palette, and they are
+[penumbra](packages/penumbra)'s `tokens.skin.base.css` now. Each playground keeps twelve
+declarations: three faces, a lockup rise, and eight colours.
+
+This reverses a refusal penumbra's README carried. It had aimed at a default palette, which is still
+refused — the package ships neutrals and semantics, and nothing a project would recognise as a
+brand. penumbra's own [CHANGELOG](packages/penumbra/CHANGELOG.md) carries that argument.
+
+**The gate runs in both directions now.** The system half already refused colour; the base refuses a
+typeface, refuses the eight brand-shaped names, and refuses any token the system half declares —
+two files answering for one name means import order decides, rather than intent.
+
 ## 2026-09-16, corona, and the error that had left it unshared
 
 ### Added

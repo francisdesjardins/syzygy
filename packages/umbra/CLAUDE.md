@@ -285,7 +285,7 @@ to who is allowed to reach it, which is why a widget never reaches up into `app`
 
 ```
 playground/src/
-  app/        entry, router, providers, the two stylesheets
+  app/        entry, router, providers, the stylesheets
   pages/      one folder per route: home, getting-started, microfrontends, single-spa,
               design-system, api, stories
   widgets/    root-layout, sidebar, top-bar, code-viewer
@@ -293,9 +293,11 @@ playground/src/
   shared/     lib/ and ui/, the pieces with no page of their own
 ```
 
-**Two stylesheets, and the split is the point.** The `penumbra` package carries what a second
-project takes unchanged — spacing, radii, shadows, type scale. `tokens.skin.css` here carries what
-it would rewrite: colour and typeface. `scripts/check-contrast.mjs` measures 32 token pairs across both
+**Three stylesheets, and the split is the point.** The `penumbra` package carries what a second
+project takes unchanged — spacing, radii, shadows and type scale in `tokens.system.css`, then
+neutrals, semantics and the lift in `tokens.skin.base.css`. `tokens.skin.css` here is twelve
+declarations: the three faces, the lockup rise, and the eight colours that are umbra's.
+`scripts/check-contrast.mjs` reads the base underneath it and measures 32 token pairs across both
 schemes, so a palette edit that fails WCAG AA fails `yarn check` rather than review.
 
 **Every example is a card with a `codeKey`**, and one dialog in the layout shows the source. A dialog

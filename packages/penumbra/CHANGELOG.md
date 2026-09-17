@@ -5,6 +5,46 @@ Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No s
 **This file is the package's memory.** The code states what holds now; why it came to hold lives
 here.
 
+## 2026-09-17, the half of a palette that is not a brand
+
+### Added
+
+`tokens.skin.base.css` — 24 names across 47 declarations: the surfaces, the three text ranks, the
+divider, the control edge, the hover and selected states, the four semantics with their washes, the
+scrim, the scrollbar and `--app-lift`, in both schemes.
+
+This reverses the refusal recorded below, and the measurement is what reversed it. The two skins in
+this repo were said to be "deliberately nothing alike"; they agreed **byte for byte on every one of
+the 47 declarations that moved**, and had agreed since the day the second was written. The claim
+was about a palette. What the files actually held was a palette *and* a ground, and only the palette
+was ever the project's.
+
+So the refusal stands where it was aimed. A brand is still not shipped here. A neutral, a semantic
+and a scrim are not a brand — they are what a project inherits without losing anything it would have
+chosen — and the argument for keeping them in two hand-maintained copies was the same argument the
+system half already lost.
+
+The extraction is inert by construction: every name moved was identical in both sources, and none
+of them is declared by the system half. Proven rather than asserted — 332 resolved custom-property
+values read out of both built playgrounds in both schemes, before and after, with zero differences.
+
+### Added — the gate runs in both directions now
+
+`yarn check` already refused a colour or a typeface in the system half. It now refuses, in the
+base, a typeface, a name from the `--app-primary`/`accent`/`flame`/`ring`/`glow` family, and any
+token the system half already declares.
+
+The brand rule is a list of names rather than a test of the value, and that is not laziness:
+`#b91c1c` is a brand red or a semantic error depending only on which name it is bound to, so the
+name is the only thing there is to check.
+
+### Changed
+
+`umbra`'s `check:contrast` reads the base underneath the skin. Fourteen of its sixteen pairs have a
+base colour on at least one side, so measuring the skin alone would have measured a palette the
+browser never shows — and, once the skin shrank to twelve declarations, would have failed on a
+missing token instead.
+
 ## 2026-09-15, a package, because prose did not hold
 
 ### Added

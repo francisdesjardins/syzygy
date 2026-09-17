@@ -7,7 +7,7 @@ shadows it casts.
 | --- | --- |
 | [`umbra`](packages/umbra) | a framework-free bootstrap orchestrator over a declared step graph |
 | [`antumbra`](packages/antumbra) | a headless dialog manager on the native `<dialog>` top layer |
-| [`penumbra`](packages/penumbra) | the portable half of a design system: no colour, no typeface |
+| [`penumbra`](packages/penumbra) | the portable half of a design system: a scale with no colour, and a palette with no brand |
 | [`limb`](packages/limb) | the framework-free helpers both playgrounds need and neither owns |
 | [`corona`](packages/corona) | the API reference: the contract a generated model satisfies, and its viewer |
 | [`gnomon`](packages/gnomon) | the gates: the example checker, the coverage instrumenter, the formatter |
@@ -90,7 +90,7 @@ the names from being decoration is the last one: the word has to describe what t
 | --- | --- | --- | --- |
 | `umbra` | `core`, `bootstrap` | the total shadow — and the root morpheme the other two derive from | the package the others build on: nothing is lit yet, everything boots |
 | `antumbra` | `dialog`, `modal` | *ante umbra*, "in front of the shadow": past the apex, light rings around the occulter | the native `<dialog>` top layer — painted in front, the page still visible around it |
-| `penumbra` | `tokens`, `theme`, `design-system` | the partial shadow, the soft half | the half of a design system that ports: no colour, no typeface |
+| `penumbra` | `tokens`, `theme`, `design-system` | the partial shadow, the soft half | the half of a design system that ports: a scale with no colour, a palette with no brand |
 | `limb` | **`utils`**, `shared`, `common` | the apparent edge of a disc — what an observer actually sees of a body | the framework-free primitives, and nothing that needs a renderer |
 | `corona` | `api-docs`, `reference` | the sun's outer atmosphere — what is visible of a body once the disc is covered | a library's public surface, and the page that shows it |
 | `gnomon` | `tooling`, `scripts`, `build` | the rod of a sundial: the instrument a shadow is measured by | the gates — example checker, coverage instrumenter, formatter |

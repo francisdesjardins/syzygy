@@ -3,6 +3,23 @@
 Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No semver: names change
 between commits when a better one shows up, and the entry says which and why.
 
+## 2026-09-17, the skin is twelve declarations
+
+### Changed
+
+`playground/src/app/styles/tokens.skin.css` lost 47 declarations to
+[penumbra](../penumbra)'s new `tokens.skin.base.css`, and `app.css` imports that file between the
+system half and this one. What is left is the ring: three faces, the lockup rise, and eight colours.
+
+Every name that moved was identical to antumbra's, in both schemes, and had been since the day the
+second skin was written — so the palette that was "meant to look nothing like" the other one was
+two thirds a shared ground. The ring is the third that was ever this project's.
+
+**`scripts/check-contrast.mjs` reads the base underneath the skin now.** Fourteen of its sixteen
+pairs have a base colour on at least one side; measuring the skin alone would report on a palette
+the browser never shows. It resolves `penumbra/tokens.skin.base.css` through the playground's
+manifest rather than by a path up the tree, since that is the workspace the dependency belongs to.
+
 ## 2026-09-16, the gates moved to gnomon
 
 ### Changed

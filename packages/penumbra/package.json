@@ -1,7 +1,7 @@
 {
   "name": "penumbra",
   "version": "1.0.0",
-  "description": "The portable half of a design system: scale, rhythm, motion and stacking, with no colour and no typeface in it.",
+  "description": "The portable half of a design system: scale, rhythm, motion and stacking with no colour in them, and a neutral skin with no brand in it.",
   "license": "MIT",
   "author": "Francis Desjardins <francis.desjardins@gmail.com>",
   "type": "module",
@@ -9,10 +9,12 @@
     "*.css"
   ],
   "files": [
-    "tokens.system.css"
+    "tokens.system.css",
+    "tokens.skin.base.css"
   ],
   "exports": {
     "./tokens.system.css": "./tokens.system.css",
+    "./tokens.skin.base.css": "./tokens.skin.base.css",
     "./package.json": "./package.json"
   },
   "repository": {
