@@ -149,5 +149,64 @@ module.exports = {
         }
       }
     }
+
+    // ── One name, one command ────────────────────────────────────────────────
+    //
+    // Twenty-five script names are declared by two to five workspaces each, and Yarn has no way to
+    // inherit one — so the body is written out every time. That duplication is the tool's and is
+    // left alone: a manifest that hides what its commands actually run is worse. **What is not
+    // left alone is the drift**, which is the part that costs something and the part nobody sees:
+    // `oxlint --type-aware` in four manifests and `oxlint` in the fifth is a package linted to a
+    // different standard, and it reads as identical in every diff that does not put the two lines
+    // side by side. The lint configs had drifted exactly that way before they were merged.
+    //
+    // So: a name declared more than once must mean the same command everywhere, unless it is named
+    // below. The list is short on purpose — it is the set of scripts that are genuinely each
+    // workspace's own, and adding to it is how a deliberate divergence gets recorded.
+    const PER_WORKSPACE = new Map([
+      [`check`, `each workspace's own gate, and the no-ops say what they are instead of running`],
+      [`test`, `the same: two suites, one suite, or a no-op naming where the tests really run`],
+      [`verify:all`, `a library verifies its package and its demo; an app builds`],
+      [`type-check`, `a library checks two programs, the playground and the fixtures; an app one`],
+      [`dev`, `a library delegates to its playground; a playground and an app run vite`],
+      [`build`, `a library emits a bundle and declarations; a playground and an app run vite`],
+      [`check:contrast`, `the site measures three skins, a playground measures its one`],
+      [`test:component`, `the projects differ — antumbra has touch and focus legs umbra has not`],
+      [`test:component:coverage`, `the same projects, instrumented`],
+      [`playground:build`, `names its own playground workspace`],
+      [`playground:build:file`, `names its own playground workspace`],
+      [`playground:preview`, `names its own playground workspace`],
+    ]);
+
+    const bodies = new Map();
+    for (const workspace of Yarn.workspaces()) {
+      for (const [script, body] of Object.entries(workspace.manifest.scripts ?? {})) {
+        if (PER_WORKSPACE.has(script)) {
+          continue;
+        }
+        if (!bodies.has(script)) {
+          bodies.set(script, []);
+        }
+        bodies.get(script).push({ workspace, body });
+      }
+    }
+
+    for (const [script, declared] of bodies) {
+      if (declared.length < 2) {
+        continue;
+      }
+      // The first workspace in dependency order is the reference, so the message names one body to
+      // move towards rather than reporting two halves of a disagreement.
+      const [reference] = declared;
+      const where =
+        reference.workspace.cwd === `.` ? `the repository root` : reference.workspace.cwd;
+      for (const { workspace, body } of declared) {
+        if (body !== reference.body) {
+          workspace.error(
+            `\`${script}\` is \`${body}\` here and \`${reference.body}\` in ${where}. A name declared in more than one workspace has to mean the same command in all of them — a flag that exists in four manifests and not the fifth is a package held to a different standard, and it reads as identical in every diff. If the difference is deliberate, add \`${script}\` to PER_WORKSPACE in yarn.config.cjs with the reason.`
+          );
+        }
+      }
+    }
   },
 };

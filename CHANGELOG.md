@@ -5,6 +5,31 @@ keeps its own `CHANGELOG.md` for changes to itself.
 
 Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No semver.
 
+## 2026-09-17, one name, one command
+
+### Added
+
+`yarn.config.cjs` gains a rule: a script name declared by more than one workspace must mean the same
+command in all of them.
+
+**Twenty-five names are declared two to five times each**, and Yarn has no way to inherit one, so
+the body is written out every time. That duplication stays — a manifest that hides what its commands
+actually run is worse than a repeated line. What does not stay is the **drift**, which is the half
+that costs something and the half nobody sees: `oxlint --type-aware` in four manifests and `oxlint`
+in the fifth is a package held to a different standard, and it reads as identical in every diff that
+does not put the two lines beside each other. The lint configs had drifted in exactly that shape
+before they were merged this morning.
+
+Twelve names are exempt, each with its reason in the file — `check`, `test` and `verify:all` are
+every workspace's own gate; `type-check` runs two programs in a library and one in an app;
+`test:component` differs because antumbra has touch and focus projects umbra has not. **The
+exemption list is the interesting output**: it is the written-down set of scripts that are
+per-package by design, and adding to it is how the next deliberate divergence gets recorded instead
+of just happening.
+
+Proved lethal twice: `--type-aware` dropped from limb's `lint`, and corona's `format:check` narrowed
+from `.` to `src`. Both named the workspace, the two bodies and the way to declare it deliberate.
+
 ## 2026-09-17, the phone is a gate now
 
 ### Added
