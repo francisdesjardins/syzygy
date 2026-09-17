@@ -14,7 +14,7 @@ export const UIIntegrationsPage = () => {
         title="The same dialog, two stacks"
         description="Both files call one useForm and one useDialog, declare the same actions and return the same typed payload. Everything they disagree about is markup. Material UI supplies Box, Stack, TextField and a theme; the <dialog>, the focus and the close reasons stay the library's."
       >
-        <ExampleGrid>
+        <ExampleGrid columns={2}>
           <ExampleCard
             title="Vanilla Form Dialog"
             description="Plain HTML and CSS modules, validation feedback included."

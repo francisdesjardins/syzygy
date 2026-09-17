@@ -58,7 +58,7 @@ function Run(props: { shape: ReturnType<typeof shapeOf>; plan: Bootstrap<Steps>[
         title="What you write"
         description="Five steps and their dependencies. Nothing here asks for parallelism and there is no flag for it: needs is the only input, and the columns are what it implies."
       >
-        <ExampleGrid>
+        <ExampleGrid columns={1}>
           <ExampleCard
             title="The step graph, as the dependencies drew it"
             description="One column is one level: everything in it goes out together, because nothing in it waits for anything else in it. The second line of each box is its scope, and the last column is the mounted phase."
@@ -80,7 +80,7 @@ function Run(props: { shape: ReturnType<typeof shapeOf>; plan: Bootstrap<Steps>[
         title="What happens"
         description="Each bar starts when its step was entered and is as wide as it took. Two bars that overlap are two requests in flight at once, which is what the graph bought you."
       >
-        <ExampleGrid>
+        <ExampleGrid columns={1}>
           <ExampleCard
             title="The run against a clock"
             description="A list of events can say two steps succeeded; it cannot say they were in flight at the same time."
@@ -95,7 +95,7 @@ function Run(props: { shape: ReturnType<typeof shapeOf>; plan: Bootstrap<Steps>[
         title="What you get back"
         description="One frozen object. The status is the only thing an app must read to know whether it may mount; everything else explains why."
       >
-        <ExampleGrid>
+        <ExampleGrid columns={1}>
           <ExampleCard
             title="The outcome"
             description="Data keyed by the ids you declared, the facts the run recorded, the UI work it queued, and what went wrong."

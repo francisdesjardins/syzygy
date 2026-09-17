@@ -27,7 +27,7 @@ export const DialogActionsPage = () => {
         title="Actions & hotkeys"
         description="The reason is the action's identity: it names the action and it is what the dialog closes with. Spread the returned props onto any button you like."
       >
-        <ExampleGrid>
+        <ExampleGrid columns={2}>
           <ExampleCard
             title="Confirm with Hotkeys"
             description="Two actions, each with a hotkey declared on it. Press Enter to confirm, Escape to cancel — the dialog dispatches by clicking the button, so the key path is the click path."

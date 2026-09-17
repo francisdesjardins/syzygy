@@ -88,7 +88,7 @@ export function SingleSpaPage() {
         title="The root config"
         description="With no session the guard refuses, start() is never called, and single-spa is never asked to mount anything — rather than mounting a shell that then has to discover it has nowhere to go."
       >
-        <ExampleGrid>
+        <ExampleGrid columns={1}>
           <ExampleCard
             title="root-config.js"
             description="The order is the whole integration: the bootstrap runs, and only then does registration happen at all. registerApplication has no way to say “do not start”."
@@ -102,7 +102,7 @@ export function SingleSpaPage() {
         title="Readiness stays single-spa's job"
         description="The shell asks the router what is mounted, through single-spa:app-change and getMountedApps(). umbra answers what the data is, not what is on screen."
       >
-        <ExampleGrid>
+        <ExampleGrid columns={1}>
           <ExampleCard
             title="Why not both"
             description="A library that reimplements its host's signals is a library you now have to keep in step with two sources of truth, and one day they disagree. The same reasoning is why there is no upward “module is ready” channel in the library at all."

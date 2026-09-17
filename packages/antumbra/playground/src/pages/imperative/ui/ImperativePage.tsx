@@ -27,7 +27,7 @@ export const ImperativePage = () => {
         title="Imperative control"
         description="dialogManager drives dialogs by id from anywhere. It is the package root — plain TypeScript that never imports React — so a service, a router guard or a worker can raise a dialog without a component."
       >
-        <ExampleGrid>
+        <ExampleGrid columns={2}>
           <ExampleCard
             title="Imperative Open / Close"
             description="Open and close dialogs via dialogManager.open() / .close() — no React ref needed. Module-level createStore tracks open count across renders."

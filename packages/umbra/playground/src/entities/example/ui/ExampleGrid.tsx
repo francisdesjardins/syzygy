@@ -7,11 +7,15 @@ import styles from '@/entities/example/ui/ExampleGrid.module.css';
  * column width instead of stretching across the row.
  */
 export function ExampleGrid({
-  columns = 1,
+  columns,
   children,
 }: {
-  /** Columns at `sm` and up, collapsing to one below; `1` for wide demos needing the full measure. */
-  readonly columns?: 1 | 2 | undefined;
+  /**
+   * Columns at `sm` and up, collapsing to one below. Required, and deliberately: how many columns a
+   * band of demos wants is a fact about those demos, not about the playground around them — both of
+   * them run about half and half — so a default would only hide the decision on half the call sites.
+   */
+  readonly columns: 1 | 2;
   readonly children: ReactNode;
 }) {
   const className = columns === 1 ? styles['grid'] : `${styles['grid']} ${styles['twoColumns']}`;

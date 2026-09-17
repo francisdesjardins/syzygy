@@ -15,7 +15,7 @@ export const GettingStartedPage = () => {
         title="Core patterns"
         description="Start here. Each card is a self-contained file you can copy as-is."
       >
-        <ExampleGrid>
+        <ExampleGrid columns={2}>
           <ExampleCard
             title="Simple Dialog"
             description="Basic dialog with open, close, and openAndWait."
@@ -41,7 +41,7 @@ export const GettingStartedPage = () => {
         title="Animation"
         description="Animations are user-land — set the duration to 0 to opt out entirely."
       >
-        <ExampleGrid>
+        <ExampleGrid columns={2}>
           <ExampleCard
             title="Message Dialog — No Transition"
             description="Instant open/close with animation duration set to 0 — for when speed matters more than polish."

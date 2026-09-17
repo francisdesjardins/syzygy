@@ -1569,7 +1569,7 @@ export const StoriesPage = () => {
       {STORY_GROUPS.map((group) => {
         return (
           <ExampleSection key={group.label} title={group.label}>
-            <ExampleGrid>
+            <ExampleGrid columns={2}>
               {group.stories.map((story) => {
                 const Harness = story.component;
 

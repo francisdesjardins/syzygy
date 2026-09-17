@@ -93,7 +93,8 @@ export type ApiSlots = {
     readonly children: ReactNode;
   }>;
   readonly ExampleGrid: ComponentType<{
-    readonly columns?: 1 | 2;
+    /** Required in the hosts, so the contract states it too rather than widening what they accept. */
+    readonly columns: 1 | 2;
     readonly children: ReactNode;
   }>;
   /** Icons are placed by the page, so each takes the class that places it. */
