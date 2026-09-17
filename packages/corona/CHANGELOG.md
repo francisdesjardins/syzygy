@@ -5,6 +5,27 @@ Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No s
 **This file is the package's memory.** The code states what holds now; why it came to hold lives
 here.
 
+## 2026-09-17, the mascot moves here, and its face does not
+
+### Added
+
+`PeekingMoon` — the behaviour — and `EclipseMoon`, the drawing. Each playground keeps only its face.
+
+The two copies of the behaviour were **339 identical lines out of 343**, and the two drawings were
+83% of one another. Neither showed up in the register's duplication figure: one probe paired files
+by path, and the mascot sits at `PeekingMoon/PeekingMoon.tsx` on one side and `PeekingMoon.tsx` on
+the other; pairing by name then missed the drawings, which are called `AntumbraMoon` and `UmbraMoon`.
+
+**The seam is the face, not the file.** What differs between the two is roughly twenty-five lines of
+brows, eyes and mouth: antumbra smirks because it spends its life putting a shadow over your page,
+umbra watches because it starts a run it cannot hurry. So `face` is a render prop taking the ink
+colour, and the corona, the disc, the eight flames, the three flicker curves and the halo are one
+file.
+
+`PeekingMoon` takes the whole drawing as a node rather than a component, which is what lets it know
+nothing about the host's theme. It is remounted on every phase change — the `key` is what restarts
+the per-visit animation — so what it is given must hold no state. The faces are pure SVG.
+
 ## 2026-09-17, the way out becomes a path
 
 ### Added

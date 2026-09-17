@@ -3,6 +3,16 @@
 Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No semver: names change
 between commits when a better one shows up, and the entry says which and why.
 
+## 2026-09-17, the mascot is corona's, the face is ours
+
+### Changed
+
+`PeekingMoon` — the drifting, the shyness, the eclipse-on-click, 343 lines of it — now comes from
+[corona](../../corona), along with the drawing it wraps. What stays here is the face, about
+twenty-five lines of brows, eyes and mouth, over corona's `EclipseMoon`.
+
+The two playgrounds had 339 of those 343 lines in common and had never noticed.
+
 ## 2026-09-17, the top bar is a path
 
 ### Changed

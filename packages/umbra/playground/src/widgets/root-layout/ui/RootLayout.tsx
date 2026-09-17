@@ -1,9 +1,10 @@
 import { useRouterState } from '@tanstack/react-router';
-import { PeekingMoon } from '@/shared/ui/PeekingMoon';
-import { PlaygroundPath } from 'corona';
+import { UmbraMoon } from '@/shared/ui/UmbraMoon';
+import { PeekingMoon, PlaygroundPath } from 'corona';
 import { Outlet } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 import { useCodePane } from '@/shared/lib/code-pane-context';
+import { useTheme } from '@/shared/lib/theme-context';
 import { useMediaQuery } from '@/shared/lib/use-media-query';
 import { useCodeDialog } from '@/widgets/code-viewer';
 import { Sidebar } from '@/widgets/sidebar';
@@ -48,6 +49,7 @@ export function RootLayout() {
   // Two routes, antumbra's two reasons: `/` already shows the same drawing full size in the hero, so
   // a peeking twin beside it reads as a stray render; `/stories` renders fixtures at the card
   // edges, where a mascot wandering among them reads as one of them misbehaving.
+  const { scheme } = useTheme();
   const hidesMascot = useRouterState({
     select: (state) => {
       return state.location.pathname === '/' || state.location.pathname === '/stories';
@@ -78,7 +80,7 @@ export function RootLayout() {
       />
       <MainContent />
       {/* Below the top bar's z-index, so it never covers the chrome. */}
-      {!hidesMascot && <PeekingMoon />}
+      {!hidesMascot && <PeekingMoon moon={<UmbraMoon isDark={scheme === 'dark'} />} />}
     </div>
   );
 }

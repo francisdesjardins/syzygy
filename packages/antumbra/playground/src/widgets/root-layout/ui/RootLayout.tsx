@@ -1,11 +1,12 @@
-import { PeekingMoon } from '@/shared/ui/PeekingMoon/PeekingMoon';
+import { AntumbraMoon } from '@/shared/ui/PeekingMoon/AntumbraMoon';
 import { useCodeDialog } from '@/widgets/code-viewer';
 import { useCodePane } from '@/shared/lib/code-pane-context';
+import { useTheme } from '@/shared/lib/theme-context';
 import { useMediaQuery } from '@/shared/lib/use-media-query';
 import { Sidebar } from '@/widgets/sidebar';
 import { TopBar } from '@/widgets/top-bar';
 import styles from '@/widgets/root-layout/ui/RootLayout.module.css';
-import { PlaygroundPath } from 'corona';
+import { PeekingMoon, PlaygroundPath } from 'corona';
 import { Outlet, useRouterState } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
@@ -68,6 +69,7 @@ export const RootLayout = () => {
   // Two reasons, one flag: `/` already shows the same moon still, so a hider beside a full-size
   // twin reads as a stray render; `/stories` opens panels at the card edges, where a mascot
   // reads as a fixture misbehaving.
+  const { scheme } = useTheme();
   const hidesPeekingMoon = useRouterState({
     select: (state) => {
       return state.location.pathname === '/' || state.location.pathname === '/stories';
@@ -82,7 +84,7 @@ export const RootLayout = () => {
       {/* Rendered last, so `--app-z-mascot` is what keeps it under the shell rather than document
           order. A dialog is out of reach either way: the manager assigns 1300+ and a modal one
           paints in the top layer, where no `z-index` reaches it. */}
-      {!hidesPeekingMoon && <PeekingMoon />}
+      {!hidesPeekingMoon && <PeekingMoon moon={<AntumbraMoon isDark={scheme === 'dark'} />} />}
     </>
   );
 };

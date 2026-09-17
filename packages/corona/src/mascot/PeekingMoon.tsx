@@ -1,15 +1,6 @@
-import styles from '@/shared/ui/PeekingMoon/PeekingMoon.module.css';
-import { useTheme } from '@/shared/lib/theme-context';
-import { useEffect, useRef, useState } from 'react';
-import { AntumbraMoon } from './AntumbraMoon';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 
-/**
- * The playground's easter egg: Antumbra's moon slides in from the right, peeks ~2 minutes with the
- * occasional giggle, waves, slides out, and returns at a new height. Right edge only — the bottom
- * crosses the reading column and the sidebar owns the left above 900px. It is shy, ducking out when
- * the pointer nears; click or Enter eclipses it for good, since what flees the pointer must stay
- * dismissible without one. Sibling of stardust's `PeekingStar`.
- */
+import styles from './PeekingMoon.module.css';
 
 type Phase = 'peek' | 'shy' | 'eclipse';
 
@@ -109,10 +100,29 @@ const distanceToRect = (rect: DOMRect, point: { readonly x: number; readonly y: 
   return Math.hypot(dx, dy);
 };
 
-export const PeekingMoon = () => {
-  const { scheme } = useTheme();
-  const isDarkMode = scheme === 'dark';
+type PeekingMoonProps = {
+  /**
+   * The drawing, already themed by the host. A node rather than a component, because the moon is
+   * the one part of this that is each project's: an eclipse, an annular ring and a partial shadow
+   * are three pictures, and only the behaviour around them is one.
+   *
+   * It is remounted whenever the phase or the visit changes — the `key` on the box is what restarts
+   * the per-visit animation — so it must hold no state of its own. The three faces are pure SVG.
+   */
+  readonly moon: ReactNode;
+};
 
+/**
+ * The playgrounds' easter egg: the project's moon slides in from the right, peeks ~2 minutes with
+ * the occasional giggle, waves, slides out, and returns at a new height. Right edge only — the
+ * bottom crosses the reading column and the sidebar owns the left above 900px. It is shy, ducking
+ * out when the pointer nears; click or Enter eclipses it for good, since what flees the pointer
+ * must stay dismissible without one. Sibling of stardust's `PeekingStar`.
+ *
+ * **It knows nothing about the theme.** The host renders the drawing and passes it in, which is
+ * what lets this live here rather than three times over.
+ */
+export const PeekingMoon = ({ moon }: PeekingMoonProps) => {
   const [size, setSize] = useState(() => {
     return typeof window === 'undefined' ? 180 : responsiveSize(window.innerWidth);
   });
@@ -336,7 +346,7 @@ export const PeekingMoon = () => {
       {/* Per-visit keyframes ride with the element they animate; the name is unique per
           phase+visit, so remounts (the `key` above) restart the run cleanly. */}
       <style>{`@keyframes ${animName} {\n${framesToCss(keyframes)}\n}`}</style>
-      <AntumbraMoon isDark={isDarkMode} />
+      {moon}
     </div>
   );
 };
