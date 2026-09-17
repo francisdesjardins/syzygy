@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
-import { SurfaceCard } from '@/shared/ui/SurfaceCard';
+import { SurfaceCard } from '@/shared/ui/SurfaceCard/SurfaceCard';
 import { ViewCodeButton } from '@/shared/ui/ViewCodeButton/ViewCodeButton';
+import styles from '@/entities/example/ui/ExampleCard.module.css';
 
 type ExampleCardProps = {
   readonly title: string;
@@ -10,6 +11,15 @@ type ExampleCardProps = {
   readonly example?: ReactNode | undefined;
 };
 
+/**
+ * One demonstration: a title, a line on what it shows, the thing itself, and the source behind it.
+ *
+ * `codeKey` is the whole point of the card. A demonstration a reader cannot read the code of is a
+ * screenshot with extra steps.
+ *
+ * `example` and `children` are alternatives rather than slots that stack: a card either shows a
+ * rendered demo or lays out its own controls, and the two want different arrangements.
+ */
 export const ExampleCard = ({
   title,
   description,
@@ -19,64 +29,16 @@ export const ExampleCard = ({
 }: ExampleCardProps) => {
   return (
     <SurfaceCard interactive>
-      <div
-        style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: 'var(--app-space-6)' }}
-      >
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 'var(--app-space-2)',
-            marginBottom: 'var(--app-space-2)',
-          }}
-        >
-          {/* h3, under the section's h2 — a card title is a level of the page, not a sixth one.
-              The body face is stated because the global heading rule reaches h3. */}
-          <h3
-            style={{
-              margin: 0,
-              fontFamily: 'var(--app-font-body)',
-              fontWeight: 600,
-              // Off-scale: between --app-text-base and --app-text-lg.
-              fontSize: '1.1rem',
-              lineHeight: 1.6,
-              letterSpacing: '-0.01em',
-              flex: 1,
-            }}
-          >
-            {title}
-          </h3>
-          {codeKey && <ViewCodeButton codeKey={codeKey} />}
+      <div className={styles['body']}>
+        <div className={styles['head']}>
+          <h3 className={styles['title']}>{title}</h3>
+          {codeKey === undefined ? null : <ViewCodeButton codeKey={codeKey} />}
         </div>
-        {description && (
-          <p
-            style={{
-              margin: '0 0 var(--app-space-6)',
-              // The same measure `PageLayout` holds its own prose to. A full-width card runs 98
-              // characters to the line without it, which is past where the eye finds the next one.
-              maxWidth: 'var(--app-measure)',
-              fontSize: 'var(--app-text-md)',
-              lineHeight: 1.6,
-              color: 'var(--app-text-secondary)',
-              flex: 1,
-            }}
-          >
-            {description}
-          </p>
-        )}
-        {example ? (
-          <div style={{ marginTop: 'auto' }}>{example}</div>
+        {description === undefined ? null : <p className={styles['description']}>{description}</p>}
+        {example === undefined ? (
+          <div className={styles['controls']}>{children}</div>
         ) : (
-          <div
-            style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: 'var(--app-space-3)',
-              marginTop: 'auto',
-            }}
-          >
-            {children}
-          </div>
+          <div className={styles['example']}>{example}</div>
         )}
       </div>
     </SurfaceCard>

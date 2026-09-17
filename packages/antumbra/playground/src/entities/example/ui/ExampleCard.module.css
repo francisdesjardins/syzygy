@@ -1,0 +1,50 @@
+.body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: var(--app-space-6);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-2);
+  margin-bottom: var(--app-space-2);
+}
+
+/* h3, under the section's h2 — a card title is a level of the page, not a sixth one. The body face
+   is stated because the global heading rule reaches h3. */
+.title {
+  flex: 1;
+  margin: 0;
+  font-family: var(--app-font-body);
+  font-weight: 600;
+  /* Off-scale: between --app-text-base and --app-text-lg. */
+  font-size: 1.1rem;
+  line-height: 1.6;
+  letter-spacing: -0.01em;
+}
+
+.description {
+  flex: 1;
+  margin: 0 0 var(--app-space-6);
+  /* The same measure `PageLayout` holds its own prose to. A full-width card runs 98 characters to
+     the line without it, which is past where the eye finds the next one. */
+  max-width: var(--app-measure);
+  font-size: var(--app-text-md);
+  line-height: 1.6;
+  color: var(--app-text-secondary);
+}
+
+.example {
+  margin-top: auto;
+}
+
+/* Controls, which a card lays out in a row that wraps. `example` and `children` never appear on the
+   same card — 37 of them here, and not one passes both. */
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--app-space-3);
+  margin-top: auto;
+}
