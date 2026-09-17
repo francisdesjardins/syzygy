@@ -23,7 +23,9 @@
     "lint": "oxlint --type-aware",
     "lint:fix": "oxlint --type-aware --fix",
     "format": "oxfmt .",
-    "format:check": "oxfmt --check ."
+    "format:check": "oxfmt --check .",
+    "test": "echo \"corona: no-op — no test files yet; the viewer is exercised by both playgrounds smoke suites\"",
+    "verify:all": "yarn check"
   },
   "dependencies": {
     "limb": "workspace:^"
@@ -33,7 +35,7 @@
     "@types/node": "^24.10.1",
     "@types/react": "^19.3.0",
     "oxfmt": "0.68.0",
-    "oxlint": "^1.82.0",
+    "oxlint": "^1.83.0",
     "oxlint-tsgolint": "7.0.2001",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",

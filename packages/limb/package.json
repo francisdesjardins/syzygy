@@ -24,7 +24,8 @@
   },
   "scripts": {
     "check": "node node_modules/typescript-7/bin/tsc --noEmit",
-    "test": "playwright test"
+    "test": "playwright test",
+    "verify:all": "yarn check && yarn test"
   },
   "peerDependencies": {
     "react": "^19.0.0"
@@ -35,7 +36,7 @@
     }
   },
   "devDependencies": {
-    "@playwright/test": "^1.57.0",
+    "@playwright/test": "1.63.0",
     "@types/node": "^24.10.1",
     "@types/react": "^19.3.0",
     "typescript-7": "npm:typescript@7.0.2"

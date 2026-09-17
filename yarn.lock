@@ -583,7 +583,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mui/icons-material@npm:^9.3.1":
+"@mui/icons-material@npm:^9.4.0":
   version: 9.4.0
   resolution: "@mui/icons-material@npm:9.4.0"
   dependencies:
@@ -599,7 +599,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mui/material@npm:^9.3.1, @mui/material@npm:^9.4.0":
+"@mui/material@npm:^9.4.0":
   version: 9.4.0
   resolution: "@mui/material@npm:9.4.0"
   dependencies:
@@ -1052,7 +1052,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/test@npm:1.63.0, @playwright/test@npm:^1.57.0":
+"@playwright/test@npm:1.63.0":
   version: 1.63.0
   resolution: "@playwright/test@npm:1.63.0"
   dependencies:
@@ -1249,32 +1249,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/history@npm:1.162.3":
-  version: 1.162.3
-  resolution: "@tanstack/history@npm:1.162.3"
-  checksum: 10c0/9bca73aede661042068821bc83a853483d04aa2a7e13359c908761b16e2c5fdb068b04e2a0c9cd286cd0b30489e3ef5a2770fa17a8e74fa514c650400e3355e4
-  languageName: node
-  linkType: hard
-
 "@tanstack/history@npm:1.162.4":
   version: 1.162.4
   resolution: "@tanstack/history@npm:1.162.4"
   checksum: 10c0/3a8bbe096e597f7945ac85f9da6b1bbd9f62c9df34c29526a3667189d715bb434fd077186333025a78ef6900adb943816cc58cc90b015527d4a916baedb09e44
-  languageName: node
-  linkType: hard
-
-"@tanstack/react-router@npm:1.170.35":
-  version: 1.170.35
-  resolution: "@tanstack/react-router@npm:1.170.35"
-  dependencies:
-    "@tanstack/history": "npm:1.162.3"
-    "@tanstack/react-store": "npm:^0.11.0"
-    "@tanstack/router-core": "npm:1.171.29"
-    isbot: "npm:^5.1.22"
-  peerDependencies:
-    react: ">=18.0.0 || >=19.0.0"
-    react-dom: ">=18.0.0 || >=19.0.0"
-  checksum: 10c0/2f0183fe70704fc580619153edf682ec19c00da56308aa01f718aae004f9c5f846985ea96ac4f57d20d72790e4ad0d4bf8a6ca054d84e0bed903ff1aee3e42cd
   languageName: node
   linkType: hard
 
@@ -1303,18 +1281,6 @@ __metadata:
     react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
     react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
   checksum: 10c0/9b43ea1b07cfed9100b9d037a339e6dbef17ff8e7fd4b8968ef76b75c97a20ec3627345adca94135664d6fccd88f48622e1e871c64738ff2f0b0ce24ce365dfd
-  languageName: node
-  linkType: hard
-
-"@tanstack/router-core@npm:1.171.29":
-  version: 1.171.29
-  resolution: "@tanstack/router-core@npm:1.171.29"
-  dependencies:
-    "@tanstack/history": "npm:1.162.3"
-    cookie-es: "npm:^3.0.0"
-    seroval: "npm:^1.6.2"
-    seroval-plugins: "npm:^1.6.2"
-  checksum: 10c0/ca0993507ee96bbc059ce003547c5adb0ce967632a3265e29f2ad12d2ec95d3ec1bea7ec11cfb6b77db8181c916f5a1e73ad84a35ca7aaf255e1fe7da89dcebe
   languageName: node
   linkType: hard
 
@@ -1367,7 +1333,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^24, @types/node@npm:^24.10.1":
+"@types/node@npm:^24.10.1":
   version: 24.13.4
   resolution: "@types/node@npm:24.13.4"
   dependencies:
@@ -1636,7 +1602,8 @@ __metadata:
     "@emotion/react": "npm:^11.14.0"
     "@emotion/styled": "npm:^11.14.1"
     "@mui/material": "npm:^9.4.0"
-    "@tanstack/react-router": "npm:1.170.35"
+    "@tanstack/react-router": "npm:^1.170.36"
+    "@types/node": "npm:^24.10.1"
     "@types/react": "npm:^19.3.0"
     "@types/react-dom": "npm:^19.3.0"
     "@types/react-syntax-highlighter": "npm:^15.5.13"
@@ -1659,7 +1626,7 @@ __metadata:
     "@babel/core": "npm:^8.0.5"
     "@playwright/test": "npm:1.63.0"
     "@rolldown/plugin-babel": "npm:0.2.4"
-    "@types/node": "npm:^24"
+    "@types/node": "npm:^24.10.1"
     "@types/react": "npm:^19.3.0"
     "@types/react-dom": "npm:^19.3.0"
     "@vitejs/plugin-react": "npm:^6.1.1"
@@ -1667,7 +1634,7 @@ __metadata:
     c8: "npm:12.0.0"
     gnomon: "workspace:^"
     oxfmt: "npm:0.68.0"
-    oxlint: "npm:^1.82.0"
+    oxlint: "npm:^1.83.0"
     oxlint-tsgolint: "npm:7.0.2001"
     react: "npm:^19.3.0"
     react-dom: "npm:^19.3.0"
@@ -1888,7 +1855,7 @@ __metadata:
     "@types/react": "npm:^19.3.0"
     limb: "workspace:^"
     oxfmt: "npm:0.68.0"
-    oxlint: "npm:^1.82.0"
+    oxlint: "npm:^1.83.0"
     oxlint-tsgolint: "npm:7.0.2001"
     react: "npm:^19.3.0"
     react-dom: "npm:^19.3.0"
@@ -2245,8 +2212,8 @@ __metadata:
   dependencies:
     "@emotion/react": "npm:^11.14.0"
     "@emotion/styled": "npm:^11.14.1"
-    "@mui/icons-material": "npm:^9.3.1"
-    "@mui/material": "npm:^9.3.1"
+    "@mui/icons-material": "npm:^9.4.0"
+    "@mui/material": "npm:^9.4.0"
     "@types/node": "npm:^24.10.1"
     "@types/react": "npm:^19.3.0"
     "@types/react-dom": "npm:^19.3.0"
@@ -2254,7 +2221,7 @@ __metadata:
     i18next: "npm:^26.3.6"
     i18next-browser-languagedetector: "npm:^8.2.1"
     oxfmt: "npm:0.68.0"
-    oxlint: "npm:^1.82.0"
+    oxlint: "npm:^1.83.0"
     oxlint-tsgolint: "npm:7.0.2001"
     penumbra: "workspace:^"
     react: "npm:^19.3.0"
@@ -2597,7 +2564,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "limb@workspace:packages/limb"
   dependencies:
-    "@playwright/test": "npm:^1.57.0"
+    "@playwright/test": "npm:1.63.0"
     "@types/node": "npm:^24.10.1"
     "@types/react": "npm:^19.3.0"
     typescript-7: "npm:typescript@7.0.2"
@@ -2909,7 +2876,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"oxlint@npm:^1.82.0, oxlint@npm:^1.83.0":
+"oxlint@npm:^1.83.0":
   version: 1.83.0
   resolution: "oxlint@npm:1.83.0"
   dependencies:
@@ -3731,7 +3698,7 @@ __metadata:
   resolution: "umbra-playground@workspace:packages/umbra/playground"
   dependencies:
     "@tanstack/react-router": "npm:^1.170.36"
-    "@types/node": "npm:^24"
+    "@types/node": "npm:^24.10.1"
     "@types/react": "npm:^19.3.0"
     "@types/react-dom": "npm:^19.3.0"
     "@types/react-syntax-highlighter": "npm:^15.5.13"
@@ -3753,7 +3720,7 @@ __metadata:
   resolution: "umbra@workspace:packages/umbra"
   dependencies:
     "@playwright/test": "npm:1.63.0"
-    "@types/node": "npm:^24"
+    "@types/node": "npm:^24.10.1"
     "@types/react": "npm:^19.3.0"
     "@types/react-dom": "npm:^19.3.0"
     c8: "npm:12.0.0"

@@ -41,5 +41,9 @@
   },
   "engines": {
     "node": ">=24"
+  },
+  "scripts": {
+    "check": "echo \"gnomon: no-op for now — no tsconfig and no devDependencies to check against yet; replace this once they exist\"",
+    "test": "echo \"gnomon: no-op — no test files yet\""
   }
 }

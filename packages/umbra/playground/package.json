@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "vite build",
     "build:file": "VITE_HASH_ROUTER=true vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "check": "echo \"umbra-playground: no-op by design — the parent runs tsc -p playground/tsconfig.json --noEmit and lints playground/** through its own .oxlintrc.json\"",
+    "test": "echo \"umbra-playground: no-op by design — its tests run in the parent playwright projects, testMatch {src,playground/src}/**\""
   },
   "dependencies": {
     "@tanstack/react-router": "^1.170.36",
@@ -21,11 +23,14 @@
     "solid-js": "^1.9.15"
   },
   "devDependencies": {
-    "@types/node": "^24",
+    "@types/node": "^24.10.1",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@types/react-syntax-highlighter": "^15.5.13",
     "@vitejs/plugin-react": "^6.1.1",
     "vite": "^8.3.0"
+  },
+  "engines": {
+    "node": ">=24"
   }
 }

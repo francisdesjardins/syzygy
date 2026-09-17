@@ -1,0 +1,224 @@
+name: CI
+
+# The first CI this repository has ever actually run. `packages/antumbra/.github/workflows/ci.yml`
+# is not one: GitHub reads workflows from the repository root only, and the root here is `syzygy`.
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  # A workflow nothing has ever executed deserves one run that is not a push. Also the only way to
+  # re-run the suite against an unchanged tree, which is how a flake is told from a failure.
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # **The only place this file writes the Node floor.** Seven manifests declare `engines.node: >=24`
+  # and nothing else in the repo pins a Node. A second literal in a second job is exactly the drift
+  # `.github/actions/setup` was invented to stop in antumbra's copy. `node-version-file:
+  # package.json` would read `engines.node` (setup-node resolves `volta.node`, then
+  # `devEngines.runtime`, then `engines.node`) — but `>=24` is a floor, and CI would then follow Node
+  # to 26 and 27 on its own. A CI pins; a manifest declares a minimum. Different statements.
+  NODE_VERSION: '24'
+  # The vendored release, invoked as a file. No `corepack enable` anywhere in this workflow: Node 26
+  # unbundled Corepack, `.yarnrc.yml` points `yarnPath` at this file, and the `resolve` job below
+  # fails if that stops being true. Yarn puts a 4.18.0 shim on PATH for everything it spawns, so the
+  # `yarn x && yarn y` chains inside the package scripts and Playwright's `webServer: yarn dev`
+  # resolve correctly as long as the entry point is this file.
+  YARN: node .yarn/releases/yarn-4.18.0.cjs
+  # `yarn install` would otherwise run Playwright's postinstall and download three browsers into
+  # every job. The container jobs already have them; the `check` job never opens one.
+  PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
+
+jobs:
+  # ── Resolve ──────────────────────────────────────────────────────────────────
+  # Two facts the other jobs cannot compute for themselves, and one guard.
+  #
+  # `container.image` is evaluated before a job starts, so a job cannot read its own workspace to tag
+  # its own container — the version has to arrive through `needs`. It comes from `yarn.lock` rather
+  # than a manifest: the root has no `devDependencies`, antumbra and umbra pin `1.63.0` and limb asks
+  # for `^1.57.0`, so the resolved version is the only one that describes what will be installed.
+  # Node is never installed here — grep and awk are enough, which keeps this job at checkout speed.
+  resolve:
+    name: Resolve
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      playwright-version: ${{ steps.playwright.outputs.version }}
+    steps:
+      - uses: actions/checkout@v6
+
+      # `env.YARN` names a file; `.yarnrc.yml` is what every local `yarn` obeys. A `yarn set version`
+      # moves one and not the other, and the failure would be this workflow running an older Yarn
+      # than the developer who pushed to it. Cheaper to fail here, by name.
+      - name: The vendored Yarn is the one .yarnrc.yml points at
+        run: |
+          declared=$(sed -n 's/^yarnPath:[[:space:]]*//p' .yarnrc.yml)
+          if [ "$declared" != ".yarn/releases/yarn-4.18.0.cjs" ]; then
+            echo "::error::.yarnrc.yml points at '$declared'; this workflow invokes '.yarn/releases/yarn-4.18.0.cjs'."
+            echo "Update env.YARN in .github/workflows/ci.yml to match, then re-run."
+            exit 1
+          fi
+          echo "Yarn at $declared"
+
+      - name: Resolve the Playwright version
+        id: playwright
+        run: |
+          keys=$(grep -c '^"\?@playwright/test@' yarn.lock)
+          if [ "$keys" != "1" ]; then
+            echo "::error::@playwright/test has $keys lockfile entries; one container tag cannot serve them."
+            grep -n '^"\?@playwright/test@' yarn.lock
+            exit 1
+          fi
+          version=$(awk '/^"?@playwright\/test@/ { found = 1; next } found && /^  version: / { print $2; exit }' yarn.lock)
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "Playwright $version"
+
+  # ── Check ────────────────────────────────────────────────────────────────────
+  # `yarn check` at the root: `workspaces foreach --all --topological-dev run check`. Six of the ten
+  # workspaces answer to it today — umbra, antumbra, penumbra, limb, corona, home — and between them
+  # that is type-check, oxlint `--type-aware`, oxfmt, the token gate, the contrast gate, typedoc with
+  # `treatWarningsAsErrors`, and the JSDoc-example gate.
+  #
+  # **The aggregate is named on purpose.** The day gnomon grows a `check` script, or a playground
+  # does, this job covers it with no edit to this file — which is the whole reason not to spell out
+  # `yarn workspace antumbra check` and its five siblings. The converse is the trap worth knowing:
+  # `foreach` exits **0** when no workspace has the script, so a renamed script empties this job
+  # silently rather than failing it.
+  #
+  # Nothing in this chain launches a browser, so it stays on a plain runner — which is also the only
+  # job whose HOME is stable enough to cache against.
+  check:
+    name: Check
+    needs: resolve
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          # **No `cache: 'yarn'`.** The action shells out to the `yarn` on PATH — `yarn --version`,
+          # then `yarn cache dir` for a 1.x or `yarn config get cacheFolder` for a 2+. Without
+          # corepack there is no Yarn 4 on PATH here: the runner image's own 1.22 either answers for
+          # the wrong cache or refuses a project declaring `packageManager: yarn@4.18.0`. The step
+          # below asks the vendored release instead, which is the only binary that can answer.
+
+      - name: Locate the Yarn cache
+        id: yarn-cache
+        run: echo "dir=$($YARN config get cacheFolder)" >> "$GITHUB_OUTPUT"
+
+      # **The download cache, not `node_modules`.** `hoistingLimits: workspaces` in five manifests
+      # puts each dependency tree under its own package: root `node_modules` holds 28 entries against
+      # antumbra's 182, umbra's 131 and home's 82. antumbra's workflow caches `path: node_modules`
+      # and skips the install on a hit — at this root that restores the 28 and skips the rest, and
+      # every job after it dies on a missing binary. So: cache what was downloaded, always install.
+      # What that costs: the fetch step is 0.4s against a warm cache (measured), and the link step
+      # then writes all ten trees from scratch on every job. That is the price of not restoring a
+      # `node_modules` that cannot be restored correctly, and it is the right one to pay.
+      - uses: actions/cache@v5
+        with:
+          path: ${{ steps.yarn-cache.outputs.dir }}
+          key: yarn-cache-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
+          restore-keys: yarn-cache-${{ runner.os }}-
+
+      # `--immutable` is the `npm ci` equivalent: it fails if `yarn.lock` would change.
+      - run: $YARN install --immutable
+      - run: $YARN check
+
+  # ── Test ─────────────────────────────────────────────────────────────────────
+  # `yarn test` at the root: unit and component, every workspace that has a `test` script — umbra,
+  # antumbra and limb today.
+  #
+  # **One job, and the cost is named.** antumbra's own workflow split its component suite into six
+  # jobs, and the reasons were good: the engines genuinely disagree (a focus assertion has been green
+  # on Chromium and red on WebKit), `fail-fast: false` kept the comparison, and a job name says which
+  # engine broke where a 1 400-test log does not. The aggregate gives that up: `foreach` stops at the
+  # first failing workspace and `test-engines.mjs` stops at the first failing engine, so a red run
+  # says "antumbra, component-webkit" and stops rather than reporting that Gecko was fine. That is
+  # the price of a CI that follows the root scripts instead of restating them, and it is paid once —
+  # when the cross-engine picture is what a run is for, `yarn workspace antumbra test:component:webkit`
+  # answers it locally in under four minutes.
+  #
+  # **Ports.** `foreach` is serial unless `-p` is passed, so antumbra's suite has :3001 to itself and
+  # then umbra's has :3002 — both `strictPort`, both assigned in the root README, so neither can
+  # slide onto the other's server. `-p` would be port-safe for that same reason and is still wrong
+  # here: both suites run `workers: 1` under CI and would only contend for one runner's cores.
+  #
+  # **`CI=true`**, which GitHub sets in container jobs too, is what turns on `forbidOnly` (a stray
+  # `.only` fails the run), `retries: 2`, `workers: 1` and `reuseExistingServer: false` in both
+  # Playwright configs. Nothing here needs to set it.
+  test:
+    name: Test
+    needs: resolve
+    runs-on: ubuntu-latest
+    # Measured here: 598 antumbra unit tests in 7s on one worker, 88 umbra, 59 limb. The component
+    # suites are the wall clock — 460 tests per desktop engine, where antumbra's CI measured
+    # 2:22 / 2:40 / 3:00 per engine at ~317 tests a leg. Expect 12–16 min; 30 is the ceiling that
+    # catches a hang without cutting a slow-but-honest run.
+    timeout-minutes: 30
+    # Browsers are pre-installed, and the tag is the version the lockfile resolved — a hand-written
+    # tag drifts the moment the dependency moves, and the mismatch arrives as a driver error that
+    # reads like a broken test. `--user 1001`, and `actions/setup-node` inside the container, are the
+    # shape Playwright's own CI page documents (https://playwright.dev/docs/ci, "Via Containers") —
+    # which is also where antumbra's copy got it. No `HOME` override and no `--ipc=host`: the
+    # documented example carries neither.
+    container:
+      image: mcr.microsoft.com/playwright:v${{ needs.resolve.outputs.playwright-version }}-noble
+      options: --user 1001
+    steps:
+      - uses: actions/checkout@v6
+      # The image ships a Node of its own choosing, and `engines.node` says `>=24` in seven
+      # manifests. Pinning it here makes the runtime this repository's decision, not the image's.
+      - uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      # No cache step in the container jobs: HOME is the container's, and the tool mounts are not
+      # this repository's to reason about. antumbra's container jobs installed from the network every
+      # time, which is the arrangement with a track record.
+      - run: $YARN install --immutable
+      - run: $YARN test
+      # Only on red. The report carries the trace `on-first-retry` recorded, which is the difference
+      # between reading a failure and reproducing it; on a green run it is an artifact nobody opens.
+      # Both suites write to `<package>/playwright-report/`, hence the glob.
+      - name: Upload the Playwright reports
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report-test
+          path: packages/*/playwright-report/
+          if-no-files-found: ignore
+          retention-days: 7
+
+  # ── Verify ───────────────────────────────────────────────────────────────────
+  # `check` and `test` never compile anything. This job is where the artifact is proved. Root
+  # `verify:all` is `lint && type-check && build && verify:package` in both libraries, plus umbra's
+  # `smoke` — which spawns its own `vite preview` on :4002 and drives the built playground in a real
+  # Chromium, so it needs this container rather than a plain runner.
+  #
+  # `playgrounds:build` then compiles the hash-router builds (`VITE_HASH_ROUTER=true`), which is the
+  # artifact `yarn deploy` actually ships. The two builds differ in how the router reads a URL, so a
+  # breakage confined to the hash history ships undetected if only the browser-history build is ever
+  # compiled.
+  verify:
+    name: Verify & Build
+    needs: resolve
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    container:
+      image: mcr.microsoft.com/playwright:v${{ needs.resolve.outputs.playwright-version }}-noble
+      options: --user 1001
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - run: $YARN install --immutable
+      - run: $YARN verify:all
+      - run: $YARN playgrounds:build

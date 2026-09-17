@@ -7,10 +7,11 @@
     "apps/*"
   ],
   "scripts": {
-    "check": "yarn workspaces foreach --all --topological-dev run check",
+    "check": "yarn constraints && yarn dedupe --check && yarn workspaces foreach --all --topological-dev run check",
     "test": "yarn workspaces foreach --all --topological-dev run test",
     "verify:all": "yarn workspaces foreach --all --topological-dev run verify:all",
     "playgrounds:build": "yarn workspaces foreach --all --topological-dev run playground:build:file",
-    "deploy": "node deploy.mjs"
+    "deploy": "node deploy.mjs",
+    "build": "yarn workspaces foreach --all --topological-dev run build"
   }
 }

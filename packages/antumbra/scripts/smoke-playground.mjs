@@ -2,12 +2,20 @@
 /**
  * Playground smoke probe: walks every route the sidebar advertises (discovered, not hardcoded),
  * asserts each renders free of console/page errors, then drives the named interaction flows. Exists
- * because `yarn test` never renders the playground, so a broken page is otherwise green. Needs a
- * server on :3001; exit code is non-zero if any check fails.
+ * because `yarn test` never renders the playground, so a broken page is otherwise green. Exit code
+ * is non-zero if any check fails.
+ *
+ * **It serves the built playground itself**, on the preview port, and stops it on the way out. A
+ * smoke that borrows whatever is already listening is a smoke that can pass against the modules of
+ * an hour ago — and against a stale optimizer cache — with nothing in the output to say so. Pass
+ * `--base` to aim it somewhere else on purpose; then it starts nothing.
  *
  * Usage: yarn smoke [--base <url>] [--flow <name>] [--shots <dir>] [--theme dark|light]
  */
 import { chromium } from '@playwright/test';
+import { spawn } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
+import { setTimeout as delay } from 'node:timers/promises';
 
 // ── Args ─────────────────────────────────────────────────────────────────────
 
@@ -15,10 +23,50 @@ const arg = (name, fallback = null) => {
   const i = process.argv.indexOf(`--${name}`);
   return i !== -1 && process.argv[i + 1] ? process.argv[i + 1] : fallback;
 };
-const BASE = arg('base', 'http://localhost:3001');
+const GIVEN_BASE = arg('base');
+const PREVIEW_PORT = 4001;
+const BASE = GIVEN_BASE ?? `http://localhost:${String(PREVIEW_PORT)}`;
 const SHOTS = arg('shots');
 const FLOW = arg('flow');
 const THEME = arg('theme');
+
+// Resolved from this file rather than from the cwd: the dependency tree sits at the package
+// boundary, so a path relative to `playground/` finds nothing.
+const preview =
+  GIVEN_BASE === null
+    ? spawn(
+        'node',
+        [
+          fileURLToPath(new URL('../node_modules/vite/bin/vite.js', import.meta.url)),
+          'preview',
+          '--port',
+          String(PREVIEW_PORT),
+          '--strictPort',
+        ],
+        {
+          cwd: fileURLToPath(new URL('../playground', import.meta.url)),
+          stdio: 'ignore',
+          shell: false,
+        }
+      )
+    : null;
+
+// The script ends through `process.exit`, and several paths reach it. One handler covers them all.
+process.on('exit', () => {
+  preview?.kill();
+});
+
+if (preview !== null) {
+  for (let attempt = 0; attempt < 40; attempt += 1) {
+    try {
+      const probe = await fetch(BASE);
+      if (probe.ok) break;
+    } catch {
+      // not up yet
+    }
+    await delay(250);
+  }
+}
 
 // ── Reporting ────────────────────────────────────────────────────────────────
 

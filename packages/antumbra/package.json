@@ -67,7 +67,7 @@
     "playground:build": "yarn workspace antumbra-playground build",
     "playground:build:file": "yarn workspace antumbra-playground build:file",
     "playground:preview": "yarn workspace antumbra-playground preview",
-    "smoke": "node scripts/smoke-playground.mjs",
+    "smoke": "yarn playground:build && node scripts/smoke-playground.mjs",
     "format:check": "oxfmt --check .",
     "format": "oxfmt .",
     "lint": "oxlint --type-aware",
@@ -77,7 +77,7 @@
     "docs:examples": "gnomon-examples",
     "docs:examples:fix": "gnomon-examples --fix",
     "docs:check": "typedoc --options typedoc.json --emit none",
-    "verify:all": "yarn lint --deny-warnings && yarn type-check && yarn build && yarn verify:package",
+    "verify:all": "yarn lint --deny-warnings && yarn type-check && yarn build && yarn verify:package && yarn smoke",
     "verify:package": "node scripts/verify-package.mjs",
     "test": "yarn test:unit && yarn test:component",
     "test:ui": "playwright test -c playwright.config.ts --ui",
@@ -109,7 +109,7 @@
     "@babel/core": "^8.0.5",
     "@playwright/test": "1.63.0",
     "@rolldown/plugin-babel": "0.2.4",
-    "@types/node": "^24",
+    "@types/node": "^24.10.1",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.1",
@@ -117,7 +117,7 @@
     "c8": "12.0.0",
     "gnomon": "workspace:^",
     "oxfmt": "0.68.0",
-    "oxlint": "^1.82.0",
+    "oxlint": "^1.83.0",
     "oxlint-tsgolint": "7.0.2001",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
@@ -153,7 +153,6 @@
   "engines": {
     "node": ">=24"
   },
-  "packageManager": "yarn@4.18.0",
   "installConfig": {
     "hoistingLimits": "workspaces"
   }

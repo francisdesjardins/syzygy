@@ -57,7 +57,7 @@ yarn lint:fix           # Lint and auto-fix
 yarn format             # Format code
 yarn docs:examples      # Format, type-check and lint every JSDoc @example (part of `yarn check`)
 yarn docs:examples:fix  # Rewrite those examples through the formatter, in place
-yarn verify:all         # Full validation (lint + type-check + build + package checks)
+yarn verify:all         # lint + type-check + build + package checks + smoke
 yarn coverage:update    # Run both coverage measurements and rewrite README + CLAUDE.md + badges
 ```
 
