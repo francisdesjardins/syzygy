@@ -13,7 +13,7 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./contract": "./src/contract.ts",
+    "./contract": "./src/api/contract.ts",
     "./src/*": "./src/*",
     "./package.json": "./package.json"
   },

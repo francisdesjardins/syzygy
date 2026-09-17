@@ -24,7 +24,7 @@ previous call, `controller = null` dropped from the rejection branch alone, `rej
 Three of the first-draft tests survived their own mutants and were rewritten: instance isolation
 was only exercised in the default mode, where one variable is per-instance — `last` keeps five, and
 hoisting them all to module scope passed. The retroactive-abort test walked only the resolution
-path. And a stale task outliving a *settlement* needs the later flight still airborne when the
+path. And a stale task outliving a _settlement_ needs the later flight still airborne when the
 ghost lands; a settled one has no resolver left to hijack, which is exactly what hid the bug.
 
 ### Fixed

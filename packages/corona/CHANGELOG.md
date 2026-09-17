@@ -5,6 +5,28 @@ Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No s
 **This file is the package's memory.** The code states what holds now; why it came to hold lives
 here.
 
+## 2026-09-17, the reference becomes an area rather than the package
+
+### Changed
+
+Everything moved under `src/api/`, which owns its own barrel. `src/index.ts` is now one line per
+area.
+
+The old layout said what this package was allowed to hold, and it said it by accident: `src/ui/` and
+`src/model/` at the top claimed the whole package for one subject. The file names admitted it —
+`ApiCategoryPage`, `ApiIndexPage`, `ApiLayout`, `ApiRail`, `api-index`, `use-api-scroll`. A prefix on
+every file is a directory asking to exist.
+
+It costs nothing today and a great deal later: the package is one commit old, so this was 24
+`git mv`, one barrel and one line of `exports`. **No consumer file changed** — `corona` and
+`corona/contract` still name the same things.
+
+What it buys is a rule that a file can fail. "The showcase chrome" has no such rule; _does this
+exist identically in both playgrounds, and does it need to know which library it is showing?_ does.
+`MuiIsland` fails it, because only one playground has MUI. The two moon faces fail it — they are two
+identities, not one component copied. `StoriesPage` fails it at 146 lines against 1593: two
+contracts, not a copy. `PeekingMoon` passes, at 342 lines with eight of difference.
+
 ## 2026-09-16, the reference stops existing twice
 
 ### Added

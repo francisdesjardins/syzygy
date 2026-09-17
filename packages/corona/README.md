@@ -7,6 +7,12 @@ Both playgrounds ship a generated API reference. This package is the half of it 
 depend on which library is being documented: the contract a generated model must satisfy, and the
 viewer that renders one.
 
+**One directory per area.** The reference lives in `src/api/`, and owns its barrel, its slot
+contract and its stylesheets. A second area is a second directory and one line in `src/index.ts` —
+which is the point of the layout: where something goes stops being a decision. The entry rule is
+the same for every area and a file can fail it: **does this exist identically in both playgrounds,
+and does it need to know which library it is showing?**
+
 ```tsx
 <ApiReferenceProvider slots={SLOTS} entryPoints={ENTRY_POINTS}>
   <ApiIndexPage />
