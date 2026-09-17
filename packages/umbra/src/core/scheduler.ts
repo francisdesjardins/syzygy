@@ -1,5 +1,5 @@
 import type { Clock } from '../utils/clock.js';
-import { normalizeError } from '../utils/normalize-error.js';
+import { serializeError } from '../utils/serialize-error.js';
 import { BlockSignal, StepSkippedError } from './errors.js';
 import type { EventHub } from './events.js';
 import { createIntentQueue } from './intent-queue.js';
@@ -194,7 +194,7 @@ export async function runPreflight(
         claim.settle(
           error instanceof BlockSignal
             ? { kind: 'blocked', reason: error.blockReason }
-            : { kind: 'failed', error: normalizeError(error) }
+            : { kind: 'failed', error: serializeError(error) }
         );
         throw error;
       }
@@ -319,7 +319,7 @@ export async function runPreflight(
       errors.push({
         step: planned.id,
         status: attempt.status === 'timed-out' ? 'timed-out' : 'failed',
-        error: attempt.error ?? normalizeError(new Error('Step did not succeed.')),
+        error: attempt.error ?? serializeError(new Error('Step did not succeed.')),
         tolerated: planned.optional,
       });
 

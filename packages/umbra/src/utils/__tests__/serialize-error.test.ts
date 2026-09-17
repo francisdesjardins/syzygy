@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { normalizeError } from '../normalize-error.js';
+import { serializeError } from '../serialize-error.js';
 
 /**
  * `throw` accepts anything, and the timeline has to survive all of it.
@@ -10,7 +10,7 @@ import { normalizeError } from '../normalize-error.js';
  */
 
 test('an Error keeps its name and message', () => {
-  const normalized = normalizeError(new TypeError('bad shape'));
+  const normalized = serializeError(new TypeError('bad shape'));
 
   expect(normalized.name).toBe('TypeError');
   expect(normalized.message).toBe('bad shape');
@@ -18,26 +18,26 @@ test('an Error keeps its name and message', () => {
 });
 
 test('a thrown string becomes an Error carrying it as the message', () => {
-  expect(normalizeError('nope')).toEqual({ name: 'Error', message: 'nope' });
+  expect(serializeError('nope')).toEqual({ name: 'Error', message: 'nope' });
 });
 
 test('thrown numbers, booleans and bigints are stringified rather than dropped', () => {
-  expect(normalizeError(404)).toEqual({ name: 'Error', message: '404' });
-  expect(normalizeError(false)).toEqual({ name: 'Error', message: 'false' });
-  expect(normalizeError(7n)).toEqual({ name: 'Error', message: '7' });
+  expect(serializeError(404)).toEqual({ name: 'Error', message: '404' });
+  expect(serializeError(false)).toEqual({ name: 'Error', message: 'false' });
+  expect(serializeError(7n)).toEqual({ name: 'Error', message: '7' });
 });
 
 test('null and undefined say which of the two they were', () => {
-  expect(normalizeError(null)).toEqual({ name: 'Error', message: 'null' });
-  expect(normalizeError(undefined)).toEqual({ name: 'Error', message: 'undefined' });
+  expect(serializeError(null)).toEqual({ name: 'Error', message: 'null' });
+  expect(serializeError(undefined)).toEqual({ name: 'Error', message: 'undefined' });
 });
 
 test('anything else admits it was not an error', () => {
-  expect(normalizeError({ status: 500 })).toEqual({ name: 'Error', message: 'Non-error thrown' });
+  expect(serializeError({ status: 500 })).toEqual({ name: 'Error', message: 'Non-error thrown' });
 });
 
 test('a cause is followed', () => {
-  const normalized = normalizeError(new Error('outer', { cause: new Error('inner') }));
+  const normalized = serializeError(new Error('outer', { cause: new Error('inner') }));
 
   expect(normalized.cause?.message).toBe('inner');
 });
@@ -49,7 +49,7 @@ test('a cause chain stops before it can run forever', () => {
     error = new Error(`depth-${String(depth)}`, { cause: error });
   }
 
-  let node = normalizeError(error);
+  let node = serializeError(error);
   let seen = 0;
   while (node.cause !== undefined) {
     node = node.cause;

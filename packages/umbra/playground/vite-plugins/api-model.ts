@@ -180,7 +180,7 @@ export const CATEGORIES: readonly CategoryDef[] = [
       'PlanError',
       'StepSkippedError',
       'UndeclaredDependencyError',
-      'normalizeError',
+      'serializeError',
       'systemClock',
       'Clock',
       'DEFAULT_DEADLINE_MS',

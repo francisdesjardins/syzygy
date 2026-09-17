@@ -79,19 +79,20 @@ The card works as it is: 2.5 MB sits under every scraper's 5 MB limit, and a 1.9
 image keeps the whole text block. Alt text is the one thing genuinely missing, and it is copy in a
 language this repository does not get to choose.
 
+**`createStore` exists twice and was never a collision.** The backlog had it beside
+`normalizeError` as one problem, which was an impression formed from the file names: umbra's
+`createStore` is 56 lines, antumbra's 198, 212 of 254 lines differ — but only antumbra _exports the
+function_. Umbra's index publishes the `ReadableStore` and `Store` types and keeps the builder
+internal, so no application can import both. Two internals that happen to share a name are not a
+divergence, and renaming one to fix a clash nobody can hit would be churn.
+
+`normalizeError` was the real half of that entry, and it is now umbra's `serializeError`.
+
 **`ignorePatterns`, written out five times.** oxlint does not inherit it through `extends` — not even
 into a child that declares none, which was measured against 1.83.0. That duplication is the tool's
 and not a choice; the comment in each file says so.
 
 ## Not done
-
-**`createStore` and `normalizeError` are one name over two different things.** The backlog carried
-this as "should they move to `limb`?" Measured, the answer is no: umbra's `createStore` is 56 lines
-and antumbra's is 198, with 212 of 254 lines differing, and `normalizeError` is 45 lines against 15.
-They are not two copies that drifted — they are two designs that collided on a name. So the work is
-not an extraction; it is deciding whether one of them should be called something else, and that is a
-change to antumbra's published surface — its README, its `CHANGELOG`, the positive halves of its
-entry-isolation test. Worth doing, and worth doing on its own.
 
 **What is still written twice is stylesheets whose components legitimately differ.** This line used
 to read "the showcase shell", which was an impression and a wrong one: `showcases/` is antumbra's

@@ -3,6 +3,26 @@
 Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No semver: names change
 between commits when a better one shows up, and the entry says which and why.
 
+## 2026-09-17, `normalizeError` is `serializeError`
+
+### Changed — renamed export
+
+`normalizeError` → `serializeError`, and `utils/normalize-error.ts` → `utils/serialize-error.ts`.
+
+The old name was the same word [antumbra](../antumbra) publishes, over a different function. Theirs
+coerces anything to an `Error` and is two lines; this one walks a `cause` chain up to eight deep and
+returns a `SerializedError`. An application holding both imported one name that meant two things and
+returned two shapes, and the type it actually got depended on which package the specifier resolved
+to.
+
+The rename is this side's because this package is not published and carries no semver, so the cost
+of moving is a find-and-replace rather than somebody else's migration. The new name is also the
+plainer one: the function exists because `JSON.stringify(new Error('x'))` is `{}`, which is a
+serialisation problem, and it already returns the type that says so.
+
+**Migrating:** `import { normalizeError } from 'umbra'` becomes
+`import { serializeError } from 'umbra'`. Nothing about the behaviour or the return type changed.
+
 ## 2026-09-17, the instruction file gets a budget
 
 ### Added

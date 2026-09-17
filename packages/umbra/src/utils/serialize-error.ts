@@ -25,14 +25,14 @@ function describe(value: unknown): { name: string; message: string } {
  *
  * @example
  * // A step may throw anything at all; this is the shape the outcome records instead.
- * const failure = normalizeError('the token endpoint returned 500');
+ * const failure = serializeError('the token endpoint returned 500');
  * console.error(failure.name, failure.message);
  */
-export function normalizeError(value: unknown, depth = 0): SerializedError {
+export function serializeError(value: unknown, depth = 0): SerializedError {
   if (value instanceof Error) {
     const cause =
       depth < MAX_CAUSE_DEPTH && value.cause !== undefined && value.cause !== null
-        ? normalizeError(value.cause, depth + 1)
+        ? serializeError(value.cause, depth + 1)
         : undefined;
     return {
       name: value.name,

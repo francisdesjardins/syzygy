@@ -1,5 +1,5 @@
 import type { Clock } from '../utils/clock.js';
-import { normalizeError } from '../utils/normalize-error.js';
+import { serializeError } from '../utils/serialize-error.js';
 import { BlockSignal } from './errors.js';
 import type { PlannedStep } from './plan.js';
 import type { AbortReason, SerializedError, StepStatus } from './types.js';
@@ -128,7 +128,7 @@ export async function attemptStep(args: AttemptArgs): Promise<StepAttempt> {
       ...base,
       lateWrites,
       status: kind === 'step-timeout' ? 'timed-out' : 'cancelled',
-      error: normalizeError(
+      error: serializeError(
         new Error(isAbortReason(reason) ? reason.message : 'The run signal aborted.')
       ),
     });
@@ -148,6 +148,6 @@ export async function attemptStep(args: AttemptArgs): Promise<StepAttempt> {
     ...base,
     lateWrites,
     status: 'failed',
-    error: normalizeError(raced.error),
+    error: serializeError(raced.error),
   });
 }
