@@ -277,14 +277,18 @@ try {
   });
 
   await viewer.goto(`${PAGE_URL}getting-started`, { waitUntil: 'networkidle' });
-  await viewer.getByRole('button', { name: /view source/i }).first().click();
+  await viewer
+    .getByRole('button', { name: /view source/i })
+    .first()
+    .click();
 
   const panel = viewer.locator('dialog[open]');
   await panel.waitFor({ timeout: 25_000 });
   await viewer.locator('dialog[open] pre, dialog[open] code').first().waitFor({ timeout: 25_000 });
 
-  const shown = (await viewer.locator('dialog[open] pre, dialog[open] code').first().innerText())
-    .trim().length;
+  const shown = (
+    await viewer.locator('dialog[open] pre, dialog[open] code').first().innerText()
+  ).trim().length;
   if (shown < 40) {
     failures.push(`The source panel opened holding ${shown} characters.`);
   }
@@ -297,9 +301,13 @@ try {
   }
 
   await viewer.getByRole('button', { name: /^close$/i }).click();
-  await viewer.waitForFunction(() => {
-    return document.querySelector('dialog[open]') === null;
-  }, undefined, { timeout: 25_000 });
+  await viewer.waitForFunction(
+    () => {
+      return document.querySelector('dialog[open]') === null;
+    },
+    undefined,
+    { timeout: 25_000 }
+  );
 
   if (viewerErrors.length > 0) {
     failures.push(`The source panel logged: ${viewerErrors.slice(0, 2).join(' | ')}`);
