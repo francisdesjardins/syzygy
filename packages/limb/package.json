@@ -5,6 +5,11 @@
   "description": "The framework-free half of a playground: a fuzzy matcher, a contrast calculator and the readable syntax theme built on it.",
   "license": "MIT",
   "author": "Francis Desjardins <francis.desjardins@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/francisdesjardins/syzygy.git",
+    "directory": "packages/limb"
+  },
   "type": "module",
   "exports": {
     "./color-contrast": "./src/color-contrast.ts",
@@ -17,15 +22,24 @@
     "./src/*": "./src/*",
     "./package.json": "./package.json"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/francisdesjardins/syzygy.git",
-    "directory": "packages/limb"
-  },
   "scripts": {
-    "check": "node node_modules/typescript-7/bin/tsc --noEmit",
+    "check": "yarn type-check && yarn lint --deny-warnings && yarn format:check",
+    "format": "oxfmt .",
+    "format:check": "oxfmt --check .",
+    "lint": "oxlint --type-aware",
+    "lint:fix": "oxlint --type-aware --fix",
     "test": "playwright test",
+    "type-check": "node node_modules/typescript-7/bin/tsc --noEmit",
     "verify:all": "yarn check && yarn test"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "@types/node": "^24.10.1",
+    "@types/react": "^19.3.0",
+    "oxfmt": "0.68.0",
+    "oxlint": "^1.83.0",
+    "oxlint-tsgolint": "7.0.2001",
+    "typescript-7": "npm:typescript@7.0.2"
   },
   "peerDependencies": {
     "react": "^19.0.0"
@@ -35,16 +49,10 @@
       "optional": true
     }
   },
-  "devDependencies": {
-    "@playwright/test": "1.63.0",
-    "@types/node": "^24.10.1",
-    "@types/react": "^19.3.0",
-    "typescript-7": "npm:typescript@7.0.2"
+  "engines": {
+    "node": ">=24"
   },
   "installConfig": {
     "hoistingLimits": "workspaces"
-  },
-  "engines": {
-    "node": ">=24"
   }
 }

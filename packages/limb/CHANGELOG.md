@@ -5,6 +5,52 @@ Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No s
 **This file is the package's memory.** The code states what holds now; why it came to hold lives
 here.
 
+## 2026-09-17, the two hardest modules had the thinnest tests
+
+### Changed
+
+`single-flight` went from 3 tests to 19, `mutex` from 3 to 12, and the package from 59 to 84.
+
+The distribution was backwards. `fuzzy-match` had 22 tests over 142 lines; the two **concurrency
+primitives** — where a bug is a race nobody can reproduce on demand — had three each. They are also
+the two modules this package exists to hand to somebody else, which is a claim that they work.
+
+**Every new test was proven able to fail.** Twenty-three mutants were injected into the two sources
+and each test is the isolated killer of at least one: `.finally` swapped for `.then` (a rejected
+flight then caches its own failure forever), the generation guard narrowed to ignore only the
+previous call, `controller = null` dropped from the rejection branch alone, `reject` swapped for
+`resolve`, the lock replaced by a single microtask hop.
+
+Three of the first-draft tests survived their own mutants and were rewritten: instance isolation
+was only exercised in the default mode, where one variable is per-instance — `last` keeps five, and
+hoisting them all to module scope passed. The retroactive-abort test walked only the resolution
+path. And a stale task outliving a *settlement* needs the later flight still airborne when the
+ghost lands; a settled one has no resolver left to hijack, which is exactly what hid the bug.
+
+### Fixed
+
+A rejected **promise** handed to `createMutex` while the chain was busy was reported as an unhandled
+rejection by the runtime before the chain ever reached it — the only handler was the gate's, and the
+gate may not open for several turns while Node decides at the end of the current one. The rejection
+is claimed on arrival now. Eight lines, no change to ordering, to the returned value, or to the
+documented contract; it only brings the promise branch in line with what the function branch already
+did.
+
+### Documented, not fixed
+
+**The mutex is not reentrant**: calling it from inside a task deadlocks both halves, silently and
+forever — the outer task awaits the inner, which awaits the gate, which awaits the outer. Making it
+reentrant would change the contract this package documents, so a test pins the behaviour instead.
+
+**The signal in `single-flight`'s default mode is inert by design.** Nobody may cancel a shared
+flight, because every caller co-owns it; the fresh controller exists so the task's signature is the
+same in both modes. That was an open question until a test settled it.
+
+### Added
+
+A real `check`. It was `tsc --noEmit` alone, so 500 lines here were type-checked and neither linted
+nor formatted — and the linter had findings the moment it was pointed at them.
+
 ## 2026-09-16, four primitives that were never shared at all
 
 ### Added
@@ -56,10 +102,10 @@ What was genuinely shared was smaller and of one kind.
 Seven modules sat at `shared/lib` on both sides. Split by whether they import anything at run time,
 they split perfectly:
 
-| | modules | divergence |
-| --- | --- | --- |
-| no run-time import | 3 | **0 lines** |
-| imports React | 4 | 11–38 lines |
+|                    | modules | divergence  |
+| ------------------ | ------- | ----------- |
+| no run-time import | 3       | **0 lines** |
+| imports React      | 4       | 11–38 lines |
 
 Byte-identical against drifted, with nothing in between. Two copies of a pure function stay equal
 because there is only one right answer and both authors found it; two copies of a hook drift because
