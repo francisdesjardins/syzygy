@@ -54,7 +54,12 @@ function render(event: RunEvent) {
           <span className={`step-status step-status-${event.trace.status}`}>
             {event.trace.status}
           </span>{' '}
-          <span className="duration">{Math.round(event.trace.durationMs)} ms</span>
+          <span className="duration">{Math.round(event.trace.durationMs)} ms</span>{' '}
+          {/* Only the step that decided carries one, which is what separates it from the steps
+              wearing the same word because they were pruned behind it. */}
+          {event.trace.reason === undefined ? null : (
+            <span className="reason">{event.trace.reason}</span>
+          )}{' '}
           {event.trace.shared === true ? (
             <span className="shared" title="adopted from another bootstrap on this page">
               shared

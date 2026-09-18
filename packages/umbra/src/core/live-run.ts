@@ -1,11 +1,11 @@
 import type { Clock } from '../utils/clock.js';
 import { createStore } from '../store/create-store.js';
-import { BootstrapError, StepSkippedError } from './errors.js';
+import { BootstrapError } from './errors.js';
 import type { IntentEntry, IntentSink } from './intent-queue.js';
 import { createNoticeLog } from './notice-log.js';
 import type { CompiledPlan, PlannedStep } from './plan.js';
 import type { StepId, HostCapabilities } from './registry.js';
-import { attemptStep } from './run-step.js';
+import { attemptStep, skippedTrace } from './run-step.js';
 import type { PreflightResult } from './scheduler.js';
 import { createHostedContext } from './step-context.js';
 import type { Intent, Notice, StepFailure, StepStatus, StepTrace } from './types.js';
@@ -255,30 +255,34 @@ async function runHosted(args: MountArgs): Promise<HostReport> {
 
   const readData = (planned: PlannedStep) => {
     return (dependency: StepId): unknown => {
+      // The same invariant the preflight asserts, for the same reason.
       if (statuses.get(dependency) !== 'success') {
-        throw new StepSkippedError(planned.id, dependency);
+        throw new BootstrapError(
+          `Step "${String(planned.id)}" read "${String(dependency)}", which did not succeed. ` +
+            `A step must not be attempted with an unsatisfied need.`
+        );
       }
       return deps.preflight.data.get(dependency);
     };
   };
 
+  const markSkipped = (planned: PlannedStep): void => {
+    statuses.set(planned.id, 'skipped');
+    timeline.push(skippedTrace(planned, deps.clock.wall()));
+  };
+
   for (const level of deps.compiled.hosted) {
-    const runnable = level.filter((planned) => {
-      return planned.needs.every((need) => {
+    // The same partition the preflight makes, written the same way — one pass, and the steps that
+    // are not ready are marked as it goes.
+    const runnable: PlannedStep[] = [];
+    for (const planned of level) {
+      const ready = planned.needs.every((need) => {
         return statuses.get(need) === 'success';
       });
-    });
-    for (const planned of level) {
-      if (!runnable.includes(planned)) {
-        statuses.set(planned.id, 'skipped');
-        timeline.push({
-          id: planned.id,
-          level: planned.level,
-          phase: 'hosted',
-          status: 'skipped',
-          startedAt: deps.clock.wall(),
-          durationMs: 0,
-        });
+      if (ready) {
+        runnable.push(planned);
+      } else {
+        markSkipped(planned);
       }
     }
 
@@ -320,6 +324,7 @@ async function runHosted(args: MountArgs): Promise<HostReport> {
         startedAt: attempt.startedAt,
         durationMs: attempt.durationMs,
         ...(attempt.error === undefined ? {} : { error: attempt.error }),
+        ...(attempt.reason === undefined ? {} : { reason: attempt.reason }),
         ...(attempt.lateWrites === 0 ? {} : { lateWrites: attempt.lateWrites }),
       });
       if (attempt.status === 'failed' || attempt.status === 'timed-out') {

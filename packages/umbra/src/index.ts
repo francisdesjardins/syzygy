@@ -19,12 +19,7 @@ export type {
 } from './core/create-bootstrap.js';
 export { defineHostedStep, defineStep } from './core/define-step.js';
 export type { RunEvent } from './core/events.js';
-export {
-  BootstrapError,
-  PlanError,
-  StepSkippedError,
-  UndeclaredDependencyError,
-} from './core/errors.js';
+export { BootstrapError, PlanError, UndeclaredDependencyError } from './core/errors.js';
 export { attachIntentHost } from './core/intent-host.js';
 export type {
   AttachedIntentHost,
@@ -43,42 +38,42 @@ export { systemClock } from './utils/clock.js';
 export type { Clock } from './utils/clock.js';
 
 export type {
-  StepRegistry,
   DataOf,
+  HostCapabilities,
   IntentRegistry,
   IntentType,
   NoticeRegistry,
   NoticeType,
   PayloadArgs,
   StepId,
-  HostCapabilities,
+  StepRegistry,
 } from './core/registry.js';
 
 export type {
   AbortReason,
   AbortReasonKind,
   AnyStep,
-  RunData,
   BootstrapPlan,
-  RunStatus,
+  HostedContext,
   IdsOf,
-  StepListCheck,
   Intent,
   IntentStatus,
-  HostedContext,
   Notice,
   Outcome,
   PartialRunData,
   PlanLevel,
   PlanNode,
   PreflightContext,
+  RunData,
+  RunStatus,
   SerializedError,
   Step,
   StepContext,
   StepFailure,
-  StepStatus,
+  StepListCheck,
   StepPhase,
   StepReturn,
   StepScope,
+  StepStatus,
   StepTrace,
 } from './core/types.js';

@@ -53,7 +53,8 @@ export class PlanError extends BootstrapError {
  * // A step read an id it did not list in `needs`. The typed `ctx.get` already refuses that at
  * // compile time, so what reaches here came from an id the types could not see — and it is a
  * // programming mistake, not a runtime condition: fix the `needs`, do not retry.
- * const failed = outcome.failures.find((failure) => {
+ * const outcome = await createBootstrap({ steps }).run();
+ * const mistake = outcome.errors.find((failure) => {
  *   return failure.error.name === 'UndeclaredDependencyError';
  * });
  */
@@ -68,39 +69,34 @@ export class UndeclaredDependencyError extends BootstrapError {
 }
 
 /**
- * `ctx.get` reached a dependency that never ran, because something upstream of it did not succeed.
- *
- * @example
- * // Thrown at the read, not at the failure: the step that did not succeed is reported in the
- * // outcome, and this is what a *downstream* step sees if it reads past it.
- * const outcome = await boot.run();
- * if (outcome.status === 'failed') {
- *   console.error(outcome.failures.map((failure) => failure.id));
- * }
- */
-export class StepSkippedError extends BootstrapError {
-  constructor(step: StepId, dependency: StepId) {
-    super(
-      `Step "${String(step)}" read "${String(dependency)}", which was skipped because an upstream ` +
-        `step did not succeed.`
-    );
-    this.name = 'StepSkippedError';
-  }
-}
-
-/**
  * The sentinel `ctx.block` throws.
  *
  * Internal: the runner catches it, turns it into a `blocked` status, and it never reaches a
  * consumer. It carries the step so two concurrent refusals can be settled by plan order rather than
  * by whichever promise happened to land first.
  */
+export class BlockSignal extends Error {
+  readonly step: StepId;
+  /** Named for what it is, not for its container: `outcome.blockedBy.reason` is the same string. */
+  readonly reason: string;
+
+  constructor(step: StepId, reason: string) {
+    super(`Step "${String(step)}" blocked the mount: ${reason}`);
+    this.name = 'BlockSignal';
+    this.step = step;
+    this.reason = reason;
+  }
+}
+
 /**
  * The sentinel `ctx.skip` throws.
  *
  * Internal, like {@link BlockSignal}: the runner catches it, settles the step as `skipped`, and it
  * never reaches a consumer. Unlike a block it stops nothing — the run carries on, and the step's
  * dependents are pruned by the ordinary rule that a step runs only when its needs succeeded.
+ *
+ * The reason lands on the step's {@link StepTrace}, which is what tells the step that *decided*
+ * from the ones pruned behind it.
  */
 export class SkipSignal extends Error {
   readonly step: StepId;
@@ -113,19 +109,6 @@ export class SkipSignal extends Error {
         : `Step "${String(step)}" does not apply: ${reason}`
     );
     this.name = 'SkipSignal';
-    this.step = step;
-    this.reason = reason;
-  }
-}
-
-export class BlockSignal extends Error {
-  readonly step: StepId;
-  /** Named for what it is, not for its container: `outcome.blockedBy.reason` is the same string. */
-  readonly reason: string;
-
-  constructor(step: StepId, reason: string) {
-    super(`Step "${String(step)}" blocked the mount: ${reason}`);
-    this.name = 'BlockSignal';
     this.step = step;
     this.reason = reason;
   }

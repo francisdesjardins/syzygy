@@ -3,6 +3,99 @@
 Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No semver: names change
 between commits when a better one shows up, and the entry says which and why.
 
+## 2026-09-18, a shared step's timeout was only the owner's
+
+### Fixed — a sharer adopted the owner's failure, but never its timeout
+
+`CLAUDE.md` and the README both said a shared step's ending is everyone's answer, "refusal and
+timeout included". Measured, it was not:
+
+| the owner's step     | owner       | sharer                        |
+| -------------------- | ----------- | ----------------------------- |
+| honours its `signal` | `timed-out` | **`failed`**                  |
+| ignores it and hangs | `timed-out` | waits out a budget of its own |
+
+The owner published its ending from inside its own `run` — a `try`/`catch` around the body. A
+timeout and a cancellation are decided by the **abort**, outside the body, so neither ever reached
+the key. The first row is the body rejecting and being read as an ordinary failure; the second is
+nobody settling the claim at all, and the sharer only escaping because its own clock ran out.
+
+The owner now publishes from its **attempt**, where the ending is finally known, and it publishes
+the status the scheduler settled on rather than the one the body happened to produce — the same
+record `blocked` already read from. `SharedResult` gains `timed-out` and `cancelled`; a sharer
+cannot reach either on its own, so it adopts the word the way it already adopts a refusal, through
+the `adopted` map rather than through however its own attempt happened to finish.
+
+Both `Symbol.for` keys move to `v3`, the union having changed shape.
+
+**`cancelled` is new to the union and it closes a hang, not a wrong word.** A bootstrap that owns a
+shared step and is stopped before it ends — a sibling refused the mount — used to leave every sharer
+waiting on a key nobody would settle, until each one's own deadline noticed. Nothing was learned, so
+nothing is claimed: the sharer reports `cancelled` and `errors` stays empty.
+
+### Guarded
+
+Two tests in `shared-scope.test.ts`. The timeout one gives the owner a 120ms budget and the sharer
+5000ms, so the word the sharer ends with cannot be two clocks agreeing by accident. The cancellation
+one asserts the sharer is told in well under its own budget, which is the difference between an
+answer and a hang.
+
+## 2026-09-18, a pass over the package for what had drifted
+
+### Added — `StepTrace.reason`
+
+The string a step passed to `ctx.block` or `ctx.skip`, on the step's own trace.
+
+`skip(reason)` took a parameter and dropped it: nothing carried it anywhere a consumer could read,
+so the demo passed `'not a preview build'` to no one. Worse, a step that _decided_ to skip and a
+step pruned behind it both read `skipped` and nothing else — which is the defect `blocked` was split
+from `cancelled` to fix, one entry below, reintroduced the same day in a different place.
+
+Present only on a step that decided; absent on one pruned or stopped. A block reads it off the same
+authoritative `blocks` record the status does, because `attempt.reason` is empty whenever the abort
+won that race. The playground's timeline prints it beside the status.
+
+### Removed — `StepSkippedError`
+
+Unreachable, and exported. `ctx.get` throws `UndeclaredDependencyError` for an id outside `needs`
+first, and an id _inside_ `needs` belongs to a step that only ran because every need succeeded — so
+the branch could not be taken. Coverage agreed: its constructor ran zero times across the suite
+while the other four errors ran 15, 5, 1 and 10.
+
+The guard stays, as a `BootstrapError` naming the invariant, so a change to that gate is loud rather
+than an `undefined` handed back as data. Gone from `index.ts` and from the reference's contents.
+
+### Changed — the `as` casts are listed, not counted
+
+`CLAUDE.md`, `read-data.ts` and `step-context.ts` each said "three, all at the same boundary". The
+package holds six, on two: settled data re-typed by its step id, and `globalThis`, which nothing can
+describe for another module. A count in prose goes stale the first time anyone refactors, so
+`check:casts` holds the list of files allowed to assert each boundary — a cast anywhere else fails
+`yarn check`, and a file that declares a boundary and holds no cast fails too.
+
+### Fixed — `BlockSignal` had lost its documentation
+
+Inserting `SkipSignal` between `BlockSignal`'s doc block and `BlockSignal` left the doc attached to
+nothing and the class bare. `docs:check` passed, because the class is internal. The two now sit in
+the order their docs reference each other.
+
+### Fixed — two public examples read a property that does not exist
+
+`outcome.failures` and `failure.id`, in the JSDoc of `UndeclaredDependencyError` and
+`StepSkippedError`. The real names are `outcome.errors` and `failure.step`.
+
+`docs:examples` type-checks every `@example`, and passed: an example that assumes a free identifier
+gets it declared `any`, and everything derived from it is `any` too — `boot` was free, so
+`await boot.run()` was `any` and the outcome was never an `Outcome`. The surviving example now
+builds its outcome from `createBootstrap`, where the type is real.
+
+### Changed — one spelling for pruning, and sorted exports
+
+Both runners prune by the same rule and each wrote it out: `skippedTrace` in `run-step.ts` is now
+the one spelling, and the mounted phase partitions its level the way the preflight does instead of
+filtering then testing membership. `index.ts`'s type exports were alphabetical under the `Boot*`
+names and left unsorted by the rename; they are sorted again.
+
 ## 2026-09-18, a branch that does not apply
 
 ### Added — `ctx.skip(reason?)`

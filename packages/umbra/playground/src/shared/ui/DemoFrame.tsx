@@ -35,12 +35,11 @@ export function DemoToolbar({ children }: { readonly children: ReactNode }) {
  * import map does — and one fragment's whole point is that it is *not* on the shared build and
  * shares anyway.
  *
- * **The frame sets the height; the page inside does not.** It used to be the other way around — a
- * poll every 400ms read the inner `scrollHeight` and resized the frame to it — and the result was
- * the site moving under the reader while the demo booted: four different heights in two seconds,
- * 205px apart, because every fragment that rendered and every line the log added made the document
- * taller. Handing the page a viewport instead is what lets the log scroll in its own panel and the
- * page around it hold still. Under 820px the page inside stacks and grows past this, which is the
+ * **The frame sets the height; the page inside does not.** The other direction — polling the inner
+ * `scrollHeight` and resizing the frame to it — moves the site under the reader while the demo
+ * boots: four heights in two seconds, 205px apart, because every fragment that renders and every
+ * line the log adds makes the document taller. Handing the page a viewport instead is what lets the
+ * log scroll in its own panel and the page around it hold still. Under 820px the page inside stacks and grows past this, which is the
  * one place it is allowed to scroll.
  */
 export function DemoFrame({

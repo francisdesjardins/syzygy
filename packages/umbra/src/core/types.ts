@@ -336,8 +336,8 @@ type DuplicateIds<TSteps extends readonly AnyStep[]> = {
  * What a step list has to be true for, checked where it is written.
  *
  * `needs` is a list of {@link StepId}, and the id space is deliberately open — a project has to be
- * able to name a step it does not own. That openness means a typo is a perfectly valid id, and
- * until this existed it was caught only when `createBootstrap` threw.
+ * able to name a step it does not own. That openness means a typo is a perfectly valid id, which
+ * without this check reaches the editor as a legal one and `createBootstrap` as a throw.
  *
  * The check is an extra **required property** rather than a condition on `steps` itself, because a
  * conditional in that position would be an inference site TypeScript cannot read `TSteps` out of —
@@ -448,6 +448,15 @@ export type StepTrace = {
   readonly startedAt: number;
   readonly durationMs: number;
   readonly error?: SerializedError | undefined;
+  /**
+   * Why the step ended this way, in its own words — the string it passed to `ctx.block` or
+   * `ctx.skip`.
+   *
+   * Present only on a step that *decided*. A step pruned behind a skip, or stopped by somebody
+   * else's refusal, carries the same `status` and no reason, and that is what tells the two apart
+   * without a seventh status word.
+   */
+  readonly reason?: string | undefined;
   /** True when this step adopted a shared result somebody else had already produced. */
   readonly shared?: boolean | undefined;
   /**

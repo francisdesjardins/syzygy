@@ -162,10 +162,13 @@ The step id is the sharing key: two modules that declare `session` are declaring
 Nothing needs to import anything else, which is the point — the registry lives on a versioned
 `Symbol.for` so two separately built copies of the library find each other.
 
-A shared step is attempted once and its ending is everyone's answer, refusal and timeout included,
-so modules that share a step should agree on its `timeout`. Its notices and intents stay with the
-run that did the work: replaying them would put the same warning on the screen once per module.
-`outcome.timeline` marks an adopted step `shared: true`.
+A shared step is attempted once and **every** ending is everyone's answer — the value, a refusal, a
+branch that does not apply, a timeout, and the case where the run that owned it was stopped before
+it learned anything. The owner's `timeout` is the one that decides, so modules that share a step
+should agree on it rather than each keeping a budget that will never be consulted.
+
+Its notices and intents stay with the run that did the work: replaying them would put the same
+warning on the screen once per module. `outcome.timeline` marks an adopted step `shared: true`.
 
 ## The two phases
 
@@ -212,6 +215,10 @@ const debugOverlay = defineStep({
 The step settles `skipped`, `errors` stays empty and the run stays `ready`. Everything downstream
 goes with it under the rule that was already there — `needs` is an `and`, so a step whose dependency
 did not succeed does not run — which means the rest of the branch declares nothing.
+
+Those dependents settle `skipped` too, so the status alone cannot say which step decided. The reason
+is what does: `outcome.timeline` carries it on the step that called `skip`, and on nothing else.
+`ctx.block(reason)` puts its string in the same place.
 
 An `optional` step that throws prunes the same subtree, and that is how this had to be written. It
 also ends the run `degraded` and files an error for a thing that went exactly as intended.

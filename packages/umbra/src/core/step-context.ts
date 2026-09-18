@@ -84,10 +84,10 @@ function createBase(deps: ContextDeps): { base: Base; settle: () => number } {
 /**
  * The preflight context, which is the one that can refuse the mount.
  *
- * The cast on `get` is the package's one untyped boundary: settled data lives in a
- * `Map<StepId, unknown>` because a heterogeneous step list has no other way to hold it, and nothing
- * carries a step's declared data type through that map. The id is what re-attaches the type, and
- * the runtime check above is what makes the id trustworthy.
+ * The cast on `get` is the settled-data boundary, which both contexts here sit on: settled data
+ * lives in a `Map<StepId, unknown>` because a heterogeneous step list has no other way to hold it,
+ * and nothing carries a step's declared data type through that map. The id is what re-attaches the
+ * type, and the runtime check above is what makes the id trustworthy.
  */
 export function createPreflightContext(
   deps: ContextDeps & { readonly block: (reason: string) => never }

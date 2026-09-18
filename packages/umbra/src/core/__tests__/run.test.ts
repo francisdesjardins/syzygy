@@ -466,6 +466,15 @@ test('a branch that does not apply is skipped, not failed', async () => {
   // Pruned by the ordinary rule, which is what makes this a branch rather than one step.
   expect(statusOf('debug-recorder')).toBe('skipped');
   expect(outcome.data['config']).toEqual({ isPreview: false });
+
+  // Both wear the same status, so the reason is the only thing that says which one decided.
+  const reasonOf = (id: string) => {
+    return outcome.timeline.find((trace) => {
+      return trace.id === id;
+    })?.reason;
+  };
+  expect(reasonOf('debug-overlay')).toBe('not a preview build');
+  expect(reasonOf('debug-recorder')).toBeUndefined();
 });
 
 test('the branch runs when it does apply, and nothing about it is special', async () => {

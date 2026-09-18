@@ -1,13 +1,13 @@
 import type { Clock } from '../utils/clock.js';
 import { serializeError } from '../utils/serialize-error.js';
-import { BlockSignal, SkipSignal, StepSkippedError } from './errors.js';
+import { BlockSignal, BootstrapError } from './errors.js';
 import type { EventHub } from './events.js';
 import { createIntentQueue } from './intent-queue.js';
 import { createNoticeLog } from './notice-log.js';
-import { claimSharedStep, type SharedResult } from './shared-scope.js';
+import { type Claim, claimSharedStep, type SharedResult } from './shared-scope.js';
 import type { CompiledPlan, PlannedStep } from './plan.js';
 import type { StepId } from './registry.js';
-import { attemptStep } from './run-step.js';
+import { attemptStep, skippedTrace, type StepAttempt } from './run-step.js';
 import { createPreflightContext } from './step-context.js';
 import type {
   AbortReason,
@@ -20,6 +20,42 @@ import type {
   StepStatus,
   StepTrace,
 } from './types.js';
+
+/**
+ * What a shared step's ending looks like to everyone else waiting on its key.
+ *
+ * Built from the status the scheduler settled on rather than from the attempt alone, because the
+ * two disagree exactly where it matters: a refusal is authoritative in `blocks`, and a timeout is
+ * the abort's answer rather than the body's.
+ */
+function sharedResultFrom(settled: {
+  readonly status: StepStatus;
+  readonly reason: string | undefined;
+  readonly attempt: StepAttempt;
+}): SharedResult {
+  const { reason, attempt } = settled;
+  switch (settled.status) {
+    case 'success':
+      return { kind: 'value', value: attempt.value };
+    case 'blocked':
+      return { kind: 'blocked', reason: reason ?? 'The step refused the mount.' };
+    case 'skipped':
+      return { kind: 'skipped', reason };
+    case 'timed-out':
+      return {
+        kind: 'timed-out',
+        error: attempt.error ?? serializeError(new Error('The shared step timed out.')),
+      };
+    case 'cancelled':
+      return { kind: 'cancelled' };
+    case 'failed':
+    default:
+      return {
+        kind: 'failed',
+        error: attempt.error ?? serializeError(new Error('Step did not succeed.')),
+      };
+  }
+}
 
 /**
  * Rebuild something throwable from a shared failure, so a sharer fails the way the owner did.
@@ -35,17 +71,6 @@ function errorFrom(serialized: SerializedError): Error {
       : new Error(serialized.message, { cause: errorFrom(serialized.cause) });
   error.name = serialized.name;
   return error;
-}
-
-/** How a shared step's ending is published, so everyone waiting on the key adopts the same one. */
-function settledFrom(error: unknown): SharedResult {
-  if (error instanceof BlockSignal) {
-    return { kind: 'blocked', reason: error.reason };
-  }
-  if (error instanceof SkipSignal) {
-    return { kind: 'skipped', reason: error.reason };
-  }
-  return { kind: 'failed', error: serializeError(error) };
 }
 
 export type SchedulerOptions = {
@@ -154,14 +179,7 @@ export async function runPreflight(
 
   const markSkipped = (planned: PlannedStep): void => {
     statuses.set(planned.id, 'skipped');
-    const trace: StepTrace = {
-      id: planned.id,
-      level: planned.level,
-      phase: planned.phase,
-      status: 'skipped',
-      startedAt: clock.wall(),
-      durationMs: 0,
-    };
+    const trace = skippedTrace(planned, clock.wall());
     timeline.push(trace);
     events?.emit({ kind: 'step:settle', trace });
   };
@@ -179,7 +197,14 @@ export async function runPreflight(
    * missing must block every module, not just the one that looked. What it does not adopt are the
    * owner's notices and intents: those were emitted once, into the run that did the work, and
    * replaying them would put the same warning on the screen once per module.
+   *
+   * The owner publishes from its **attempt** rather than from its own `run`, and that is the whole
+   * reason this is two pieces. A timeout and a cancellation are decided by the abort, outside the
+   * body: settling from inside `run` cannot see them, so a step that hung left every sharer waiting
+   * on a key nobody would ever settle.
    */
+  const owned = new Map<StepId, Extract<Claim, { owned: true }>>();
+
   const invokeFor = (planned: PlannedStep, context: PreflightContext): (() => unknown) => {
     if (planned.scope !== 'shared') {
       return () => {
@@ -189,37 +214,42 @@ export async function runPreflight(
 
     const claim = claimSharedStep(String(planned.id));
 
-    if (!claim.owned) {
-      sharedIds.add(planned.id);
-      return async () => {
-        const result = await claim.result;
-        if (result.kind === 'blocked') {
-          return context.block(result.reason);
-        }
-        // A step that does not apply does not apply for anyone sharing it either.
-        if (result.kind === 'skipped') {
-          return context.skip(result.reason);
-        }
-        if (result.kind === 'failed') {
-          throw errorFrom(result.error);
-        }
-        return result.value;
+    if (claim.owned) {
+      owned.set(planned.id, claim);
+      return () => {
+        return planned.step.run(context);
       };
     }
 
+    sharedIds.add(planned.id);
     return async () => {
-      try {
-        const value: unknown = await planned.step.run(context);
-        claim.settle({ kind: 'value', value });
-        return value;
-      } catch (error: unknown) {
-        // Settled on the way out, so a sharer waiting on this key learns the answer instead of
-        // waiting for its own deadline to notice nothing is coming.
-        claim.settle(settledFrom(error));
-        throw error;
+      const result = await claim.result;
+      if (result.kind === 'blocked') {
+        return context.block(result.reason);
       }
+      // A step that does not apply does not apply for anyone sharing it either.
+      if (result.kind === 'skipped') {
+        return context.skip(result.reason);
+      }
+      // Two endings a sharer cannot reach on its own: it waited on a promise, so nothing of its
+      // own timed out and nothing of its own was stopped. It throws to end, and the status it
+      // wears is put back from `adopted` below — the same shape `blocked` uses, and for the same
+      // reason: the word must not depend on how the step happened to finish.
+      if (result.kind === 'timed-out' || result.kind === 'cancelled') {
+        adopted.set(planned.id, result.kind);
+        throw result.kind === 'timed-out'
+          ? errorFrom(result.error)
+          : new Error('The bootstrap that owned this shared step was stopped.');
+      }
+      if (result.kind === 'failed') {
+        throw errorFrom(result.error);
+      }
+      return result.value;
     };
   };
+
+  /** Endings a sharer adopted that its own attempt had no way to produce. */
+  const adopted = new Map<StepId, Extract<StepStatus, 'timed-out' | 'cancelled'>>();
 
   let halted = false;
   // Flipped once the levels are done. A step that outlived its own cancellation can still reach its
@@ -277,8 +307,14 @@ export async function runPreflight(
               notices,
               intents,
               readData: (dependency) => {
+                // An invariant, not a runtime condition: a step is only attempted once every need
+                // succeeded, and `ctx.get` refuses an id outside `needs` before reaching here. It
+                // stays so a change to that gate is loud rather than an `undefined` read as data.
                 if (statuses.get(dependency) !== 'success') {
-                  throw new StepSkippedError(planned.id, dependency);
+                  throw new BootstrapError(
+                    `Step "${String(planned.id)}" read "${String(dependency)}", which did not ` +
+                      `succeed. A step must not be attempted with an unsatisfied need.`
+                  );
                 }
                 return data.get(dependency);
               },
@@ -314,10 +350,18 @@ export async function runPreflight(
       // settle the refusing step as `cancelled` before its own rejection is ever seen — the race
       // the `block` callback above is written around. Reading the authoritative record here is
       // what makes `blocked` mean the step that decided rather than whoever won the race.
-      const refused = blocks.some((signal) => {
+      const refusal = blocks.find((signal) => {
         return signal.step === planned.id;
       });
-      const status: StepStatus = refused ? 'blocked' : attempt.status;
+      const status: StepStatus =
+        refusal === undefined ? (adopted.get(planned.id) ?? attempt.status) : 'blocked';
+      // Off the same authoritative record as the status, for the same reason: `attempt.reason` is
+      // empty whenever the abort won that race.
+      const reason = refusal === undefined ? attempt.reason : refusal.reason;
+
+      // What everyone waiting on this key gets, published from here because this is where the
+      // ending is finally known — the abort decides some of them, and the body never sees those.
+      owned.get(planned.id)?.settle(sharedResultFrom({ status, reason, attempt }));
 
       statuses.set(planned.id, status);
       const trace: StepTrace = {
@@ -328,6 +372,7 @@ export async function runPreflight(
         startedAt: attempt.startedAt,
         durationMs: attempt.durationMs,
         ...(attempt.error === undefined ? {} : { error: attempt.error }),
+        ...(reason === undefined ? {} : { reason }),
         ...(sharedIds.has(planned.id) ? { shared: true } : {}),
         ...(attempt.lateWrites === 0 ? {} : { lateWrites: attempt.lateWrites }),
       };

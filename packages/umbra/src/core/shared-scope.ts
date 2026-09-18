@@ -1,10 +1,19 @@
 import type { SerializedError } from './types.js';
 
-/** How a shared step ended, in a form another bootstrap can adopt. */
+/**
+ * How a shared step ended, in a form another bootstrap can adopt.
+ *
+ * Every ending a step can have is here, including the two it cannot reach on its own: a sharer
+ * whose owner timed out has not timed out — it waited on a promise — and one whose owner was
+ * stopped never learned anything at all. Both are published rather than left pending, because a
+ * kind missing from this union is a sharer waiting on a key nobody will ever settle.
+ */
 export type SharedResult =
   | { readonly kind: 'value'; readonly value: unknown }
   | { readonly kind: 'blocked'; readonly reason: string }
   | { readonly kind: 'skipped'; readonly reason: string | undefined }
+  | { readonly kind: 'timed-out'; readonly error: SerializedError }
+  | { readonly kind: 'cancelled' }
   | { readonly kind: 'failed'; readonly error: SerializedError };
 
 export type Claim =
@@ -33,8 +42,8 @@ type Settlers = Map<string, (result: SharedResult) => void>;
  * changes {@link SharedResult} takes a new symbol and simply does not share with the old one, which
  * is the right outcome: not sharing is slower, and sharing something misread is wrong.
  */
-const REGISTRY_KEY = Symbol.for('umbra.shared-scope.v2');
-const SETTLERS_KEY = Symbol.for('umbra.shared-scope.settlers.v2');
+const REGISTRY_KEY = Symbol.for('umbra.shared-scope.v3');
+const SETTLERS_KEY = Symbol.for('umbra.shared-scope.settlers.v3');
 
 type GlobalWithRegistry = typeof globalThis & {
   [REGISTRY_KEY]?: Registry | undefined;

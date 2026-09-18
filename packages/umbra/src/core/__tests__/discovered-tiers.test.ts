@@ -282,11 +282,12 @@ test('a fired optional branch starts a tier that is allowed to refuse', async ()
   expect(first.status).toBe('ready');
 
   // The step that decided says so, in the timeline, without anyone having to cross-reference
-  // `blockedBy`. It was `cancelled` once — the same word as the steps it stopped.
+  // `blockedBy` — status and reason both, which is what separates it from the steps it stopped.
   const grants = loaded.timeline.find((trace) => {
     return trace.id === 'reports:grants';
   });
   expect(grants?.status).toBe('blocked');
+  expect(grants?.reason).toBe('reports needs a grant this user does not have');
 
   // And a refusal is still not a failure: nothing to fix, so nothing in `errors`.
   expect(loaded.errors).toEqual([]);

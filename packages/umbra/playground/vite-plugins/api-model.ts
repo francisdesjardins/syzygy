@@ -179,7 +179,6 @@ export const CATEGORIES: readonly CategoryDef[] = [
     symbols: [
       'BootstrapError',
       'PlanError',
-      'StepSkippedError',
       'UndeclaredDependencyError',
       'serializeError',
       'systemClock',

@@ -78,13 +78,13 @@ Everything in this package belongs to exactly one of three things, and the name 
 | **Run**       | one execution of it      | `Outcome`, `RunStatus`, `RunData`, `RunEvent`, `RunObserver`, `RunSnapshot`, `RunStage`                                |
 | **Step**      | one unit of work         | `Step`, `StepId`, `StepPhase`, `StepScope`, `StepStatus`, `StepTrace`, `StepFailure`, `StepRegistry`, `useStepData`    |
 
-Two rules fall out of it, and both were broken before the vocabulary was written down:
+Two rules fall out of it:
 
 - **A word means one thing.** `phase` is `preflight` or `hosted` and nothing else, which is why a
   run's position is a `stage`. `Outcome` is the object a run produced, which is why how one step
-  ended is a `status` — `outcome.timeline[0].outcome` was one noun at two ranks.
-- **No abbreviations.** There is no `Boot` prefix. It was a short `Bootstrap` on types that mostly
-  described a run, so the same concept wore three prefixes.
+  ended is a `status`: one noun at two ranks reads as one thing.
+- **No abbreviations.** There is no `Boot` prefix — a short `Bootstrap` on types that mostly
+  describe a run puts three prefixes on one concept.
 
 The three lifecycle enums are one family and read the same way: `RunStatus`, `StepStatus`,
 `IntentStatus`.
@@ -131,7 +131,8 @@ StrictMode, so throwing on a second `run()` would push that problem onto every b
 **`ctx.skip()` prunes, and that is the whole of it.** A branch that does not apply settles
 `skipped` with an empty `errors`, and its subtree goes with it under the rule already there —
 `needs` is an `and`. Which is also why it cannot answer a branch that _rejoins_: nothing downstream
-may name a dependency that might not be there, so a rejoining switch lives inside one step.
+may name a dependency that might not be there, so a rejoining switch lives inside one step. Only the
+step that decided carries a `StepTrace.reason`, separating it from what it pruned.
 
 **Cancellation is not failure.** `errors` holds `failed` and `timed-out` only. A step the run stopped
 never got the chance to fail, and listing it beside a real 401 would make every refused boot read as
@@ -144,8 +145,8 @@ refusal does abort them, because nothing is going to mount.
 
 **A refusal is recorded before the abort, not after the throw.** Aborting resolves the race inside
 `attemptStep`, which can settle the refusing step through the abort path before its own rejection is
-seen — so neither the refusal nor the step's `blocked` status may depend on who wins. Both read off
-that record. A refusal arriving after the run settled is ignored: rewriting an answer already handed
+seen — so neither the refusal nor the step's `blocked` status may depend on who wins. The status,
+the refusal and the trace's `reason` all read off it. A refusal arriving after the run settled is ignored: rewriting an answer already handed
 out is worse than losing a late one.
 
 **Two refusals in one level settle by plan order**, never by arrival, or the telemetry and the tests
@@ -252,13 +253,14 @@ than `Pick`, which collapses to `{}` while the registry is still empty.
   other, so the rule is shared as the same text. Change both, or change neither.
 - **Comments**: **why, not what** — and never the past (`used to`, `previously`); the CHANGELOG is
   the history. JSDoc on public API is the exception, being the documentation.
-- **No implicit returns**: every arrow function uses a block body with an explicit `return`
-- **Optional props**: `| undefined` suffix
-- **Two parameters**, and an options object counts as one of them
-- **Type safety**: the package has **three** `as` casts, all at the same boundary, all commented —
-  settled data lives in a `Map<StepId, unknown>` because a heterogeneous step list has nowhere else
-  to hold it, and the id is what re-attaches the declared type on the way out. `readStepData` exists
-  so the bindings do not each grow one. A fourth needs a reason of its own.
+- **No implicit returns**, **`| undefined` on optional props**, **two parameters** — an options
+  object counting as one. All three are gated, so lint says it before review does.
+- **Type safety**: every `as` sits on one of **two** untyped boundaries, commented where it is, and
+  `check:casts` holds the list rather than a number in prose. Settled data lives in a
+  `Map<StepId, unknown>` because a heterogeneous step list has nowhere else to hold it, and the id
+  re-attaches the declared type on the way out — `readStepData` exists so the bindings do not each
+  grow one. `globalThis` is the other: nothing can describe what another module put there. A third
+  boundary needs a reason of its own.
 - **No `oxlint-disable` in shipped code, and never on `react-hooks/exhaustive-deps`.** A suppression
   there silences the rule for the dependency somebody adds next year, not just for the one in front
   of you — the warning that would have caught it never fires again. When a hook fights the rule, the
@@ -278,8 +280,8 @@ Node >= 24, **Yarn 4** vendored in the repository root, ES2024, ESNext modules, 
 
 **TypeScript 7, and nothing beside it in the lint path**: every `tsc` call in `scripts` is
 `node node_modules/typescript-7/bin/tsc`, and `oxlint --type-aware` runs its type-aware half through
-tsgolint, built on the same compiler. The bare `typescript` 6.0.3 is typedoc's, which peers on
-`6.0.x`, and the editor's, since `typescript-7/lib` ships no `tsserver.js`.
+tsgolint, built on the same compiler. The bare `typescript` is typedoc's peer, and the
+editor's, since `typescript-7/lib` ships no `tsserver.js`.
 
 **Yarn workspaces**: this package and `umbra-playground` (`playground/`, private) are two of the
 monorepo’s workspaces, installed by one `yarn install` at its root. The published dependency list is

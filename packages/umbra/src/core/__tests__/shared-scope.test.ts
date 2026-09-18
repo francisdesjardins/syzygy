@@ -287,3 +287,93 @@ test('a shared step that does not apply does not apply for its sharers either', 
     expect(outcome.data['reads-it']).toBeUndefined();
   }
 });
+
+test("a shared step's timeout is everyone's timeout, not just the owner's", async () => {
+  // The owner's budget is the tight one. The sharer's is long enough that reaching `timed-out`
+  // on its own would take forty times as long — so the word it ends with can only have been
+  // adopted, which is the difference between this and two clocks agreeing by accident.
+  const steps = (timeout: number) => {
+    return () => {
+      return [
+        defineStep({
+          id: 'session',
+          scope: 'shared',
+          timeout,
+          run: () => {
+            // Ignores its signal on purpose: an ending decided entirely by the abort is the one
+            // the owner's body never sees, and the one a sharer used to wait forever for.
+            return new Promise<never>(() => {});
+          },
+        }),
+      ];
+    };
+  };
+
+  const owner = createBootstrap({ steps: steps(120)() });
+  const sharer = createBootstrap({ steps: steps(5000)() });
+
+  const started = Date.now();
+  const [first, second] = await Promise.all([owner.run(), sharer.run()]);
+  const elapsed = Date.now() - started;
+
+  expect(traceOf(first.timeline, 'session')?.status).toBe('timed-out');
+  expect(traceOf(second.timeline, 'session')?.status).toBe('timed-out');
+  expect(traceOf(second.timeline, 'session')?.shared).toBe(true);
+  expect(elapsed).toBeLessThan(1500);
+
+  // A timeout is a failure, so both report one — the point is that they report the same one.
+  const statuses = (failures: readonly { status: string }[]) => {
+    return failures.map((failure) => {
+      return failure.status;
+    });
+  };
+  expect(statuses(first.errors)).toEqual(['timed-out']);
+  expect(statuses(second.errors)).toEqual(['timed-out']);
+});
+
+test('a sharer waiting on a step whose owner was stopped is told, rather than left waiting', async () => {
+  // The owner refuses the mount in one step and shares another on the same level. The refusal
+  // aborts the level, so the shared step is `cancelled` — an ending its own body never sees, and
+  // one nobody would ever publish if the owner only settled from inside `run`.
+  const owner = createBootstrap({
+    steps: [
+      defineStep({
+        id: 'guard',
+        run: (ctx) => {
+          return ctx.block('No session.');
+        },
+      }),
+      defineStep({
+        id: 'directory',
+        scope: 'shared',
+        run: async () => {
+          await sleep(200);
+          return { entries: 3 };
+        },
+      }),
+    ],
+  });
+
+  const sharer = createBootstrap({
+    steps: [
+      defineStep({
+        id: 'directory',
+        scope: 'shared',
+        timeout: 4000,
+        run: async () => {
+          await sleep(200);
+          return { entries: 3 };
+        },
+      }),
+    ],
+  });
+
+  const started = Date.now();
+  const [refused, second] = await Promise.all([owner.run(), sharer.run()]);
+
+  expect(refused.status).toBe('blocked');
+  expect(traceOf(second.timeline, 'directory')?.status).toBe('cancelled');
+  // Not a failure: nothing was learned, so there is nothing to fix.
+  expect(second.errors).toEqual([]);
+  expect(Date.now() - started).toBeLessThan(1500);
+});

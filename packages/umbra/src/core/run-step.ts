@@ -2,7 +2,7 @@ import type { Clock } from '../utils/clock.js';
 import { serializeError } from '../utils/serialize-error.js';
 import { BlockSignal, SkipSignal } from './errors.js';
 import type { PlannedStep } from './plan.js';
-import type { AbortReason, SerializedError, StepStatus } from './types.js';
+import type { AbortReason, SerializedError, StepStatus, StepTrace } from './types.js';
 
 export type StepAttempt = {
   readonly status: StepStatus;
@@ -10,6 +10,8 @@ export type StepAttempt = {
   readonly error?: SerializedError | undefined;
   /** Set when the step refused the mount, so the scheduler can report who and why. */
   readonly block?: BlockSignal | undefined;
+  /** The string the step passed to `ctx.block` or `ctx.skip`, when it ended by saying one. */
+  readonly reason?: string | undefined;
   readonly startedAt: number;
   readonly durationMs: number;
   readonly lateWrites: number;
@@ -26,6 +28,24 @@ export type AttemptArgs = {
     readonly settle: () => number;
   };
 };
+
+/**
+ * The trace of a step that never got an attempt, because a need did not succeed or the run had
+ * already stopped.
+ *
+ * Both phases prune by the same rule, so the two runners share the spelling rather than each
+ * keeping one: a difference between them could only ever be a bug.
+ */
+export function skippedTrace(planned: PlannedStep, startedAt: number): StepTrace {
+  return {
+    id: planned.id,
+    level: planned.level,
+    phase: planned.phase,
+    status: 'skipped',
+    startedAt,
+    durationMs: 0,
+  };
+}
 
 function isAbortReason(value: unknown): value is AbortReason {
   return typeof value === 'object' && value !== null && 'kind' in value;
@@ -141,13 +161,25 @@ export async function attemptStep(args: AttemptArgs): Promise<StepAttempt> {
   }
 
   if (raced.error instanceof BlockSignal) {
-    return finish({ ...base, lateWrites, status: 'blocked', block: raced.error });
+    return finish({
+      ...base,
+      lateWrites,
+      status: 'blocked',
+      block: raced.error,
+      reason: raced.error.reason,
+    });
   }
 
   // A step that does not apply produced nothing, which is what `skipped` says — the same word its
-  // dependents take, and no entry anywhere that reads as something to fix.
+  // dependents take, and no entry anywhere that reads as something to fix. The reason is what tells
+  // the two apart: the step that decided carries one, the steps pruned behind it do not.
   if (raced.error instanceof SkipSignal) {
-    return finish({ ...base, lateWrites, status: 'skipped' });
+    return finish({
+      ...base,
+      lateWrites,
+      status: 'skipped',
+      ...(raced.error.reason === undefined ? {} : { reason: raced.error.reason }),
+    });
   }
 
   return finish({
