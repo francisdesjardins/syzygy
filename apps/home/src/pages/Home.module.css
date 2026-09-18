@@ -1,0 +1,207 @@
+/*
+ * The landing page. Every value was already a token before this file existed — the MUI theme it
+ * replaced was a mirror of penumbra, resolving `--app-primary` and handing it back as
+ * `palette.primary.main` — so what moved here is the layout, not the palette.
+ */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: var(--app-space-4);
+  /* Flat, not a gradient: a wash from the ground to the paper is either invisible, when the two
+     are close, or it lightens the ground exactly where the card needs something to sit against. */
+  background: var(--app-bg);
+}
+
+@media (max-width: 599.95px) {
+  .container {
+    padding: var(--app-space-3);
+    /* The language and theme switches are `position: fixed` in the top corners, 40px tall at 8px
+       inset. On a phone the card runs full width and the h1 landed underneath both of them —
+       measured overlapping at 390px and at 320px. This clears the band they occupy. */
+    padding-top: var(--app-space-14);
+    max-width: 100%;
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-6);
+  width: 100%;
+  max-width: 960px;
+  padding: var(--app-space-8);
+  border: 1px solid var(--app-divider);
+  border-radius: var(--app-radius-xl);
+  background: var(--app-paper);
+  box-shadow: var(--app-lift);
+  font-family: var(--app-font-body);
+}
+
+@media (max-width: 599.95px) {
+  .card {
+    padding: var(--app-space-6);
+  }
+}
+
+.intro {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-4);
+}
+
+.title {
+  max-width: var(--app-measure);
+  font-family: var(--app-font-display);
+  font-size: var(--app-text-2xl);
+  line-height: var(--app-lh-tight);
+  letter-spacing: var(--app-tracking-tight);
+  font-weight: 600;
+  color: var(--app-primary);
+}
+
+@media (max-width: 599.95px) {
+  .title {
+    font-size: var(--app-text-xl);
+  }
+}
+
+.lede {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-2);
+}
+
+/* 68ch. The card is 960px wide and a line that long is a line nobody finishes. */
+.body,
+.secondary,
+.measure {
+  max-width: var(--app-measure);
+}
+
+.body {
+  font-size: var(--app-text-base);
+  line-height: var(--app-lh-body);
+  font-weight: 600;
+}
+
+@media (max-width: 599.95px) {
+  .body {
+    font-size: var(--app-text-md);
+  }
+}
+
+.secondary {
+  font-size: var(--app-text-md);
+  line-height: var(--app-lh-body);
+  color: var(--app-text-secondary);
+}
+
+.italic {
+  font-style: italic;
+}
+
+.rule {
+  height: 1px;
+  margin: 0;
+  border: none;
+  background: var(--app-divider);
+}
+
+.columns {
+  display: grid;
+  gap: var(--app-space-6);
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 900px) {
+  .columns {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    column-gap: var(--app-space-10);
+    align-items: start;
+  }
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-6);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-4);
+}
+
+/* The rule between the columns only exists once the columns do. */
+@media (min-width: 900px) {
+  .aside {
+    border-left: 1px solid var(--app-divider);
+    padding-left: var(--app-space-10);
+  }
+}
+
+.heading {
+  font-family: var(--app-font-display);
+  font-size: var(--app-text-lg);
+  line-height: var(--app-lh-snug);
+  letter-spacing: var(--app-tracking-snug);
+  font-weight: 600;
+}
+
+.work {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-3);
+}
+
+.workItem {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-1);
+}
+
+.workLink {
+  align-self: flex-start;
+  /* WCAG 2.2 target size (2.5.8) wants 24x24 CSS px; the bare text ran 20px tall. */
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--app-space-6);
+  font-family: var(--app-font-mono);
+  font-size: var(--app-text-md);
+  font-weight: 600;
+  color: var(--app-accent);
+  text-decoration: none;
+}
+
+.workLink:hover {
+  text-decoration: underline;
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.expiry {
+  /* `text.disabled` measured 2.67:1 on white and the em-based size rendered at 9.6px on a phone —
+     below the 4.5:1 floor and below what anyone reads. The secondary rank clears it at 5.9:1. */
+  font-family: var(--app-font-mono);
+  font-size: var(--app-text-sm);
+  color: var(--app-text-secondary);
+}
+
+@media (max-width: 599.95px) {
+  .expiry {
+    font-size: var(--app-text-xs);
+  }
+}

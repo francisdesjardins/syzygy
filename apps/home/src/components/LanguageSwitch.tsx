@@ -1,7 +1,7 @@
-import TranslateIcon from '@mui/icons-material/Translate';
-import IconButton from '@mui/material/IconButton';
 import { memo } from 'react';
 
+import { IconButton } from './IconButton';
+import { TranslateIcon } from './icons';
 import { useLanguage } from '../hooks/useLanguage';
 import { handleMisusedPromise } from '../utils/handleMisusedPromise';
 
@@ -11,12 +11,7 @@ const LanguageSwitch = memo(() => {
   const handleOnClick = handleMisusedPromise(toggle);
 
   return (
-    <IconButton
-      onClick={handleOnClick}
-      color="inherit"
-      aria-label="change language"
-      sx={{ bgcolor: 'background.default', '&:hover': { bgcolor: 'action.hover' } }}
-    >
+    <IconButton onClick={handleOnClick} aria-label="change language">
       <TranslateIcon />
     </IconButton>
   );

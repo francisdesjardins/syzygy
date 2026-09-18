@@ -1,0 +1,65 @@
+/*
+ * The page itself: the reset, the element defaults, and nothing that belongs to a component.
+ *
+ * It replaces MUI's `CssBaseline`, which was the last reason this site carried a component library
+ * — a reset and a body colour, for 134 kB. Every value here is a token; a literal in this file is a
+ * token that was never added, and the next person to need it invents a second one.
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: light dark;
+  -webkit-text-size-adjust: 100%;
+}
+
+:root[data-color-scheme='light'] {
+  color-scheme: light;
+}
+
+:root[data-color-scheme='dark'] {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  background: var(--app-bg);
+  color: var(--app-text);
+  font-family: var(--app-font-body);
+  font-size: var(--app-text-md);
+  line-height: var(--app-lh-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+/* One ring for the whole site, on a descendant selector so a component cannot outrank it by
+   accident — which is the shape both playgrounds settled on for the same reason. */
+body :focus-visible {
+  outline: 2px solid var(--app-ring);
+  outline-offset: 2px;
+  border-radius: var(--app-radius-sm);
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--app-scrollbar-track);
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--app-scrollbar-thumb);
+  border-radius: var(--app-radius-sm);
+}

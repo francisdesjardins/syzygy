@@ -39,6 +39,10 @@ being true.
 | The playground shell      | `corona/shell`, `/theme`, `/mascot`      | each playground's `verify:all`, and `yarn check:mobile` |
 | The way between them      | `corona/site` — one table of three       | `yarn check:mobile`, 20 routes × 2 widths               |
 
+**No component library anywhere.** The three playgrounds were always CSS modules on penumbra's
+tokens; home carried MUI for ten primitives and dropped it. The one exception is deliberate and
+scoped: antumbra's `MuiIsland` is the subject of a card, not a dependency of a shell.
+
 **Devtools are one decision, not seven.** Every workspace runs oxlint with its type-aware half on
 tsgolint, oxfmt, and TypeScript 7 — the same versions, enforced by the dependency constraint. There
 is no eslint and no prettier anywhere in the tree, and no workspace is on an older compiler than the

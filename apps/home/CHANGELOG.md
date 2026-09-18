@@ -4,6 +4,30 @@ Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No s
 
 **This file is the app's memory.** The code states what holds now; why it came to hold lives here.
 
+## 2026-09-17, the site drops MUI
+
+### Removed
+
+`@mui/material`, `@mui/icons-material` and the two emotion packages. **134 kB of component library
+for ten primitives** — `Box`, `Stack`, `Typography`, `Link`, `Divider`, `IconButton`, `CssBaseline`
+and `styled` — every one of which is a styled `div` on tokens this site already had.
+
+The theme was the giveaway: `useTheme` resolved `--app-primary` out of the document and handed it
+back as `palette.primary.main`, so the conversion is a substitution rather than a redesign. The hook
+is 63 lines where it was 164, and nothing reads a token in JavaScript any more — the stylesheets do
+it, which is what a custom property is for.
+
+What replaces it: one `app.css` for the reset and the element defaults, one `IconButton` of twenty
+lines, three inline glyphs, and a CSS module per surface.
+
+**Two things the conversion is not.** Secondary text is 15px rather than MUI's 14: it asks the scale
+for a step now, and the scale has no 14. And the theme attribute used to be written from inside the
+MUI theme builder — a place nobody would look for it — so deleting the builder shipped a site stuck
+in light mode until a screenshot caught it. It is written at module scope now, before React's first
+render, which is where it belongs.
+
+The bundle: 450 kB of JavaScript to 321.
+
 ## 2026-09-17, the design system leaves the site
 
 ### Removed

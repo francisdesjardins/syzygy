@@ -1,8 +1,7 @@
-import Brightness4Icon from '@mui/icons-material/Brightness4';
-import Brightness7Icon from '@mui/icons-material/Brightness7';
-import IconButton from '@mui/material/IconButton';
 import { memo } from 'react';
 
+import { IconButton } from './IconButton';
+import { MoonIcon, SunIcon } from './icons';
 import { useTheme } from '../hooks/useTheme';
 
 const ThemeSwitch = memo(() => {
@@ -11,11 +10,11 @@ const ThemeSwitch = memo(() => {
   return (
     <IconButton
       onClick={toggle}
-      color="inherit"
-      aria-label="toggle theme mode"
-      sx={{ bgcolor: 'background.default', '&:hover': { bgcolor: 'action.hover' } }}
+      // The glyph shows what a click gets you, so the name has to say the same thing — otherwise a
+      // screen reader hears "dark mode" on the control that turns dark mode off.
+      aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
     >
-      {isDarkMode ? <Brightness7Icon /> : <Brightness4Icon />}
+      {isDarkMode ? <SunIcon /> : <MoonIcon />}
     </IconButton>
   );
 });

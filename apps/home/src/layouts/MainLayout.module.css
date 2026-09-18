@@ -1,0 +1,20 @@
+.shell {
+  min-height: 100vh;
+}
+
+/* Fixed in the corners, above the page. `--app-z-topbar` is the scale's top, which is what these
+   two are: nothing on this site paints over them. */
+.left,
+.right {
+  position: fixed;
+  top: var(--app-space-2);
+  z-index: var(--app-z-topbar);
+}
+
+.left {
+  left: var(--app-space-2);
+}
+
+.right {
+  right: var(--app-space-2);
+}

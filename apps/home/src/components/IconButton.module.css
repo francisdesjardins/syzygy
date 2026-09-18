@@ -1,0 +1,27 @@
+/* The site's one control. A round hover target around a lone icon, which is the whole of what MUI's
+   IconButton was doing here. */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* WCAG 2.2 target size (2.5.8) asks 24x24; 40 is what the corners had and what a thumb wants. */
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--app-bg);
+  color: var(--app-text);
+  cursor: pointer;
+  transition: background-color var(--app-quick) var(--app-ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button {
+    transition: none;
+  }
+}
+
+.button:hover {
+  background: var(--app-hover);
+}

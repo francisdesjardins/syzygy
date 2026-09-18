@@ -38,12 +38,6 @@ export default defineConfig({
           if (id.includes('node_modules/react-dom') || id.includes('node_modules/react/')) {
             return 'vendor';
           }
-          if (
-            id.includes('node_modules/@mui/material') ||
-            id.includes('node_modules/@mui/icons-material')
-          ) {
-            return 'mui';
-          }
           return undefined;
         },
       },
