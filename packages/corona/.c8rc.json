@@ -1,0 +1,21 @@
+{
+  "all": true,
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "exclude": [
+    "src/**/*.d.ts",
+    "src/**/__tests__/**",
+    "src/**/index.ts",
+    "src/**/*.tsx",
+    "src/api/contract.ts",
+    "src/tokens/contract.ts",
+    "src/api/model/api-index.ts",
+    "src/api/model/use-api-scroll.ts",
+    "src/tokens/model/use-tokens.ts",
+    "src/shell/use-document-title.ts",
+    "src/shell/button-recipe.ts",
+    "src/theme/context.ts"
+  ],
+  "reporter": ["text-summary", "html", "lcov", "json"],
+  "reportsDir": "coverage",
+  "checkCoverage": false
+}

@@ -31,8 +31,10 @@
     "lint:fix": "oxlint --type-aware --fix",
     "format": "oxfmt .",
     "format:check": "oxfmt --check .",
-    "test": "echo \"corona: no-op — no test files yet; the viewer is exercised by antumbra's and umbra's smoke suites\"",
-    "verify:all": "yarn check",
+    "test": "yarn test:unit",
+    "test:unit": "playwright test -c playwright.config.ts --project=unit",
+    "test:unit:coverage": "c8 playwright test -c playwright.config.ts --project=unit",
+    "verify:all": "yarn check && yarn test",
     "check:tokens": "node scripts/check-token-coverage.mjs",
     "check:tokens:used": "gnomon-token-usage --declares ../penumbra/tokens.system.css ../penumbra/tokens.skin.base.css ../umbra/playground/src/app/styles/tokens.skin.css -- src"
   },
@@ -41,9 +43,11 @@
     "penumbra": "workspace:^"
   },
   "devDependencies": {
+    "@playwright/test": "1.63.0",
     "@tanstack/react-router": "^1.170.36",
     "@types/node": "^24.10.1",
     "@types/react": "^19.3.0",
+    "c8": "12.0.0",
     "gnomon": "workspace:^",
     "oxfmt": "0.68.0",
     "oxlint": "^1.83.0",
