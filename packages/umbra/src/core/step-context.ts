@@ -1,4 +1,4 @@
-import { UndeclaredDependencyError } from './errors.js';
+import { SkipSignal, UndeclaredDependencyError } from './errors.js';
 import type { IntentSink } from './intent-queue.js';
 import type { NoticeLog } from './notice-log.js';
 import type { PlannedStep } from './plan.js';
@@ -32,6 +32,7 @@ type Base = {
   get: (id: StepId) => unknown;
   notice: (type: NoticeType, ...rest: unknown[]) => void;
   intent: (type: IntentType, ...rest: unknown[]) => void;
+  skip: (reason?: string) => never;
 };
 
 function createBase(deps: ContextDeps): { base: Base; settle: () => number } {
@@ -53,6 +54,11 @@ function createBase(deps: ContextDeps): { base: Base; settle: () => number } {
         throw new UndeclaredDependencyError(deps.planned.id, id);
       }
       return deps.readData(id);
+    },
+    // Thrown rather than returned, so the step's own body stops where it says it does — the same
+    // shape lock takes, and for the same reason.
+    skip: (reason) => {
+      throw new SkipSignal(deps.planned.id, reason);
     },
     notice: (type, ...rest) => {
       guard(() => {

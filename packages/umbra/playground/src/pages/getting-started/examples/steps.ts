@@ -106,5 +106,37 @@ export function createSteps(api: Api) {
     },
   });
 
-  return [session, access, config, projects, tags, trialWarning];
+  /**
+   * A branch this build is meant to go without, said without lying about it.
+   *
+   * `ctx.skip()` is not a failure: the run stays `ready`, `errors` stays empty, and the step's
+   * dependents are pruned by the ordinary rule. Written as an `optional` step that throws — the
+   * only way to prune a branch before it existed — this boot would end `degraded` and carry an
+   * error for a thing that went exactly as intended.
+   *
+   * It prunes, so it answers a branch that does not come back. Where two branches rejoin, the
+   * switch belongs inside one step: `needs` is an `and`, and nothing downstream can name a branch
+   * that may not be there.
+   */
+  const debugOverlay = defineStep({
+    id: 'debug-overlay',
+    needs: ['config'],
+    run: (ctx) => {
+      if (!api.isPreviewBuild()) {
+        return ctx.skip('not a preview build');
+      }
+      return { workspace: ctx.get('config').workspaceName };
+    },
+  });
+
+  /** Downstream of the branch, so it goes wherever the branch goes without saying anything. */
+  const debugRecorder = defineStep({
+    id: 'debug-recorder',
+    needs: ['debug-overlay'],
+    run: (ctx) => {
+      return { recording: ctx.get('debug-overlay').workspace };
+    },
+  });
+
+  return [session, access, config, projects, tags, debugOverlay, debugRecorder, trialWarning];
 }

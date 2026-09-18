@@ -45,7 +45,7 @@ function Run(props: { plan: Bootstrap<Steps>['plan'] }) {
       <ExampleSection
         id="what-you-write"
         title="What you write"
-        description="Five steps and their dependencies. Nothing here asks for parallelism and there is no flag for it: needs is the only input, and the columns are what it implies."
+        description="Seven steps and their dependencies. Nothing here asks for parallelism and there is no flag for it: needs is the only input, and the columns are what it implies."
       >
         <ExampleGrid columns={1}>
           <ExampleCard
@@ -127,7 +127,7 @@ export function GettingStartedPage() {
   return (
     <PageLayout
       title="One Application"
-      description="Five steps, two of them optional, one that only runs once a framework has mounted. Flip a switch, boot it again, and watch what changes."
+      description="Seven steps: three optional, one branch that skips itself when it does not apply, and one that only runs once a framework has mounted. Flip a switch, boot it again, and watch what changes."
     >
       <SectionNav sections={SECTIONS} />
 

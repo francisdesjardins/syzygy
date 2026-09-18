@@ -26,9 +26,7 @@ difference and asserts each kind's own shape.
 the root reaches no package at all, that each hook binding reaches its own framework and only its
 own, and that `./plain` reaches none. The positive halves are what stop the root's assertion from
 passing because the walker resolved nothing. `verify:package` re-checks all of it against the built
-artefact — and that check shipped broken for a day, matching only single-quoted imports while the
-bundler emitted double, until a `mustReach` assertion caught it. That is why both patterns accept
-both quote styles now, and why every negative assertion in this repo has a positive one beside it.
+artefact, and matches both quote styles because a bundler picks its own.
 
 ## Commands
 
@@ -126,13 +124,14 @@ later would arrive after the outcome was handed over.
 transitions, the waiters behind `awaitIntent`, the hosted phase — lives on `boot.live()`. An outcome
 nobody passes to a live run leaks nothing, which is what makes the snapshot safe to hand around.
 
-It was `Session` until the name collided with the word every application uses for its token step —
-the examples in this package declare one called `session` — and `LiveRun` is what its own doc comment
-had been calling it all along.
-
 **`run()` never rejects for anything a step did**, and calling it twice returns the same outcome.
 Programming mistakes throw synchronously from `createBootstrap` instead. React 19 doubles effects in
 StrictMode, so throwing on a second `run()` would push that problem onto every binding.
+
+**`ctx.skip()` prunes, and that is the whole of it.** A branch that does not apply settles
+`skipped` with an empty `errors`, and its subtree goes with it under the rule already there —
+`needs` is an `and`. Which is also why it cannot answer a branch that _rejoins_: nothing downstream
+may name a dependency that might not be there, so a rejoining switch lives inside one step.
 
 **Cancellation is not failure.** `errors` holds `failed` and `timed-out` only. A step the run stopped
 never got the chance to fail, and listing it beside a real 401 would make every refused boot read as

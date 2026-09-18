@@ -17,6 +17,12 @@ export type Faults = {
   accessBroken: boolean;
   /** The trial is nearly expired, which is what queues a warning for the framework. */
   trialExpiring: boolean;
+  /**
+   * Not a fault: a condition. The debug branch belongs to a preview deployment and to nothing
+   * else, and off is the case worth watching — the run stays `ready` with an empty `errors` while
+   * two steps are skipped.
+   */
+  previewBuild: boolean;
 };
 
 export const defaultFaults: Faults = {
@@ -28,6 +34,7 @@ export const defaultFaults: Faults = {
   // answer to that is a modal dialog — so leaving it on greeted every reader with a question over
   // a page they had not read yet. The demonstration is better as something they switch on.
   trialExpiring: false,
+  previewBuild: false,
 };
 
 function wait(ms: number, signal: AbortSignal): Promise<void> {
@@ -56,10 +63,16 @@ export type Api = {
   ) => Promise<{ workspaceName: string; trialDaysLeft: number; fromCache: boolean }>;
   projects: (signal: AbortSignal) => Promise<readonly string[]>;
   tags: (signal: AbortSignal) => Promise<readonly string[]>;
+  /** Synchronous, because where a build is deployed is known before anything is asked. */
+  isPreviewBuild: () => boolean;
 };
 
 export function createApi(faults: Faults): Api {
   return {
+    isPreviewBuild: () => {
+      return faults.previewBuild;
+    },
+
     session: async (signal) => {
       await wait(320, signal);
       if (faults.signedOut) {

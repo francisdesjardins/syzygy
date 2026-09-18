@@ -423,3 +423,110 @@ test('run twice returns the same outcome and executes each step once', async () 
   expect(calls).toBe(1);
   expect(second).toBe(first);
 });
+
+test('a branch that does not apply is skipped, not failed', async () => {
+  const boot = createBootstrap({
+    steps: [
+      defineStep({
+        id: 'config',
+        run: () => {
+          return { isPreview: false };
+        },
+      }),
+      defineStep({
+        id: 'debug-overlay',
+        needs: ['config'],
+        run: (ctx) => {
+          // The whole point: a branch the run is meant to go without, said without lying.
+          return ctx.skip('not a preview build');
+        },
+      }),
+      defineStep({
+        id: 'debug-recorder',
+        needs: ['debug-overlay'],
+        run: () => {
+          return { on: true };
+        },
+      }),
+    ],
+  });
+
+  const outcome = await boot.run();
+  const statusOf = (id: string) => {
+    return outcome.timeline.find((trace) => {
+      return trace.id === id;
+    })?.status;
+  };
+
+  // Nothing degraded, because nothing went wrong.
+  expect(outcome.status).toBe('ready');
+  expect(outcome.errors).toEqual([]);
+
+  expect(statusOf('debug-overlay')).toBe('skipped');
+  // Pruned by the ordinary rule, which is what makes this a branch rather than one step.
+  expect(statusOf('debug-recorder')).toBe('skipped');
+  expect(outcome.data['config']).toEqual({ isPreview: false });
+});
+
+test('the branch runs when it does apply, and nothing about it is special', async () => {
+  const boot = createBootstrap({
+    steps: [
+      defineStep({
+        id: 'config',
+        run: () => {
+          return { isPreview: true };
+        },
+      }),
+      defineStep({
+        id: 'debug-overlay',
+        needs: ['config'],
+        run: (ctx) => {
+          // `config` is not in this suite's registry, so its data is the untyped boundary every
+          // test here meets — the id is what would re-attach a declared type.
+          const config = ctx.get('config') as { isPreview: boolean };
+          return config.isPreview ? { mounted: true } : ctx.skip();
+        },
+      }),
+      defineStep({
+        id: 'debug-recorder',
+        needs: ['debug-overlay'],
+        run: () => {
+          return { on: true };
+        },
+      }),
+    ],
+  });
+
+  const outcome = await boot.run();
+
+  expect(outcome.status).toBe('ready');
+  expect(outcome.data['debug-overlay']).toEqual({ mounted: true });
+  expect(outcome.data['debug-recorder']).toEqual({ on: true });
+});
+
+test('a required step that skips takes its dependents with it and still does not fail the run', async () => {
+  const boot = createBootstrap({
+    steps: [
+      defineStep({
+        id: 'probe',
+        run: (ctx) => {
+          return ctx.skip();
+        },
+      }),
+      defineStep({
+        id: 'reads-it',
+        needs: ['probe'],
+        run: () => {
+          return { any: true };
+        },
+      }),
+    ],
+  });
+
+  const outcome = await boot.run();
+
+  // `optional` is about tolerating a *failure*; skipping is not one, so the flag has no part in it.
+  expect(outcome.status).toBe('ready');
+  expect(outcome.errors).toEqual([]);
+  expect(outcome.data['reads-it']).toBeUndefined();
+});

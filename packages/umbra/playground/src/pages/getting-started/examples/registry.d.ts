@@ -21,6 +21,10 @@ declare module 'umbra' {
     'projects:reference': readonly string[];
     /** Another module's, fetched in parallel with the one above. */
     'tags:reference': readonly string[];
+    /** A preview-only branch. Absent on any other build, and that is not a failure. */
+    'debug-overlay': { workspace: string };
+    /** Downstream of it, so it goes wherever the branch goes. */
+    'debug-recorder': { recording: string };
   }
 
   interface NoticeRegistry {

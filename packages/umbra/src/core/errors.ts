@@ -95,6 +95,29 @@ export class StepSkippedError extends BootstrapError {
  * consumer. It carries the step so two concurrent refusals can be settled by plan order rather than
  * by whichever promise happened to land first.
  */
+/**
+ * The sentinel `ctx.skip` throws.
+ *
+ * Internal, like {@link BlockSignal}: the runner catches it, settles the step as `skipped`, and it
+ * never reaches a consumer. Unlike a block it stops nothing — the run carries on, and the step's
+ * dependents are pruned by the ordinary rule that a step runs only when its needs succeeded.
+ */
+export class SkipSignal extends Error {
+  readonly step: StepId;
+  readonly reason: string | undefined;
+
+  constructor(step: StepId, reason?: string) {
+    super(
+      reason === undefined
+        ? `Step "${String(step)}" does not apply.`
+        : `Step "${String(step)}" does not apply: ${reason}`
+    );
+    this.name = 'SkipSignal';
+    this.step = step;
+    this.reason = reason;
+  }
+}
+
 export class BlockSignal extends Error {
   readonly step: StepId;
   /** Named for what it is, not for its container: `outcome.blockedBy.reason` is the same string. */

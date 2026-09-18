@@ -1,10 +1,10 @@
 import type { Clock } from '../utils/clock.js';
 import { serializeError } from '../utils/serialize-error.js';
-import { BlockSignal, StepSkippedError } from './errors.js';
+import { BlockSignal, SkipSignal, StepSkippedError } from './errors.js';
 import type { EventHub } from './events.js';
 import { createIntentQueue } from './intent-queue.js';
 import { createNoticeLog } from './notice-log.js';
-import { claimSharedStep } from './shared-scope.js';
+import { claimSharedStep, type SharedResult } from './shared-scope.js';
 import type { CompiledPlan, PlannedStep } from './plan.js';
 import type { StepId } from './registry.js';
 import { attemptStep } from './run-step.js';
@@ -35,6 +35,17 @@ function errorFrom(serialized: SerializedError): Error {
       : new Error(serialized.message, { cause: errorFrom(serialized.cause) });
   error.name = serialized.name;
   return error;
+}
+
+/** How a shared step's ending is published, so everyone waiting on the key adopts the same one. */
+function settledFrom(error: unknown): SharedResult {
+  if (error instanceof BlockSignal) {
+    return { kind: 'blocked', reason: error.reason };
+  }
+  if (error instanceof SkipSignal) {
+    return { kind: 'skipped', reason: error.reason };
+  }
+  return { kind: 'failed', error: serializeError(error) };
 }
 
 export type SchedulerOptions = {
@@ -185,6 +196,10 @@ export async function runPreflight(
         if (result.kind === 'blocked') {
           return context.block(result.reason);
         }
+        // A step that does not apply does not apply for anyone sharing it either.
+        if (result.kind === 'skipped') {
+          return context.skip(result.reason);
+        }
         if (result.kind === 'failed') {
           throw errorFrom(result.error);
         }
@@ -200,11 +215,7 @@ export async function runPreflight(
       } catch (error: unknown) {
         // Settled on the way out, so a sharer waiting on this key learns the answer instead of
         // waiting for its own deadline to notice nothing is coming.
-        claim.settle(
-          error instanceof BlockSignal
-            ? { kind: 'blocked', reason: error.reason }
-            : { kind: 'failed', error: serializeError(error) }
-        );
+        claim.settle(settledFrom(error));
         throw error;
       }
     };
@@ -332,7 +343,7 @@ export async function runPreflight(
       // and never given the chance to fail; a `blocked` one made a decision, and `blockedBy` is
       // where that is reported. Listing either beside a real 401 would make a refused boot read as
       // a crash — and a `blocked` step reaching the line below would also halt the run twice over.
-      if (status === 'cancelled' || status === 'blocked') {
+      if (status === 'cancelled' || status === 'blocked' || status === 'skipped') {
         continue;
       }
 

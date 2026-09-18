@@ -1,7 +1,7 @@
 import type { Intent, Outcome } from 'umbra/react';
 
 const STATUS_MEANING: Record<string, string> = {
-  ready: 'Every step succeeded. Mount everything.',
+  ready: 'No step failed. Mount everything.',
   degraded: 'An optional step failed. Mount, and read the notices to know what is missing.',
   blocked: 'A guard refused. Do not mount; the intents say where to send the user.',
   failed: 'A required step failed. Do not mount.',

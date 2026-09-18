@@ -250,3 +250,40 @@ test('clearing the shared scope makes the next module do the work again', async 
 
   expect(calls).toBe(2);
 });
+
+test('a shared step that does not apply does not apply for its sharers either', async () => {
+  const steps = () => {
+    return [
+      defineStep({
+        id: 'session',
+        scope: 'shared',
+        run: (ctx) => {
+          return ctx.skip('no plugin host on this install');
+        },
+      }),
+      defineStep({
+        id: 'reads-it',
+        needs: ['session'],
+        run: () => {
+          return { any: true };
+        },
+      }),
+    ];
+  };
+
+  const [first, second] = twoModules(steps);
+  const [a, b] = await Promise.all([first.run(), second.run()]);
+
+  // The sharer adopts the ending, as it does for a value and for a refusal. Read as a failure it
+  // would have thrown a rebuilt error into a module that did nothing wrong.
+  for (const outcome of [a, b]) {
+    expect(outcome.status).toBe('ready');
+    expect(outcome.errors).toEqual([]);
+    expect(
+      outcome.timeline.find((trace) => {
+        return trace.id === 'session';
+      })?.status
+    ).toBe('skipped');
+    expect(outcome.data['reads-it']).toBeUndefined();
+  }
+});

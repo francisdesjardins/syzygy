@@ -190,6 +190,36 @@ const trialWarning = defineHostedStep({
 });
 ```
 
+## A branch that does not apply
+
+Some steps are conditional on where the build is running rather than on whether something worked: a
+debug overlay that belongs to a preview deployment, an analytics bundle nobody consented to, a
+plugin host this customer did not buy. `ctx.skip()` says so, and it is not a failure.
+
+```ts
+const debugOverlay = defineStep({
+  id: 'debug-overlay',
+  needs: ['config'],
+  run: (ctx) => {
+    if (!isPreviewBuild()) {
+      return ctx.skip('not a preview build');
+    }
+    return openOverlay(ctx.get('config'));
+  },
+});
+```
+
+The step settles `skipped`, `errors` stays empty and the run stays `ready`. Everything downstream
+goes with it under the rule that was already there — `needs` is an `and`, so a step whose dependency
+did not succeed does not run — which means the rest of the branch declares nothing.
+
+An `optional` step that throws prunes the same subtree, and that is how this had to be written. It
+also ends the run `degraded` and files an error for a thing that went exactly as intended.
+
+Pruning is the whole of it, so the case `skip` does not answer is a branch that rejoins. Two routes
+into one step is a switch **inside** that step: nothing downstream may name a dependency that might
+not be there.
+
 ## Notices and intents
 
 A **notice** is a fact recorded during the run. Passive: nothing is expected to act on it. It is what
@@ -224,7 +254,7 @@ const bound = bindBootstrap(live, {
 
 | Status     | Means                             | What the app does                                    |
 | ---------- | --------------------------------- | ---------------------------------------------------- |
-| `ready`    | Every step succeeded              | Mount everything                                     |
+| `ready`    | No step failed                    | Mount everything                                     |
 | `degraded` | An optional step failed           | Mount, and read the notices to know what is missing  |
 | `blocked`  | A step refused the mount          | Do not mount; the intents say where to send the user |
 | `failed`   | A required step failed            | Do not mount                                         |

@@ -4,6 +4,7 @@ import type { SerializedError } from './types.js';
 export type SharedResult =
   | { readonly kind: 'value'; readonly value: unknown }
   | { readonly kind: 'blocked'; readonly reason: string }
+  | { readonly kind: 'skipped'; readonly reason: string | undefined }
   | { readonly kind: 'failed'; readonly error: SerializedError };
 
 export type Claim =
@@ -32,8 +33,8 @@ type Settlers = Map<string, (result: SharedResult) => void>;
  * changes {@link SharedResult} takes a new symbol and simply does not share with the old one, which
  * is the right outcome: not sharing is slower, and sharing something misread is wrong.
  */
-const REGISTRY_KEY = Symbol.for('umbra.shared-scope.v1');
-const SETTLERS_KEY = Symbol.for('umbra.shared-scope.settlers.v1');
+const REGISTRY_KEY = Symbol.for('umbra.shared-scope.v2');
+const SETTLERS_KEY = Symbol.for('umbra.shared-scope.settlers.v2');
 
 type GlobalWithRegistry = typeof globalThis & {
   [REGISTRY_KEY]?: Registry | undefined;

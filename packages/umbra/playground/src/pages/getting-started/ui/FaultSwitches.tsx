@@ -24,6 +24,12 @@ const LABELS: ReadonlyArray<{ key: keyof Faults; label: string; watch: string }>
     watch: 'status goes degraded: the app still mounts, and only the config subtree is pruned',
   },
   {
+    key: 'previewBuild',
+    label: 'Preview build',
+    watch:
+      'the debug branch comes back — it is skipped by default, and that skip is why the run is ready with no errors rather than degraded',
+  },
+  {
     key: 'tagsHang',
     label: 'Tags hangs',
     watch: 'its bar stops at its own 1.2s budget while everything else finishes normally',

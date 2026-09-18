@@ -3,6 +3,55 @@
 Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No semver: names change
 between commits when a better one shows up, and the entry says which and why.
 
+## 2026-09-18, a branch that does not apply
+
+### Added — `ctx.skip(reason?)`
+
+A preflight or hosted step can end by saying the work does not apply here. The step settles
+`skipped`, `errors` stays empty, and the run stays `ready`.
+
+Nothing else was needed for the rest of the branch: `needs` is an `and`, so everything downstream of
+a step that did not succeed was already pruned. `skip` adds the one ending that rule had no way to
+express — the steps it prunes have settled `skipped` since the first scheduler, and this is the same
+word for the same thing, chosen by the step rather than inherited from a dependency.
+
+The shape had to be written as an `optional` step that throws, which prunes correctly and then ends
+the run `degraded` with an error filed against a thing that went exactly as intended.
+
+`SkipSignal` mirrors `BlockSignal` down to its constructor, and it is thrown rather than returned
+for the same reason: the step's body stops where it says it does.
+
+### Changed — a shared step's skip is everyone's skip
+
+`SharedResult` gains `{ kind: 'skipped' }`, so a module adopting a shared step adopts the skip the
+way it already adopted a refusal — a preview-only step is not a preview-only step for one module on
+the page and not the others.
+
+That is a shape change, so both `Symbol.for` keys move: `umbra.shared-scope.v1` → `v2` and
+`umbra.shared-scope.settlers.v1` → `v2`. A copy of the library holding the old shape now shares
+nothing with a copy holding the new one, which is the file's own rule — not sharing is slower,
+sharing something misread is wrong.
+
+### Changed — the demo boots a branch it is meant to go without
+
+`getting-started` carries `debug-overlay` and `debug-recorder` behind a new **Preview build**
+switch. Off, both settle `skipped`, the graph greys them out and the outcome is `ready` with no
+errors. On, the same two boot green with nothing else edited. Both ids are in the playground's
+`StepRegistry`, so the example reads its own data rather than casting.
+
+### Guarded
+
+Three tests in `run.test.ts` — the branch skipped with its dependent pruned behind it, the branch
+taken, and a _required_ step that skips without failing the run. One in `shared-scope.test.ts` for
+the adopted skip, and one in `live-run.test.ts`, because `skip` sits on `BaseContext` and a hosted
+step that skips has to prune its own branch the same way.
+
+### Fixed — `ready` did not mean what the table said
+
+"Every step succeeded" was the README's line for `ready`, and the playground repeated it. The status
+is computed from `errors.length`, which a skipped step never joins — so a run can be `ready` with
+steps that never ran. Both now read "no step failed".
+
 ## 2026-09-18, `StepStatus` gains `blocked`
 
 ### Changed — the step that refused no longer wears the word for the steps it stopped

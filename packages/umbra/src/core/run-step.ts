@@ -1,6 +1,6 @@
 import type { Clock } from '../utils/clock.js';
 import { serializeError } from '../utils/serialize-error.js';
-import { BlockSignal } from './errors.js';
+import { BlockSignal, SkipSignal } from './errors.js';
 import type { PlannedStep } from './plan.js';
 import type { AbortReason, SerializedError, StepStatus } from './types.js';
 
@@ -142,6 +142,12 @@ export async function attemptStep(args: AttemptArgs): Promise<StepAttempt> {
 
   if (raced.error instanceof BlockSignal) {
     return finish({ ...base, lateWrites, status: 'blocked', block: raced.error });
+  }
+
+  // A step that does not apply produced nothing, which is what `skipped` says — the same word its
+  // dependents take, and no entry anywhere that reads as something to fix.
+  if (raced.error instanceof SkipSignal) {
+    return finish({ ...base, lateWrites, status: 'skipped' });
   }
 
   return finish({

@@ -135,6 +135,38 @@ type BaseContext<TNeeds extends readonly StepId[]> = {
    * forward, and an intent nobody forwards is recorded as dropped rather than lost.
    */
   intent<TType extends IntentType>(type: TType, ...rest: PayloadArgs<TType, IntentRegistry>): void;
+  /**
+   * This step does not apply to this run. It produces nothing, and its dependents are pruned.
+   *
+   * **Not a failure, and that is the whole of why it exists.** A branch the run is meant to go
+   * without — a preview-only overlay, a module this install does not have — was otherwise
+   * expressible only by throwing: the step is `optional`, the throw is tolerated, and the dependents
+   * are pruned. The pruning is right and the rest is not. A boot that went exactly as intended ends
+   * `degraded` with an entry in `errors`, and `tolerated` is left meaning two different things.
+   *
+   * The step settles `skipped` — the word its dependents already carry, and one meaning: produced
+   * nothing. Nothing reaches `errors`, and the run's status is untouched.
+   *
+   * **It prunes, so it does not answer a branch that rejoins.** `needs` is an `and`: a step
+   * downstream of two exclusive branches cannot name either. Where the branches converge, the
+   * switch belongs *inside* one step — they are one concept with two implementations, and the graph
+   * orders rather than conditions.
+   *
+   * Write it as `return ctx.skip()`, for the reason {@link PreflightContext.block} states.
+   *
+   * @example
+   * // Nothing outside this branch reads it, which is what makes it a branch rather than a step.
+   * const overlay = defineStep({
+   *   id: 'debug-overlay',
+   *   run: (ctx) => {
+   *     if (!isPreviewBuild()) {
+   *       return ctx.skip('not a preview build');
+   *     }
+   *     return mountOverlay();
+   *   },
+   * });
+   */
+  skip(reason?: string): never;
 };
 
 /**

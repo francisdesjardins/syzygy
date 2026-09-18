@@ -568,3 +568,54 @@ test('a hosted step that catches the drop decides a refusal is not fatal', async
   await bound.hosted;
   bound.destroy();
 });
+
+test('a hosted step can skip, and takes the rest of its branch with it', async () => {
+  const opened: string[] = [];
+
+  const boot = createBootstrap({
+    steps: [
+      defineStep({
+        id: 'config',
+        run: () => {
+          return { tour: false };
+        },
+      }),
+      defineHostedStep({
+        id: 'welcome-tour',
+        needs: ['config'],
+        run: (ctx) => {
+          // A dialog the app decided not to show. Nothing failed, so nothing should say it did.
+          const config = ctx.get('config') as { tour: boolean };
+          if (!config.tour) {
+            return ctx.skip('this workspace has seen it');
+          }
+          opened.push('tour');
+          return undefined;
+        },
+      }),
+      defineHostedStep({
+        id: 'tour-survey',
+        needs: ['welcome-tour'],
+        run: () => {
+          opened.push('survey');
+          return undefined;
+        },
+      }),
+    ],
+  });
+
+  await boot.run();
+  const live = boot.live();
+  const report = await live.attach({});
+
+  const statusOf = (id: string) => {
+    return report.timeline.find((trace) => {
+      return trace.id === id;
+    })?.status;
+  };
+
+  expect(opened).toEqual([]);
+  expect(report.errors).toEqual([]);
+  expect(statusOf('welcome-tour')).toBe('skipped');
+  expect(statusOf('tour-survey')).toBe('skipped');
+});
