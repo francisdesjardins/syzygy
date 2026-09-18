@@ -1838,6 +1838,7 @@ __metadata:
     "@tanstack/react-router": "npm:^1.170.36"
     "@types/node": "npm:^24.10.1"
     "@types/react": "npm:^19.3.0"
+    gnomon: "workspace:^"
     limb: "workspace:^"
     oxfmt: "npm:0.68.0"
     oxlint: "npm:^1.83.0"
@@ -2122,6 +2123,7 @@ __metadata:
     gnomon-ct-coverage-report: ./ct-coverage-report.mjs
     gnomon-doc-budget: ./check-doc-budget.mjs
     gnomon-examples: ./check-examples.mjs
+    gnomon-token-usage: ./check-token-usage.mjs
   languageName: unknown
   linkType: soft
 
@@ -2201,6 +2203,7 @@ __metadata:
     "@types/react": "npm:^19.3.0"
     "@types/react-dom": "npm:^19.3.0"
     "@vitejs/plugin-react": "npm:^6.1.1"
+    gnomon: "workspace:^"
     i18next: "npm:^26.3.6"
     i18next-browser-languagedetector: "npm:^8.2.1"
     oxfmt: "npm:0.68.0"
@@ -3051,6 +3054,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "penumbra@workspace:packages/penumbra"
   dependencies:
+    gnomon: "workspace:^"
     oxfmt: "npm:0.68.0"
     oxlint: "npm:^1.83.0"
     typescript-7: "npm:typescript@7.0.2"

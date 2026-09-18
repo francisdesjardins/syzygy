@@ -24,7 +24,7 @@
     "./package.json": "./package.json"
   },
   "scripts": {
-    "check": "yarn type-check && yarn lint --deny-warnings && yarn format:check && yarn check:tokens",
+    "check": "yarn type-check && yarn lint --deny-warnings && yarn format:check && yarn check:tokens && yarn check:tokens:used",
     "type-check": "node node_modules/typescript-7/bin/tsc --noEmit",
     "lint": "oxlint --type-aware",
     "lint:fix": "oxlint --type-aware --fix",
@@ -32,7 +32,8 @@
     "format:check": "oxfmt --check .",
     "test": "echo \"corona: no-op — no test files yet; the viewer is exercised by antumbra's and umbra's smoke suites\"",
     "verify:all": "yarn check",
-    "check:tokens": "node scripts/check-token-coverage.mjs"
+    "check:tokens": "node scripts/check-token-coverage.mjs",
+    "check:tokens:used": "gnomon-token-usage --declares ../penumbra/tokens.system.css ../penumbra/tokens.skin.base.css ../umbra/playground/src/app/styles/tokens.skin.css -- src"
   },
   "dependencies": {
     "limb": "workspace:^",
@@ -42,6 +43,7 @@
     "@tanstack/react-router": "^1.170.36",
     "@types/node": "^24.10.1",
     "@types/react": "^19.3.0",
+    "gnomon": "workspace:^",
     "oxfmt": "0.68.0",
     "oxlint": "^1.83.0",
     "oxlint-tsgolint": "7.0.2001",

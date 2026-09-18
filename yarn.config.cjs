@@ -171,6 +171,7 @@ module.exports = {
       [`dev`, `a library delegates to its playground; a playground and an app run vite`],
       [`build`, `a library emits a bundle and declarations; a playground and an app run vite`],
       [`check:contrast`, `the site measures three skins, a playground measures its one`],
+      [`check:tokens:used`, `each names its own skin and its own source root`],
       [`test:component`, `the projects differ — antumbra has touch and focus legs umbra has not`],
       [`test:component:coverage`, `the same projects, instrumented`],
       [`playground:build`, `names its own playground workspace`],

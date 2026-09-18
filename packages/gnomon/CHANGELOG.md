@@ -2,6 +2,30 @@
 
 Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No semver.
 
+## 2026-09-17, a token nothing declares
+
+### Added
+
+`gnomon-token-usage` — every `var(--app-…)` names a token something declares.
+
+corona's `check-token-coverage` runs the other way: it fails on a token nothing _shows_. This one
+fails on a name nothing _declares_, and the difference is what a browser does with each. An
+undocumented token is invisible to a reader; an undeclared one resolves to nothing at all, so the
+property falls back to whatever it inherits and the page renders at a browser default with nothing
+anywhere complaining.
+
+That is not hypothetical. `--app-text-4xl` does not exist — the scale stops at `3xl` — and a
+heading asking for it shipped in penumbra's new playground rendering at the browser's default size.
+Type-check passed, lint passed, the contrast gate passed, and a screenshot is what caught it.
+
+It reads `.css`, `.ts` and `.tsx`, because an inline style names a token that does not exist just as
+easily as a stylesheet does. Two floors guard it: a run that read no declaration would call every
+usage undeclared, and a run that read no usage would call every sheet clean.
+
+Here rather than in penumbra, which ships two stylesheets and knows nothing about who reads them,
+and rather than in corona, whose rule is about the viewer. A gate every workspace runs belongs with
+the gates.
+
 ## 2026-09-17, the agent-instruction budget joins the gates
 
 ### Added

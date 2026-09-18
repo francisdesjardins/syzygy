@@ -10,7 +10,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "check": "yarn type-check && yarn lint --deny-warnings && yarn format:check && yarn check:contrast && yarn check:literals && yarn check:head",
+    "check": "yarn type-check && yarn lint --deny-warnings && yarn format:check && yarn check:contrast && yarn check:literals && yarn check:head && yarn check:tokens:used",
     "type-check": "node node_modules/typescript-7/bin/tsc --noEmit",
     "lint": "oxlint --type-aware",
     "lint:fix": "oxlint --type-aware --fix",
@@ -20,7 +20,8 @@
     "verify:all": "yarn check && yarn build",
     "check:contrast": "penumbra-contrast src/styles/tokens.skin.css",
     "check:literals": "node scripts/check-literals.mjs",
-    "check:head": "node scripts/check-head.mjs"
+    "check:head": "node scripts/check-head.mjs",
+    "check:tokens:used": "gnomon-token-usage --declares ../../packages/penumbra/tokens.system.css ../../packages/penumbra/tokens.skin.base.css src/styles/tokens.skin.css -- src"
   },
   "dependencies": {
     "i18next": "^26.3.6",
@@ -36,6 +37,7 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.1",
+    "gnomon": "workspace:^",
     "oxfmt": "0.68.0",
     "oxlint": "^1.83.0",
     "oxlint-tsgolint": "7.0.2001",

@@ -53,7 +53,7 @@
     "build:clean": "node --eval \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
     "build:esm": "node node_modules/typescript-7/bin/tsc --noEmit && vite build --config vite.config.esm.ts && yarn build:types",
     "build:types": "node node_modules/typescript-7/bin/tsc -p tsconfig.build.json",
-    "check": "yarn type-check && yarn lint --deny-warnings && yarn format:check && yarn check:contrast && yarn docs:check && yarn docs:examples && yarn doc-budget",
+    "check": "yarn type-check && yarn lint --deny-warnings && yarn format:check && yarn check:contrast && yarn docs:check && yarn docs:examples && yarn doc-budget && yarn check:tokens:used",
     "check:contrast": "penumbra-contrast playground/src/app/styles/tokens.skin.css",
     "coverage:update": "node scripts/update-coverage.mjs",
     "dev": "yarn workspace umbra-playground dev",
@@ -80,7 +80,8 @@
     "type-check:watch": "node node_modules/typescript-7/bin/tsc --noEmit --watch",
     "verify:all": "yarn lint --deny-warnings && yarn type-check && yarn build && yarn verify:package && yarn smoke",
     "verify:package": "node scripts/verify-package.mjs",
-    "doc-budget": "gnomon-doc-budget"
+    "doc-budget": "gnomon-doc-budget",
+    "check:tokens:used": "gnomon-token-usage --declares ../penumbra/tokens.system.css ../penumbra/tokens.skin.base.css playground/src/app/styles/tokens.skin.css -- playground/src src"
   },
   "devDependencies": {
     "@playwright/test": "1.63.0",

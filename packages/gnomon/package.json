@@ -13,7 +13,8 @@
   "bin": {
     "gnomon-ct-coverage-report": "./ct-coverage-report.mjs",
     "gnomon-doc-budget": "./check-doc-budget.mjs",
-    "gnomon-examples": "./check-examples.mjs"
+    "gnomon-examples": "./check-examples.mjs",
+    "gnomon-token-usage": "./check-token-usage.mjs"
   },
   "type": "module",
   "exports": {

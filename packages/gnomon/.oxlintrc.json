@@ -17,6 +17,7 @@
       "files": [
         "check-examples.mjs",
         "check-doc-budget.mjs",
+        "check-token-usage.mjs",
         "ct-coverage-report.mjs",
         "ct-coverage-reset.mjs"
       ],

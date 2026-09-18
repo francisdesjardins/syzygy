@@ -34,6 +34,7 @@ being true.
 | Framework-free helpers    | `limb`                                   | its entry rule: if it needs a framework, it is not limb |
 | The gates themselves      | `gnomon`                                 | `yarn check` in each consumer                           |
 | Agent-instruction budgets | `gnomon-doc-budget`                      | `yarn doc-budget`, a ceiling and a headroom line each   |
+| Tokens that are read      | `gnomon-token-usage`                     | `check:tokens:used` in all five consumers               |
 | Phone layout              | —                                        | `yarn check:mobile`, 16 routes × 2 widths               |
 | The stacking scale        | `penumbra/tokens.system.css`             | `check-tokens.mjs` — no two layers share a number       |
 | The playground shell      | `corona/shell`, `/theme`, `/mascot`      | each playground's `verify:all`, and `yarn check:mobile` |
@@ -118,9 +119,8 @@ in substance: antumbra's feeds a template token set and writes from a layout eff
 is a slot by an older decision that still holds.
 
 **What is left to measure.** `HomePage.module.css` at 70% and `icons.tsx` at 51% were not looked at.
-And a gap the third playground found: nothing checks that a `var(--app-…)` names a token something
-declares. A missing `--app-text-4xl` rendered as a browser default and only a screenshot caught it.
-The reverse of `check-token-coverage.mjs`, and the same file could hold it.
+That gap the third playground found — a `var(--app-…)` naming a token nothing declares — is closed:
+`gnomon-token-usage`, run by all five consumers.
 
 **The number published here was wrong, and the probe was why.**
 
