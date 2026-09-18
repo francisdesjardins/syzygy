@@ -49,9 +49,9 @@ test('a full run touches no DOM global', async () => {
     });
 
     const outcome = await boot.run();
-    const session = boot.session();
-    session.forward();
-    session.dispose();
+    const live = boot.live();
+    live.forward();
+    live.dispose();
 
     expect(outcome.status).toBe('ready');
     expect(touched).toEqual([]);

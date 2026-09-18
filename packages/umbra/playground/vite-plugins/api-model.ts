@@ -139,10 +139,10 @@ export const CATEGORIES: readonly CategoryDef[] = [
     label: 'The live half',
     specifier: CORE,
     blurb:
-      'Everything that moves after the run settles: the intent queue, the mounted phase, and the observable snapshot a binding reads.',
+      'Everything that moves after the run settles: the intent queue, the hosted phase, and the observable snapshot a binding reads.',
     symbols: [
-      'Session',
-      'SessionState',
+      'LiveRun',
+      'LiveRunState',
       'HostReport',
       'attachIntentHost',
       'AttachedIntentHost',

@@ -12,7 +12,7 @@ export type IntentEntry = {
 /**
  * The half a step context needs: somewhere to put an intent.
  *
- * Narrower than {@link IntentQueue} on purpose. A mounted step writes into the session's live
+ * Narrower than {@link IntentQueue} on purpose. A mounted step writes into the live run's
  * queue, which has no `finalize` to give — the run it would have frozen is already over.
  */
 export type IntentSink = {
@@ -33,7 +33,7 @@ export type IntentQueue = IntentSink & {
 /**
  * What a run queues for the framework to act on.
  *
- * Collection only: state transitions, forwarding and settling belong to the session, which is the
+ * Collection only: state transitions, forwarding and settling belong to the live run, which is the
  * thing that exists after a binding has mounted. Keeping them apart is what lets the outcome be a
  * frozen snapshot rather than a live object nobody is obliged to drain.
  *

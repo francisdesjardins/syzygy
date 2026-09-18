@@ -3,6 +3,29 @@
 Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No semver: names change
 between commits when a better one shows up, and the entry says which and why.
 
+## 2026-09-18, `Session` is `LiveRun`
+
+### Changed — renamed export
+
+`Session` → `LiveRun`, `SessionState` → `LiveRunState`, `boot.session()` → **`boot.live()`**, and
+`core/session.ts` → `core/live-run.ts`. `RunSnapshot.session` is `.live`.
+
+This was the one decision `HANDOFF.md` left open, and the name did not need inventing: the file's own
+doc comment had called it "the live half of a run" three times, and the API reference's category for
+it is titled "The live half". The handoff's first sketch was `LiveRun` too.
+
+**What it collided with is in this package's own examples.** Every one of them declares a step called
+`session` — it is the natural name for a token step, and `needs: ['session']` appears in the README,
+in `define-step`'s JSDoc, in the registry example and in four test files. None of those changed: the
+word belongs to consumers, which is the whole reason the library gave it up.
+
+Two things surfaced on the way. `run-observer.ts` already had a local called `live` — a flag meaning
+"not yet disposed" — so it is `alive` now, which is what it meant. And twelve comments still said
+`mounted` where the code has said `hosted` since an earlier rename.
+
+**Migrating:** `boot.session()` becomes `boot.live()`; the type is `LiveRun`; a snapshot's `.session`
+is `.live`. Nothing about the behaviour changed.
+
 ## 2026-09-17, the design-system page becomes "Our skin"
 
 ### Changed

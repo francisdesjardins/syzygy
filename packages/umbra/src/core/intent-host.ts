@@ -1,5 +1,5 @@
 import type { HostCapabilities } from './registry.js';
-import type { Session } from './session.js';
+import type { LiveRun } from './live-run.js';
 import type { Intent } from './types.js';
 
 /** What a handler is given to answer one intent with. */
@@ -42,17 +42,17 @@ export type AttachedIntentHost = {
   /**
    * Stop listening.
    *
-   * **It does not dispose the session**, and that distinction took a bug to find. A component
+   * **It does not dispose the live run**, and that distinction took a bug to find. A component
    * unmounting is not the application shutting down: a framework tears an effect down and rebuilds
    * it whenever its inputs change, and a `destroy` that disposed would drop every pending intent
-   * each time. Dropping what nobody forwarded is `session.dispose()`, and only the app knows when
+   * each time. Dropping what nobody forwarded is `live.dispose()`, and only the app knows when
    * the page is really going away.
    */
   destroy: () => void;
 };
 
 /**
- * Connect a session's intent queue to whatever the app shows people, and run the mounted phase.
+ * Connect a live run's intent queue to whatever the app shows people, and run the hosted phase.
  *
  * Core rather than binding code, by the mechanical test: React, Solid and plain DOM all need this,
  * and they all need the same thing. What a binding adds is the lifetime — an effect, an
@@ -62,7 +62,7 @@ export type AttachedIntentHost = {
  * intents after the first pass: a step that decides to warn only once it has the configuration.
  *
  * @example
- * const host = attachIntentHost(session, {
+ * const host = attachIntentHost(boot.live(), {
  *   host: { confirm: (message) => showConfirmDialog(message) },
  *   onIntent: (intent, controls) => {
  *     if (intent.type === 'warn:trial-expiring') {
@@ -74,31 +74,31 @@ export type AttachedIntentHost = {
  *
  * await host.hosted;
  */
-export function attachIntentHost(session: Session, options: IntentHostOptions): AttachedIntentHost {
+export function attachIntentHost(live: LiveRun, options: IntentHostOptions): AttachedIntentHost {
   const seen = new Set<string>();
 
   const drain = (): void => {
-    for (const intent of session.forward(options.accepts)) {
+    for (const intent of live.forward(options.accepts)) {
       if (seen.has(intent.id)) {
         continue;
       }
       seen.add(intent.id);
       options.onIntent(intent, {
         settle: () => {
-          session.settle(intent.id);
+          live.settle(intent.id);
         },
         drop: (reason) => {
-          session.drop(intent.id, reason);
+          live.drop(intent.id, reason);
         },
       });
     }
   };
 
-  const unsubscribe = session.subscribe(() => {
+  const unsubscribe = live.subscribe(() => {
     drain();
   });
 
-  const hosted = session.attach(options.host).then(() => {
+  const hosted = live.attach(options.host).then(() => {
     return undefined;
   });
 

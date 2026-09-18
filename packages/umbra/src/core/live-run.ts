@@ -10,7 +10,7 @@ import type { PreflightResult } from './scheduler.js';
 import { createHostedContext } from './step-context.js';
 import type { Intent, Notice, StepFailure, StepStatus, StepTrace } from './types.js';
 
-/** What the mounted phase did, since the outcome was frozen before it ran. */
+/** What the hosted phase did, since the outcome was frozen before it ran. */
 export type HostReport = {
   readonly notices: readonly Notice[];
   readonly errors: readonly StepFailure[];
@@ -18,24 +18,24 @@ export type HostReport = {
 };
 
 /**
- * The live half of a run: the intent queue and the mounted phase.
+ * The live half of a run: the intent queue and the hosted phase.
  *
- * Reached through `boot.session()`, and only after `run()` has resolved. Everything that moves
+ * Reached through `boot.live()`, and only after `run()` has resolved. Everything that moves
  * lives here, which is what lets the outcome be a frozen snapshot.
  */
 /**
- * What a session publishes: the queue, and the mounted phase once it is over.
+ * What a live run publishes: the queue, and the hosted phase once it is over.
  *
  * One payload rather than two subscriptions, because they are one question — "what does the app
  * have to act on?" — and a renderer that had to join two streams would be joining them wrong.
  */
-export type SessionState = {
+export type LiveRunState = {
   readonly intents: readonly Intent[];
-  /** Undefined until the mounted phase has run. Its timeline is the other half of the graph. */
+  /** Undefined until the hosted phase has run. Its timeline is the other half of the graph. */
   readonly hosted: HostReport | undefined;
 };
 
-export type Session = {
+export type LiveRun = {
   /** The queue as it stands. Always a fresh array; the records themselves are frozen. */
   list: () => readonly Intent[];
   /**
@@ -51,25 +51,25 @@ export type Session = {
   /** Refuse one intent, with the reason on the record. */
   drop: (intentId: string, reason: string) => void;
   /** Called immediately with the current state, then on every change. */
-  subscribe: (listener: (state: SessionState) => void) => () => void;
+  subscribe: (listener: (state: LiveRunState) => void) => () => void;
   /**
-   * Run the mounted phase with the framework's port in hand.
+   * Run the hosted phase with the framework's port in hand.
    *
-   * This is the half of the bootstrap that descends into the framework: a mounted step can open a
+   * This is the half of the bootstrap that descends into the framework: a hosted step can open a
    * dialog through `ctx.host` and wait for the answer through `ctx.awaitIntent`, neither of which a
    * preflight step has any way to do.
    */
   attach: (host: HostCapabilities) => Promise<HostReport>;
   /**
-   * Close the session. Every intent still pending becomes `dropped('not-forwarded')`.
+   * Close the live run. Every intent still pending becomes `dropped('not-forwarded')`.
    *
    * The drop happens here rather than on `forward`, so an app can forward twice — once at mount and
-   * again when a mounted step queues something new — without the first call condemning the rest.
+   * again when a hosted step queues something new — without the first call condemning the rest.
    */
   dispose: () => void;
 };
 
-export type SessionDeps = {
+export type LiveRunDeps = {
   readonly compiled: CompiledPlan;
   readonly preflight: PreflightResult;
   readonly clock: Clock;
@@ -87,12 +87,12 @@ function replace(intents: readonly Intent[], next: Intent): Intent[] {
  * The live half of a run, which exists only once something has mounted.
  *
  * The outcome is a frozen snapshot on purpose, so everything that moves lives here: the queue's
- * state transitions, the waiters behind `awaitIntent`, and the mounted phase itself. An outcome
- * nobody hands to a session therefore leaks nothing, which is the property that makes the snapshot
+ * state transitions, the waiters behind `awaitIntent`, and the hosted phase itself. An outcome
+ * nobody hands to a live run therefore leaks nothing, which is the property that makes the snapshot
  * safe to pass around.
  */
-export function createSession(deps: SessionDeps): Session {
-  const store = createStore<SessionState>({ intents: deps.preflight.intents, hosted: undefined });
+export function createLiveRun(deps: LiveRunDeps): LiveRun {
+  const store = createStore<LiveRunState>({ intents: deps.preflight.intents, hosted: undefined });
   const waiters = new Map<string, Waiter>();
   // An answer that arrived before anyone was waiting for it.
   //
@@ -175,7 +175,7 @@ export function createSession(deps: SessionDeps): Session {
     setIntents(replace(store.get().intents, Object.freeze({ ...current, ...next })));
   };
 
-  const session: Session = {
+  const live: LiveRun = {
     list: () => {
       return store.get().intents;
     },
@@ -210,11 +210,11 @@ export function createSession(deps: SessionDeps): Session {
       // A rejected promise rather than a synchronous throw: this door returns a promise, and a
       // caller that only wrote `.catch` would otherwise see the error blow past it.
       if (disposed) {
-        return Promise.reject(new BootstrapError('The session was disposed.'));
+        return Promise.reject(new BootstrapError('The live run was disposed.'));
       }
       // Memoised for the same reason `run()` is. A framework re-attaches its host more often than
       // an author expects — StrictMode doubles effects, and a reactive effect re-runs whenever
-      // anything it read changed — and a mounted phase that ran twice would ask the user the same
+      // anything it read changed — and a hosted phase that ran twice would ask the user the same
       // question twice.
       mounting ??= runHosted({ deps, host, sink: liveSink, awaitIntent }).then((report) => {
         // Published, not just returned: the graph a binding draws needs the mounted half too, and
@@ -229,17 +229,17 @@ export function createSession(deps: SessionDeps): Session {
       disposed = true;
       for (const intent of store.get().intents) {
         if (intent.status === 'pending') {
-          session.drop(intent.id, 'not-forwarded');
+          live.drop(intent.id, 'not-forwarded');
         }
       }
     },
   };
 
-  return session;
+  return live;
 }
 
 type MountArgs = {
-  readonly deps: SessionDeps;
+  readonly deps: LiveRunDeps;
   readonly host: HostCapabilities;
   readonly sink: IntentSink;
   readonly awaitIntent: (intentId: string) => Promise<void>;

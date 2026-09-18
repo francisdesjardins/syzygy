@@ -120,9 +120,13 @@ is rejected at construction, because it can never be satisfied.
 **A hosted step returns `void`.** `run()` resolves at the end of preflight, so a value produced
 later would arrive after the outcome was handed over.
 
-**The outcome is frozen; the session is alive.** Everything that moves — the intent queue's
-transitions, the waiters behind `awaitIntent`, the hosted phase — lives on the session. An outcome
-nobody passes to a session leaks nothing, which is what makes the snapshot safe to hand around.
+**The outcome is frozen; the live run is not.** Everything that moves — the intent queue's
+transitions, the waiters behind `awaitIntent`, the hosted phase — lives on `boot.live()`. An outcome
+nobody passes to a live run leaks nothing, which is what makes the snapshot safe to hand around.
+
+It was `Session` until the name collided with the word every application uses for its token step —
+the examples in this package declare one called `session` — and `LiveRun` is what its own doc comment
+had been calling it all along.
 
 **`run()` never rejects for anything a step did**, and calling it twice returns the same outcome.
 Programming mistakes throw synchronously from `createBootstrap` instead. React 19 doubles effects in

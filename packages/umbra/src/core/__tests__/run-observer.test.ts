@@ -27,7 +27,7 @@ test('the snapshot walks idle, running, settled', async () => {
   const boot = createBootstrap({
     steps: [
       defineStep({
-        id: 'session',
+        id: 'live',
         run: async () => {
           await sleep(5);
           return { userId: 'u1' };
@@ -133,13 +133,13 @@ test('intents queued by the hosted phase reach the snapshot', async () => {
 
   expect(snapshot.intents).toHaveLength(0);
 
-  const mounting = snapshot.session?.attach({});
+  const mounting = snapshot.live?.attach({});
   await sleep(5);
   expect(observer.store.get().intents[0]?.type).toBe('warn:trial');
 
   const queued = observer.store.get().intents[0];
-  snapshot.session?.forward();
-  snapshot.session?.settle(queued?.id ?? '');
+  snapshot.live?.forward();
+  snapshot.live?.settle(queued?.id ?? '');
   await mounting;
 
   expect(observer.store.get().intents[0]?.status).toBe('handled');

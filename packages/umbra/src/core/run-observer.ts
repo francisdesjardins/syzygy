@@ -1,6 +1,6 @@
 import { type ReadableStore, createStore } from '../store/create-store.js';
 import type { RunEvent, EventHub } from './events.js';
-import type { HostReport, Session } from './session.js';
+import type { HostReport, LiveRun } from './live-run.js';
 import type { AnyStep, Intent, Outcome } from './types.js';
 
 /**
@@ -17,17 +17,17 @@ export type RunSnapshot<TSteps extends readonly AnyStep[] = readonly []> = {
   /** Everything the run has reported so far. Grows while `stage` is `running`. */
   readonly events: readonly RunEvent[];
   readonly outcome: Outcome<TSteps> | undefined;
-  /** Live: the queue as the session currently holds it, empty until the run settles. */
+  /** Live: the queue as the live run currently holds it, empty until the run settles. */
   readonly intents: readonly Intent[];
   /**
    * What the mounted phase did, once it has run.
    *
-   * Here rather than only on `session.attach()`'s promise, because a graph drawn from the timeline
+   * Here rather than only on `live.attach()`'s promise, because a graph drawn from the timeline
    * is missing its last column without it — the mounted step showed as permanently unresolved, and
    * somebody noticed.
    */
   readonly hosted: HostReport | undefined;
-  readonly session: Session | undefined;
+  readonly live: LiveRun | undefined;
 };
 
 /** The observable view of one bootstrap, memoised on it so a page full of components runs it once. */
@@ -40,14 +40,14 @@ export type RunObserver<TSteps extends readonly AnyStep[] = readonly []> = {
    * StrictMode, and a binding should not have to defend against its own framework.
    */
   start: () => void;
-  /** Stop listening. The session is left alone: the app may still be draining intents. */
+  /** Stop listening. The live run is left alone: the app may still be draining intents. */
   dispose: () => void;
 };
 
 export type ObserverDeps<TSteps extends readonly AnyStep[]> = {
   readonly hub: EventHub;
   readonly run: () => Promise<Outcome<TSteps>>;
-  readonly session: () => Session;
+  readonly live: () => LiveRun;
 };
 
 /**
@@ -71,16 +71,16 @@ export function createRunObserver<TSteps extends readonly AnyStep[]>(
     outcome: undefined,
     intents: [],
     hosted: undefined,
-    session: undefined,
+    live: undefined,
   });
 
   let started = false;
-  let live = true;
+  let alive = true;
   let unsubscribeEvents: (() => void) | undefined;
   let unsubscribeIntents: (() => void) | undefined;
 
   unsubscribeEvents = deps.hub.listen((event) => {
-    if (!live) {
+    if (!alive) {
       return;
     }
     store.set({ ...store.get(), events: [...store.get().events, event] });
@@ -97,21 +97,21 @@ export function createRunObserver<TSteps extends readonly AnyStep[]>(
       store.set({ ...store.get(), stage: 'running' });
 
       void deps.run().then((outcome) => {
-        if (!live) {
+        if (!alive) {
           return;
         }
-        const session = deps.session();
+        const live = deps.live();
         // Subscribed rather than read once: the mounted phase queues intents of its own, and a
         // snapshot taken here would show the queue as it was before any of them existed.
-        unsubscribeIntents = session.subscribe((state) => {
+        unsubscribeIntents = live.subscribe((state) => {
           store.set({ ...store.get(), intents: state.intents, hosted: state.hosted });
         });
-        store.set({ ...store.get(), stage: 'settled', outcome, session });
+        store.set({ ...store.get(), stage: 'settled', outcome, live });
       });
     },
 
     dispose: () => {
-      live = false;
+      alive = false;
       unsubscribeEvents?.();
       unsubscribeEvents = undefined;
       unsubscribeIntents?.();

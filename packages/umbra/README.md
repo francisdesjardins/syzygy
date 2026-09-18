@@ -203,8 +203,8 @@ forwarded on its own — the app says what it takes — and an intent nobody for
 dropped with a reason rather than lost.
 
 ```ts
-const session = boot.session();
-const bound = bindBootstrap(session, {
+const live = boot.live();
+const bound = bindBootstrap(live, {
   host: {
     confirm: (message) => {
       return myDialog.ask(message);
@@ -427,9 +427,11 @@ queue. No model asked for one of those.
 
 Nor did one ask for the upward channel to be refused. A "module ready" signal was specified, studied
 and turned down — unbounded growth, nowhere to put its types, and the host already does it better.
-And `Session` is still in the API under a name that collides with what almost every app calls its
-token step, because renaming it is a larger call than the fifteen above and there is no real
-consumer yet to arbitrate it. A model would have renamed it, or not, without noticing there was a
+And `Session` sat in the API for months under a name that collides with what almost every app calls
+its token step — the examples on this page declare a step called `session`, which is the collision
+in one screen. It is `LiveRun` now, reached through `boot.live()`, and the word came from the file's
+own doc comment: it had described itself as "the live half of a run" three times without anyone
+acting on it. A model would have renamed it on day one, or never, without noticing there was a
 decision to make.
 
 That is the trade this repo makes visible: the tool is extraordinary at the part that used to be

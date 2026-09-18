@@ -57,7 +57,7 @@ if (outcome.status === 'blocked') {
   demo.log('root', `refused: ${outcome.blockedBy.reason} — single-spa was never started`);
   demo.signIn(outcome.intents[0]);
 } else {
-  const session = boot.session();
+  const live = boot.live();
 
   registerApplication({
     name: 'dashboard',
@@ -70,7 +70,7 @@ if (outcome.status === 'blocked') {
     // The single-spa way: the root threads what it has down to the application. It works, and it is
     // what every root config already does — the cost is that every application in the chain has to
     // carry props it may not use, and a lazily loaded one cannot get them any other way.
-    customProps: { outcome, session },
+    customProps: { outcome, live },
   });
 
   registerApplication({

@@ -4,7 +4,7 @@ import { type RunEvent, type EventHub, createEventHub } from './events.js';
 import { compilePlan } from './plan.js';
 import { type SchedulerOptions, type PreflightResult, runPreflight } from './scheduler.js';
 import { type RunObserver, createRunObserver } from './run-observer.js';
-import { type Session, createSession } from './session.js';
+import { type LiveRun, createLiveRun } from './live-run.js';
 import type {
   AnyStep,
   RunData,
@@ -61,10 +61,10 @@ export type Bootstrap<TSteps extends readonly AnyStep[]> = {
   /**
    * The live half, available once `run()` has resolved.
    *
-   * Throws before that, rather than handing back an empty queue: a session built on a run that has
+   * Throws before that, rather than handing back an empty queue: a live run built on a run that has
    * not happened would silently forward nothing, which reads exactly like an app with no warnings.
    */
-  session: () => Session;
+  live: () => LiveRun;
   /**
    * A live view of the run, as an async iterable.
    *
@@ -72,7 +72,7 @@ export type Bootstrap<TSteps extends readonly AnyStep[]> = {
    * It reports what is happening, never what it means — whether the app may mount is the outcome's
    * answer, and a consumer that reduces these events into their own version of it will drift.
    *
-   * The mounted phase is deliberately outside this stream. It belongs to the session, which has its
+   * The hosted phase is deliberately outside this stream. It belongs to the live run, which has its
    * own `subscribe`, and the two phases are separate worlds everywhere else in this package too.
    *
    * @example
@@ -141,7 +141,7 @@ export function createBootstrap<const TSteps extends readonly AnyStep[]>(
 
   let pending: Promise<Outcome<TSteps>> | undefined;
   let preflight: PreflightResult | undefined;
-  let session: Session | undefined;
+  let live: LiveRun | undefined;
   let observer: RunObserver<TSteps> | undefined;
 
   const execute = async (): Promise<Outcome<TSteps>> => {
@@ -201,18 +201,18 @@ export function createBootstrap<const TSteps extends readonly AnyStep[]>(
         run: () => {
           return api.run();
         },
-        session: () => {
-          return api.session();
+        live: () => {
+          return api.live();
         },
       });
       return observer;
     },
-    session: () => {
+    live: () => {
       if (preflight === undefined) {
-        throw new BootstrapError('session() is only available after run() has resolved.');
+        throw new BootstrapError('live() is only available after run() has resolved.');
       }
-      session ??= createSession({ compiled, preflight, clock });
-      return session;
+      live ??= createLiveRun({ compiled, preflight, clock });
+      return live;
     },
   };
 

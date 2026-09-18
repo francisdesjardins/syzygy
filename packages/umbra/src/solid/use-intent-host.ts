@@ -8,7 +8,7 @@ import { useBootstrapContext } from './bootstrap-provider.js';
  *
  * **Returns an accessor**, and returns intents rather than taking an `onIntent` callback — the same
  * shape as React's, for the same reason: a callback recreated every render would tear the host down
- * and dispose the session between an intent being forwarded and the user answering it.
+ * and dispose the live run between an intent being forwarded and the user answering it.
  *
  * One host per app, near the root.
  *
@@ -24,12 +24,12 @@ export function useIntentHost(host: HostCapabilities): () => readonly ForwardedI
   // effect to every event and every queue change, so it would tear the host down and rebuild it
   // dozens of times during one boot — the reactive twin of listing an unstable callback in a
   // dependency array.
-  const session = createMemo(() => {
-    return snapshot().session;
+  const live = createMemo(() => {
+    return snapshot().live;
   });
 
   createEffect(() => {
-    const current = session();
+    const current = live();
     if (current === undefined) {
       return;
     }

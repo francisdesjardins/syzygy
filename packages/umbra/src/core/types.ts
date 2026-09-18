@@ -36,7 +36,7 @@ export type StepPhase = 'preflight' | 'hosted';
  * boundary is the mechanism, and the mechanism is documented where it lives — see
  * `core/shared-scope.ts`.
  *
- * **The step id is the sharing key.** Two modules that declare `session` are declaring the same
+ * **The step id is the sharing key.** Two modules that declare `live` are declaring the same
  * thing, which is the contract; a module that means something different should name it differently.
  *
  * Three consequences worth knowing before reaching for it:
@@ -407,9 +407,9 @@ type OutcomeBase = {
   /**
    * The intents as they stood when preflight ended, frozen.
    *
-   * The live queue — forward, drop, subscribe, settle — belongs to the session. Keeping it off the
+   * The live queue — forward, drop, subscribe, settle — belongs to the live run. Keeping it off the
    * outcome is what makes the outcome a snapshot worth serialising, and what means an outcome
-   * nobody passes to a session leaks nothing.
+   * nobody passes to a live run leaks nothing.
    */
   readonly intents: readonly Intent[];
   readonly errors: readonly StepFailure[];

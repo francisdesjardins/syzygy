@@ -78,7 +78,7 @@ class TrialPanel extends HTMLElement {
 
   async start(body) {
     const outcome = await boot.run();
-    const session = boot.session();
+    const live = boot.live();
 
     // Its own copy of the library, and still the page's session: the chips say `adopted`.
     const config = outcome.data.config;
@@ -110,25 +110,25 @@ class TrialPanel extends HTMLElement {
     body.replaceChildren(head, line, chips);
 
     // This fragment has the page's dialog, so it is the one that hosts the intent.
-    session.subscribe(() => {
-      for (const intent of session.forward()) {
+    live.subscribe(() => {
+      for (const intent of live.forward()) {
         void demo
           .ask(`The trial expires in ${intent.payload.daysLeft} days. Acknowledge?`)
           .then((accepted) => {
             if (accepted) {
-              session.settle(intent.id);
+              live.settle(intent.id);
               return;
             }
             // Dropping is a real answer, not a cancel: `awaitIntent` *rejects* on a drop, so the
             // step that was waiting fails. Saying so here is the point of the demo — the step
             // cannot log it itself, because it never gets past the await.
-            session.drop(intent.id, 'declined');
+            live.drop(intent.id, 'declined');
             demo.log('trial', 'declined — the intent is dropped, and the step waiting on it fails');
           });
       }
     });
 
-    await session.attach({});
+    await live.attach({});
   }
 }
 

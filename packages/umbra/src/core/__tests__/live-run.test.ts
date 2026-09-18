@@ -12,7 +12,7 @@ function sleep(ms: number): Promise<void> {
   });
 }
 
-test('session is unavailable before the run resolves', () => {
+test('the live run is unavailable before the run resolves', () => {
   const boot = createBootstrap({
     steps: [
       defineStep({
@@ -24,7 +24,7 @@ test('session is unavailable before the run resolves', () => {
     ],
   });
   expect(() => {
-    return boot.session();
+    return boot.live();
   }).toThrow(BootstrapError);
 });
 
@@ -41,10 +41,10 @@ test('subscribe replays what is already queued', async () => {
     ],
   });
   await boot.run();
-  const session = boot.session();
+  const live = boot.live();
 
   const seen: Intent[][] = [];
-  const unsubscribe = session.subscribe((state) => {
+  const unsubscribe = live.subscribe((state) => {
     seen.push([...state.intents]);
   });
 
@@ -66,15 +66,15 @@ test('unsubscribing really stops the listener', async () => {
     ],
   });
   await boot.run();
-  const session = boot.session();
+  const live = boot.live();
 
   let calls = 0;
-  const unsubscribe = session.subscribe(() => {
+  const unsubscribe = live.subscribe(() => {
     calls += 1;
   });
   expect(calls).toBe(1);
   unsubscribe();
-  session.forward();
+  live.forward();
   expect(calls).toBe(1);
 });
 
@@ -91,14 +91,14 @@ test('forward moves only pending intents and a second forward still works', asyn
     ],
   });
   await boot.run();
-  const session = boot.session();
+  const live = boot.live();
 
-  expect(session.forward()).toHaveLength(1);
-  expect(session.forward()).toHaveLength(0);
-  expect(session.list()[0]?.status).toBe('forwarded');
+  expect(live.forward()).toHaveLength(1);
+  expect(live.forward()).toHaveLength(0);
+  expect(live.list()[0]?.status).toBe('forwarded');
 
-  session.settle(session.list()[0]?.id ?? '');
-  expect(session.list()[0]?.status).toBe('handled');
+  live.settle(live.list()[0]?.id ?? '');
+  expect(live.list()[0]?.status).toBe('handled');
 });
 
 test('a filter leaves the rest pending', async () => {
@@ -115,14 +115,14 @@ test('a filter leaves the rest pending', async () => {
     ],
   });
   await boot.run();
-  const session = boot.session();
+  const live = boot.live();
 
-  const forwarded = session.forward((intent) => {
+  const forwarded = live.forward((intent) => {
     return intent.type === 'warn';
   });
   expect(forwarded).toHaveLength(1);
   expect(
-    session.list().find((intent) => {
+    live.list().find((intent) => {
       return intent.type === 'redirect';
     })?.status
   ).toBe('pending');
@@ -141,11 +141,11 @@ test('dispose drops what nobody forwarded, with the reason on the record', async
     ],
   });
   await boot.run();
-  const session = boot.session();
+  const live = boot.live();
 
-  session.dispose();
-  expect(session.list()[0]?.status).toBe('dropped');
-  expect(session.list()[0]?.droppedReason).toBe('not-forwarded');
+  live.dispose();
+  expect(live.list()[0]?.status).toBe('dropped');
+  expect(live.list()[0]?.droppedReason).toBe('not-forwarded');
 });
 
 test('a hosted step reaches the host capabilities and waits for the app to settle its intent', async () => {
@@ -173,9 +173,9 @@ test('a hosted step reaches the host capabilities and waits for the app to settl
   });
 
   await boot.run();
-  const session = boot.session();
+  const live = boot.live();
 
-  const bound = bindBootstrap(session, {
+  const bound = bindBootstrap(live, {
     host: {
       note: (message: string) => {
         answered.push(message);
@@ -208,9 +208,9 @@ test('a dropped intent rejects the hosted step that was waiting on it', async ()
   });
 
   await boot.run();
-  const session = boot.session();
+  const live = boot.live();
 
-  const bound = bindBootstrap(session, {
+  const bound = bindBootstrap(live, {
     host: {},
     onIntent: (_intent, controls) => {
       controls.drop('the host does not do confirmations');
@@ -218,8 +218,8 @@ test('a dropped intent rejects the hosted step that was waiting on it', async ()
   });
 
   await bound.hosted;
-  expect(session.list()[0]?.status).toBe('dropped');
-  expect(session.list()[0]?.droppedReason).toBe('the host does not do confirmations');
+  expect(live.list()[0]?.status).toBe('dropped');
+  expect(live.list()[0]?.droppedReason).toBe('the host does not do confirmations');
   bound.destroy();
 });
 
@@ -235,10 +235,10 @@ test('mounting after dispose is refused', async () => {
     ],
   });
   await boot.run();
-  const session = boot.session();
-  session.dispose();
+  const live = boot.live();
+  live.dispose();
 
-  await expect(session.attach({})).rejects.toThrow(BootstrapError);
+  await expect(live.attach({})).rejects.toThrow(BootstrapError);
 });
 
 test('mount is idempotent, so a re-attaching binding does not ask twice', async () => {
@@ -254,14 +254,14 @@ test('mount is idempotent, so a re-attaching binding does not ask twice', async 
     ],
   });
   await boot.run();
-  const session = boot.session();
+  const live = boot.live();
 
-  const first = session.attach({});
-  const second = session.attach({});
+  const first = live.attach({});
+  const second = live.attach({});
   expect(second).toBe(first);
   await first;
 
-  await session.attach({});
+  await live.attach({});
   expect(runs).toBe(1);
 });
 
@@ -279,7 +279,7 @@ test('the two kinds of destroy differ on what nobody forwarded', async () => {
       ],
     });
     await boot.run();
-    return boot.session();
+    return boot.live();
   };
 
   // A host that takes nothing, so the intent is still pending when each destroy runs. That is the
@@ -310,7 +310,7 @@ test('the two kinds of destroy differ on what nobody forwarded', async () => {
   expect(forPage.list()[0]?.droppedReason).toBe('not-forwarded');
 });
 
-test('attachIntentHost leaves the session alive when its host goes away', async () => {
+test('attachIntentHost leaves the live run alive when its host goes away', async () => {
   const boot = createBootstrap({
     steps: [
       defineStep({
@@ -323,7 +323,7 @@ test('attachIntentHost leaves the session alive when its host goes away', async 
     ],
   });
   await boot.run();
-  const session = boot.session();
+  const live = boot.live();
 
   const ignore = {
     host: {},
@@ -331,21 +331,21 @@ test('attachIntentHost leaves the session alive when its host goes away', async 
       return undefined;
     },
   };
-  const host = attachIntentHost(session, ignore);
+  const host = attachIntentHost(live, ignore);
   await host.hosted;
   host.destroy();
 
   // Still forwarded, not dropped: a component unmounting is not the app shutting down, and a second
   // host attaching after this one must still find the queue it was given.
-  expect(session.list()[0]?.status).toBe('forwarded');
+  expect(live.list()[0]?.status).toBe('forwarded');
 
-  const replacement = attachIntentHost(session, ignore);
+  const replacement = attachIntentHost(live, ignore);
   await replacement.hosted;
   replacement.destroy();
-  expect(session.list()[0]?.status).toBe('forwarded');
+  expect(live.list()[0]?.status).toBe('forwarded');
 });
 
-test('the hosted phase reaches the session state, not only the caller that awaited it', async () => {
+test('the hosted phase reaches the live run state, not only the caller that awaited it', async () => {
   const boot = createBootstrap({
     steps: [
       defineStep({
@@ -364,10 +364,10 @@ test('the hosted phase reaches the session state, not only the caller that await
     ],
   });
   await boot.run();
-  const session = boot.session();
+  const live = boot.live();
 
   const seen: Array<string | undefined> = [];
-  const unsubscribe = session.subscribe((state) => {
+  const unsubscribe = live.subscribe((state) => {
     seen.push(
       state.hosted?.timeline.find((trace) => {
         return trace.id === 'warn';
@@ -376,7 +376,7 @@ test('the hosted phase reaches the session state, not only the caller that await
   });
 
   expect(seen).toEqual([undefined]);
-  await session.attach({});
+  await live.attach({});
 
   // The graph a binding draws needs this half: without it the hosted step stays unresolved on
   // screen for ever, whatever it actually did.
@@ -396,15 +396,15 @@ test('settling an intent nobody emitted says so rather than going quiet', async 
     ],
   });
   await boot.run();
-  const session = boot.session();
+  const live = boot.live();
 
   // `settle` and `drop` take a bare string off the host, so this is host misuse rather than an
   // internal invariant — it has to be an error the host can catch and not a silent no-op.
   expect(() => {
-    session.settle('no-such-intent');
+    live.settle('no-such-intent');
   }).toThrow(BootstrapError);
   expect(() => {
-    session.drop('no-such-intent', 'whatever');
+    live.drop('no-such-intent', 'whatever');
   }).toThrow(BootstrapError);
 });
 
@@ -422,9 +422,9 @@ test('the same intent type twice in the hosted phase is one record that counts o
   });
 
   await boot.run();
-  const session = boot.session();
+  const live = boot.live();
 
-  const bound = bindBootstrap(session, {
+  const bound = bindBootstrap(live, {
     host: {},
     onIntent: (_intent, controls) => {
       controls.settle();
@@ -434,7 +434,7 @@ test('the same intent type twice in the hosted phase is one record that counts o
 
   // One record, not two: the second emit of a type already queued is folded into the first so a
   // host that renders one dialog per intent does not get a second one for the same thing.
-  const warnings = session.list().filter((intent) => {
+  const warnings = live.list().filter((intent) => {
     return intent.type === 'warn';
   });
   expect(warnings).toHaveLength(1);
@@ -466,9 +466,9 @@ test('a hosted step whose dependency failed never runs', async () => {
   });
 
   await boot.run();
-  const session = boot.session();
+  const live = boot.live();
 
-  const bound = bindBootstrap(session, {
+  const bound = bindBootstrap(live, {
     host: {},
     onIntent: (_intent, controls) => {
       controls.settle();
@@ -500,16 +500,16 @@ test('a hosted step awaiting a dropped intent fails, and the reason travels with
   });
 
   await boot.run();
-  const session = boot.session();
+  const live = boot.live();
 
-  const bound = bindBootstrap(session, {
+  const bound = bindBootstrap(live, {
     host: {},
     onIntent: (_intent, controls) => {
       controls.drop('the reader said no');
     },
   });
 
-  const report = await session.attach({});
+  const report = await live.attach({});
   expect(
     report.errors.map((failure) => {
       return failure.step;
@@ -547,16 +547,16 @@ test('a hosted step that catches the drop decides a refusal is not fatal', async
   });
 
   await boot.run();
-  const session = boot.session();
+  const live = boot.live();
 
-  const bound = bindBootstrap(session, {
+  const bound = bindBootstrap(live, {
     host: {},
     onIntent: (_intent, controls) => {
       controls.drop('no thanks');
     },
   });
 
-  const report = await session.attach({});
+  const report = await live.attach({});
   expect(seen).toEqual(['declined']);
   expect(report.errors).toEqual([]);
   expect(

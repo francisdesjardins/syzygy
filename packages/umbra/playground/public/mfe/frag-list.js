@@ -48,9 +48,9 @@ host.append(body);
 body.textContent = 'Starting…';
 
 const outcome = await boot.run();
-const session = boot.session();
+const live = boot.live();
 
-bindBootstrap(session, {
+bindBootstrap(live, {
   host: {},
   onIntent: (intent, controls) => {
     // This fragment shows no dialogs, and says so instead of leaving the intent to rot.
