@@ -163,3 +163,121 @@ test('a tier that cannot describe itself refuses, and the next tier is never bui
   // The refusal is a decision, not a crash: nothing is reported as an error.
   expect(powered.errors).toEqual([]);
 });
+
+/**
+ * The other shape of a discovered tier: one that may turn out not to exist at all.
+ *
+ * The robot above always has an arm. A plugin host may simply not be installed, and an app whose
+ * boot fails over that is an app that cannot ship without the plugin — which is the opposite of
+ * what optional means. So the branch is marked `optional`, and what it discovers is a tier that is
+ * **required** once it exists, because a module loaded halfway is worse than a module absent.
+ *
+ * Optional upstream, required downstream, and neither one a compromise.
+ */
+type Manifest = { readonly modules: readonly string[] };
+
+const pluginTier = (hostAnswers: boolean) => {
+  return createBootstrap({
+    steps: [
+      defineStep({
+        id: 'session',
+        run: () => {
+          return { userId: 'u-1' };
+        },
+      }),
+      defineStep({
+        id: 'config',
+        needs: ['session'],
+        run: () => {
+          return { locale: 'fr-CA' };
+        },
+      }),
+      defineStep({
+        id: 'plugin-host',
+        needs: ['session'],
+        optional: true,
+        run: () => {
+          if (!hostAnswers) {
+            throw new Error('no plugin host on this install');
+          }
+          return { modules: ['reports'] };
+        },
+      }),
+      // Not declared optional, and it does not need to be: its need is, and a step only runs when
+      // every one of its needs succeeded. Marking the root of a branch is what makes the branch
+      // optional, all the way down.
+      defineStep({
+        id: 'plugin-manifest',
+        needs: ['plugin-host'],
+        run: (ctx): Manifest => {
+          return { modules: (ctx.get('plugin-host') as Manifest).modules };
+        },
+      }),
+    ],
+  });
+};
+
+test('an absent optional branch prunes its whole subtree and still mounts', async () => {
+  const outcome = await pluginTier(false).run();
+
+  // Degraded, not failed: the app is meant to run without plugins.
+  expect(outcome.status).toBe('degraded');
+  expect(outcome.data['config']).toEqual({ locale: 'fr-CA' });
+
+  const statusOf = (id: string) => {
+    return outcome.timeline.find((trace) => {
+      return trace.id === id;
+    })?.status;
+  };
+  expect(statusOf('plugin-host')).toBe('failed');
+  expect(statusOf('plugin-manifest')).toBe('skipped');
+
+  // The distinction the whole flag exists for. A tolerated error is a fact about the install, and
+  // the one thing that must not happen is it reading as a bug.
+  expect(outcome.errors).toHaveLength(1);
+  expect(outcome.errors[0]?.tolerated).toBe(true);
+  expect(outcome.data['plugin-manifest']).toBeUndefined();
+});
+
+test('a fired optional branch starts a tier that is allowed to refuse', async () => {
+  const first = await pluginTier(true).run();
+
+  expect(first.status).toBe('ready');
+  expect(first.data['plugin-manifest']).toEqual({ modules: ['reports'] });
+
+  // Tier two, declared from what the optional branch found. Nothing here is optional: a module is
+  // loaded completely or not at all, so these may block — which tier one could not have done about
+  // plugins, their ids not existing when its graph was compiled.
+  const modules = (first.data['plugin-manifest'] as Manifest).modules;
+  const second = createBootstrap({
+    steps: modules.flatMap((name: string) => {
+      return [
+        defineStep({
+          id: `${name}:schema`,
+          run: () => {
+            return { name };
+          },
+        }),
+        defineStep({
+          id: `${name}:grants`,
+          needs: [`${name}:schema`],
+          run: (ctx) => {
+            return ctx.block(`${name} needs a grant this user does not have`);
+          },
+        }),
+      ];
+    }),
+  });
+
+  const loaded = await second.run();
+
+  if (loaded.status === 'ready') {
+    throw new Error('Expected the module to refuse.');
+  }
+
+  // The asymmetry is the point: tier one answered "good enough to mount" and tier two answered
+  // "this user may not have this module". Two questions, two runs, two independent answers.
+  expect(loaded.status).toBe('blocked');
+  expect(loaded.blockedBy?.step).toBe('reports:grants');
+  expect(first.status).toBe('ready');
+});
