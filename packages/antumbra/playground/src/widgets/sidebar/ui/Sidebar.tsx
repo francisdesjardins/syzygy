@@ -1,5 +1,6 @@
 import { NAV_GROUPS } from '@/widgets/sidebar/model/nav';
 import styles from '@/widgets/sidebar/ui/Sidebar.module.css';
+import { SiteLinks } from 'corona';
 import { Link, useRouterState } from '@tanstack/react-router';
 import { useEffect } from 'react';
 
@@ -105,6 +106,7 @@ export const Sidebar = ({ isMobile, mobileOpen, onClose }: SidebarProps) => {
         >
           <div className={styles['toolbarSpacer']} />
           <NavGroups currentPath={currentPath} onNavigate={onClose} />
+          <SiteLinks current="dialog" />
         </aside>
       </>
     );
@@ -115,6 +117,7 @@ export const Sidebar = ({ isMobile, mobileOpen, onClose }: SidebarProps) => {
       <div className={styles['panel']}>
         <div className={styles['toolbarSpacer']} />
         <NavGroups currentPath={currentPath} onNavigate={undefined} />
+        <SiteLinks current="dialog" />
       </div>
     </aside>
   );

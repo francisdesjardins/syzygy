@@ -5,6 +5,41 @@ Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No s
 **This file is the package's memory.** The code states what holds now; why it came to hold lives
 here.
 
+## 2026-09-17, the shell moves here, and the way out becomes three marks
+
+### Changed — `SiteLinks` replaces `PlaygroundPath`
+
+The breadcrumb in the top bar is gone. The way out sits at the **foot of the navigation drawer**,
+pinned there, as one row of glyphs: a house for the site, then a mark for each sibling playground.
+
+Three named rows under a group label cost the drawer about 130px of its height for three links, and
+"Home" is a flat word to meet between Antumbra and Umbra. The marks say it in 58px — and three of
+them are the naming itself. Antumbra, umbra and penumbra are the three regions of a shadow, and a
+reader meeting the words in a menu has no way to know that; drawn, they explain themselves. A fill
+is deliberate there, the whole distinction being how much light gets through.
+
+### Added — `src/theme/`
+
+`ThemeContext`, `useTheme` and `ThemeToggleButton`. The **provider stays with each playground**,
+because they do not agree on what else it does — antumbra's also feeds a template token set and
+writes from a layout effect. What every one of them has is one attribute on the root element and a
+hook to read it, which is enough for a shell component to be written once.
+
+### Added — `PageLayout`
+
+umbra's, moved. antumbra's is a superset — it renders a result panel from a `result` string, backed
+by a component only that playground has, across twenty-nine call sites. Turning that into a slot is
+worth doing and was not this change.
+
+### Added — subpath exports
+
+`corona/api`, `corona/mascot`, `corona/shell`, `corona/site`, `corona/theme`, `corona/tokens`.
+
+The root barrel names every area, so a consumer importing one of them walks all of them — and the
+API viewer reads its model from a virtual module only a playground with the generator provides. The
+third playground has no library to document, and the first thing it did was fail to build on
+somebody else's plugin. An area you do not use should cost nothing.
+
 ## 2026-09-17, the shell primitives move here
 
 ### Added

@@ -3050,9 +3050,30 @@ __metadata:
   languageName: node
   linkType: hard
 
+"penumbra-playground@workspace:packages/penumbra/playground":
+  version: 0.0.0-use.local
+  resolution: "penumbra-playground@workspace:packages/penumbra/playground"
+  dependencies:
+    "@tanstack/react-router": "npm:^1.170.36"
+    "@types/node": "npm:^24.10.1"
+    "@types/react": "npm:^19.3.0"
+    "@types/react-dom": "npm:^19.3.0"
+    "@vitejs/plugin-react": "npm:^6.1.1"
+    corona: "workspace:^"
+    penumbra: "workspace:^"
+    react: "npm:^19.3.0"
+    react-dom: "npm:^19.3.0"
+    vite: "npm:^8.3.0"
+  languageName: unknown
+  linkType: soft
+
 "penumbra@workspace:^, penumbra@workspace:packages/penumbra":
   version: 0.0.0-use.local
   resolution: "penumbra@workspace:packages/penumbra"
+  dependencies:
+    oxfmt: "npm:0.68.0"
+    oxlint: "npm:^1.83.0"
+    typescript-7: "npm:typescript@7.0.2"
   bin:
     penumbra-contrast: ./scripts/check-contrast.mjs
   languageName: unknown

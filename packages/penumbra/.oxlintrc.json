@@ -1,0 +1,28 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oxc-project/oxc/main/npm/oxlint/configuration_schema.json",
+
+  // The rules, the plugins and the overrides every workspace shares are in the repository root's
+  // [.oxlintrc.json](../../.oxlintrc.json); what is below is penumbra's alone. A child's
+  // `overrides` are appended to the root's rather than replacing them.
+  "extends": ["../../.oxlintrc.json"],
+  "overrides": [
+    {
+      "files": ["playground/**/*.{ts,tsx}"],
+      "rules": {
+        "react/only-export-components": ["warn", { "allowConstantExport": true }]
+      }
+    }
+  ],
+
+  // Not inherited through `extends` — not even by a child that declares none, measured against
+  // oxlint 1.83.0. The duplication is the tool's and not a choice.
+  "ignorePatterns": [
+    "**/dist/**",
+    "**/node_modules/**",
+    "**/coverage/**",
+    "playground/dist/**",
+    "**/.vite/**",
+    "**/*.d.ts",
+    ".yarn/**"
+  ]
+}

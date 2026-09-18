@@ -1,0 +1,21 @@
+.section {
+  margin-top: var(--app-space-10);
+  /* The jump bar is sticky, so an anchor landing flush under it lands under the bar. */
+  scroll-margin-top: calc(var(--app-topbar-height) + var(--app-space-12));
+}
+
+.sectionTitle {
+  margin: 0 0 var(--app-space-2);
+  font-family: var(--app-font-display);
+  font-size: var(--app-text-2xl);
+  font-weight: 400;
+  color: var(--app-text);
+}
+
+.sectionDescription {
+  margin: 0 0 var(--app-space-5);
+  max-width: var(--app-measure);
+  font-size: var(--app-text-md);
+  line-height: var(--app-lh-relaxed);
+  color: var(--app-text-secondary);
+}

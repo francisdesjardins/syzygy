@@ -10,7 +10,7 @@ import {
 import type { TokenNote } from 'corona';
 import { ExampleSection } from '@/entities/example';
 import { CodeIcon, PlayArrowIcon } from '@/shared/ui/icons';
-import { PageLayout } from '@/shared/ui/PageLayout';
+import { PageLayout } from 'corona';
 import { SurfaceCard } from '@/shared/ui/SurfaceCard';
 import styles from '@/pages/design-system/ui/DesignSystemPage.module.css';
 

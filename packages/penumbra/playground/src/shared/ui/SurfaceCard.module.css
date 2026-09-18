@@ -1,0 +1,12 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  background: var(--app-paper);
+  border: 1px solid var(--app-divider);
+  border-radius: var(--app-radius-lg);
+  transition: box-shadow var(--app-duration) var(--app-ease);
+}
+
+.interactive:hover {
+  box-shadow: var(--app-lift);
+}

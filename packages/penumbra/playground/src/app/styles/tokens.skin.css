@@ -1,0 +1,70 @@
+/**
+ * Penumbra — the brand half of the skin, written for penumbra's own playground.
+ *
+ * **The package it demonstrates ships no brand**, which is the whole claim: a scale with no colour
+ * and a palette with no brand. So this file is the demonstration from the other side — the twelve
+ * declarations a project writes over the base, exactly as antumbra and umbra write theirs, and the
+ * reason the page underneath can show what the base looks like without one.
+ *
+ * The palette is the penumbra itself: the partial shade at a shadow's edge, where the light is
+ * neither gone nor whole. Teal, because the other two are taken and taking one of them would be
+ * the worst thing this page could do — a design system wearing a consumer's colour makes that
+ * consumer's argument for it. Antumbra is amber through and through; umbra is amber lit by indigo.
+ * This is the third, and it is the coolest of them on purpose: the region between is not the one
+ * that should be shouting.
+ *
+ * Two rules with teeth, and both are carried in the token *names*:
+ *
+ * - **`--app-flame` is a fill; `--app-accent` is the ink.** The lighter teal is a surface colour
+ *   and fails as text on paper — never write `color: var(--app-flame)`. It is teal-600 rather than
+ *   the 500 this started on: as a mark it still owes 3:1, and 500 measured 2.49.
+ * - **A filled primary deepens on hover here, where antumbra's brightens.** The rule is the same
+ *   underneath: move away from the ink sitting on it. Antumbra's ink is dark on amber, so it goes
+ *   lighter; this one is white on teal, so it goes darker.
+ *
+ * Every pair is measured rather than chosen — `yarn check:contrast` reads the base underneath and
+ * holds 32 pairs to WCAG 2.2 AA across both schemes.
+ */
+
+:root {
+  /* ── Typefaces ───────────────────────────────────────────────────────────────────────
+     The same three faces the siblings use. Not a shared token — a project that ships font files
+     and one that runs on system stacks choose differently and both are right — but a design
+     system's own page arguing in a different voice from the pages that consume it would be
+     comparing two things at once. */
+  --app-font-display: 'Newsreader', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+  --app-font-body: 'Geist', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+  --app-font-mono: 'Geist Mono', ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, monospace;
+
+  /* How far a mark rises onto the cap band of the word beside it — `align-items: center` centres
+     boxes, and a text box carries descender room its ink may not use. */
+  --app-lockup-rise: 0.11em;
+
+  /* ── Light ─────────────────────────────────────────────────────────────────────────── */
+  --app-flame: #0d9488;
+  --app-flame-wash: rgb(13 148 136 / 0.1);
+  --app-accent: #0f766e;
+  --app-ring: #0f766e;
+  --app-primary: #0f766e;
+  --app-primary-ink: #ffffff;
+  --app-primary-hover: #115e59;
+
+  /* The base's lift is the elevation; the glow is the only real light in the system and is spent
+     on the focused, selected, live thing. */
+  --app-glow: 0 0 0 1px rgb(15 118 110 / 0.5), 0 0 32px -10px rgb(15 118 110 / 0.4);
+}
+
+/* ── Dark ─────────────────────────────────────────────────────────────────────────────────
+   Teal on the base's slate dusk. The ramp flips: the fill becomes the lighter value and the ink
+   on it becomes the ground, which is what keeps a filled control readable in both. */
+:root[data-color-scheme='dark'] {
+  --app-flame: #2dd4bf;
+  --app-flame-wash: rgb(45 212 191 / 0.13);
+  --app-accent: #5eead4;
+  --app-ring: #5eead4;
+  --app-primary: #2dd4bf;
+  --app-primary-ink: #0b1120;
+  --app-primary-hover: #5eead4;
+
+  --app-glow: 0 0 0 1px rgb(45 212 191 / 0.5), 0 0 32px -8px rgb(45 212 191 / 0.35);
+}

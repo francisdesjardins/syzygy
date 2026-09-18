@@ -1,4 +1,5 @@
 import { NAV_GROUPS } from '@/widgets/sidebar/model/nav';
+import { SiteLinks } from 'corona';
 import { Link, useRouterState } from '@tanstack/react-router';
 import { useEffect } from 'react';
 import styles from '@/widgets/sidebar/ui/Sidebar.module.css';
@@ -98,6 +99,7 @@ export function Sidebar({
           {/* The drawer runs the full height, so without this its first item sits under the bar. */}
           <div className={styles['toolbarSpacer']} />
           <NavGroups currentPath={currentPath} onNavigate={onClose} />
+          <SiteLinks current="boot" />
         </aside>
       </>
     );
@@ -107,6 +109,7 @@ export function Sidebar({
     <div className={styles['sidebar']}>
       <aside className={styles['fixed']}>
         <NavGroups currentPath={currentPath} onNavigate={undefined} />
+        <SiteLinks current="boot" />
       </aside>
     </div>
   );

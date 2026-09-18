@@ -1,5 +1,5 @@
 import { createAppTheme } from '@/shared/lib/mui-theme';
-import { useTheme } from '@/shared/lib/theme-context';
+import { useTheme } from 'corona';
 import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
 import type { ReactNode } from 'react';
 

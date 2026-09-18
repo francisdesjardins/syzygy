@@ -1,5 +1,5 @@
 import styles from '@/pages/microfrontends/examples/host-frame.module.css';
-import { useTheme } from '@/shared/lib/theme-context';
+import { useTheme } from 'corona';
 import { AppButton } from 'corona';
 import { useEffect, useRef, useState } from 'react';
 

@@ -3,7 +3,7 @@ import { BootstrapProvider, useBootstrapContext } from 'umbra/react';
 import { useCallback, useState } from 'react';
 import { ExampleCard, ExampleGrid, ExampleSection } from '@/entities/example';
 import { AppButton, SectionNav } from 'corona';
-import { PageLayout } from '@/shared/ui/PageLayout';
+import { PageLayout } from 'corona';
 import { type Faults, createApi, defaultFaults } from '@/pages/getting-started/examples/fake-api';
 import { createSteps } from '@/pages/getting-started/examples/steps';
 import { FaultSwitches } from '@/pages/getting-started/ui/FaultSwitches';

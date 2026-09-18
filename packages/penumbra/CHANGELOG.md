@@ -5,6 +5,33 @@ Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No s
 **This file is the package's memory.** The code states what holds now; why it came to hold lives
 here.
 
+## 2026-09-17, penumbra gets a playground
+
+### Added
+
+`playground/` — a third workspace beside the two libraries', served at `/playground/design`.
+
+**Its main page was already written, twice.** Both sibling playgrounds carried a route titled
+"Penumbra" rendering corona's token tables: 16 of the 22 tokens each one documented in prose belong
+to this package, and six of its seven sections showed the system half — which is the same file
+everywhere by construction. What is left there is each project's own colours and its own recipes,
+which is a section rather than a page.
+
+**The skin is teal, and that is a decision.** Antumbra is amber through and through; umbra is amber
+lit by indigo. A design system wearing one of its consumers' colours makes that consumer's argument
+for it, so this is the third and the coolest of the three. `penumbra-contrast` holds it to 32 pairs
+across both schemes, and caught the first attempt: teal-500 as a mark measured 2.49:1 against the
+3:1 it owes, so the fill is teal-600.
+
+**The `Skins` page came from the site's own design-system page**, rewritten without MUI. Its token
+list used to print seven names and nothing else — no two rows differed, which made the list an
+ornament. Each row paints its own swatch through `var(<token>)` now, so it resolves in the preview's
+scope; reading the values in JavaScript would have read the _page's_ instead, which is the bug one
+layer down.
+
+The moon is the third face on corona's eclipse: eyes closed, a small even smile, and the terminator
+faint across the disc. The penumbra is the one region of a shadow with nothing to resolve.
+
 ## 2026-09-17, a tie in the stacking scale is now a failure
 
 ### Fixed

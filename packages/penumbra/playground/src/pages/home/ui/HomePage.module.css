@@ -1,0 +1,75 @@
+.page {
+  padding-top: var(--app-space-8);
+}
+
+.hero {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--app-space-12);
+  padding-bottom: var(--app-space-14);
+  padding-top: var(--app-space-10);
+}
+
+/* Below the drawer breakpoint the mark goes over the words rather than beside them: a row that
+   cannot shrink is a row that pushes its last item off the screen. */
+@media (max-width: 899.95px) {
+  .hero {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--app-space-8);
+  }
+}
+
+.mascot {
+  flex: none;
+  width: 200px;
+  height: 200px;
+}
+
+@media (max-width: 599.95px) {
+  .mascot {
+    width: 140px;
+    height: 140px;
+  }
+}
+
+.lockup {
+  min-width: 0;
+}
+
+.title {
+  margin: 0 0 var(--app-space-3);
+  font-family: var(--app-font-display);
+  font-size: var(--app-text-3xl);
+  font-weight: 400;
+  line-height: var(--app-lh-tight);
+  color: var(--app-text);
+}
+
+.tagline {
+  margin: 0 0 var(--app-space-5);
+  max-width: var(--app-measure);
+  font-family: var(--app-font-display);
+  font-size: var(--app-text-xl);
+  line-height: var(--app-lh-snug);
+  color: var(--app-accent);
+}
+
+.body {
+  margin: 0 0 var(--app-space-8);
+  max-width: var(--app-measure);
+  font-size: var(--app-text-md);
+  line-height: var(--app-lh-relaxed);
+  color: var(--app-text-secondary);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--app-space-3);
+}
+
+.cta {
+  text-decoration: none;
+}

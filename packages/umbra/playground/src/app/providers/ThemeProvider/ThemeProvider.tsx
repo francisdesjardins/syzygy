@@ -1,5 +1,5 @@
 import { type ReactNode, useEffect, useState } from 'react';
-import { type Scheme, ThemeContext } from '@/shared/lib/theme-context';
+import { type Scheme, ThemeContext } from 'corona';
 
 const STORAGE_KEY = 'umbra:color-scheme';
 

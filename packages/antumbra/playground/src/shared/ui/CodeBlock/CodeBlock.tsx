@@ -1,5 +1,5 @@
 import { readableSyntaxStyle } from 'limb/readable-syntax';
-import { useTheme } from '@/shared/lib/theme-context';
+import { useTheme } from 'corona';
 import { AppIconButton } from 'corona';
 import styles from '@/shared/ui/CodeBlock/CodeBlock.module.css';
 import { CheckIcon, ContentCopyIcon } from '@/shared/ui/icons';

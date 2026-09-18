@@ -1,0 +1,14 @@
+{
+  // The package itself is two stylesheets and two node scripts, so there is nothing here to
+  // compile. This config exists for the playground to extend, which is what keeps the demo on the
+  // same strictness as every other workspace rather than on whatever its own file happened to say.
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["ES2024", "DOM", "DOM.Iterable"],
+    "types": ["node"],
+    // corona is consumed as source and its own files name each other with extensions.
+    "allowImportingTsExtensions": true
+  },
+  "include": ["scripts/**/*"],
+  "exclude": ["node_modules", "playground"]
+}

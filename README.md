@@ -26,6 +26,7 @@ loudly instead of sliding to the next one.
 | [`home`](apps/home)                          | 3000 | 4000    | —                  |
 | [`antumbra`](packages/antumbra)'s playground | 3001 | 4001    | 3101               |
 | [`umbra`](packages/umbra)'s playground       | 3002 | 4002    | 3102               |
+| [`penumbra`](packages/penumbra)'s playground | 3004 | 4004    | —                  |
 
 The slide is what made three separate failures silent, and one of them cost an afternoon: a
 component suite reuses a server that is already answering, the home is an SPA whose fallback returns

@@ -93,6 +93,10 @@ const ROUTES = [
   ['/playground/boot/#/getting-started', 'playground'],
   ['/playground/boot/#/design-system', 'playground'],
   ['/playground/boot/#/api', 'playground'],
+  ['/playground/design/#/', 'playground'],
+  ['/playground/design/#/tokens', 'playground'],
+  ['/playground/design/#/skins', 'playground'],
+  ['/playground/design/#/rules', 'playground'],
 ];
 
 let failures = 0;

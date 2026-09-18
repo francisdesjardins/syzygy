@@ -1,0 +1,22 @@
+.chain {
+  margin: var(--app-space-8) 0 var(--app-space-2);
+  font-family: var(--app-font-mono);
+  font-size: var(--app-text-sm);
+  color: var(--app-accent);
+}
+
+.note {
+  margin: 0 0 var(--app-space-6);
+  max-width: var(--app-measure);
+  font-size: var(--app-text-md);
+  line-height: var(--app-lh-relaxed);
+  color: var(--app-text-secondary);
+}
+
+/* The preview owns its own ground, because a state that replaces the base replaces the surface
+   colour too — and a card painted by the page around it would hide exactly that. */
+.preview {
+  padding: var(--app-space-6);
+  background: var(--app-bg);
+  border-radius: var(--app-radius-md);
+}

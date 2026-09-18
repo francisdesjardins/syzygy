@@ -1,10 +1,10 @@
 import { useRouterState } from '@tanstack/react-router';
 import { UmbraMoon } from '@/shared/ui/UmbraMoon';
-import { PeekingMoon, PlaygroundPath } from 'corona';
+import { PeekingMoon } from 'corona';
 import { Outlet } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 import { useCodePane } from '@/shared/lib/code-pane-context';
-import { useTheme } from '@/shared/lib/theme-context';
+import { useTheme } from 'corona';
 import { useMediaQuery } from '@/shared/lib/use-media-query';
 import { useCodeDialog } from '@/widgets/code-viewer';
 import { Sidebar } from '@/widgets/sidebar';
@@ -32,9 +32,6 @@ function MainContent() {
         <Outlet />
       </div>
       {codeDialog.Dialog}
-      <footer className={styles['footer']}>
-        <PlaygroundPath current="boot" variant="footer" />
-      </footer>
     </main>
   );
 }

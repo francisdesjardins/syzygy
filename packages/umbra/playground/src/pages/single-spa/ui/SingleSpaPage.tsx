@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ExampleCard, ExampleGrid, ExampleSection } from '@/entities/example';
 import { AppButton, SectionNav } from 'corona';
 import { DemoControls, DemoFrame, DemoToolbar } from '@/shared/ui/DemoFrame';
-import { PageLayout } from '@/shared/ui/PageLayout';
+import { PageLayout } from 'corona';
 
 const FRAME_HEIGHT = 340;
 

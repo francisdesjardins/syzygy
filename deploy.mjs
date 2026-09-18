@@ -23,6 +23,7 @@ const ROOT = dirname(fileURLToPath(import.meta.url));
 const PLAYGROUNDS = [
   { workspace: 'antumbra', capability: 'dialog', label: 'the dialog manager' },
   { workspace: 'umbra', capability: 'boot', label: 'the bootstrapper' },
+  { workspace: 'penumbra', capability: 'design', label: 'the design system' },
 ];
 
 const HOME = resolve(ROOT, 'apps', 'home');

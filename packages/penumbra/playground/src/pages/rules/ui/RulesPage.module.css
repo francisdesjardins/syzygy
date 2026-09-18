@@ -1,0 +1,46 @@
+.list {
+  list-style: none;
+  margin: var(--app-space-8) 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-5);
+}
+
+.card {
+  padding: var(--app-space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-3);
+}
+
+.rule {
+  margin: 0;
+  font-family: var(--app-font-display);
+  font-size: var(--app-text-xl);
+  font-weight: 400;
+  color: var(--app-text);
+}
+
+.why {
+  margin: 0;
+  max-width: var(--app-measure);
+  font-size: var(--app-text-md);
+  line-height: var(--app-lh-relaxed);
+  color: var(--app-text-secondary);
+}
+
+.gate {
+  margin: 0;
+  font-size: var(--app-text-sm);
+  line-height: var(--app-lh-relaxed);
+  color: var(--app-text-tertiary);
+}
+
+.gateLabel {
+  font-family: var(--app-font-mono);
+  font-size: var(--app-text-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--app-tracking-label);
+  color: var(--app-accent);
+}

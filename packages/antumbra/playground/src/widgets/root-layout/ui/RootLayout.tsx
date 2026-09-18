@@ -1,12 +1,12 @@
 import { AntumbraMoon } from '@/shared/ui/PeekingMoon/AntumbraMoon';
 import { useCodeDialog } from '@/widgets/code-viewer';
 import { useCodePane } from '@/shared/lib/code-pane-context';
-import { useTheme } from '@/shared/lib/theme-context';
+import { useTheme } from 'corona';
 import { useMediaQuery } from '@/shared/lib/use-media-query';
 import { Sidebar } from '@/widgets/sidebar';
 import { TopBar } from '@/widgets/top-bar';
 import styles from '@/widgets/root-layout/ui/RootLayout.module.css';
-import { PeekingMoon, PlaygroundPath } from 'corona';
+import { PeekingMoon } from 'corona';
 import { Outlet, useRouterState } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
@@ -34,9 +34,6 @@ const MainContent = () => {
         <Outlet />
       </div>
       {codeDialog.Dialog}
-      <footer className={styles['footer']}>
-        <PlaygroundPath current="dialog" variant="footer" />
-      </footer>
     </main>
   );
 };

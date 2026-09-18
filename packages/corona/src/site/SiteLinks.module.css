@@ -1,0 +1,67 @@
+/* The foot of the drawer. `margin-top: auto` pins it to the bottom of the panel's column rather
+   than asking the nav above to grow — that would be a rule in the host's stylesheet about a
+   component it does not own, and on a short menu the nav has no reason to fill. */
+.links {
+  flex: none;
+  margin-top: auto;
+  border-top: 1px solid var(--app-divider);
+  padding: var(--app-space-3) var(--app-space-3) var(--app-space-4);
+}
+
+/* One row, not a stack: three named rows and a group label cost the drawer about 130px of its
+   height for three links. The marks carry the meaning, so the words are what goes. */
+.row {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: var(--app-space-1);
+}
+
+.cell {
+  display: flex;
+}
+
+.mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* 44px: a touch target, since this is the drawer a phone opens. */
+  width: 44px;
+  height: 44px;
+  border-radius: var(--app-radius-md);
+  color: var(--app-text-tertiary);
+  text-decoration: none;
+  transition:
+    background-color var(--app-quick) var(--app-ease),
+    color var(--app-quick) var(--app-ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mark {
+    transition: none;
+  }
+}
+
+a.mark:hover {
+  background: var(--app-hover);
+  color: var(--app-text);
+}
+
+/* The name is the accessible one and the tooltip's; on screen the glyph is the whole control. */
+.name {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Off the site nothing here leads anywhere, so nothing may look like it does. */
+.links[data-offsite] .mark {
+  opacity: 0.45;
+}

@@ -4,7 +4,7 @@ import { ExampleGrid } from '@/entities/example/ui/ExampleGrid';
 import { ExampleSection } from '@/entities/example/ui/ExampleSection';
 import { type StoryMount, stories } from '@/pages/stories/model/registry.js';
 import { sectionSlug } from '@/shared/lib/section-slug.js';
-import { PageLayout } from '@/shared/ui/PageLayout';
+import { PageLayout } from 'corona';
 import { SectionNav } from 'corona';
 
 /**

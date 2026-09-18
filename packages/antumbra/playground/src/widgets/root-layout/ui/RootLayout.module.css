@@ -35,20 +35,3 @@
     padding: var(--app-space-8);
   }
 }
-
-/* The path again, for a reader who arrived at the bottom of a long page rather than the top. The
-   same width and gutters as the content above it, so the two read as one column. */
-.footer {
-  border-top: 1px solid var(--app-divider);
-  padding: var(--app-space-6) var(--app-space-4);
-  max-width: var(--app-content-max-width);
-  margin: 0 auto;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-@media (min-width: 900px) {
-  .footer {
-    padding: var(--app-space-6) var(--app-space-8);
-  }
-}

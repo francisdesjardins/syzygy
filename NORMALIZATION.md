@@ -36,6 +36,8 @@ being true.
 | Agent-instruction budgets | `gnomon-doc-budget`                      | `yarn doc-budget`, a ceiling and a headroom line each   |
 | Phone layout              | —                                        | `yarn check:mobile`, 16 routes × 2 widths               |
 | The stacking scale        | `penumbra/tokens.system.css`             | `check-tokens.mjs` — no two layers share a number       |
+| The playground shell      | `corona/shell`, `/theme`, `/mascot`      | each playground's `verify:all`, and `yarn check:mobile` |
+| The way between them      | `corona/site` — one table of three       | `yarn check:mobile`, 20 routes × 2 widths               |
 
 **Devtools are one decision, not seven.** Every workspace runs oxlint with its type-aware half on
 tsgolint, oxfmt, and TypeScript 7 — the same versions, enforced by the dependency constraint. There
@@ -94,7 +96,23 @@ and not a choice; the comment in each file says so.
 
 ## Not done
 
-**The two playgrounds share a shell, and the number published here was wrong.**
+**The playground shell is corona's now, and there are three playgrounds.** What follows is what the
+measurement below led to: the mascot (339 identical lines of behaviour, with the face left behind as
+a prop), the button family, the dropdown, the section nav, the document title, `PageLayout` and the
+theme context all moved. `penumbra` gained a playground of its own at `/playground/design`, whose
+main page was the one both siblings were already rendering.
+
+**Three things did not move, and each has a reason.** antumbra's `PageLayout` is a superset — a
+`result` panel backed by a component only it has, across 29 call sites. The `ThemeProvider` differs
+in substance: antumbra's feeds a template token set and writes from a layout effect. `SurfaceCard`
+is a slot by an older decision that still holds.
+
+**What is left to measure.** `HomePage.module.css` at 70% and `icons.tsx` at 51% were not looked at.
+And a gap the third playground found: nothing checks that a `var(--app-…)` names a token something
+declares. A missing `--app-text-4xl` rendered as a browser default and only a screenshot caught it.
+The reverse of `check-token-coverage.mjs`, and the same file could hold it.
+
+**The number published here was wrong, and the probe was why.**
 
 This entry used to say "8 byte-identical files, 289 lines", and concluded that what remained was a
 few stylesheets under components that legitimately differ. Both halves came from a probe with a

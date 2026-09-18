@@ -13,7 +13,13 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
+    "./api": "./src/api/index.ts",
     "./contract": "./src/api/contract.ts",
+    "./mascot": "./src/mascot/index.ts",
+    "./shell": "./src/shell/index.ts",
+    "./site": "./src/site/index.ts",
+    "./theme": "./src/theme/index.ts",
+    "./tokens": "./src/tokens/index.ts",
     "./src/*": "./src/*",
     "./package.json": "./package.json"
   },
