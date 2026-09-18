@@ -2,7 +2,7 @@ import { ExampleCard, ExampleGrid, ExampleSection } from '@/entities/example';
 import { CloseThemAllExample } from '@/pages/stacking/examples/close-them-all';
 import { StackPriorityExample } from '@/pages/stacking/examples/stack-priority';
 import { StackedDialogsExample } from '@/pages/stacking/examples/stacked-dialogs';
-import { PageLayout } from '@/shared/ui/PageLayout';
+import { PageLayout } from 'corona/shell';
 
 export const StackingPage = () => {
   return (

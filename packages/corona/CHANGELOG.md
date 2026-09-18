@@ -5,6 +5,26 @@ Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No s
 **This file is the package's memory.** The code states what holds now; why it came to hold lives
 here.
 
+## 2026-09-18, `PageLayout` is corona's, and the slot it was going to need is not
+
+### Changed — antumbra's copy is gone
+
+This file's own note said antumbra kept a superset — the same layout plus a `result` panel — "across
+twenty-nine call sites", and that turning it into a slot was "worth doing and is not this change".
+
+Counted before designing the slot: **eleven** pages render that layout and **none** of them passes a
+`result`. The prop was dead, and so was the panel it built and the stylesheet rule under it. What
+went is the copy, not a slot nobody would have filled.
+
+`ResultDisplay` stayed where it is. It is alive on the example cards and in two demos, which is
+where a result actually belongs — beside the thing that produced it rather than at the top of the
+page.
+
+All three playgrounds now import one `PageLayout`: antumbra twelve times, umbra five, penumbra
+three. Its twelve new import sites use `corona/shell` rather than the barrel, which is the reading
+the repository already argues for elsewhere — a barrel pays for the whole package in dev, where Vite
+serves modules unbundled.
+
 ## 2026-09-18, the three are in the order of the eclipse
 
 ### Changed — `PLAYGROUNDS` runs umbra, penumbra, antumbra

@@ -1,6 +1,6 @@
 import { ExampleCard, ExampleGrid, ExampleSection } from '@/entities/example';
 import { HostFrame } from '@/pages/microfrontends/examples/host-frame';
-import { PageLayout } from '@/shared/ui/PageLayout';
+import { PageLayout } from 'corona/shell';
 import { SectionNav } from 'corona';
 
 const SECTIONS = [

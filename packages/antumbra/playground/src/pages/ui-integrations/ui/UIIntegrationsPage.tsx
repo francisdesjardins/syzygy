@@ -2,7 +2,7 @@ import { ExampleCard, ExampleGrid, ExampleSection } from '@/entities/example';
 import { MuiFormExample } from '@/pages/ui-integrations/examples/mui-form';
 import { VanillaFormExample } from '@/pages/ui-integrations/examples/vanilla-form';
 import { MuiIsland } from '@/shared/ui/MuiIsland';
-import { PageLayout } from '@/shared/ui/PageLayout';
+import { PageLayout } from 'corona/shell';
 
 export const UIIntegrationsPage = () => {
   return (

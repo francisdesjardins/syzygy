@@ -3,7 +3,7 @@ import { AsyncOpenExample } from '@/pages/getting-started/examples/async-open';
 import { NoTransitionMessageExample } from '@/pages/getting-started/examples/no-transition-message';
 import { PrepareFailureExample } from '@/pages/getting-started/examples/prepare-failure';
 import { SimpleDialogExample } from '@/pages/getting-started/examples/simple-dialog';
-import { PageLayout } from '@/shared/ui/PageLayout';
+import { PageLayout } from 'corona/shell';
 
 export const GettingStartedPage = () => {
   return (

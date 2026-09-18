@@ -1,7 +1,7 @@
 import { ExampleCard, ExampleGrid, ExampleSection } from '@/entities/example';
 import { SlideCornerToastExample } from '@/pages/slide-dialog/examples/corner-toast';
 import { SlidePresetsExample } from '@/pages/slide-dialog/examples/slide-presets';
-import { PageLayout } from '@/shared/ui/PageLayout';
+import { PageLayout } from 'corona/shell';
 
 export const SlideDialogPage = () => {
   return (

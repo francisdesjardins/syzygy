@@ -2,7 +2,7 @@ import { ExampleCard, ExampleGrid, ExampleSection } from '@/entities/example';
 import { DomEventsExample } from '@/pages/interop/examples/dom-events';
 import { GamepadExample } from '@/pages/interop/examples/gamepad';
 import { SsrWorkerExample } from '@/pages/interop/examples/ssr-worker';
-import { PageLayout } from '@/shared/ui/PageLayout';
+import { PageLayout } from 'corona/shell';
 
 export const InteropPage = () => {
   return (

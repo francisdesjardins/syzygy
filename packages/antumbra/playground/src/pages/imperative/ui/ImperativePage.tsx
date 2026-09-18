@@ -6,7 +6,7 @@ import { ImperativeExample } from '@/pages/imperative/examples/imperative';
 import { DialogOutletExample } from '@/pages/imperative/examples/dialog-outlet';
 import { OpenRequestExample } from '@/pages/imperative/examples/open-request';
 import { ServiceLayerExample } from '@/pages/imperative/examples/service-layer';
-import { PageLayout } from '@/shared/ui/PageLayout';
+import { PageLayout } from 'corona/shell';
 import { SectionNav } from 'corona';
 
 const SECTIONS = [

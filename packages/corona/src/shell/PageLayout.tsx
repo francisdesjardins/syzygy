@@ -4,9 +4,11 @@ import styles from './PageLayout.module.css';
 /**
  * Every page's head, so heading size, measure and rhythm are decided once rather than per page.
  *
- * antumbra's is a superset — it also renders a result panel from a `result` string, backed by a
- * component only that playground has, across twenty-nine call sites. Turning that into a slot is
- * worth doing and is not this change.
+ * All three playgrounds use this one. antumbra kept a copy with an extra `result` panel, which was
+ * going to need a slot here — until the count said otherwise: eleven pages rendered that layout and
+ * none of them passed a `result`. The prop, the panel it built and the copy around it went instead
+ * of a slot nobody would have filled. `ResultDisplay` itself is alive and stayed where it is, on
+ * the example cards that actually show one.
  */
 export function PageLayout({
   title,

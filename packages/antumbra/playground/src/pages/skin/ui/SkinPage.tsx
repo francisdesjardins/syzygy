@@ -9,7 +9,7 @@ import {
 import type { TokenNote } from 'corona';
 import { ExampleSection } from '@/entities/example';
 import { CodeIcon, PlayArrowIcon } from 'corona/icons';
-import { PageLayout } from '@/shared/ui/PageLayout';
+import { PageLayout } from 'corona/shell';
 import { SurfaceCard } from '@/shared/ui/SurfaceCard';
 import styles from '@/pages/skin/ui/SkinPage.module.css';
 

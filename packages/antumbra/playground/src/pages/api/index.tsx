@@ -9,7 +9,7 @@ import { useParams } from '@tanstack/react-router';
 import { ExampleGrid, ExampleSection } from '@/entities/example';
 import { AppButton } from 'corona';
 import { CodeBlock } from '@/shared/ui/CodeBlock/CodeBlock';
-import { PageLayout } from '@/shared/ui/PageLayout';
+import { PageLayout } from 'corona/shell';
 import { SurfaceCard } from '@/shared/ui/SurfaceCard';
 import { ArrowBackIcon, ArrowForwardIcon, LinkIcon, SearchIcon } from 'corona/icons';
 

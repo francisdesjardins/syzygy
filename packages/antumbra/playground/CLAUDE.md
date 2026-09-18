@@ -60,7 +60,7 @@ playground/src/
 ├── widgets/     # root-layout, top-bar, sidebar, code-viewer
 ├── entities/    # example (Card/Grid/Layout/Section/StoryCard), dialog-template (vanilla)
 ├── shared/
-│   ├── ui/      # PageLayout, CodeBlock, ResultDisplay, ViewCodeButton, EclipseMark, SurfaceCard
+│   ├── ui/      # CodeBlock, ResultDisplay, ViewCodeButton, EclipseMark, SurfaceCard
 │   └── lib/     # simulate-api-call, use-overflow, createResultStore, section-slug,
 │                 # async-state, safe-await, use-query, use-form (copyable patterns)
 ```
@@ -117,9 +117,9 @@ Porting Penumbra elsewhere is: depend on the package, write a skin.
 - **Sentence case, except a mono eyebrow** — uppercase on a button is a component library's
   signature; on a mono group label it is a typographic device.
 - **The shared primitives come from [corona](../../corona)** — `AppButton`/`AppIconButton` +
-  `appButtonClass`, `SelectionDropdown`, `SectionNav`, the mascot and the playground path. What
-  stays in `shared/ui` is what only this playground has: ten icons, `EclipseMark`, `MoonPhase`,
-  `SurfaceCard`, `PageLayout` and `ResultDisplay`.
+  `appButtonClass`, `SelectionDropdown`, `SectionNav`, `PageLayout`, the mascot and the playground
+  path. What stays in `shared/ui` is what only this playground has: ten icons, `EclipseMark`,
+  `MoonPhase`, `SurfaceCard` and `ResultDisplay`.
 - **The MUI island** (`shared/ui/MuiIsland` + `shared/lib/mui-theme.ts`) is **the subject, not a
   leftover**, and stays Material-looking on purpose. Scoped to the one card that needs it.
 - The vanilla **templates** keep their own token families, are deliberately unbranded, and may not
@@ -384,7 +384,7 @@ renaming it silently downgrades a stylesheet to TSX highlighting.
 ## Shared Utilities
 
 - `ExampleCard` / `ExampleGrid` / `ExampleLayout` / `ExampleSection` / `StoryCard` — `@/entities/example`
-- `PageLayout` — `@/shared/ui/…`; `SectionNav`, `AppButton`, `SelectionDropdown` — `corona`
+- `PageLayout`, `SectionNav`, `AppButton`, `SelectionDropdown` — `corona/shell`
 - `simulateApiCall` — mock async helper (`@/shared/lib/simulate-api-call`)
 - `asyncState` / `safeAwait` / `useQuery` / `useForm` (`@/shared/lib/…`), and `createMutex` /
   `createSingleFlight` / `shallowEqual` from [`limb`](../../limb) — patterns a user copies,

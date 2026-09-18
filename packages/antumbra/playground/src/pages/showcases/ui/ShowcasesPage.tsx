@@ -2,7 +2,7 @@ import { ExampleCard, ExampleGrid, ExampleSection } from '@/entities/example';
 import { CosmicOverrideExample } from '@/pages/showcases/examples/cosmic-override';
 import { GroceryListExample } from '@/pages/showcases/examples/grocery-list';
 import { VanillaPanelExample } from '@/pages/showcases/examples/vanilla-panel';
-import { PageLayout } from '@/shared/ui/PageLayout';
+import { PageLayout } from 'corona/shell';
 
 export const ShowcasesPage = () => {
   return (

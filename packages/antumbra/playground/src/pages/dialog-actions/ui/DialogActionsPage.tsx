@@ -5,7 +5,7 @@ import { DeleteItemDialogExample } from '@/pages/dialog-actions/examples/delete-
 import { ReactiveDepsExample } from '@/pages/dialog-actions/examples/reactive-deps';
 import { PerActionStateExample } from '@/pages/dialog-actions/examples/per-action-state';
 import styles from '@/pages/dialog-actions/ui/DialogActionsPage.module.css';
-import { PageLayout } from '@/shared/ui/PageLayout';
+import { PageLayout } from 'corona/shell';
 import { InfoIcon } from '@/shared/ui/icons';
 
 export const DialogActionsPage = () => {
