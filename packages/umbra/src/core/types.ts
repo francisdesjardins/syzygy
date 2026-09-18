@@ -65,10 +65,16 @@ export type RunStatus = 'ready' | 'degraded' | 'blocked' | 'failed' | 'aborted';
 /**
  * How one step ended.
  *
- * `skipped` is the one that earns its place: a step whose dependency failed never ran, and calling
- * that `failed` would leave `errors` unable to explain why its data is missing.
+ * Two of these earn their place by not being `failed`. `skipped` is a step whose dependency failed,
+ * so it never ran, and calling that `failed` would leave `errors` unable to explain why its data is
+ * missing. `blocked` is a step that refused the mount — the same separation {@link RunStatus} makes
+ * between a bug report and a rule doing its job, and folding it into `cancelled` left the step that
+ * decided and the steps it stopped wearing one word.
+ *
+ * `cancelled` is therefore only ever something done *to* a step: the run was aborted, or a sibling
+ * refused, and this one was stopped before it could end on its own.
  */
-export type StepStatus = 'success' | 'failed' | 'timed-out' | 'skipped' | 'cancelled';
+export type StepStatus = 'success' | 'failed' | 'timed-out' | 'skipped' | 'cancelled' | 'blocked';
 
 /**
  * Why a signal aborted.

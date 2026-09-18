@@ -97,12 +97,13 @@ export class StepSkippedError extends BootstrapError {
  */
 export class BlockSignal extends Error {
   readonly step: StepId;
-  readonly blockReason: string;
+  /** Named for what it is, not for its container: `outcome.blockedBy.reason` is the same string. */
+  readonly reason: string;
 
-  constructor(step: StepId, blockReason: string) {
-    super(`Step "${String(step)}" blocked the mount: ${blockReason}`);
+  constructor(step: StepId, reason: string) {
+    super(`Step "${String(step)}" blocked the mount: ${reason}`);
     this.name = 'BlockSignal';
     this.step = step;
-    this.blockReason = blockReason;
+    this.reason = reason;
   }
 }

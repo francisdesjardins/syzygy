@@ -109,8 +109,8 @@ carries both — and it carries the graph, never a diagram.
 whose shape is only known once it has started talking — a robot assembling an arm from whatever the
 base reports, a worker reading its queues out of its own configuration — gets **one bootstrap per
 tier** instead: a tier that discovers the next one hands its outcome over, and the next
-`createBootstrap` is declared from that answer. Growing a compiled graph would make `plan()` a
-description of something that did not happen, which is the only promise the planner makes. An id no
+`createBootstrap` is declared from that answer. Growing a compiled graph would break that same
+promise, which is the only one the planner makes. An id no
 registry names is still a legal id, which is what lets a tier be built from data;
 `src/core/__tests__/discovered-tiers.test.ts` is the worked example, and it runs in Node.
 
@@ -145,9 +145,10 @@ sibling halfway through a fetch still has something to say about why the boot is
 refusal does abort them, because nothing is going to mount.
 
 **A refusal is recorded before the abort, not after the throw.** Aborting resolves the race inside
-`attemptStep`, which can settle the refusing step as cancelled before its own rejection is ever seen,
-so the refusal cannot live anywhere that depends on who wins that race. A refusal arriving after the
-run settled is ignored: rewriting an answer already handed out is worse than losing a late one.
+`attemptStep`, which can settle the refusing step through the abort path before its own rejection is
+seen — so neither the refusal nor the step's `blocked` status may depend on who wins. Both read off
+that record. A refusal arriving after the run settled is ignored: rewriting an answer already handed
+out is worse than losing a late one.
 
 **Two refusals in one level settle by plan order**, never by arrival, or the telemetry and the tests
 both become coin flips.

@@ -72,10 +72,17 @@
   stroke: var(--app-error);
 }
 
+/* Both were stopped rather than finished, so neither is drawn as a solid outcome. */
 .node-skipped,
 .node-cancelled {
   stroke-dasharray: 4 3;
   opacity: 0.62;
+}
+
+/* Solid, and in the error colour: this is the step that decided, not one that was stopped. It is
+   the box to look at when a boot refuses, so it must not fade like the ones it took down with it. */
+.node-blocked {
+  stroke: var(--app-error);
 }
 
 .node-phase-mounted {
@@ -312,6 +319,7 @@ details.panel[open] summary {
 }
 
 .step-status-skipped,
+.step-status-cancelled,
 .intent-pending {
   color: var(--app-text-tertiary);
 }
@@ -326,6 +334,7 @@ details.panel[open] summary {
 .status-failed,
 .status-blocked,
 .step-status-failed,
+.step-status-blocked,
 .intent-dropped {
   color: var(--app-error);
 }

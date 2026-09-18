@@ -202,7 +202,7 @@ export async function runPreflight(
         // waiting for its own deadline to notice nothing is coming.
         claim.settle(
           error instanceof BlockSignal
-            ? { kind: 'blocked', reason: error.blockReason }
+            ? { kind: 'blocked', reason: error.reason }
             : { kind: 'failed', error: serializeError(error) }
         );
         throw error;
@@ -299,12 +299,21 @@ export async function runPreflight(
     );
 
     for (const { planned, attempt } of attempts) {
-      statuses.set(planned.id, attempt.status);
+      // `blocks` decides this, not the attempt. A refusal aborts the level, and that abort can
+      // settle the refusing step as `cancelled` before its own rejection is ever seen — the race
+      // the `block` callback above is written around. Reading the authoritative record here is
+      // what makes `blocked` mean the step that decided rather than whoever won the race.
+      const refused = blocks.some((signal) => {
+        return signal.step === planned.id;
+      });
+      const status: StepStatus = refused ? 'blocked' : attempt.status;
+
+      statuses.set(planned.id, status);
       const trace: StepTrace = {
         id: planned.id,
         level: planned.level,
         phase: planned.phase,
-        status: attempt.status,
+        status,
         startedAt: attempt.startedAt,
         durationMs: attempt.durationMs,
         ...(attempt.error === undefined ? {} : { error: attempt.error }),
@@ -314,20 +323,22 @@ export async function runPreflight(
       timeline.push(trace);
       events?.emit({ kind: 'step:settle', trace });
 
-      if (attempt.status === 'success') {
+      if (status === 'success') {
         data.set(planned.id, attempt.value);
         continue;
       }
 
-      // A cancelled step is not a failure: it was stopped, not given the chance to fail. Listing it
-      // beside a real 401 would make every refused boot read as a crash.
-      if (attempt.status === 'cancelled') {
+      // Neither of these is a failure, for two different reasons. A `cancelled` step was stopped
+      // and never given the chance to fail; a `blocked` one made a decision, and `blockedBy` is
+      // where that is reported. Listing either beside a real 401 would make a refused boot read as
+      // a crash — and a `blocked` step reaching the line below would also halt the run twice over.
+      if (status === 'cancelled' || status === 'blocked') {
         continue;
       }
 
       errors.push({
         step: planned.id,
-        status: attempt.status === 'timed-out' ? 'timed-out' : 'failed',
+        status: status === 'timed-out' ? 'timed-out' : 'failed',
         error: attempt.error ?? serializeError(new Error('Step did not succeed.')),
         tolerated: planned.optional,
       });
@@ -391,6 +402,6 @@ export async function runPreflight(
     timeline,
     ...(firstBlock === undefined
       ? {}
-      : { blockedBy: { step: firstBlock.step, reason: firstBlock.blockReason } }),
+      : { blockedBy: { step: firstBlock.step, reason: firstBlock.reason } }),
   };
 }

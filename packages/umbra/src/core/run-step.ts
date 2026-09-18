@@ -141,7 +141,7 @@ export async function attemptStep(args: AttemptArgs): Promise<StepAttempt> {
   }
 
   if (raced.error instanceof BlockSignal) {
-    return finish({ ...base, lateWrites, status: 'cancelled', block: raced.error });
+    return finish({ ...base, lateWrites, status: 'blocked', block: raced.error });
   }
 
   return finish({

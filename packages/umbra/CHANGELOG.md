@@ -3,6 +3,57 @@
 Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No semver: names change
 between commits when a better one shows up, and the entry says which and why.
 
+## 2026-09-18, `StepStatus` gains `blocked`
+
+### Changed — the step that refused no longer wears the word for the steps it stopped
+
+`StepStatus` is `'success' | 'failed' | 'timed-out' | 'skipped' | 'cancelled' | 'blocked'`.
+
+A step that called `ctx.block()` settled as `cancelled`, which is also what every step it aborted
+settled as. Reading a timeline, nothing told you which one had decided — only `outcome.blockedBy`
+did, one level up.
+
+**The argument is this package's own, made twice already.** `RunStatus` separates `blocked` from
+`failed` because "the first is a bug report and the second is a tag rule doing its job".
+`IntentStatus` separates `dropped` for the same reason: "a real ending and not a failure".
+`CLAUDE.md` says the three are "one family and read the same way" — and two of the three drew the
+line while the third did not. `cancelled` now means only something done _to_ a step: the run was
+aborted, or a sibling refused, and this one never got to end on its own.
+
+`blocked` rather than `refused`, because `ctx.block`, `BlockSignal`, `RunStatus.blocked` and
+`outcome.blockedBy` already spend that word. A synonym is the thing the vocabulary rule exists to
+catch.
+
+### Fixed — the refusing step's status was never reliable
+
+Worth stating plainly: this was not a rename, it was a coin flip being given a name.
+
+`block()` aborts the level so that nothing further is scheduled, and that abort resolves the race
+inside `attemptStep` — which could settle the refusing step through the _abort_ path before its own
+`BlockSignal` rejection was ever seen. So the blocking step's status depended on who won, and in
+practice the abort won every time.
+
+The `block` callback already worked around this by pushing the signal into a `blocks` array before
+aborting, with a comment saying the refusal "cannot live anywhere that depends on who wins that
+race". The status now reads back off that same record. Marking `run-step.ts` alone would have
+produced a `blocked` that appeared only when the race went the other way.
+
+### Changed — `BlockSignal.blockReason` is `reason`
+
+Internal, so no consumer sees it. The prefix restated the class it was already on, and the same
+string is `reason` on `outcome.blockedBy` — one thing under two names, which is the smell the
+`Boot`-prefix pass removed everywhere else.
+
+### Guarded
+
+Two tests in `discovered-tiers.test.ts`: the step that refuses reports `blocked` and stays out of
+`errors`, and a sibling stopped by that refusal reports `cancelled`. The second is the one that
+would have caught the original defect, because it asserts the two words on the same run.
+
+`demo.css` gained `.node-blocked` — solid and in the error colour, since it is the box to look at
+rather than one that faded — and `.step-status-cancelled`, which had no rule at all and had been
+falling through to the default.
+
 ## 2026-09-18, the plan carries its nodes
 
 ### Added — `BootstrapPlan.nodes`

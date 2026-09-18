@@ -280,4 +280,49 @@ test('a fired optional branch starts a tier that is allowed to refuse', async ()
   expect(loaded.status).toBe('blocked');
   expect(loaded.blockedBy?.step).toBe('reports:grants');
   expect(first.status).toBe('ready');
+
+  // The step that decided says so, in the timeline, without anyone having to cross-reference
+  // `blockedBy`. It was `cancelled` once — the same word as the steps it stopped.
+  const grants = loaded.timeline.find((trace) => {
+    return trace.id === 'reports:grants';
+  });
+  expect(grants?.status).toBe('blocked');
+
+  // And a refusal is still not a failure: nothing to fix, so nothing in `errors`.
+  expect(loaded.errors).toEqual([]);
+});
+
+test('a step stopped by someone else refusing is cancelled, not blocked', async () => {
+  const boot = createBootstrap({
+    steps: [
+      defineStep({
+        id: 'grant',
+        run: (ctx) => {
+          return ctx.block('no grant');
+        },
+      }),
+      // Same level, so it is in flight when the refusal lands and is aborted mid-run. It decided
+      // nothing, and the whole point of the two words is that it does not claim to have.
+      defineStep({
+        id: 'catalogue',
+        run: async () => {
+          await new Promise((resolve) => {
+            setTimeout(resolve, 50);
+          });
+          return { items: 0 };
+        },
+      }),
+    ],
+  });
+
+  const outcome = await boot.run();
+  const statusOf = (id: string) => {
+    return outcome.timeline.find((trace) => {
+      return trace.id === id;
+    })?.status;
+  };
+
+  expect(statusOf('grant')).toBe('blocked');
+  expect(statusOf('catalogue')).toBe('cancelled');
+  expect(outcome.errors).toEqual([]);
 });
