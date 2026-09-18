@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useDialog } from '../../use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * Tests ESC isolation: ESC closes the non-modal panel when focus is outside,
@@ -37,7 +36,7 @@ export function NonModalEscIsolationHarness() {
     },
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Isolation panel</p>
           <button
             onClick={() => {

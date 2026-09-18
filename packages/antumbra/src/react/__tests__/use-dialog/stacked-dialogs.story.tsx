@@ -3,7 +3,6 @@ import { useMessageDialog } from '../../templates/use-message-dialog.js';
 import { useSlideDialog } from '../../templates/use-slide-dialog.js';
 import { Key } from '../../../utils/keys.js';
 import { useDialog } from '../../use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * Three dialogs of different kinds, stacked, each rendered inside the one below it — not a
@@ -29,7 +28,7 @@ export function StackedDialogsHarness() {
     ariaLabel: 'Message',
     render: ({ action }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <button
             {...action('ack', {
               hotkey: Key.Enter,
@@ -58,7 +57,7 @@ export function StackedDialogsHarness() {
     ariaLabel: 'Middle',
     render: ({ action }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <button
             {...action('save', {
               hotkey: Key.Enter,
@@ -101,7 +100,7 @@ export function StackedDialogsHarness() {
     dismissOnClickOutside: true,
     render: ({ action }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <button {...action('close')} data-testid="panel-close">
             Close panel
           </button>

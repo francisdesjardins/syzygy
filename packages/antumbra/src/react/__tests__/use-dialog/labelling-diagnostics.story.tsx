@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { DialogOutlet } from '../../dialog-outlet.js';
 import { useDialog } from '../../use-dialog.js';
 import { setLogLevel } from '../../../utils/logger.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * The three shapes the labelling diagnostic must tell apart. Two it has to stay quiet about — a
@@ -39,7 +38,7 @@ export function DanglingLabelHarness() {
     onClose: dropLogging,
     ariaLabelledBy: 'labelling-dangling-title',
     render: () => {
-      return <p style={dialogStyle}>Named by nothing at all.</p>;
+      return <p>Named by nothing at all.</p>;
     },
   });
 
@@ -75,7 +74,7 @@ export function LateTitleHarness() {
     },
     render: ({ isPreparing }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           {isPreparing ? (
             <p data-testid="late-pending">Loading…</p>
           ) : (
@@ -116,7 +115,7 @@ function OutletInner() {
     ariaLabelledBy: 'labelling-outlet-title',
     render: () => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <h2 id="labelling-outlet-title">Rendered by the outlet</h2>
         </div>
       );

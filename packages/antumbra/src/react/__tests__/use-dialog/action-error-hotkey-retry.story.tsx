@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Key } from '../../../utils/keys.js';
 import { useDialog } from '../../use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * An action that fails, and the hotkey retrying it.
@@ -32,7 +31,7 @@ export function ActionErrorHotkeyRetryHarness() {
       });
 
       return (
-        <div style={dialogStyle}>
+        <div>
           <button {...save}>{save['data-loading'] ? 'Saving…' : 'Save'}</button>
           <span data-testid="retry-attempts">{attempts}</span>
           <span data-testid="retry-error">{error ? error.message : ''}</span>

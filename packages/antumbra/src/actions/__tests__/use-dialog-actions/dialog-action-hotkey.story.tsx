@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useDialog } from '../../../react/use-dialog.js';
 import { Key } from '../../../utils/keys.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * Two actions with hotkeys and nothing else: the attribute is what dispatch queries out of the
@@ -14,7 +13,7 @@ export function DialogActionHotkeyHarness() {
     id: 'action-hotkey',
     render: ({ action }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <button {...action('confirm', { hotkey: Key.Enter })}>Confirm</button>
           <button {...action('cancel', { hotkey: Key.Escape })}>Cancel</button>
         </div>

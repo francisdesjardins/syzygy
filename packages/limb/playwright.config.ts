@@ -1,4 +1,5 @@
 import { defineConfig } from '@playwright/test';
+import { playwrightBase } from 'gnomon/playwright-base';
 
 /**
  * Unit projects only, and no `webServer`.
@@ -8,10 +9,8 @@ import { defineConfig } from '@playwright/test';
  * make.
  */
 export default defineConfig({
+  ...playwrightBase(),
   testDir: './src',
   testMatch: ['**/__tests__/**/*.test.ts'],
-  forbidOnly: Boolean(process.env['CI']),
-  retries: process.env['CI'] ? 2 : 0,
-  reporter: process.env['CI'] ? 'dot' : 'list',
   projects: [{ name: 'unit' }],
 });

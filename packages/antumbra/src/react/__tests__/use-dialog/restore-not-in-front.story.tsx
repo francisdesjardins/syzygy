@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useDialog } from '../../use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * An action settling in a panel that is not in front — `FocusUnderAnotherDialogHarness`'s claim, in
@@ -18,7 +17,7 @@ export function RestoreNotInFrontHarness() {
     portal: true,
     render: () => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Front panel</p>
           <button data-testid="front-field">Field in front</button>
         </div>
@@ -32,7 +31,7 @@ export function RestoreNotInFrontHarness() {
     nonModal: true,
     render: ({ action }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Panel behind</p>
           <button
             data-testid="behind-save"

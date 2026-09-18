@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useDialog } from '../../../react/use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 const delay = (ms: number) => {
   return new Promise<void>((resolve) => {
@@ -23,7 +22,7 @@ export function DialogActionCustomHandlerHarness() {
       });
       const cancelProps = action('cancel');
       return (
-        <div style={dialogStyle}>
+        <div>
           <button
             {...confirmProps}
             data-testid="confirm-btn"

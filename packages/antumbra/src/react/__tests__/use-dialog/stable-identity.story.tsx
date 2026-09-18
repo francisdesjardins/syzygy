@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useDialog } from '../../use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * Pins the identity of `open` / `openAndWait` / `handle` across arbitrary
@@ -18,7 +17,7 @@ export function StableIdentityHarness() {
     id: 'stable-identity',
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Dialog content</p>
           <button
             onClick={() => {

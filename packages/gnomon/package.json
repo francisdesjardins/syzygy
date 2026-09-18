@@ -22,6 +22,10 @@
       "types": "./oxfmt.d.mts",
       "default": "./oxfmt.mjs"
     },
+    "./playwright-base": {
+      "types": "./playwright-base.d.mts",
+      "default": "./playwright-base.mjs"
+    },
     "./vite-plugin-ct-coverage": {
       "types": "./vite-plugin-ct-coverage.d.mts",
       "default": "./vite-plugin-ct-coverage.mjs"

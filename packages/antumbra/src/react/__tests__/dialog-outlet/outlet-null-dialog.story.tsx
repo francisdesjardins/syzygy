@@ -1,6 +1,5 @@
 import { DialogOutlet } from '../../dialog-outlet.js';
 import { useDialog } from '../../use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 // ── Harness: dialog.Dialog is null when outlet is present ────────────────────
 
@@ -9,7 +8,7 @@ function DialogNullChecker() {
     id: 'outlet-null-check',
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <button
             onClick={() => {
               handle.close('done');

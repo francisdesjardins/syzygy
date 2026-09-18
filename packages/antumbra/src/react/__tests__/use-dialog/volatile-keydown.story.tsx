@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Key } from '../../../utils/keys.js';
 import { useDialog } from '../../use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * A dialog whose `onKeyDown` is an inline arrow — a new function every render, the normal spelling —
@@ -40,7 +39,7 @@ export function VolatileKeyDownHarness() {
       });
 
       return (
-        <div style={dialogStyle}>
+        <div>
           <button {...save} data-testid="volatile-save">
             Save
           </button>

@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { dialogStyle } from '../../__tests__/story-styles.js';
 import { useDialog } from '../use-dialog.js';
 import { useLookup } from '../use-lookup.js';
 
@@ -11,7 +10,7 @@ export function UseLookupHarness() {
     id: 'reactive',
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Reactive dialog</p>
           <button
             onClick={() => {
@@ -92,7 +91,7 @@ export function UseLookupPreparingHarness() {
     },
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Preparing dialog</p>
           <button
             onClick={() => {
@@ -139,7 +138,7 @@ export function UseLookupForegroundHarness() {
     id: 'fg-lookup-a',
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Dialog A</p>
           <button
             onClick={() => {
@@ -164,7 +163,7 @@ export function UseLookupForegroundHarness() {
     id: 'fg-lookup-b',
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Dialog B</p>
           <button
             onClick={() => {

@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useDialog } from '../../use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * A dialog on screen whose content is not there yet — the documented normal state of a loading
@@ -24,7 +23,7 @@ export function BusyWhilePreparingHarness() {
     },
     render: ({ isPreparing }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <span data-testid="slow-preparing">{isPreparing ? 'preparing' : 'ready'}</span>
           <button
             data-testid="release"
@@ -43,7 +42,7 @@ export function BusyWhilePreparingHarness() {
     id: 'busy-instant',
     ariaLabel: 'Nothing to load',
     render: () => {
-      return <p style={dialogStyle}>No prepare at all.</p>;
+      return <p>No prepare at all.</p>;
     },
   });
 

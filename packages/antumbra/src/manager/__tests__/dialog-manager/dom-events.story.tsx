@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useMessageDialog } from '../../../react/templates/use-message-dialog.js';
 import { useSlideDialog } from '../../../react/templates/use-slide-dialog.js';
 import { useDialog } from '../../../react/use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * Tests that dialog:open and dialog:close CustomEvents are dispatched on document
@@ -15,7 +14,7 @@ export function DomEventHarness() {
     id: 'dom-ev',
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <button
             onClick={() => {
               handle.close('ok');
@@ -33,7 +32,7 @@ export function DomEventHarness() {
     direction: 'right',
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <button
             onClick={() => {
               handle.close('ok');
@@ -50,7 +49,7 @@ export function DomEventHarness() {
     id: 'dom-ev-message',
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <button
             onClick={() => {
               handle.close('ok');

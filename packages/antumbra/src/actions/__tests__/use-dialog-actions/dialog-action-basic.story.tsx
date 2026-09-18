@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useDialog } from '../../../react/use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * Tests a callable action with no handler — auto-closes with the action's reason.
@@ -12,7 +11,7 @@ export function DialogActionBasicHarness() {
     id: 'action-basic',
     render: ({ action }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <button {...action('confirm')}>Confirm</button>
           <button {...action('cancel')}>Cancel</button>
         </div>

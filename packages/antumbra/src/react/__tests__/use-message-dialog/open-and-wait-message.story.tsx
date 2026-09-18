@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useMessageDialog } from '../../templates/use-message-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * Tests openAndWait(). Status reflects the resolved reason.
@@ -12,7 +11,7 @@ export function OpenAndWaitMessageHarness() {
     id: 'msg-wait',
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <button
             onClick={() => {
               handle.close('done');

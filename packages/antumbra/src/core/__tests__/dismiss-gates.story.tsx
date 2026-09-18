@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useDialog } from '../../react.js';
-import { dialogStyle } from '../../__tests__/story-styles.js';
 
 /**
  * A non-modal panel whose dismissal can be refused three ways, and a page to press against.
@@ -30,7 +29,7 @@ export function DismissGatesHarness({ swallowKeys = false }: { readonly swallowK
     },
     render: ({ action }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <button
             data-testid="slow-action"
             {...action('slow', () => {
@@ -103,7 +102,7 @@ export function InertEscapeHarness() {
     ariaLabel: 'Inert escape',
     render: ({ action }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <button data-testid="ok" {...action('ok')}>
             OK
           </button>

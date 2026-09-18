@@ -1,5 +1,4 @@
 import { useMessageDialog } from '../../templates/use-message-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * Tests prepare with a 500 ms async delay. isPreparing state is exposed in render.
@@ -14,7 +13,7 @@ export function AsyncOpenMessageHarness() {
     },
     render: ({ isPreparing, handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <span data-testid="is-opening">{String(isPreparing)}</span>
           <button
             onClick={() => {

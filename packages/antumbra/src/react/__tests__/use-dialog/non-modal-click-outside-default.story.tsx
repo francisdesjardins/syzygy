@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useDialog } from '../../use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * Tests that dismissOnClickOutside defaults to false — clicking outside
@@ -21,7 +20,7 @@ export function NonModalClickOutsideDefaultHarness() {
     },
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Default behavior</p>
           <button
             onClick={() => {

@@ -1,6 +1,5 @@
 import { useRef, useState } from 'react';
 import { useDialog } from '../../use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * Tests dismissWhilePreparing: false — ESC is blocked while prepare is running.
@@ -21,7 +20,7 @@ export function DismissWhilePreparingDisabledHarness() {
     },
     render: ({ isPreparing, handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <span data-testid="loading-state">{isPreparing ? 'loading' : 'ready'}</span>
           <button
             data-testid="resolve-loading"
@@ -79,7 +78,7 @@ export function DismissWhilePreparingDefaultHarness() {
     },
     render: ({ isPreparing, handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <span data-testid="loading-state">{isPreparing ? 'loading' : 'ready'}</span>
           <button
             onClick={() => {

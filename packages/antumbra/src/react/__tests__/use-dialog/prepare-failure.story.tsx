@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useDialog } from '../../use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 import type { DialogErrorSource } from '../../../core/types.js';
 
 /**
@@ -29,7 +28,7 @@ export function PrepareFailureHarness() {
     },
     render: ({ isPreparing }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <span data-testid="pf-preparing">{isPreparing ? 'preparing' : 'ready'}</span>
           <p>The dialog is up either way.</p>
         </div>

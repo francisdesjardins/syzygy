@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useDialog } from '../../use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * `prepare` is handed an `AbortSignal` that fires when the dialog closes. Without it a request
@@ -28,7 +27,7 @@ export function OnOpenAbortHarness() {
     },
     render: () => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Chargement…</p>
           <button
             onClick={() => {

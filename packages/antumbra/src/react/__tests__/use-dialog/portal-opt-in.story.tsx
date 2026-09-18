@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useDialog } from '../../use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * Tests that `portal: true` forces the dialog to render via createPortal.
@@ -22,7 +21,7 @@ export function PortalOptInHarness() {
     },
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Dialog content</p>
           <button
             onClick={() => {

@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useDialogManager } from '../../../react/use-dialog-manager.js';
 import { useDialog } from '../../../react/use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * Tests imperative open/close and open-state derivation via useDialogManager.
@@ -16,7 +15,7 @@ export function ImperativeHarness() {
     id: 'dm-imperative',
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Imperative dialog</p>
           <button
             onClick={() => {

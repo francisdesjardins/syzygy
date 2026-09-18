@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 import { useDialog } from '../../../react/use-dialog.js';
 
 /** What the `save` action closes with. Declared on the hook, checked at every door. */
@@ -17,7 +16,7 @@ export function ReasonSourceHarness() {
     id: 'ctrl-reason-source',
     render: ({ action }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <button
             {...action('save', (close) => {
               close({ id: 42 });

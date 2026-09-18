@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useDialog } from '../../../react/use-dialog.js';
 import { Key } from '../../../utils/keys.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * Tests Enter hotkey triggers confirm, Escape hotkey triggers cancel.
@@ -19,7 +18,7 @@ export function HotkeyActionsHarness() {
     id: 'ctrl-hotkey',
     render: ({ action }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <button
             {...action('confirm', {
               hotkey: Key.Enter,

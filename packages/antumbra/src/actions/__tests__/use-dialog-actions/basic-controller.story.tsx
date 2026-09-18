@@ -1,5 +1,4 @@
 import { useState, useSyncExternalStore } from 'react';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 import { useDialog } from '../../../react/use-dialog.js';
 import { createStore } from '../../../store/index.js';
 
@@ -38,7 +37,7 @@ export function BasicActionsHarness() {
     id: 'ctrl-basic',
     render: ({ action }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <span data-testid="count">{String(count)}</span>
           <button
             onClick={() => {

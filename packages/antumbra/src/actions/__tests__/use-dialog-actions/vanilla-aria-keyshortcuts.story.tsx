@@ -1,7 +1,6 @@
 import { useState, type ComponentProps, type ReactNode } from 'react';
 import { useDialog } from '../../../react/use-dialog.js';
 import { Key } from '../../../utils/keys.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 // ── Custom button wrapper (mirrors VanillaButton pattern) ────────────────
 //
@@ -45,7 +44,7 @@ export function VanillaAriaKeyshortcutsHarness() {
     id: 'vanilla-aria',
     render: ({ action }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <CustomButton
             {...action('confirm', {
               hotkey: Key.Enter,
@@ -116,7 +115,7 @@ export function BrokenAriaKeyshortcutsHarness() {
     id: 'broken-aria',
     render: ({ action }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <BrokenButton
             {...action('confirm', {
               hotkey: Key.Enter,

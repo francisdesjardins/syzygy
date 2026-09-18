@@ -1,5 +1,4 @@
 import { useDialog } from '../../../react/use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * Tests focus restoration to the autofocus target after a failed action.
@@ -11,7 +10,7 @@ export function FocusRestorationHarness() {
     id: 'ctrl-focus',
     render: ({ action }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <button
             data-testid="ok-btn"
             {...action('ok', (close) => {

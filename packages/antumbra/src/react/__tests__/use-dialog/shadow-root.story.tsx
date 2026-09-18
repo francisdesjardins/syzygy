@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useDialog } from '../../use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * A React dialog whose `<dialog>` lives in a shadow root — a web component hosting a React tree, or
@@ -28,7 +27,7 @@ export function ShadowRootHarness() {
     ariaLabel: 'Inside a shadow root',
     render: ({ action }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Rendered into a shadow root.</p>
           <button {...action('confirm', { focusOnOpen: true })} id="shadow-confirm">
             Confirm

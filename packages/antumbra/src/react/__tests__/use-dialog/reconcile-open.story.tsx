@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { reconcileOpen } from '../../../core/reconcile-open.js';
 import { useLookup } from '../../use-lookup.js';
 import { useDialog } from '../../use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * A controlled `<Panel open={…} />`, the pattern `reconcileOpen`'s documentation shows, exercised
@@ -33,7 +32,7 @@ export function ReconcileOpenHarness() {
     },
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Reconciled panel</p>
           <button
             data-testid="close-from-inside"

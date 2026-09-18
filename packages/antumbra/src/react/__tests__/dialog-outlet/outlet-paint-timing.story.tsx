@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { DialogOutlet } from '../../dialog-outlet.js';
 import { useDialog } from '../../use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * The dialog node is built here but rendered by `DialogOutlet`, so it reaches the DOM one hop later.
@@ -16,7 +15,7 @@ function Inner() {
     id: 'outlet-paint-timing',
     render: () => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>
             count: <span data-testid="dialog-count">{count}</span>
           </p>

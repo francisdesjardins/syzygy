@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useDialog } from '../../use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * A backdrop click is identified by its target (the `<dialog>` itself), not by coordinates alone.
@@ -18,7 +17,7 @@ export function BackdropHitTestHarness() {
     id: 'backdrop-hit-test',
     render: () => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Dialog content</p>
           <button
             data-testid="content-button"

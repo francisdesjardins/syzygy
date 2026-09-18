@@ -1,6 +1,5 @@
 import { DialogOutlet } from '../../dialog-outlet.js';
 import { useDialog } from '../../use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 // ── Harness: multiple dialogs in one outlet ─────────────────────────────────
 
@@ -9,7 +8,7 @@ function DialogA() {
     id: 'outlet-multi-a',
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Dialog A</p>
           <button
             onClick={() => {
@@ -49,7 +48,7 @@ function DialogB() {
     id: 'outlet-multi-b',
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Dialog B</p>
           <button
             onClick={() => {

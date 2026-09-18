@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useDialog } from '../../use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * Tests that a modal dialog renders inline (no portal) by default.
@@ -21,7 +20,7 @@ export function PortalDefaultHarness() {
     },
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Dialog content</p>
           <button
             onClick={() => {

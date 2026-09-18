@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useDialog } from '../../../react/use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /** `lookup(id)` over two registered dialogs and an unknown id; queries fire from button clicks. */
 export function LookupFindHarness() {
@@ -10,7 +9,7 @@ export function LookupFindHarness() {
     id: 'lookup-a',
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Dialog A</p>
           <button
             onClick={() => {
@@ -53,7 +52,7 @@ export function LookupFindHarness() {
     id: 'lookup-b',
     render: () => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Dialog B</p>
         </div>
       );
@@ -101,7 +100,7 @@ export function LookupCollectionHarness() {
     id: 'col-a',
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Col A</p>
           <button
             onClick={() => {
@@ -148,7 +147,7 @@ export function LookupCollectionHarness() {
     id: 'col-b',
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Col B</p>
           <button
             onClick={() => {
@@ -166,7 +165,7 @@ export function LookupCollectionHarness() {
     id: 'col-c',
     render: () => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Col C</p>
         </div>
       );
@@ -200,7 +199,7 @@ export function LookupForegroundHarness() {
     id: 'fg-a',
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>FG A</p>
           <button
             onClick={() => {
@@ -235,7 +234,7 @@ export function LookupForegroundHarness() {
     id: 'fg-b',
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>FG B</p>
           <button
             onClick={() => {
@@ -285,7 +284,7 @@ export function LookupUnregisteredHarness() {
     id: 'exists-anchor',
     render: () => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Anchor</p>
         </div>
       );

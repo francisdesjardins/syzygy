@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useDialog } from '../../use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * Tests that a non-modal dialog renders inline (no portal) by default.
@@ -24,7 +23,7 @@ export function PortalNonModalDefaultHarness() {
     },
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Non-modal content</p>
           <button
             onClick={() => {

@@ -1,6 +1,5 @@
 import { DialogOutlet } from '../../dialog-outlet.js';
 import { useDialog } from '../../use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 // ── Harness: nested outlets — inner wins ───────────────────────────────────
 
@@ -9,7 +8,7 @@ function InnerScopeDialog() {
     id: 'outlet-nested-inner',
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Inner outlet dialog</p>
           <button
             onClick={() => {
@@ -49,7 +48,7 @@ function OuterScopeDialog() {
     id: 'outlet-nested-outer',
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Outer outlet dialog</p>
           <button
             onClick={() => {

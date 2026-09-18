@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 import { useDialog } from '../../../react/use-dialog.js';
 import { setLogLevel } from '../../../utils/logger.js';
 
@@ -26,7 +25,7 @@ export function ActionLoggingHarness({ payload }: { readonly payload: string }) 
     id: 'ctrl-logging',
     render: ({ action }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <button
             {...action('confirm', (close) => {
               close({ secret: payload });

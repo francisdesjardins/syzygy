@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useDialog } from '../../use-dialog.js';
 import { setLogLevel } from '../../../utils/logger.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 const claimLogging = () => {
   setLogLevel('*');
@@ -34,7 +33,7 @@ export function TransitionToggleHarness() {
     onClose: dropLogging,
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Transition toggle</p>
           <button
             onClick={() => {

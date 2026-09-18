@@ -1,5 +1,4 @@
 import { useDialog } from '../../../react/use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * Scroll-lock compensation harness: taller than the viewport so a classic scrollbar exists, with a
@@ -11,7 +10,7 @@ export function ScrollLockHarness() {
     id: 'scroll-lock',
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Modal dialog</p>
           {/* Top-layer rule: a control usable while this dialog is open lives in the render. */}
           <button
@@ -38,7 +37,7 @@ export function ScrollLockHarness() {
     id: 'scroll-lock-2',
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Second modal dialog</p>
           <button
             onClick={() => {
@@ -59,7 +58,7 @@ export function ScrollLockHarness() {
     portal: true,
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Non-modal panel</p>
           <button
             onClick={() => {

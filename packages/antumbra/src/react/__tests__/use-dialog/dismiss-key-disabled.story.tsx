@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useDialog } from '../../use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * Tests dismissKey: false — no key can dismiss the dialog.
@@ -13,7 +12,7 @@ export function DismissKeyDisabledHarness() {
     dismissKey: false,
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>No dismiss key dialog</p>
           <button
             onClick={() => {

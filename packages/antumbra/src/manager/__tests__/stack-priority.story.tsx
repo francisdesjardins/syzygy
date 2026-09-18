@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useDialog } from '../../react/use-dialog.js';
-import { dialogStyle } from '../../__tests__/story-styles.js';
 
 /**
  * Two modal dialogs racing for the front, with and without a stack policy. `sp-panel`'s
@@ -17,7 +16,7 @@ export function StackPriorityHarness({ withPolicy }: { withPolicy: boolean }) {
     style: { width: 300, height: 300 },
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Panel</p>
           <button
             data-testid="close-panel"
@@ -42,7 +41,7 @@ export function StackPriorityHarness({ withPolicy }: { withPolicy: boolean }) {
     style: { width: 300, height: 300 },
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Warning</p>
           <button
             data-testid="open-panel"
@@ -107,21 +106,21 @@ export function MultiRaiseHarness() {
     id: 'mr-low',
     style: { width: 260, height: 260 },
     render: () => {
-      return <div style={dialogStyle}>Low</div>;
+      return <div>Low</div>;
     },
   });
   const mid = useDialog<void, 'close'>({
     id: 'mr-mid',
     style: { width: 260, height: 260 },
     render: () => {
-      return <div style={dialogStyle}>Mid</div>;
+      return <div>Mid</div>;
     },
   });
   const high = useDialog<void, 'close'>({
     id: 'mr-high',
     style: { width: 260, height: 260 },
     render: () => {
-      return <div style={dialogStyle}>High</div>;
+      return <div>High</div>;
     },
   });
 
@@ -191,7 +190,7 @@ export function LatePolicyFocusHarness() {
     style: { width: 280, height: 280 },
     render: () => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Already up</p>
           <button data-testid="lp-first">First focusable</button>
           <input data-testid="lp-input" aria-label="Notes" />

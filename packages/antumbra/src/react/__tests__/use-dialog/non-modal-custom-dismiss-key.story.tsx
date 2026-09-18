@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useDialog } from '../../use-dialog.js';
 import { Key } from '../../../utils/keys.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * Tests non-modal with custom dismissKey (Delete). Verifies Delete closes the panel
@@ -38,7 +37,7 @@ export function NonModalCustomDismissKeyHarness() {
     },
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Non-modal custom dismiss</p>
           <button
             onClick={() => {

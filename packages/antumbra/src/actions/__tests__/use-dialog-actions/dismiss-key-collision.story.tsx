@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useDialog } from '../../../react/use-dialog.js';
 import { Key } from '../../../utils/keys.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * Tests that when a actions action's hotkey matches the dialog's dismissKey,
@@ -15,7 +14,7 @@ export function DismissKeyActionCollisionHarness() {
     dismissKey: Key.Delete,
     render: ({ action }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <button
             {...action('remove', {
               hotkey: Key.Delete,

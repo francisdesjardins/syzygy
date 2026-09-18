@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useDialog } from '../../use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 const INSTANT = {
   entrance: { opacity: 1 },
@@ -45,7 +44,7 @@ export function EscAnsweredByNobodyHarness() {
     animation: INSTANT,
     render: ({ action }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Front dialog, deaf to the dismiss key</p>
           {/* Inside the render, because a `showModal()` dialog puts everything else out of reach. */}
           <button data-testid="close-dialog" {...action('confirm')}>
@@ -65,7 +64,7 @@ export function EscAnsweredByNobodyHarness() {
     animation: INSTANT,
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Panel behind</p>
           <button
             data-testid="open-dialog"

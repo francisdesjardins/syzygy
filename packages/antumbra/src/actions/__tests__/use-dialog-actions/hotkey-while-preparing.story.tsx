@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 import { useDialog } from '../../../react/use-dialog.js';
 import { Key } from '../../../utils/keys.js';
 
@@ -27,7 +26,7 @@ export function HotkeyWhilePreparingHarness() {
     // is the value this very call is still producing.
     render: ({ isPreparing, action }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <span data-testid="preparing-flag">{isPreparing ? 'opening' : 'ready'}</span>
           <button {...action('confirm', { hotkey: Key.F2 })}>Confirm</button>
           <button

@@ -1,6 +1,5 @@
 import { useDialogManager } from '../../../react/use-dialog-manager.js';
 import { useDialog } from '../../../react/use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * Tests the modal / non-modal split derived from the snapshot's `openDialogs`.
@@ -21,7 +20,7 @@ export function DialogVariantHarness() {
     id: 'variant',
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Dialog</p>
           <button
             onClick={() => {
@@ -40,7 +39,7 @@ export function DialogVariantHarness() {
     nonModal: true,
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Non-Modal</p>
           <button
             onClick={() => {
@@ -90,7 +89,7 @@ export function DialogVariantLookupHarness() {
     id: 'lookup',
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Dialog</p>
           <button
             onClick={() => {
@@ -137,7 +136,7 @@ export function DialogVariantLookupHarness() {
     nonModal: true,
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Non-Modal</p>
           <button
             onClick={() => {

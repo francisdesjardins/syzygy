@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useDialog } from '../../use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * A dialog whose content holds nothing focusable — a loading panel, a bare message.
@@ -18,7 +17,7 @@ export function EscWithoutFocusHarness() {
     render: () => {
       // Deliberately nothing focusable.
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Nothing here can take focus.</p>
         </div>
       );

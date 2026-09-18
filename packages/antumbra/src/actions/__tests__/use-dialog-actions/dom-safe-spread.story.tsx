@@ -1,4 +1,3 @@
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 import { useDialog } from '../../../react/use-dialog.js';
 import { Key } from '../../../utils/keys.js';
 
@@ -15,7 +14,7 @@ export function DomSafeSpreadHarness() {
     id: 'dom-safe-spread',
     render: ({ action }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <button
             data-testid="dom-btn"
             {...action('plain', { hotkey: Key.Enter, focusOnOpen: true })}

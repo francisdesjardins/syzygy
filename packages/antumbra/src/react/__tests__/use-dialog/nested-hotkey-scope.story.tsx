@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Key } from '../../../utils/keys.js';
 import { useDialog } from '../../use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * A dialog holding an open **non-modal** panel in its own subtree, both declaring `Enter`.
@@ -27,7 +26,7 @@ export function NestedHotkeyScopeHarness() {
     portal: false,
     render: ({ action }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <button
             {...action('inner', {
               hotkey: Key.Enter,
@@ -49,7 +48,7 @@ export function NestedHotkeyScopeHarness() {
     ariaLabel: 'Outer',
     render: ({ action }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           {/* First in document order — the trap an unscoped lookup falls into. */}
           {inner.Dialog}
           <button

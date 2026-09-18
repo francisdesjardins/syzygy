@@ -1,6 +1,5 @@
 import { useDialogManager } from '../../../react/use-dialog-manager.js';
 import { useDialog } from '../../../react/use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * Tests stack queries: foreground and openDialogs ordering via useDialogManager.
@@ -18,7 +17,7 @@ export function MultiDialogHarness() {
     id: 'dm-first',
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>First dialog</p>
           <button
             onClick={() => {
@@ -43,7 +42,7 @@ export function MultiDialogHarness() {
     id: 'dm-second',
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Second dialog</p>
           <button
             onClick={() => {

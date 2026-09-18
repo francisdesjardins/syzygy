@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useDialog } from '../../use-dialog.js';
 import { Key } from '../../../utils/keys.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * Tests custom dismissKey: dialog closes on Delete, not on Escape.
@@ -14,7 +13,7 @@ export function CustomDismissKeyHarness() {
     dismissKey: Key.Delete,
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Custom dismiss key dialog</p>
           <button
             onClick={() => {

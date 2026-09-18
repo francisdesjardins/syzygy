@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useDialog } from '../../react.js';
-import { dialogStyle } from '../../__tests__/story-styles.js';
 
 /**
  * A control the caller disables while its own work runs — the shape of every loading button, and
@@ -20,7 +19,7 @@ export function StrandedFocusHarness() {
     ariaLabel: 'Stranded focus',
     render: ({ action }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           {/*
             The label is **constant** and the busy state reported beside it: a button whose children
             change is one the renderer may replace, and a replaced node is blurred by being removed,

@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { DialogManagerProvider } from '../../../react/dialog-manager-context.js';
 import { useDialogManager } from '../../../react/use-dialog-manager.js';
 import { useDialog } from '../../../react/use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /** A dialog registering with the nearest manager, exposing state via `label`-scoped testids. */
 function ScopedDialog({ id, label }: { readonly id: string; readonly label: string }) {
@@ -13,7 +12,7 @@ function ScopedDialog({ id, label }: { readonly id: string; readonly label: stri
     id,
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>{label} content</p>
           <button
             onClick={() => {
@@ -73,7 +72,7 @@ export function NoProviderHarness() {
     id: 'no-provider',
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Singleton dialog</p>
           <button
             onClick={() => {

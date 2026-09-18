@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useDialog } from '../../react.js';
-import { dialogStyle } from '../../__tests__/story-styles.js';
 
 /**
  * A dialog whose `onClose` throws, closed through the animated path.
@@ -30,7 +29,7 @@ export function ThrowingCloseHarness() {
     },
     render: ({ action }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <button data-testid="close" {...action('ok')}>
             Close
           </button>
@@ -78,7 +77,7 @@ export function SilentExitHarness() {
     },
     render: ({ action }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <button data-testid="close" {...action('ok')}>
             Close
           </button>

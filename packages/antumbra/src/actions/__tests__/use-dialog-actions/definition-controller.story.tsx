@@ -1,6 +1,5 @@
 import { createStore } from '../../../store/index.js';
 import { useState, useSyncExternalStore } from 'react';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 import { useDialog } from '../../../react/use-dialog.js';
 
 const countStore = createStore(
@@ -38,7 +37,7 @@ export function DefinitionActionsHarness() {
     id: 'ctrl-definition',
     render: ({ action }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <span data-testid="def-count">{String(count)}</span>
           <button
             onClick={() => {

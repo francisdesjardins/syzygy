@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useDialog } from '../../use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * Tests non-modal dialog: opens with dialog.show() instead of showModal(),
@@ -22,7 +21,7 @@ export function NonModalHarness() {
     },
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Non-modal content</p>
           <button
             onClick={() => {

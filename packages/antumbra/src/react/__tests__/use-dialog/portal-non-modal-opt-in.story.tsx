@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useDialog } from '../../use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * Tests that `portal: true` on a non-modal dialog forces createPortal.
@@ -23,7 +22,7 @@ export function PortalNonModalOptInHarness() {
     },
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Non-modal content</p>
           <button
             onClick={() => {

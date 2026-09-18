@@ -1,12 +1,5 @@
 import { defineConfig } from '@playwright/test';
-
-const IS_CI = Boolean(process.env['CI']);
-
-/**
- * What one unit test may take. These run in Node with no browser and no page, so a test that
- * reaches ten seconds is hung rather than slow.
- */
-const UNIT_TIMEOUT = 10 * 1000;
+import { playwrightBase } from 'gnomon/playwright-base';
 
 /**
  * Unit projects only, for now, and no `webServer`.
@@ -21,15 +14,8 @@ const UNIT_TIMEOUT = 10 * 1000;
  * no virtual module behind them.
  */
 export default defineConfig({
+  ...playwrightBase(),
   testDir: './src',
-  fullyParallel: true,
-  forbidOnly: IS_CI,
-  retries: IS_CI ? 2 : 0,
-  workers: IS_CI ? 1 : '50%',
-  timeout: UNIT_TIMEOUT,
-  reporter: IS_CI
-    ? [['list'], ['html', { outputFolder: 'playwright-report' }]]
-    : [['html', { outputFolder: 'playwright-report' }]],
   projects: [
     {
       name: 'unit',

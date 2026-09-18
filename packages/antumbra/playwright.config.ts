@@ -1,4 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
+import { COMPONENT_TIMEOUT, playwrightBase } from 'gnomon/playwright-base';
 
 /**
  * Where the component suite mounts, and it is the playground's own dev server.
@@ -63,8 +64,10 @@ const needsServer =
  * A ceiling is not the lever `retries` is, and `retries` stay at 0 locally on purpose: a retry takes
  * the second answer from a test that gave a wrong first one, where a ceiling only keeps a correct run
  * from being cut off. 30s is Playwright's own default, and a component test that reaches it is hung.
+ *
+ * The number lives in `gnomon/playwright-base`; the measurement behind it is this package's, so it
+ * is written here, where the five browser projects that spend it are.
  */
-const COMPONENT_TIMEOUT = 30 * 1000;
 
 /**
  * Tests the parallel runner cannot host, kept out of the default run rather than made tolerant.
@@ -114,6 +117,7 @@ const NOT_A_DESKTOP_MOUSE = /@focus-dependent|@touch/;
  * See https://playwright.dev/docs/test-configuration
  */
 export default defineConfig({
+  ...playwrightBase({ ci: IS_CI }),
   testDir: './src',
   // The projects below root at the repo, and `testMatch` is unanchored — so `src/**` also matches
   // `.claude/worktrees/<branch>/src/**`, and a worktree Claude Code left behind is discovered as a
@@ -125,22 +129,6 @@ export default defineConfig({
   // file for why stale counters are worse than missing ones.
   globalSetup: 'gnomon/ct-coverage-reset',
   snapshotDir: './__snapshots__',
-  // The unit project's budget: pure logic, so 10s is already three orders of magnitude of slack and
-  // a test that reaches it is hung rather than slow. The three component projects raise it — see the
-  // `timeout` on each, which is where the reason lives.
-  timeout: 10 * 1000,
-  fullyParallel: true,
-  forbidOnly: IS_CI,
-  retries: IS_CI ? 2 : 0,
-  // `'50%'` **is** Playwright's default, spelled out — the `cpus/2` the comments above assume.
-  workers: IS_CI ? 1 : '50%',
-  // The HTML report carries the trace, and `list` is what a CI log can show: with the HTML reporter
-  // alone a red job prints a count and nothing about which test failed, so reading a failure begins
-  // with downloading an artifact. CI only — locally the HTML report opens itself, and `list` over
-  // five engines is 2 300 lines nobody asked for.
-  reporter: IS_CI
-    ? [['list'], ['html', { outputFolder: 'playwright-report' }]]
-    : [['html', { outputFolder: 'playwright-report' }]],
   use: {
     trace: 'on-first-retry',
     baseURL: GALLERY_URL,

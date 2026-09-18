@@ -1,5 +1,4 @@
 import { useDialog } from '../../use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * The three ways a dialog gets an accessible name and a role, and what happens with none of
@@ -10,7 +9,7 @@ export function AccessibleNameHarness() {
     id: 'a11y-labelled',
     ariaLabel: 'Session settings',
     render: () => {
-      return <p style={dialogStyle}>Named by a string.</p>;
+      return <p>Named by a string.</p>;
     },
   });
 
@@ -21,7 +20,7 @@ export function AccessibleNameHarness() {
     role: 'alertdialog',
     render: () => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <h2 id="a11y-heading">Delete workspace</h2>
           <p id="a11y-body">This cannot be undone.</p>
         </div>
@@ -32,7 +31,7 @@ export function AccessibleNameHarness() {
   const anonymous = useDialog({
     id: 'a11y-anonymous',
     render: () => {
-      return <p style={dialogStyle}>Named by nothing.</p>;
+      return <p>Named by nothing.</p>;
     },
   });
 

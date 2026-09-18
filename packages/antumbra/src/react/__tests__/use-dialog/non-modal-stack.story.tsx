@@ -1,5 +1,4 @@
 import { useDialog } from '../../use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * Tests that two non-modal dialogs stack correctly via z-index.
@@ -17,7 +16,7 @@ export function NonModalStackHarness() {
     },
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>First panel</p>
           <button
             onClick={() => {
@@ -50,7 +49,7 @@ export function NonModalStackHarness() {
     },
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Second panel</p>
           <button
             onClick={() => {

@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { DialogOutlet } from '../../dialog-outlet.js';
 import { useDialog } from '../../use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 // ── Harness: basic outlet renders dialog without {Dialog} in JSX ─────────────
 
@@ -10,7 +9,7 @@ function InnerDialog({ onCloseReason }: { readonly onCloseReason: (r: string) =>
     id: 'outlet-basic',
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Outlet content</p>
           <button
             onClick={() => {

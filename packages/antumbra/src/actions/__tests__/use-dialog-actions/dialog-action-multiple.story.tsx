@@ -1,5 +1,4 @@
 import { useDialog } from '../../../react/use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 const delay = (ms: number) => {
   return new Promise<void>((resolve) => {
@@ -16,7 +15,7 @@ export function DialogActionMultipleHarness() {
     id: 'action-multi',
     render: ({ action, hasRunningAction }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <button
             {...action('confirm', async (close) => {
               await delay(500);

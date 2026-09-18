@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useMessageDialog } from '../../templates/use-message-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * Tests open/close with confirm, cancel, and Escape. Tracks last close reason.
@@ -12,7 +11,7 @@ export function BasicMessageHarness() {
     id: 'msg-basic',
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Message content</p>
           <button
             onClick={() => {

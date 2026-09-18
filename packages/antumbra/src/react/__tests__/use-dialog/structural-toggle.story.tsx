@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useDialog } from '../../use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * Tests that changing a *structural* prop (`portal`) while the dialog is open tears the
@@ -28,7 +27,7 @@ export function StructuralToggleHarness() {
     },
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Toggle content</p>
           <button
             onClick={() => {

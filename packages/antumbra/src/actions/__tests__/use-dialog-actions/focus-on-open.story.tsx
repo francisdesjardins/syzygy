@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useDialog } from '../../../react/use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * An action claiming the dialog's opening focus.
@@ -17,7 +16,7 @@ export function FocusOnOpenHarness() {
     ariaLabel: 'Delete everything',
     render: ({ action, error }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <input data-testid="foo-input" defaultValue="first focusable" />
           <button {...action('cancel', { focusOnOpen: true })} data-testid="foo-cancel">
             Cancel

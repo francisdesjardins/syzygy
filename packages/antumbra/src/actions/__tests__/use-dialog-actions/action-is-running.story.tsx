@@ -1,5 +1,4 @@
 import { useDialog } from '../../../react/use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /** Released by the test, so an action can be observed *while* it runs rather than after. */
 let release = (): void => {
@@ -23,7 +22,7 @@ export function ActionIsRunningHarness() {
     id: 'action-is-running',
     render: ({ action, hasRunningAction }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <header data-testid="status">{action.isRunning('save') ? 'saving' : 'idle'}</header>
           <span data-testid="cancel-running">{String(action.isRunning('cancel'))}</span>
           <span data-testid="aggregate">{String(hasRunningAction)}</span>

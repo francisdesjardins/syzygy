@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 import { useDialog } from '../../use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * A portal that lands somewhere other than `document.body`.
@@ -35,7 +34,7 @@ function PortaledDialog({ host }: { readonly host: Element }) {
     },
     render: () => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>In the themed host</p>
         </div>
       );

@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useDialog } from '../../use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * `nonModal` flipped while the dialog is open — the option changing under a live element.
@@ -23,7 +22,7 @@ export function ModalitySwitchHarness() {
     },
     render: () => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p data-testid="declared">{nonModal ? 'non-modal' : 'modal'}</p>
           <button
             data-testid="flip"

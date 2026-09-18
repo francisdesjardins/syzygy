@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useDialog } from '../../use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * No outlet — standard behaviour. Dialog must be placed in JSX.
@@ -12,7 +11,7 @@ export function NoOutletHarness() {
     id: 'no-outlet',
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Standard content</p>
           <button
             onClick={() => {

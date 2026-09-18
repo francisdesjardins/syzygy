@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { reconcileOpen, useDialog } from '../../react.js';
-import { dialogStyle } from '../../__tests__/story-styles.js';
 
 /**
  * A dialog carrying the platform's own way of closing itself: `<form method="dialog">`.
@@ -14,7 +13,7 @@ export function NativeFormCloseHarness() {
     ariaLabel: 'Native form close',
     render: () => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <form method="dialog">
             <button data-testid="submit" type="submit" value="ok">
               Close natively
@@ -65,7 +64,7 @@ export function ControlledNativeCloseHarness() {
     },
     render: () => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <form method="dialog">
             <button data-testid="submit-controlled" type="submit" value="ok">
               Close natively

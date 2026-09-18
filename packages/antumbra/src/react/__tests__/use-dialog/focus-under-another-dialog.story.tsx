@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useDialog } from '../../use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * A dialog running a slow action, with a second dialog opened over it while that action is still
@@ -18,7 +17,7 @@ export function FocusUnderAnotherDialogHarness() {
     ariaLabel: 'On top',
     render: ({ action }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <button data-testid="over-field">Field on top</button>
           <button {...action('close')} data-testid="over-close">
             Close
@@ -33,7 +32,7 @@ export function FocusUnderAnotherDialogHarness() {
     ariaLabel: 'Underneath',
     render: ({ action }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <button
             {...action('save', {
               onAction: async () => {

@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { DialogManagerProvider } from '../../../react/dialog-manager-context.js';
 import { useDialog } from '../../../react/use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 function BystanderDialog() {
   const { Dialog } = useDialog({
@@ -26,7 +25,7 @@ export function ScrollLockTwoManagersHarness() {
     id: 'two-managers',
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Modal dialog (manager A)</p>
           <button
             onClick={() => {

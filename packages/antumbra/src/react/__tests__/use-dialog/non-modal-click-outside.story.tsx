@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useDialog } from '../../use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * Tests dismissOnClickOutside: clicking outside the non-modal dialog closes it,
@@ -22,7 +21,7 @@ export function NonModalClickOutsideHarness() {
     },
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p data-testid="inside-target">Click outside to dismiss</p>
           <button
             onClick={() => {

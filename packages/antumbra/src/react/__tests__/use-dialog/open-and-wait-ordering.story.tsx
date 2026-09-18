@@ -1,6 +1,5 @@
 import { useRef, useState } from 'react';
 import { useDialog } from '../../use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * `openAndWait` against the window that makes it necessary: a close resolver waits for the *next*
@@ -21,7 +20,7 @@ export function OpenAndWaitOrderingHarness() {
     },
     render: ({ isPreparing, handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <span data-testid="loading-state">{isPreparing ? 'loading' : 'ready'}</span>
           <button
             onClick={() => {

@@ -1,5 +1,4 @@
 import { useDialog } from '../../use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * What the render callback can see of its own dialog's lifecycle, and that it is the same answer
@@ -26,7 +25,7 @@ export function RenderPhaseHarness() {
     },
     render: ({ action, handle, hasRunningAction, phase }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <span data-testid="render-phase">{phase}</span>
           {/* The pair `phase` separates: the flag alone goes quiet before the panel does. */}
           <span data-testid="render-busy">{hasRunningAction ? 'busy' : 'idle'}</span>

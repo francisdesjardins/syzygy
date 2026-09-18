@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 import { useDialog } from '../../../react/use-dialog.js';
 
 /**
@@ -22,7 +21,7 @@ export function SpreadContractHarness() {
     id: 'spread-contract',
     render: ({ action }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <form
             onSubmit={(event) => {
               event.preventDefault();

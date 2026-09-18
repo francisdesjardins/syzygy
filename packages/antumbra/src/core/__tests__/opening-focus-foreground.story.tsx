@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Key, useDialog } from '../../react.js';
-import { dialogStyle } from '../../__tests__/story-styles.js';
 
 /**
  * A non-modal panel opening underneath a dialog that holds focus. The panel claims `focusOnOpen`
@@ -15,7 +14,7 @@ export function OpeningFocusForegroundHarness() {
     ariaLabel: 'Panel underneath',
     render: ({ action }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <button {...action('ok', { focusOnOpen: true })} data-testid="off-panel-button">
             Panel action
           </button>
@@ -29,7 +28,7 @@ export function OpeningFocusForegroundHarness() {
     ariaLabel: 'Interruption in front',
     render: ({ action }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           {/* No `focusOnOpen`, deliberately: a dialog with none needs the return to have a floor.
               With a claim here the test passed against a version that returned nothing. */}
           <button {...action('stay')} data-testid="off-stay">
@@ -92,7 +91,7 @@ export function ReclaimFocusHarness({ behindIsModal }: { behindIsModal: boolean 
     ...(behindIsModal ? {} : { nonModal: true }),
     render: ({ action }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <button
             {...action('ack', { focusOnOpen: true, hotkey: Key.Enter })}
             data-testid="rf-behind-claimed"
@@ -109,7 +108,7 @@ export function ReclaimFocusHarness({ behindIsModal }: { behindIsModal: boolean 
     ariaLabel: 'The one in front',
     render: ({ action, handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <button {...action('done', { focusOnOpen: true })} data-testid="rf-front-claimed">
             Done
           </button>
@@ -247,7 +246,7 @@ export function ShadowReclaimWithoutClaimHarness() {
     ariaLabel: 'A dialog in a shadow root that claims no opening focus',
     render: ({ action }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <button {...action('cancel')} data-testid="shadow-claimless-cancel" type="button">
             Cancel
           </button>

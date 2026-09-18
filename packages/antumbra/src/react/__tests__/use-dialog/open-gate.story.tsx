@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { DialogManagerProvider } from '../../dialog-manager-context.js';
 import { useDialog } from '../../use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * `dialogManager.gate` seen from the door it exists for: a dialog's **own** `open()`.
@@ -21,7 +20,7 @@ function GatedDialog() {
     ariaLabel: 'Gated dialog',
     render: ({ action }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Gated content</p>
           <button {...action('done')}>Close</button>
         </div>

@@ -1,4 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
+import { COMPONENT_TIMEOUT, playwrightBase } from 'gnomon/playwright-base';
 
 const IS_CI = Boolean(process.env['CI']);
 
@@ -13,22 +14,6 @@ const IS_CI = Boolean(process.env['CI']);
 const WITH_COVERAGE = process.env['CT_COVERAGE'] === '1';
 const PORT = WITH_COVERAGE ? 3102 : 3002;
 const BASE_URL = `http://localhost:${String(PORT)}`;
-
-/**
- * What one unit test may take. These run in Node with no browser and no page, so a test that
- * reaches ten seconds is hung rather than slow, and several of them deliberately measure elapsed
- * time against abort deadlines.
- */
-const UNIT_TIMEOUT = 10 * 1000;
-
-/**
- * What one component test may take, and it is a **contention** budget rather than a behaviour one.
- *
- * A browser test locally shares the machine with its siblings, and Playwright's actionability wait
- * is wall-clock: a page that would settle in 400ms alone can miss a short deadline when several
- * workers are compiling and painting at once. A green run never touches this.
- */
-const COMPONENT_TIMEOUT = 30 * 1000;
 
 /**
  * Whether this run needs the playground served, and only the browser project does.
@@ -52,17 +37,10 @@ const needsServer =
   });
 
 export default defineConfig({
+  ...playwrightBase({ ci: IS_CI }),
   testDir: './',
   // Empties `.nyc_output/` before any worker writes into it, and only when coverage is on.
   globalSetup: 'gnomon/ct-coverage-reset',
-  fullyParallel: true,
-  forbidOnly: IS_CI,
-  retries: IS_CI ? 2 : 0,
-  workers: IS_CI ? 1 : '50%',
-  timeout: UNIT_TIMEOUT,
-  reporter: IS_CI
-    ? [['list'], ['html', { outputFolder: 'playwright-report' }]]
-    : [['html', { outputFolder: 'playwright-report' }]],
   use: {
     baseURL: BASE_URL,
     trace: 'on-first-retry',
@@ -74,7 +52,7 @@ export default defineConfig({
     ? {
         webServer: {
           command: WITH_COVERAGE ? `yarn dev --port ${String(PORT)} --strictPort` : 'yarn dev',
-          url: `${BASE_URL}/stories`,
+          url: `${BASE_URL}/?gallery=1`,
           reuseExistingServer: !IS_CI && !WITH_COVERAGE,
           timeout: 120 * 1000,
         },

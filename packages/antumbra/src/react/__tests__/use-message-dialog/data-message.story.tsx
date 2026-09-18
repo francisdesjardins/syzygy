@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useMessageDialog } from '../../templates/use-message-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * Tests close with a typed data payload. last-data is displayed after close.
@@ -12,7 +11,7 @@ export function DataMessageHarness() {
     id: 'msg-data',
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <button
             onClick={() => {
               handle.close('submit', { name: 'test-user' });

@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useDialog } from '../../../react/use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * Tests dialogManager.subscribe() — records open/close events as a CSV string.
@@ -13,7 +12,7 @@ export function EventSubscribeHarness() {
     id: 'dm-events',
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <button
             onClick={() => {
               handle.close('close');

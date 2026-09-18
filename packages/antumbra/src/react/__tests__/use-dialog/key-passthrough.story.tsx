@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useDialog } from '../../use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * A non-modal panel that refuses to dismiss, over a page that has its own Escape handler.
@@ -44,7 +43,7 @@ export function KeyPassthroughHarness() {
     },
     render: ({ isPreparing }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <span data-testid="panel-preparing">{isPreparing ? 'preparing' : 'ready'}</span>
           <button
             onClick={() => {

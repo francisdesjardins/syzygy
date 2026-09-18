@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useDialog } from '../../use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * Regression: open() must always settle. Calling open() while the dialog is
@@ -14,7 +13,7 @@ export function ReopenSettlesHarness() {
     id: 'reopen',
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Reopen content</p>
           <button
             onClick={async () => {

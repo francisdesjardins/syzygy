@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { DialogOutlet } from '../../dialog-outlet.js';
 import { useDialog } from '../../use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 // ── Harness: a dialog unmounting out from under its outlet ──────────────────
 
@@ -10,7 +9,7 @@ function TeardownDialog({ onRemove }: { readonly onRemove: () => void }) {
     id: 'outlet-teardown',
     render: ({ handle }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <p>Teardown</p>
           {/* Inside the dialog, because the top layer swallows clicks outside it — and because
               unmounting while *open* is the case worth watching: the outlet is holding a node

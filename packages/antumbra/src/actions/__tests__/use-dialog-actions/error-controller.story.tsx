@@ -1,5 +1,4 @@
 import { useDialog } from '../../../react/use-dialog.js';
-import { dialogStyle } from '../../../__tests__/story-styles.js';
 
 /**
  * A handler that throws. The render args carry `error` so a caller can show the failure without
@@ -10,7 +9,7 @@ export function ErrorActionsHarness() {
     id: 'ctrl-error',
     render: ({ action, error }) => {
       return (
-        <div style={dialogStyle}>
+        <div>
           <span data-testid="error-msg">{error?.message ?? ''}</span>
           <button
             {...action('bad', () => {
