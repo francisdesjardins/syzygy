@@ -67,3 +67,17 @@ default nobody picked.
 
 The two skins in this repo are what is left after that subtraction: twelve declarations each, and
 they are nothing alike.
+
+## How this repo is run
+
+Friendly warning, so nothing here surprises you: **I commit to `main`.** No release branches, no
+deprecation cycles, and **no semver** — the `1.0.0` in `package.json` is a placeholder, not a
+promise. A name can change between two commits if a better one turns up, and it does.
+
+That is a deliberate trade, not neglect. Nothing here is published, so nobody's build breaks when a
+name improves; what you get instead is a surface that says what it means. The day any of it is
+published, that freedom ends and the usual ceremony starts — versions, a migration note per break,
+the lot. Until then the CHANGELOG is the migration guide, organised by date, and it explains _why_
+each name moved rather than only that it did.
+
+If you have copied a declaration out of these sheets, pin the commit you took it from.
