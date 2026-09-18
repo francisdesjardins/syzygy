@@ -1,0 +1,63 @@
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--app-space-3);
+  margin-bottom: var(--app-space-4);
+}
+
+.verdict {
+  font-size: var(--app-text-sm);
+  line-height: 1.5;
+  color: var(--app-text-secondary);
+  margin: 0;
+  flex: 1 1 20rem;
+}
+
+.tier {
+  margin-bottom: var(--app-space-5);
+}
+
+.tier:last-child {
+  margin-bottom: 0;
+}
+
+.tierHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--app-space-2) var(--app-space-3);
+  margin-bottom: var(--app-space-2);
+}
+
+.tierName {
+  font-family: var(--app-font-mono);
+  font-size: var(--app-text-sm);
+  color: var(--app-text);
+  margin: 0;
+}
+
+.tierStatus {
+  font-family: var(--app-font-mono);
+  font-size: var(--app-text-xs);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.tierNote {
+  font-size: var(--app-text-sm);
+  color: var(--app-text-secondary);
+  margin: 0 0 var(--app-space-3);
+  line-height: 1.5;
+}
+
+/* The absent case has no second graph, and a box saying so reads better than a gap the reader has
+   to interpret as deliberate. */
+.absent {
+  border: 1px dashed var(--app-divider);
+  border-radius: var(--app-radius-md);
+  padding: var(--app-space-4);
+  font-size: var(--app-text-sm);
+  color: var(--app-text-secondary);
+  line-height: 1.5;
+}

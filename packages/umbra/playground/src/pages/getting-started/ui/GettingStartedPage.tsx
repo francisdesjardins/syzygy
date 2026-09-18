@@ -12,6 +12,7 @@ import { IntentHost } from '@/pages/getting-started/ui/IntentHost';
 import { OutcomeView } from '@/pages/getting-started/ui/OutcomeView';
 import { PlanGraph } from '@/pages/getting-started/ui/PlanGraph';
 import { PlanFormats } from '@/pages/getting-started/ui/PlanFormats';
+import { OptionalTier } from '@/pages/getting-started/ui/OptionalTier';
 import { RunChart } from '@/pages/getting-started/ui/RunChart';
 import { SolidPanel } from '@/pages/getting-started/ui/SolidPanel';
 import { TimelineView } from '@/pages/getting-started/ui/TimelineView';
@@ -24,6 +25,7 @@ const SECTIONS = [
   { id: 'what-you-write', label: 'What you write' },
   { id: 'what-happens', label: 'What happens' },
   { id: 'what-you-get-back', label: 'What you get back' },
+  { id: 'an-optional-branch', label: 'An optional branch' },
   { id: 'two-bootstraps', label: 'Two bootstraps' },
 ] as const;
 
@@ -161,6 +163,14 @@ export function GettingStartedPage() {
       <BootstrapProvider key={runId} boot={boot}>
         <Run plan={boot.plan} />
       </BootstrapProvider>
+
+      <ExampleSection
+        id="an-optional-branch"
+        title="An optional branch, and what it starts"
+        description="A plugin host that may not be installed. Its whole branch is optional; what it discovers is a tier that is required, because a module loaded halfway is worse than one that is absent."
+      >
+        <OptionalTier />
+      </ExampleSection>
 
       <ExampleSection
         id="two-bootstraps"
