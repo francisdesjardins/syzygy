@@ -14,6 +14,12 @@
  * `_redirects`, and neither showed up in a build, a type-check or a lint.
  *
  * `deploy.mjs` is the source: it is the one that decides a capability exists at all.
+ *
+ * **Order is checked separately, and only where a reader sees one.** The four lists above are
+ * lookups, so the order in them means nothing. Two other places present the three *to a person* —
+ * corona's `PLAYGROUNDS`, which draws every playground's drawer, and the home page's own column —
+ * and those sat in one arbitrary order until somebody asked why. They follow the eclipse outward
+ * from the middle now, and this is what keeps the second copy from drifting off the first.
  */
 
 import { readFileSync } from 'node:fs';
@@ -81,6 +87,29 @@ for (const [where, found] of sources) {
   }
 }
 
+// The two listings a reader meets, in the order they are read in.
+const ordered = (text, pattern) => {
+  return [...text.matchAll(pattern)].map((match) => {
+    return match[1];
+  });
+};
+
+const canonical = ordered(
+  read('packages/corona/src/site/playgrounds.ts'),
+  /\{ slug: '([a-z-]+)', name: '[A-Za-z]+' \}/g
+);
+const onHome = ordered(read('apps/home/src/pages/Home.tsx'), /href="\/playground\/([a-z-]+)\//g);
+
+if (canonical.length !== declared.size) {
+  failures.push(
+    `corona's PLAYGROUNDS lists ${String(canonical.length)} of ${String(declared.size)} capabilities. The pattern stopped matching, or a playground has no drawer entry.`
+  );
+} else if (canonical.join() !== onHome.join()) {
+  failures.push(
+    `The home page shows ${onHome.join(', ')} and the drawer shows ${canonical.join(', ')}. Both are read by a person, so two orders is two answers to one question — PLAYGROUNDS is the one to follow.`
+  );
+}
+
 if (failures.length > 0) {
   console.error('\ncheck:capabilities: the lists disagree.\n');
   for (const failure of failures) {
@@ -90,5 +119,5 @@ if (failures.length > 0) {
 }
 
 console.log(
-  `check:capabilities: ${[...declared].sort((a, b) => a.localeCompare(b)).join(', ')} — named identically in deploy.mjs, _redirects, the dev server and the mobile gate.`
+  `check:capabilities: ${[...declared].sort((a, b) => a.localeCompare(b)).join(', ')} — named identically in deploy.mjs, _redirects, the dev server and the mobile gate, and shown as ${canonical.join(' → ')} by both the drawer and the home page.`
 );

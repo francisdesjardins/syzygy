@@ -5,6 +5,20 @@ Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No s
 **This file is the package's memory.** The code states what holds now; why it came to hold lives
 here.
 
+## 2026-09-18, the three are in the order of the eclipse
+
+### Changed — `PLAYGROUNDS` runs umbra, penumbra, antumbra
+
+It ran antumbra, umbra, penumbra, and nothing anywhere said why — which is the answer: no reason,
+so the first person to ask got one. The names come from the shadows an eclipse casts, and the
+shadows have an order: the umbra is the full shadow, the penumbra is the partial one around it, and
+the antumbra lies beyond the umbra's tip. Outward from the middle.
+
+The home page listed the same three in the same arbitrary order, by hand. This module calls itself
+"the only place they are named", which was not true of the order, so the root's `check:capabilities`
+now compares the two and fails when they disagree. The other four lists it checks stay compared as
+_sets_, because they are lookups and their order means nothing to anybody.
+
 ## 2026-09-18, the way out is the menu's first group
 
 ### Changed

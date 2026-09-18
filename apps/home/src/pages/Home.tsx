@@ -77,7 +77,13 @@ export const Home = memo(() => {
             </section>
           </div>
 
-          {/* Right column: the three projects, each linking out to its own playground */}
+          {/*
+            Right column: the three projects, each linking out to its own playground.
+
+            Outward from the middle of the eclipse — umbra, penumbra, antumbra — which is the order
+            `PLAYGROUNDS` in corona uses for the same three, and the order the sentence above sets
+            the reader up for by saying where the names come from.
+          */}
           <section
             className={[styles['section'], styles['aside']].join(' ')}
             aria-labelledby="work-heading"
@@ -88,11 +94,6 @@ export const Home = memo(() => {
             <p className={styles['secondary']}>{t('home.work.description')}</p>
             <ul className={styles['work']}>
               <WorkItem
-                href="/playground/dialog/"
-                name={t('home.work.dialog.name')}
-                description={t('home.work.dialog.description')}
-              />
-              <WorkItem
                 href="/playground/boot/"
                 name={t('home.work.boot.name')}
                 description={t('home.work.boot.description')}
@@ -101,6 +102,11 @@ export const Home = memo(() => {
                 href="/playground/design/"
                 name={t('home.work.designSystem.name')}
                 description={t('home.work.designSystem.description')}
+              />
+              <WorkItem
+                href="/playground/dialog/"
+                name={t('home.work.dialog.name')}
+                description={t('home.work.dialog.description')}
               />
             </ul>
           </section>

@@ -5,11 +5,16 @@
  * renamed the day a better word turns up, and a deployed URL that followed it would break every
  * link anybody kept. `deploy.mjs` says the same thing from the other end — the playgrounds are
  * served by what they demonstrate, "whatever the packages end up being called".
+ *
+ * **The order is the eclipse**, outward from the middle: the umbra is the full shadow, the penumbra
+ * is the partial one around it, and the antumbra lies beyond the umbra's tip. Every listing of the
+ * three reads off this one, so they cannot each pick an order — and an order with a reason is what
+ * stops the next person from picking another.
  */
 export const PLAYGROUNDS = [
-  { slug: 'dialog', name: 'Antumbra' },
   { slug: 'boot', name: 'Umbra' },
   { slug: 'design', name: 'Penumbra' },
+  { slug: 'dialog', name: 'Antumbra' },
 ] as const;
 
 export type PlaygroundSlug = (typeof PLAYGROUNDS)[number]['slug'];
