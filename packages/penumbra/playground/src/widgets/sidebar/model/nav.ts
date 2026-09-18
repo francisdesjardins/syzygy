@@ -1,18 +1,7 @@
-import type { ComponentType } from 'react';
+import type { NavGroup } from 'corona/shell';
 
 import { PaletteIcon } from 'corona/icons';
 import { LayersIcon, RulerIcon } from '@/shared/ui/icons';
-
-export type NavItem = {
-  readonly path: string;
-  readonly label: string;
-  readonly icon: ComponentType;
-};
-
-export type NavGroup = {
-  readonly label: string;
-  readonly items: readonly NavItem[];
-};
 
 /**
  * The grouping and the reading order, and the only list of them.

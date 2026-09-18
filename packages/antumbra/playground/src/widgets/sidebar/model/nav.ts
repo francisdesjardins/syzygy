@@ -1,4 +1,5 @@
-import type { ComponentType, SVGProps } from 'react';
+import type { NavGroup } from 'corona/shell';
+
 import {
   CodeIcon,
   HubIcon,
@@ -15,17 +16,6 @@ import {
   TuneIcon,
   ViewSidebarIcon,
 } from '@/shared/ui/icons';
-
-export type NavItem = {
-  readonly path: string;
-  readonly label: string;
-  readonly icon: ComponentType<SVGProps<SVGSVGElement>>;
-};
-
-export type NavGroup = {
-  readonly label: string;
-  readonly items: readonly NavItem[];
-};
 
 /** Grouped so the routes read as a path: core loop, patterns on it, reference, harnesses. */
 export const NAV_GROUPS: readonly NavGroup[] = [

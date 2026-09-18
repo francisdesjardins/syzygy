@@ -5,6 +5,29 @@ Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No s
 **This file is the package's memory.** The code states what holds now; why it came to hold lives
 here.
 
+## 2026-09-18, the drawer is one drawer
+
+### Added
+
+`Sidebar` — the navigation drawer, taking the host's `NAV_GROUPS` and nothing else.
+
+**It was written twice and the two had drifted structurally**, which is not a thing a reader sees
+until something depends on the shape. antumbra's was a full-height flex column with a scrolling nav
+inside it. umbra's started below the top bar and scrolled as a block, with no flex at all — and
+penumbra's was a copy of umbra's.
+
+So `SiteLinks`, which pins itself to the bottom of the column with `margin-top: auto`, pinned in one
+playground and floated in the other two. Measured at two viewport heights: 0px from the bottom in
+antumbra against 163 and 371 elsewhere, with the panel itself 56px short of the window because it
+began under the bar rather than behind it.
+
+The column is what stayed, being the shape the pinned foot and the mobile drawer both need. Two
+other halves were chosen the same way: the backdrop is a `<button>` with an accessible name rather
+than a `<div>` with a click handler, and a route is current when the path matches exactly or a whole
+segment deeper, so `/apiary` no longer lights `/api`.
+
+What the host still owns is its routes and its icons.
+
 ## 2026-09-18, the icon sets collapse
 
 ### Added

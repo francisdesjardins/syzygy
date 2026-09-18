@@ -1,4 +1,5 @@
-import type { ComponentType, SVGProps } from 'react';
+import type { NavGroup } from 'corona/shell';
+
 import {
   HubIcon,
   MenuBookIcon,
@@ -7,14 +8,6 @@ import {
   ScienceIcon,
   WidgetsIcon,
 } from 'corona/icons';
-
-export type NavItem = {
-  readonly path: string;
-  readonly label: string;
-  /** One glyph per destination, as antumbra's sidebar carries — a list of words alone reads as prose. */
-  readonly icon: ComponentType<SVGProps<SVGSVGElement>>;
-};
-export type NavGroup = { readonly label: string; readonly items: readonly NavItem[] };
 
 /**
  * Grouped so the routes read as a path: the idea, then the shapes it takes, then the reference.
