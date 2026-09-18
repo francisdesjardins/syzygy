@@ -5,6 +5,27 @@ Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No s
 **This file is the package's memory.** The code states what holds now; why it came to hold lives
 here.
 
+## 2026-09-18, one card surface, and it is the one with the arguments
+
+### Added — `SurfaceCard`
+
+Three playgrounds, three cards. umbra's and penumbra's were byte-identical to each other and
+plainer: a large radius, and a shadow on hover. antumbra's is the developed one — an extra-large
+radius, `overflow: clip` with a margin so a control flush against the edge keeps its focus ring, and
+a hover that spends one glow token rather than a stack of shadows.
+
+antumbra's is what stayed, and the reason is not that it is richer. Every choice in it has a
+sentence beside it saying why; the other two had none. All four tokens it reaches for —
+`--app-glow`, `--app-flame`, `--app-radius-xl`, `--app-lift` — are already declared in every skin,
+so nothing had to be invented to make it travel.
+
+This is a visible change on two sites: their cards gain the larger radius, and their interactive
+ones gain the flame edge and the two-pixel rise on hover.
+
+`data-surface-card` comes with it — the stable hook antumbra's smoke probe locates cards by, which a
+hashed module class cannot be. No `className` and no `sx` passthrough: that escape hatch is what let
+the cards drift inside one playground before they drifted between three.
+
 ## 2026-09-18, the top bar is corona's, and the mark is the only thing it asks for
 
 ### Added — `TopBar`
