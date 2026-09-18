@@ -43,6 +43,30 @@ export type Bootstrap<TSteps extends readonly AnyStep[]> = {
    *
    * A static analysis, not a schedule. It says what the dependencies permit; `outcome.timeline`
    * says what actually happened, and the two are allowed to differ.
+   *
+   * `levels` answers what runs together; `nodes` carries the edges that say why, which is what
+   * anything drawing or diffing the graph needs. No diagram is shipped — a format means owning its
+   * identifier rules, its direction and its grouping — but the edges make one a few lines away.
+   *
+   * @example
+   * // The graph as Mermaid, which GitHub renders inline in a README.
+   * const plan = boot.plan();
+   * // Mermaid node ids are identifiers and a step id is any string, so the id is sanitised and
+   * // the real one becomes the label — `projects:reference` would not parse as written.
+   * const key = (id: PropertyKey): string => `n${String(id).replace(/\W/g, '_')}`;
+   * const diagram = [
+   *   'graph LR',
+   *   ...plan.nodes.map((node) => `  ${key(node.id)}["${String(node.id)}"]`),
+   *   ...plan.nodes.flatMap((node) => node.needs.map((need) => `  ${key(need)} --> ${key(node.id)}`)),
+   * ].join('\n');
+   * @example
+   * // The same shape as a golden file: a boot graph that changed without anyone meaning it to is
+   * // a review comment, not a mystery three sprints later.
+   * const shape = boot
+   *   .plan()
+   *   .nodes.map((node) => `${String(node.id)} <- ${node.needs.map(String).join(',')}`)
+   *   .join('\n');
+   * expect(shape).toBe(readFileSync('boot-graph.txt', 'utf8'));
    */
   plan: () => BootstrapPlan;
   /**
