@@ -10,6 +10,22 @@ its own past is a story, not a record. The package has been renamed twice, so ol
 by older names: `@yourorg/dialog` before 2026-08-04, then `umbra` until 2026-09-15. It is
 `antumbra` now.
 
+## 2026-09-17, the design-system page becomes "Our skin"
+
+### Changed
+
+The route is `/skin` and the page keeps what is actually this project's: six colour declarations,
+the shell's own controls, and the two rules the palette is held to.
+
+Five sections went to [penumbra](../penumbra)'s new playground, where they were always about to
+end up: type, space and radii, motion, layout and stacking are the system half, the same file in
+every project that imports it. So was most of what was left — **of the 22 tokens this page
+documented in prose, 16 belonged to penumbra**, including every semantic and every neutral. The page
+was titled "Penumbra" and it was not wrong.
+
+What that leaves is small enough to read in one screen, and the way across is a link rather than a
+copy.
+
 ## 2026-09-17, the mascot is corona's, the face is ours
 
 ### Changed

@@ -39,7 +39,7 @@ export const NAV_GROUPS: readonly NavGroup[] = [
   {
     label: 'Reference',
     items: [
-      { path: '/design-system', label: 'Design System', icon: PaletteIcon },
+      { path: '/skin', label: 'Our skin', icon: PaletteIcon },
       { path: '/api', label: 'API Reference', icon: MenuBookIcon },
     ],
   },

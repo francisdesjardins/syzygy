@@ -3,7 +3,6 @@ import {
   isOnSite,
   SectionNav,
   SelectionDropdown,
-  TokenScale,
   TokenSwatches,
   TokenTablesProvider,
 } from 'corona';
@@ -12,7 +11,7 @@ import { ExampleSection } from '@/entities/example';
 import { CodeIcon, PlayArrowIcon } from '@/shared/ui/icons';
 import { PageLayout } from '@/shared/ui/PageLayout';
 import { SurfaceCard } from '@/shared/ui/SurfaceCard';
-import styles from '@/pages/design-system/ui/DesignSystemPage.module.css';
+import styles from '@/pages/skin/ui/SkinPage.module.css';
 
 /**
  * Penumbra, rendered from Penumbra.
@@ -27,99 +26,35 @@ import styles from '@/pages/design-system/ui/DesignSystemPage.module.css';
 
 const SECTIONS = [
   { id: 'palette', label: 'Palette' },
-  { id: 'semantic', label: 'Semantic' },
-  { id: 'type', label: 'Type' },
-  { id: 'space', label: 'Space & radii' },
-  { id: 'motion', label: 'Motion' },
-  { id: 'layout', label: 'Layout & stacking' },
   { id: 'recipes', label: 'Recipes' },
   { id: 'rules', label: 'Rules' },
 ];
 
 /** Colour tokens, with what each one is *for* — the part a value cannot tell you. */
 const PALETTE: readonly TokenNote[] = [
-  ['--app-bg', 'The ground. A step under the paper in both schemes.'],
-  ['--app-paper', 'Bars, rails, cards.'],
-  ['--app-text', 'Body ink.'],
-  ['--app-text-secondary', 'Supporting copy.'],
-  ['--app-text-tertiary', 'Counts, hints, placeholders — still clears 4.5:1.'],
   ['--app-flame', 'A fill. Never text: 3.2:1 on the page.'],
   ['--app-accent', 'The amber you may write in.'],
   ['--app-primary', 'A filled control’s ground.'],
   ['--app-primary-ink', 'What goes on that fill — dark, which is why the hover brightens.'],
   ['--app-primary-hover', 'A filled primary brightens; it never deepens.'],
   ['--app-flame-wash', 'The tint behind a selected or live surface.'],
-  ['--app-divider', 'A layout hairline. Owes no contrast.'],
-  ['--app-control-border', "A control's edge. 1.4.11 asks 3:1 of it."],
-  ['--app-hover', 'The neutral overlay under a hover.'],
 ];
 
-const SEMANTIC: readonly TokenNote[] = [
-  ['--app-error', 'Destructive and failed states.'],
-  ['--app-error-ink', 'What goes on the error fill.'],
-  ['--app-ok', 'Succeeded.'],
-  ['--app-ok-wash', 'The surface a success badge sits on.'],
-  ['--app-info', 'Neutral notice.'],
-  ['--app-info-wash', 'The surface an info banner sits on.'],
-  ['--app-warn', 'The fourth of the family, and what the API badge asks for on a class.'],
-  ['--app-warn-wash', 'The surface that badge sits on.'],
-];
-
-export function DesignSystemPage() {
+export function SkinPage() {
   return (
     <TokenTablesProvider slots={{ Card: SurfaceCard }}>
       <PageLayout
-        title="Penumbra"
-        description="The design system this playground is built in — read live from the token sheet, so what you see here is what the CSS holds rather than a copy of it. The eclipse the mascot draws: a dark body, a corona around it."
+        title="Our skin"
+        description="The six colours this playground is painted in, the controls built from them, and the two rules the palette is held to. Everything under them is penumbra's, and has a playground of its own."
       >
         <SectionNav sections={SECTIONS} />
 
         <ExampleSection
           id="palette"
           title="Palette"
-          description="Eight of these are antumbra's and the rest are the neutral base every project shares. Dark is the designed-for scheme and light is given the same care rather than derived by inversion; components read tokens and never branch on the mode, because the tokens do that."
+          description="The six declarations that are antumbra's. Everything else a page is painted with — the surfaces, the three text ranks, the states, the four semantics — comes from the base underneath, which is why three playgrounds can differ in their accent without differing in their ground."
         >
           <TokenSwatches tokens={PALETTE} />
-        </ExampleSection>
-
-        <ExampleSection
-          id="semantic"
-          title="Semantic"
-          description="Each ink pairs with the tinted surface a badge or banner sits on. They are the base's rather than this project's, which is the point of them: a component stops reaching for a literal, and with it stops branching on mode."
-        >
-          <TokenSwatches tokens={SEMANTIC} />
-        </ExampleSection>
-
-        <ExampleSection
-          id="type"
-          title="Type"
-          description="Three voices: the display serif on h1–h3 and the wordmark, the body sans everywhere else, the mono for code, eyebrows and columns of digits. The ramp is ~1.22 off a 15px body."
-        >
-          <TokenScale groups={['type', 'leading', 'tracking']} specimen="Open, render, close" />
-        </ExampleSection>
-
-        <ExampleSection
-          id="space"
-          title="Space & radii"
-          description="A component asks for a step, never a pixel count. An off-scale literal has to say why it is off-scale."
-        >
-          <TokenScale groups={['space', 'radius']} />
-        </ExampleSection>
-
-        <ExampleSection
-          id="motion"
-          title="Motion"
-          description="Never a cubic-bezier literal in a component — and never a transition on colour, since a scheme flip switches backgrounds instantly and would interpolate the outgoing ink across them. Hover a track."
-        >
-          <TokenScale groups={['easing', 'duration']} />
-        </ExampleSection>
-
-        <ExampleSection
-          id="layout"
-          title="Layout & stacking"
-          description="The measurements the shell is assembled from, and the order things paint in. The top layer is above all of these and no z-index reaches it — these rank ordinary content against ordinary content."
-        >
-          <TokenScale groups={['layout', 'stacking']} />
         </ExampleSection>
 
         <ExampleSection
@@ -230,8 +165,8 @@ export function DesignSystemPage() {
               {isOnSite() ? (
                 <p className={styles['offsite']}>
                   The half of this that is not antumbra's —{' '}
-                  <a href="/design-system">penumbra, layer by layer</a>, where the same base wears
-                  two other skins.
+                  <a href="/playground/design/">Penumbra, layer by layer</a> — where the same base
+                  wears two other skins.
                 </p>
               ) : null}
             </div>

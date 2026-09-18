@@ -65,7 +65,7 @@
   color: var(--app-text);
 }
 
-/* The way out to the site's own design-system page, and it only exists when the site does. */
+/* The way across to penumbra's playground, and it only exists when the site around it does. */
 .offsite {
   margin: var(--app-space-4) 0 0;
   padding-top: var(--app-space-4);

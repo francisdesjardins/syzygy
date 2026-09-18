@@ -774,7 +774,11 @@ if (THEME === 'dark' || THEME === 'light') {
 await page.waitForSelector('nav a[href]', { timeout: 15_000 }).catch(() => {
   // Reported by the assertion below rather than thrown from a helper.
 });
-const routes = await page.$$eval('nav a[href]', (links) => {
+// The drawer's foot is a `<nav>` too, and its links leave for the sibling playgrounds. Off the
+// site they render as text with no `href`, so this happened to be safe — but "happened to" is not
+// a property of a gate, and the day somebody runs the smoke against an assembled build it would
+// walk into another playground and assert on its pages.
+const routes = await page.$$eval('nav:not([aria-label="Elsewhere"]) a[href]', (links) => {
   return [
     ...new Set(
       links

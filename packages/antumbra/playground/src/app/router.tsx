@@ -157,10 +157,10 @@ const designSystemRoute = createRoute({
   getParentRoute: () => {
     return rootRoute;
   },
-  path: '/design-system',
+  path: '/skin',
   component: lazyRouteComponent(() => {
-    return import('@/pages/design-system');
-  }, 'DesignSystemPage'),
+    return import('@/pages/skin');
+  }, 'SkinPage'),
 });
 
 const routeTree = rootRoute.addChildren([
