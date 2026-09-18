@@ -417,7 +417,76 @@ export function runDialogExit(
 
   dialog.addEventListener('transitionstart', handleTransitionStart);
   dialog.addEventListener('transitionend', handleTransitionEnd);
+
+  let cancelled = false;
+
+  /*
+   * A frame, because an exit's animations are created by the style recalculation that follows the
+   * write rather than by it — forcing a flush satisfied two engines and not the third. The timer
+   * above stays armed meanwhile, so an exit with no animation settles exactly as it did before.
+   */
+  const readAnimations = () => {
+    if (cancelled) {
+      return;
+    }
+    const running = dialog.getAnimations().filter((animation) => {
+      return animation.playState !== 'finished';
+    });
+    if (running.length === 0) {
+      return;
+    }
+    watch(running);
+  };
+
+  const watch = (running: readonly Animation[]) => {
+    /*
+     * The transition listeners stand down: from here they are a shortcut, not a clock. A property
+     * can be transitioned *and* keyframed at once, and `transitionend` then fires at the shorter of
+     * the two. The transition is still waited for, as one animation in the list below.
+     */
+    dialog.removeEventListener('transitionstart', handleTransitionStart);
+    dialog.removeEventListener('transitionend', handleTransitionEnd);
+
+    // The backstop moves onto the animations' own clock: `exitDuration` is a hint about a
+    // transition, and cutting a longer keyframed exit at it is the defect this removes. An endless
+    // animation answers `Infinity`, which falls back to the hint.
+    const ends = running.map((animation) => {
+      const end = animation.effect?.getComputedTiming().endTime ?? 0;
+      return typeof end === 'number' && Number.isFinite(end) ? end : 0;
+    });
+    const longest = Math.max(exitDuration, ...ends);
+
+    clearTimeout(fallbackTimer);
+    fallbackTimer = setTimeout(() => {
+      onFallbackTimeout?.();
+      onFinish();
+    }, longest + 50);
+
+    void Promise.all(
+      running.map(async (animation) => {
+        // A cancelled animation rejects, and this teardown cancels the backdrop's on every close.
+        // That is an ending, not a failure.
+        await animation.finished.catch(() => {
+          return undefined;
+        });
+      })
+    ).then(() => {
+      if (cancelled) {
+        return;
+      }
+      clearTimeout(fallbackTimer);
+      onFinish();
+    });
+  };
+
+  const frame =
+    typeof requestAnimationFrame === 'function' ? requestAnimationFrame(readAnimations) : undefined;
+
   return () => {
+    cancelled = true;
+    if (frame !== undefined) {
+      cancelAnimationFrame(frame);
+    }
     dialog.removeEventListener('transitionstart', handleTransitionStart);
     dialog.removeEventListener('transitionend', handleTransitionEnd);
     clearTimeout(fallbackTimer);

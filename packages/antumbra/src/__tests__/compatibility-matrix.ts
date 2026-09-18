@@ -1611,9 +1611,19 @@ export const PLATFORM_ROWS: readonly PlatformRow[] = [
   },
   {
     fact: 'an exit animated with `@keyframes` rather than a transition',
-    state: 'partial',
-    since: '2026-09-04',
-    why: 'The exit is *observed* through `transitionend` on the one property `transitionProperty` names, which a keyframed exit never fires — so it is finished by the safety timer at `exitDuration + 50`: right whenever the two durations agree, and a cut animation when they do not. `Element.getAnimations()` answers both halves at once — it sees transitions, keyframes and the `::backdrop` animation the close already drives through WAAPI — and would leave `transitionProperty` and `exitDuration` as hints rather than the exit’s only clock. What rules out a straight swap is the measurement the timer exists for: the style write and the recalculation that starts the animation were 245 ms apart on a busy page, and `getAnimations()` returns only animations already created, so a naive read settles the close instantly. Forcing that flush, and what Safari returns for `::backdrop`, are the work.',
+    state: 'works',
+    since: '2026-09-18',
+    why: 'The exit is observed through `Element.getAnimations()`, which sees transitions, keyframes and the `::backdrop` animation the close drives through WAAPI alike — so `transitionProperty` and `exitDuration` are hints and the clock is the animations’ own, the close landing when the last of them ends. Three measurements shaped it. The read is taken on the next frame rather than now, because an exit’s animations are created by the style recalculation that follows the write: forcing a flush, by layout read and by style read, satisfied Chromium and WebKit and left Firefox’s list empty. The `transitionend` listener stands down once animations are in hand, because a property can be transitioned *and* keyframed at once and Firefox then fires it at the shorter of the two. And the safety timer stays, re-armed to the longest animation’s end: an endless animation answers `Infinity`, which falls back to the hint.',
+    references: [
+      {
+        file: 'src/core/__tests__/keyframed-exit.ct.tsx',
+        title: 'is waited for to its own end rather than cut by the exit-duration hint',
+      },
+      {
+        file: 'src/core/__tests__/keyframed-exit.ct.tsx',
+        title: 'still ends, so a close is never left pending on an animation nobody watches',
+      },
+    ],
   },
   {
     fact: 'a raise keeps the caret where the user left it',
