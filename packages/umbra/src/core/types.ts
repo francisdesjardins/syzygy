@@ -210,7 +210,42 @@ export type Step<
   /** Ids this step reads. The graph's edges, and the only thing that decides what runs in parallel. */
   readonly needs?: TNeeds | undefined;
   readonly phase?: TPhase | undefined;
-  /** A failure here degrades the run instead of failing it, and prunes this step's dependents. */
+  /**
+   * A failure here degrades the run instead of failing it, and prunes this step's dependents.
+   *
+   * **The pruning is what makes a whole branch optional, and it needs no second flag.** A step runs
+   * only when every one of its `needs` succeeded, so everything downstream of an optional step is
+   * `skipped` rather than failed — mark the root of the branch and the subtree follows.
+   *
+   * The error is still reported, with `tolerated: true`. An absent thing is a fact about the
+   * install, and the one thing it must not read as is a bug.
+   *
+   * @example
+   * // A plugin host that may not be installed at all.
+   * const pluginHost = defineStep({
+   *   id: 'plugin-host',
+   *   needs: ['session'],
+   *   optional: true,
+   *   run: async (ctx) => probePluginHost(ctx.signal),
+   * });
+   *
+   * // Not marked optional, and it does not need to be: its need is. With no host this is
+   * // `skipped`, the run is `degraded` rather than `failed`, and the app mounts without plugins.
+   * const manifest = defineStep({
+   *   id: 'plugin-manifest',
+   *   needs: ['plugin-host'],
+   *   run: (ctx) => manifestFrom(ctx.get('plugin-host')),
+   * });
+   *
+   * // What the branch discovered is a tier of its own, and that one is **required**: a module
+   * // loaded halfway is worse than a module absent, so its steps may refuse the mount — which
+   * // this graph could not do about ids that did not exist when it was compiled.
+   * const outcome = await boot.run();
+   * const found = readStepData(outcome, 'plugin-manifest');
+   * if (found !== undefined) {
+   *   await createBootstrap({ steps: stepsFor(found) }).run();
+   * }
+   */
   readonly optional?: boolean | undefined;
   /** Milliseconds, counted from the moment `run` is entered rather than from planning. */
   readonly timeout?: number | undefined;
