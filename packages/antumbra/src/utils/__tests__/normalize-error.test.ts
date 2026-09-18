@@ -18,7 +18,7 @@ test.describe('normalizeError', () => {
     expect(result.message).toBe('oops');
   });
 
-  test('wraps a number via String() coercion', () => {
+  test('wraps a number', () => {
     const result = normalizeError(42);
     expect(result).toBeInstanceOf(Error);
     expect(result.message).toBe('42');
@@ -36,9 +36,29 @@ test.describe('normalizeError', () => {
     expect(result.message).toBe('undefined');
   });
 
-  test('wraps a plain object via String() coercion', () => {
+  test('says a plain object is not an error rather than "[object Object]"', () => {
     const result = normalizeError({ code: 'E001' });
     expect(result).toBeInstanceOf(Error);
-    expect(result.message).toBe('[object Object]');
+    expect(result.message).toBe('Non-error thrown');
+  });
+
+  /**
+   * Both of these threw out of `String(value)`, from inside the handler that exists to report a
+   * failure — so the thrown value replaced the one the caller was told about.
+   */
+  test('survives a value with no prototype', () => {
+    const result = normalizeError(Object.create(null));
+    expect(result).toBeInstanceOf(Error);
+    expect(result.message).toBe('Non-error thrown');
+  });
+
+  test('survives a toString that throws', () => {
+    const result = normalizeError({
+      toString: () => {
+        throw new Error('refused');
+      },
+    });
+    expect(result).toBeInstanceOf(Error);
+    expect(result.message).toBe('Non-error thrown');
   });
 });

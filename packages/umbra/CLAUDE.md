@@ -245,6 +245,9 @@ than `Pick`, which collapses to `{}` while the registry is still empty.
 - **Commits**: [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
 - **Changelog**: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date
 - **Files**: kebab-case. **Exports**: PascalCase types, camelCase functions
+- **`utils/thrown-message.ts` is byte-identical with antumbra's copy**, held by the root's
+  `check:error-rule`. Both packages have to name a non-`Error` throw and neither may depend on the
+  other, so the rule is shared as the same text. Change both, or change neither.
 - **Comments**: **why, not what** — and never the past (`used to`, `previously`); the CHANGELOG is
   the history. JSDoc on public API is the exception, being the documentation.
 - **No implicit returns**: every arrow function uses a block body with an explicit `return`

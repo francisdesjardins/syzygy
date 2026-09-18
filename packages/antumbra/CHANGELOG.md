@@ -10,6 +10,33 @@ its own past is a story, not a record. The package has been renamed twice, so ol
 by older names: `@yourorg/dialog` before 2026-08-04, then `umbra` until 2026-09-15. It is
 `antumbra` now.
 
+## 2026-09-18, a thrown object no longer says `[object Object]`
+
+### Fixed — `normalizeError` could throw
+
+`normalizeError` coerced a non-`Error` with `String(value)`, and that throws for a null-prototype
+object or a value whose `toString` fails. It is called from `action-engine.ts` and
+`fire-and-forget.ts` on whatever a user's action threw — so a hostile throw replaced the failure
+being reported with a new one, raised from inside the handler that exists to report it.
+
+### Changed — what a non-`Error` throw is called
+
+`utils/thrown-message.ts` is new and `normalizeError` defers to it. Strings, numbers, booleans,
+bigints, `null` and `undefined` are unchanged. **Everything else is now `Non-error thrown`** where it
+was `String(value)`: a plain object said `[object Object]`, which reads as information and is none —
+a caller can tell `Non-error thrown` from a real message and cannot tell `[object Object]` from one.
+A symbol said `Symbol(x)` and now says `Non-error thrown` too.
+
+The text is byte-identical with [umbra](../umbra)'s copy, which had the correct answer already.
+Both packages catch `unknown` and have to name it, and neither may depend on the other — both
+publish `dependencies: {}`, and a shared module would cost the zero-dependency promise on each
+README. So the rule is shared as the same text, and `yarn check:error-rule` at the root fails on a
+byte of drift.
+
+`serializeError` was **not** added here. Nothing in this package ships an error across a boundary,
+so it would be public surface with no caller. What the two libraries share is the rule, not the
+export list.
+
 ## 2026-09-17, the design-system page becomes "Our skin"
 
 ### Changed

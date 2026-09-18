@@ -1,19 +1,11 @@
 import type { SerializedError } from '../core/types.js';
+import { thrownMessage } from './thrown-message.js';
 
 /** How deep a `cause` chain is followed before it is treated as a cycle. */
 const MAX_CAUSE_DEPTH = 8;
 
 function describe(value: unknown): { name: string; message: string } {
-  if (typeof value === 'string') {
-    return { name: 'Error', message: value };
-  }
-  if (typeof value === 'number' || typeof value === 'boolean' || typeof value === 'bigint') {
-    return { name: 'Error', message: String(value) };
-  }
-  if (value === null || value === undefined) {
-    return { name: 'Error', message: String(value) };
-  }
-  return { name: 'Error', message: 'Non-error thrown' };
+  return { name: 'Error', message: thrownMessage(value) };
 }
 
 /**

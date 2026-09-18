@@ -21,9 +21,18 @@ import type {
   StepTrace,
 } from './types.js';
 
-/** Rebuild something throwable from a shared failure, so a sharer fails the way the owner did. */
+/**
+ * Rebuild something throwable from a shared failure, so a sharer fails the way the owner did.
+ *
+ * The `cause` chain comes back with it: a sharer that only saw the outermost message would be
+ * debugging a different failure than the owner. The stack does not, because the owner's frames
+ * never ran here.
+ */
 function errorFrom(serialized: SerializedError): Error {
-  const error = new Error(serialized.message);
+  const error =
+    serialized.cause === undefined
+      ? new Error(serialized.message)
+      : new Error(serialized.message, { cause: errorFrom(serialized.cause) });
   error.name = serialized.name;
   return error;
 }

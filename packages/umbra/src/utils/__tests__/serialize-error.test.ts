@@ -36,6 +36,21 @@ test('anything else admits it was not an error', () => {
   expect(serializeError({ status: 500 })).toEqual({ name: 'Error', message: 'Non-error thrown' });
 });
 
+test('a value that refuses to be stringified is still reported', () => {
+  // `String(value)` throws on both, which would replace the failure being recorded with a new one.
+  expect(serializeError(Object.create(null))).toEqual({
+    name: 'Error',
+    message: 'Non-error thrown',
+  });
+  expect(
+    serializeError({
+      toString: () => {
+        throw new Error('refused');
+      },
+    })
+  ).toEqual({ name: 'Error', message: 'Non-error thrown' });
+});
+
 test('a cause is followed', () => {
   const normalized = serializeError(new Error('outer', { cause: new Error('inner') }));
 

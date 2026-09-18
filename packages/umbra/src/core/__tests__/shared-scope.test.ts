@@ -150,6 +150,27 @@ test('a failure is adopted too, so a sharer does not mount on data nobody has', 
   expect(b.errors[0]?.error.message).toBe('401');
 });
 
+test('the sharer is handed the whole cause chain, not just the outermost message', async () => {
+  const steps = () => {
+    return [
+      defineStep({
+        id: 'session',
+        scope: 'shared',
+        run: () => {
+          throw new Error('401', { cause: new Error('token endpoint refused') });
+        },
+      }),
+    ];
+  };
+
+  const [first, second] = twoModules(steps);
+  const [, b] = await Promise.all([first.run(), second.run()]);
+
+  // The sharer never ran the step, so it debugs from what it was handed. Dropping the cause here
+  // left it reading '401' with nothing under it, while the owner had the reason.
+  expect(b.errors[0]?.error.cause?.message).toBe('token endpoint refused');
+});
+
 test('the notices and intents of a shared step belong to the run that did the work', async () => {
   const steps = () => {
     return [

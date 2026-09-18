@@ -3,6 +3,38 @@
 Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No semver: names change
 between commits when a better one shows up, and the entry says which and why.
 
+## 2026-09-18, one rule for what a non-`Error` throw is called
+
+### Changed — shared with antumbra
+
+`utils/thrown-message.ts` is new, and `serializeError`'s `describe` is now a call into it. Nothing
+about umbra's own answers moved: a string stays its own message, a number stays stringified, and
+anything else is still `Non-error thrown`. The file exists so antumbra can carry the identical text.
+
+Both packages catch `unknown` and have to name it — antumbra to build the `Error` an action reports,
+umbra to fill the `SerializedError` a timeline ships — and they answered differently. antumbra
+coerced with `String(value)`, which says `[object Object]` for a plain object and **throws**, from
+inside the handler that exists to report a failure, for a null-prototype object or a `toString` that
+refuses. umbra's answer was the correct one, so it is the one both now give.
+
+Neither package can import the other's copy: both publish `dependencies: {}`, and a shared module
+would cost the zero-dependency promise on each README. So the rule is shared by being the same text,
+and `yarn check:error-rule` at the root fails on a byte of drift, naming the line. Byte-identical
+rather than equivalent, because equivalence is a judgement a diff cannot make — the same measure
+`limb` used to decide what could collapse into one package.
+
+**No new public method anywhere.** antumbra keeps `normalizeError`, umbra keeps `serializeError`,
+and neither gained the other's: nothing in antumbra ships an error across a boundary, so a
+`serializeError` there would be surface with no caller. What is shared is the rule, which is what
+was actually duplicated.
+
+### Fixed — a sharer was losing the cause chain
+
+`errorFrom`, which rebuilds something throwable so a `scope: 'shared'` step's sharer fails the way
+the owner did, dropped `cause`. The sharer never ran the step, so what it is handed is all it has to
+debug from — it read `401` with nothing underneath while the owner had the reason. The stack is
+still dropped, on purpose: the owner's frames never ran in the sharer.
+
 ## 2026-09-18, `Session` is `LiveRun`
 
 ### Changed — renamed export
