@@ -10,6 +10,12 @@ dist/
 playwright-report/
 test-results/
 
+# Coverage, for every workspace that measures it. Here rather than per package: umbra and antumbra
+# each ignored their own, so the first package to add a `test:coverage` — limb — would have
+# committed the HTML report instead.
+coverage/
+.nyc_output/
+
 *.log
 .DS_Store
 Thumbs.db
