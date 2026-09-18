@@ -428,11 +428,11 @@ yarn verify:all      # lint + type-check + build + package checks, against the b
 ```
 
 **Two coverage numbers, because there are two test projects and neither can measure the other's
-half.** `yarn test:unit:coverage` measures the framework-free core in Node (c8) — **96.93%**
+half.** `yarn test:unit:coverage` measures the framework-free core in Node (c8) — **96.94%**
 statements — and its exclude list is the statement of what a Node process can reach, not a way to
 flatter the number. `yarn test:component:coverage` measures what that list leaves out: the three
 bindings and the DOM-only modules, in a real browser (istanbul, opt-in because instrumenting costs
-~45% of the run) — **92.14%** statements over 60 files. Both measured 2026-09-14, and re-measured
+~45% of the run) — **91.80%** statements over 61 files. Both measured 2026-09-18, and re-measured
 together or not at all: one number moved without the other is two projects being compared across
 different days. `yarn coverage:update` is that rule made mechanical: it runs both commands and
 rewrites this paragraph, the badges above and CLAUDE.md's copy in one move — still a snapshot, not
