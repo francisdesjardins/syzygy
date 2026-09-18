@@ -11,6 +11,7 @@ import { Glossary } from '@/pages/getting-started/ui/Glossary';
 import { IntentHost } from '@/pages/getting-started/ui/IntentHost';
 import { OutcomeView } from '@/pages/getting-started/ui/OutcomeView';
 import { PlanGraph } from '@/pages/getting-started/ui/PlanGraph';
+import { PlanFormats } from '@/pages/getting-started/ui/PlanFormats';
 import { RunChart } from '@/pages/getting-started/ui/RunChart';
 import { SolidPanel } from '@/pages/getting-started/ui/SolidPanel';
 import { TimelineView } from '@/pages/getting-started/ui/TimelineView';
@@ -50,6 +51,11 @@ function Run(props: { plan: Bootstrap<Steps>['plan'] }) {
             description="One column is one level: everything in it goes out together, because nothing in it waits for anything else in it. The second line of each box is its scope, and the last column is the mounted phase."
             codeKey="boot-steps"
             example={<PlanGraph plan={props.plan()} timeline={timeline} />}
+          />
+          <ExampleCard
+            title="The same graph, in whatever format you needed"
+            description="plan() hands back needs and dependents, so the drawing above has no privileged access — these come off the same nodes. umbra ships none of them on purpose: each one knows what its target accepts as an identifier, which is not a bootstrapper's business."
+            example={<PlanFormats plan={props.plan()} />}
           />
         </ExampleGrid>
       </ExampleSection>

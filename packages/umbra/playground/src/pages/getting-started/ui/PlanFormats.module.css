@@ -1,0 +1,49 @@
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--app-space-3);
+  margin-bottom: var(--app-space-3);
+}
+
+.note {
+  color: var(--app-text-secondary);
+  font-size: var(--app-text-sm);
+  line-height: 1.5;
+  margin: 0;
+  /* The three notes differ in length, and a box that resizes under the reader as they compare
+     formats reads as the page reflowing rather than as the answer changing. */
+  min-height: 3em;
+  flex: 1 1 18rem;
+}
+
+.frame {
+  position: relative;
+  border: 1px solid var(--app-divider);
+  border-radius: var(--app-radius-md);
+  overflow: hidden;
+}
+
+.copy {
+  position: absolute;
+  top: var(--app-space-2);
+  right: var(--app-space-2);
+  z-index: 1;
+}
+
+.scroll {
+  overflow: auto;
+  max-height: 320px;
+}
+
+.source {
+  margin: 0;
+  padding: var(--app-space-4);
+  /* Room for the copy button, which floats over the first line. */
+  padding-right: var(--app-space-10);
+  font-family: var(--app-font-mono);
+  font-size: var(--app-text-sm);
+  line-height: 1.6;
+  color: var(--app-text);
+  white-space: pre;
+}
