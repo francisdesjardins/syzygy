@@ -35,6 +35,7 @@ being true.
 | The gates themselves      | `gnomon`                                 | `yarn check` in each consumer                           |
 | Agent-instruction budgets | `gnomon-doc-budget`                      | `yarn doc-budget`, a ceiling and a headroom line each   |
 | Tokens that are read      | `gnomon-token-usage`                     | `check:tokens:used` in all five consumers               |
+| The capability list       | `deploy.mjs` is the source               | `yarn check:capabilities`, four places held to agree    |
 | Phone layout              | —                                        | `yarn check:mobile`, 16 routes × 2 widths               |
 | The stacking scale        | `penumbra/tokens.system.css`             | `check-tokens.mjs` — no two layers share a number       |
 | The playground shell      | `corona/shell`, `/theme`, `/mascot`      | each playground's `verify:all`, and `yarn check:mobile` |

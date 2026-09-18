@@ -8,7 +8,7 @@
   "scripts": {
     "format": "oxfmt .",
     "format:check": "oxfmt --check .",
-    "check": "yarn constraints && yarn dedupe --check && yarn format:check && yarn lint --deny-warnings && yarn workspaces foreach --all --topological-dev run check",
+    "check": "yarn constraints && yarn dedupe --check && yarn format:check && yarn lint --deny-warnings && yarn workspaces foreach --all --topological-dev run check && yarn check:capabilities",
     "test": "yarn workspaces foreach --all --topological-dev run test",
     "verify:all": "yarn workspaces foreach --all --topological-dev run verify:all",
     "playgrounds:build": "yarn workspaces foreach --all --topological-dev run playground:build:file",
@@ -16,7 +16,8 @@
     "build": "yarn workspaces foreach --all --topological-dev run build",
     "check:mobile": "node scripts/check-mobile.mjs",
     "lint": "oxlint --type-aware",
-    "lint:fix": "oxlint --type-aware --fix"
+    "lint:fix": "oxlint --type-aware --fix",
+    "check:capabilities": "node scripts/check-capabilities.mjs"
   },
   "devDependencies": {
     "@playwright/test": "1.63.0",
