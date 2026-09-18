@@ -1,4 +1,4 @@
-import { type AnyStep, type Bootstrap, clearSharedScope, createBootstrap } from 'umbra';
+import { type Bootstrap, clearSharedScope, createBootstrap } from 'umbra';
 import { BootstrapProvider, useBootstrapContext } from 'umbra/react';
 import { useCallback, useState } from 'react';
 import { ExampleCard, ExampleGrid, ExampleSection } from '@/entities/example';
@@ -30,20 +30,7 @@ function bootFor(faults: Faults): Bootstrap<Steps> {
   return createBootstrap({ steps: createSteps(createApi(faults)) });
 }
 
-/** The shape of the graph, read off the same step objects the bootstrap was built from. */
-function shapeOf(steps: readonly AnyStep[]) {
-  const needsOf: Record<string, readonly string[]> = {};
-  const scopeOf: Record<string, string> = {};
-  for (const step of steps) {
-    needsOf[String(step.id)] = (step.needs ?? []).map((need) => {
-      return String(need);
-    });
-    scopeOf[String(step.id)] = step.scope ?? 'instance';
-  }
-  return { needsOf, scopeOf };
-}
-
-function Run(props: { shape: ReturnType<typeof shapeOf>; plan: Bootstrap<Steps>['plan'] }) {
+function Run(props: { plan: Bootstrap<Steps>['plan'] }) {
   const snapshot = useBootstrapContext();
   // Both halves. The preflight's traces are frozen into the outcome; the mounted phase's arrive
   // later, on the session, and a graph drawn from the outcome alone leaves its last column
@@ -62,14 +49,7 @@ function Run(props: { shape: ReturnType<typeof shapeOf>; plan: Bootstrap<Steps>[
             title="The step graph, as the dependencies drew it"
             description="One column is one level: everything in it goes out together, because nothing in it waits for anything else in it. The second line of each box is its scope, and the last column is the mounted phase."
             codeKey="boot-steps"
-            example={
-              <PlanGraph
-                plan={props.plan()}
-                needsOf={props.shape.needsOf}
-                scopeOf={props.shape.scopeOf}
-                timeline={timeline}
-              />
-            }
+            example={<PlanGraph plan={props.plan()} timeline={timeline} />}
           />
         </ExampleGrid>
       </ExampleSection>
@@ -173,7 +153,7 @@ export function GettingStartedPage() {
       </ExampleSection>
 
       <BootstrapProvider key={runId} boot={boot}>
-        <Run shape={shapeOf(createSteps(createApi(faults)))} plan={boot.plan} />
+        <Run plan={boot.plan} />
       </BootstrapProvider>
 
       <ExampleSection

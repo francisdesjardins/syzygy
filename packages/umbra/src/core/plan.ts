@@ -1,7 +1,7 @@
 import { mustGet } from '../utils/must-get.js';
 import { PlanError } from './errors.js';
 import type { StepId } from './registry.js';
-import type { AnyStep, BootstrapPlan, PlanLevel, StepPhase, StepScope } from './types.js';
+import type { AnyStep, BootstrapPlan, PlanLevel, PlanNode, StepPhase, StepScope } from './types.js';
 
 /** One step with everything the scheduler needs resolved once, instead of re-derived per run. */
 export type PlannedStep = {
@@ -181,16 +181,33 @@ export function compilePlan(steps: readonly AnyStep[]): CompiledPlan {
     });
   }
 
-  const plan: BootstrapPlan = {
-    levels: [
-      ...preflightLevels.map((ids, index): PlanLevel => {
-        return { level: index, phase: 'preflight', ids };
-      }),
-      ...hostedLevels.map((ids, index): PlanLevel => {
-        return { level: preflightLevels.length + index, phase: 'hosted', ids };
-      }),
-    ],
-  };
+  const levels: PlanLevel[] = [
+    ...preflightLevels.map((ids, index): PlanLevel => {
+      return { level: index, phase: 'preflight', ids };
+    }),
+    ...hostedLevels.map((ids, index): PlanLevel => {
+      return { level: preflightLevels.length + index, phase: 'hosted', ids };
+    }),
+  ];
+
+  // Walked through `levels` rather than over `steps`, so the two are one table in one order and a
+  // caller may zip them. `PlannedStep` holds the step object itself; the graph must not.
+  const nodes: PlanNode[] = levels.flatMap((level) => {
+    return level.ids.map((id): PlanNode => {
+      const planned = mustGet(byId, id);
+      return {
+        id: planned.id,
+        phase: planned.phase,
+        level: planned.level,
+        needs: planned.needs,
+        dependents: planned.dependents,
+        scope: planned.scope,
+        optional: planned.optional,
+      };
+    });
+  });
+
+  const plan: BootstrapPlan = { levels, nodes };
 
   const resolve = (levels: StepId[][]): PlannedStep[][] => {
     return levels.map((ids) => {

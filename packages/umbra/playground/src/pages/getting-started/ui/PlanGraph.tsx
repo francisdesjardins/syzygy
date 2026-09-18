@@ -11,6 +11,8 @@ type Node = {
   level: number;
   slot: number;
   phase: string;
+  needs: readonly string[];
+  scope: string;
 };
 
 /**
@@ -26,18 +28,32 @@ type Node = {
  */
 export function PlanGraph(props: {
   plan: BootstrapPlan | undefined;
-  needsOf: Readonly<Record<string, readonly string[]>>;
-  scopeOf: Readonly<Record<string, string>>;
   timeline: readonly StepTrace[];
 }) {
   if (props.plan === undefined) {
     return null;
   }
 
-  const nodes: Node[] = props.plan.levels.flatMap((level) => {
-    return level.ids.map((id, slot) => {
-      return { id: String(id), level: level.level, slot, phase: level.phase };
+  // The slot is the only thing the drawing adds: where in its column a box sits. Everything else —
+  // the level, the phase, the edges, the scope — is the plan's, which is why this takes one prop.
+  const slotOf = new Map<string, number>();
+  for (const level of props.plan.levels) {
+    level.ids.forEach((id, slot) => {
+      slotOf.set(String(id), slot);
     });
+  }
+
+  const nodes: Node[] = props.plan.nodes.map((node) => {
+    return {
+      id: String(node.id),
+      level: node.level,
+      slot: slotOf.get(String(node.id)) ?? 0,
+      phase: node.phase,
+      needs: node.needs.map((need) => {
+        return String(need);
+      }),
+      scope: node.scope,
+    };
   });
 
   const byId = new Map(
@@ -61,7 +77,7 @@ export function PlanGraph(props: {
    * the graph instead, where there is nothing to hide behind.
    */
   const spans = nodes.some((node) => {
-    return (props.needsOf[node.id] ?? []).some((need) => {
+    return node.needs.some((need) => {
       const from = byId.get(need);
       return from !== undefined && node.level - from.level > 1;
     });
@@ -107,7 +123,7 @@ export function PlanGraph(props: {
         </defs>
 
         {nodes.flatMap((node) => {
-          return (props.needsOf[node.id] ?? []).flatMap((need) => {
+          return node.needs.flatMap((need) => {
             const from = byId.get(need);
             if (from === undefined) {
               return [];
@@ -146,7 +162,7 @@ export function PlanGraph(props: {
                 {node.id}
               </text>
               <text x={12} y={35} className="node-meta">
-                {node.phase === 'hosted' ? 'hosted' : (props.scopeOf[node.id] ?? 'instance')}
+                {node.phase === 'hosted' ? 'hosted' : node.scope}
                 {status === undefined ? '' : ` · ${status}`}
               </text>
             </g>

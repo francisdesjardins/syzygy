@@ -128,6 +128,7 @@ export const CATEGORIES: readonly CategoryDef[] = [
       'IntentStatus',
       'BootstrapPlan',
       'PlanLevel',
+      'PlanNode',
       'readStepData',
       'SerializedError',
       'AbortReason',

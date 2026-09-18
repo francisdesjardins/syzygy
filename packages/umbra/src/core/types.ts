@@ -448,11 +448,39 @@ export type PlanLevel = {
 };
 
 /**
+ * One step as the graph sees it: where it sits, and what it is joined to.
+ *
+ * `needs` is what the step declared. `dependents` is the same edge read backwards — the ids that
+ * would be skipped if this one did not succeed — and it is here because deriving it means walking
+ * every other node, which the plan has already done.
+ *
+ * No `run`, and no timeout: this is the shape of the graph, not a copy of the steps. A caller that
+ * wants to invoke something already holds the step it wrote.
+ */
+export type PlanNode = {
+  readonly id: StepId;
+  readonly phase: StepPhase;
+  readonly level: number;
+  readonly needs: readonly StepId[];
+  readonly dependents: readonly StepId[];
+  readonly scope: StepScope;
+  readonly optional: boolean;
+};
+
+/**
  * The static analysis of the step graph.
  *
  * Levels, not waves. The runner is free to overlap them and the timeline is the record of what it
  * actually did; this is what the graph permits, computed before anything runs.
+ *
+ * **`levels` is the answer; `nodes` is the reason.** A level says four steps go out together and
+ * cannot say why, so anything that draws the graph — or explains it, or diffs two of them — needs
+ * the edges as well. They were computed either way, and withholding them only meant a caller
+ * rebuilt them from the steps it passed in.
+ *
+ * `nodes` is in the same order as the ids in `levels`, so the two read as one table.
  */
 export type BootstrapPlan = {
   readonly levels: readonly PlanLevel[];
+  readonly nodes: readonly PlanNode[];
 };

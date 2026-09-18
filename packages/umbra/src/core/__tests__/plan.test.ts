@@ -102,3 +102,86 @@ test('hosted levels are numbered after the preflight ones', () => {
     { level: 1, phase: 'hosted', ids: ['warn'] },
   ]);
 });
+
+test('nodes carry the edges the levels cannot express', () => {
+  const boot = createBootstrap({
+    steps: [
+      inert('session'),
+      inert('device'),
+      inert('access', ['session']),
+      inert('config', ['session', 'device']),
+    ],
+  });
+
+  const nodes = boot.plan().nodes;
+  const nodeOf = (id: string) => {
+    return nodes.find((node) => {
+      return node.id === id;
+    });
+  };
+
+  // `access` and `config` share a level, and only the edges say the two are there for different
+  // reasons. A level alone cannot be drawn as a graph.
+  expect(nodeOf('access')?.level).toBe(nodeOf('config')?.level);
+  expect(nodeOf('access')?.needs).toEqual(['session']);
+  expect(nodeOf('config')?.needs).toEqual(['session', 'device']);
+});
+
+test('dependents are the same edge read backwards', () => {
+  const boot = createBootstrap({
+    steps: [inert('session'), inert('access', ['session']), inert('config', ['session'])],
+  });
+
+  const session = boot.plan().nodes.find((node) => {
+    return node.id === 'session';
+  });
+
+  expect(session?.dependents).toEqual(['access', 'config']);
+  expect(session?.needs).toEqual([]);
+});
+
+test('nodes are in the order the levels list their ids', () => {
+  const boot = createBootstrap({
+    steps: [
+      inert('session'),
+      inert('device'),
+      inert('access', ['session']),
+      defineHostedStep({ id: 'banner', needs: ['access'], run: () => {} }),
+    ],
+  });
+
+  const plan = boot.plan();
+
+  expect(
+    plan.nodes.map((node) => {
+      return node.id;
+    })
+  ).toEqual(
+    plan.levels.flatMap((level) => {
+      return [...level.ids];
+    })
+  );
+});
+
+test('a node reports its scope and phase, and never the step itself', () => {
+  const boot = createBootstrap({
+    steps: [
+      defineStep({ id: 'session', scope: 'shared', run: () => {} }),
+      defineHostedStep({ id: 'banner', needs: ['session'], optional: true, run: () => {} }),
+    ],
+  });
+
+  const [session, banner] = boot.plan().nodes;
+
+  expect(session).toEqual({
+    id: 'session',
+    phase: 'preflight',
+    level: 0,
+    needs: [],
+    dependents: ['banner'],
+    scope: 'shared',
+    optional: false,
+  });
+  expect(banner?.phase).toBe('hosted');
+  expect(banner?.optional).toBe(true);
+});

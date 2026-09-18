@@ -3,6 +3,55 @@
 Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No semver: names change
 between commits when a better one shows up, and the entry says which and why.
 
+## 2026-09-18, the plan carries its nodes
+
+### Added — `BootstrapPlan.nodes`
+
+`plan()` returned `levels` and nothing else: for each level, its number, its phase and the ids on
+it. That says which steps go out together and **cannot say why**. `access` and `config` share a
+level; only `needs` explains that one waited on `session` and the other on `session` and `device`.
+So nothing a caller received could be drawn as a graph, in any format.
+
+Each `PlanNode` carries `id`, `phase`, `level`, `needs`, `dependents`, `scope` and `optional`, in
+the same order as the ids in `levels`, so the two read as one table. Additive: `levels` is
+unchanged.
+
+**None of it is new computation.** `compilePlan` already resolved every field onto its internal
+`PlannedStep` — it was being dropped on the way out. `dependents` in particular is the expensive
+one to rebuild, since deriving it means walking every other node, and the planner had already
+walked them.
+
+**The playground was the proof.** `GettingStartedPage` carried a `shapeOf(steps)` that re-read the
+raw step array to rebuild `needs` and `scope`, and handed `PlanGraph` three props — `plan`,
+`needsOf`, `scopeOf` — because the first could not answer for the other two. The component whose own
+doc comment says "the arrows are the reason" could not get the arrows from the object called the
+plan. `shapeOf` is gone and `PlanGraph` takes `plan` and the timeline.
+
+`PlanNode` is not a copy of the step: no `run`, and no `timeout`. This is the shape of the graph,
+and a caller that wants to invoke something already holds the step it wrote. `timeout` is execution
+policy rather than graph shape; it can be added the day something needs it.
+
+**No Mermaid, no DOT, and that is deliberate.** With the edges public, either one is a handful of
+lines in user code:
+
+```ts
+const mermaid = (plan: BootstrapPlan): string => {
+  // Mermaid node ids are identifiers, and a step id is a free-form string — this package's own
+  // examples declare `projects:reference`. So the id is sanitised and the real one is the label.
+  const key = (id: PropertyKey): string => `n${String(id).replace(/\W/g, '_')}`;
+  return [
+    'graph LR',
+    ...plan.nodes.map((node) => `  ${key(node.id)}["${String(node.id)}"]`),
+    ...plan.nodes.flatMap((node) => node.needs.map((need) => `  ${key(need)} --> ${key(node.id)}`)),
+  ].join('\n');
+};
+```
+
+**That sanitiser is the argument.** Shipping a format means owning its identifier rules, then its
+direction, then subgraph grouping, then a theme — the unbounded growth this package already refused
+when it turned down an upward "module ready" channel. The library emits the graph; the drawing is
+the caller's, and the playground is where a worked example of one belongs.
+
 ## 2026-09-18, one rule for what a non-`Error` throw is called
 
 ### Changed — shared with antumbra

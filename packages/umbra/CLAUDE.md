@@ -102,6 +102,9 @@ ran.
 **`plan()` returns levels, not waves.** It is a static analysis of the graph, computed before
 anything runs. `outcome.timeline` is what actually happened, and the two are allowed to differ.
 
+**`levels` is the answer, `nodes` is the reason.** Only the edges draw as arrows, so the plan
+carries both — and it carries the graph, never a diagram.
+
 **The graph is declared, not discovered, and there is no way to add a step mid-run.** A process
 whose shape is only known once it has started talking — a robot assembling an arm from whatever the
 base reports, a worker reading its queues out of its own configuration — gets **one bootstrap per

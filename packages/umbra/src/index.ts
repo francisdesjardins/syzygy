@@ -70,6 +70,7 @@ export type {
   Outcome,
   PartialRunData,
   PlanLevel,
+  PlanNode,
   PreflightContext,
   SerializedError,
   Step,
