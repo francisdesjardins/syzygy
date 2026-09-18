@@ -5,6 +5,29 @@ Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No s
 **This file is the package's memory.** The code states what holds now; why it came to hold lives
 here.
 
+## 2026-09-18, the way out is the menu's first group
+
+### Changed
+
+`SiteLinks` is gone. The site and the sibling playgrounds are a group at the top of the drawer,
+rendered by `Sidebar` on the same grid as every other group; `site/playgrounds.ts` is the data that
+was left when the component went.
+
+**A band under the menu was a special case, and both things wrong with it followed from that.** It
+cost 70px of chrome for three 44px glyphs, and its first glyph aligned to neither the icon column
+nor the label column, because there was no reason for it to align to either. A group cannot have
+those problems: it is on the grid, and the empty space under a short menu goes back to being empty
+space rather than something marooned in it.
+
+The marks get their names back, which is what makes three unfamiliar glyphs legible — and the site
+is named **Syzygy**, the alignment of three bodies that causes an eclipse. That is what its landing
+page shows, and it was the one row in the repository's naming table with no word against it.
+
+### Fixed
+
+The pinning that made this necessary is also gone, along with the `margin-top: auto` that only
+worked in one of the three shells.
+
 ## 2026-09-18, the drawer is one drawer
 
 ### Added

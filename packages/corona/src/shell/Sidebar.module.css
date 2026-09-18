@@ -143,3 +143,11 @@
   width: var(--app-icon-sm);
   height: var(--app-icon-sm);
 }
+
+/* Off the site nothing in the first group leads anywhere, so nothing there may look like it does.
+   The rows stay: a group that vanished under `yarn dev` would be invisible for the whole of the
+   work that changes it. */
+.itemOff {
+  color: var(--app-text-tertiary);
+  cursor: default;
+}

@@ -39,7 +39,7 @@ being true.
 | Phone layout              | —                                        | `yarn check:mobile`, 16 routes × 2 widths               |
 | The stacking scale        | `penumbra/tokens.system.css`             | `check-tokens.mjs` — no two layers share a number       |
 | The playground shell      | `corona/shell`, `/theme`, `/mascot`      | each playground's `verify:all`, and `yarn check:mobile` |
-| The way between them      | `corona/site` — one table of three       | `yarn check:mobile`, 20 routes × 2 widths               |
+| The way between them      | `corona/site` — one table of three       | `yarn check:mobile`, 19 routes × 2 widths               |
 
 **No component library anywhere.** The three playgrounds were always CSS modules on penumbra's
 tokens; home carried MUI for ten primitives and dropped it. The one exception is deliberate and

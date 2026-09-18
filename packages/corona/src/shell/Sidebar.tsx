@@ -1,7 +1,9 @@
 import { Link, useRouterState } from '@tanstack/react-router';
-import { useEffect, type ComponentType } from 'react';
+import { useEffect, type ComponentType, type ReactElement } from 'react';
 
-import { SiteLinks, type PlaygroundSlug } from '../site/SiteLinks.tsx';
+import { AntumbraMark, HouseMark, PenumbraMark, UmbraMark } from '../site/marks.tsx';
+import { isOnSite } from '../site/on-site.ts';
+import { PLAYGROUNDS, SITE, type PlaygroundSlug } from '../site/playgrounds.ts';
 import styles from './Sidebar.module.css';
 
 /** One route the drawer names. The icon is the host's — an icon set is a voice. */
@@ -26,17 +28,86 @@ type SidebarProps = {
   readonly onClose: () => void;
 };
 
+const MARKS: Record<PlaygroundSlug, () => ReactElement> = {
+  dialog: AntumbraMark,
+  boot: UmbraMark,
+  design: PenumbraMark,
+};
+
+/**
+ * The way out, as the menu's first group rather than a band pinned under it.
+ *
+ * A band was a special case, and both things wrong with it followed from that: 70px of chrome for
+ * three glyphs, and a first glyph aligned to neither the icon column nor the label column, because
+ * it had no reason to be aligned to either. One more group cannot have those problems — it is on
+ * the same grid as everything below it — and the marks get their names back, which is what makes
+ * three unfamiliar glyphs legible.
+ *
+ * **It never renders nothing.** Off the site — a playground opened on its own, which is how it is
+ * developed — there is no `/` and no sibling to reach, so the same rows render as plain text. A
+ * group that disappeared in `yarn dev` would be invisible for the whole of the work that changes it.
+ */
+const Elsewhere = ({ current }: { readonly current: PlaygroundSlug }) => {
+  const onSite = isOnSite();
+  const rows = [
+    { key: 'site', href: SITE.href, name: SITE.name, Mark: HouseMark },
+    ...PLAYGROUNDS.filter((playground) => {
+      return playground.slug !== current;
+    }).map((playground) => {
+      return {
+        key: playground.slug,
+        href: `/playground/${playground.slug}/`,
+        name: playground.name,
+        Mark: MARKS[playground.slug],
+      };
+    }),
+  ];
+
+  return (
+    <nav aria-label="Elsewhere" data-offsite={onSite ? undefined : ''}>
+      <span className={styles['groupLabel']}>Elsewhere</span>
+      <ul className={styles['list']}>
+        {rows.map((row) => {
+          const label = (
+            <>
+              <span className={styles['itemIcon']}>
+                <row.Mark />
+              </span>
+              {row.name}
+            </>
+          );
+          return (
+            <li key={row.key}>
+              {onSite ? (
+                // A plain anchor: each of these is a different build, so it leaves the application.
+                <a className={styles['item']} href={row.href}>
+                  {label}
+                </a>
+              ) : (
+                <span className={[styles['item'], styles['itemOff']].join(' ')}>{label}</span>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
+  );
+};
+
 const NavGroups = ({
   groups,
+  current,
   currentPath,
   onNavigate,
 }: {
   readonly groups: readonly NavGroup[];
+  readonly current: PlaygroundSlug;
   readonly currentPath: string;
   readonly onNavigate: (() => void) | undefined;
 }) => {
   return (
     <div className={styles['nav']}>
+      <Elsewhere current={current} />
       {groups.map((group) => {
         return (
           <nav key={group.label} aria-label={group.label}>
@@ -148,8 +219,12 @@ export function Sidebar({ groups, current, isMobile, mobileOpen, onClose }: Side
           inert={mobileOpen ? undefined : true}
         >
           <div className={styles['toolbarSpacer']} />
-          <NavGroups groups={groups} currentPath={currentPath} onNavigate={onClose} />
-          <SiteLinks current={current} />
+          <NavGroups
+            groups={groups}
+            current={current}
+            currentPath={currentPath}
+            onNavigate={onClose}
+          />
         </aside>
       </>
     );
@@ -159,8 +234,12 @@ export function Sidebar({ groups, current, isMobile, mobileOpen, onClose }: Side
     <aside className={styles['placeholder']}>
       <div className={styles['panel']}>
         <div className={styles['toolbarSpacer']} />
-        <NavGroups groups={groups} currentPath={currentPath} onNavigate={undefined} />
-        <SiteLinks current={current} />
+        <NavGroups
+          groups={groups}
+          current={current}
+          currentPath={currentPath}
+          onNavigate={undefined}
+        />
       </div>
     </aside>
   );
