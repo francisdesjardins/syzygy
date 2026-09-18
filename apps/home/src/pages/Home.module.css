@@ -1,7 +1,6 @@
 /*
- * The landing page. Every value was already a token before this file existed — the MUI theme it
- * replaced was a mirror of penumbra, resolving `--app-primary` and handing it back as
- * `palette.primary.main` — so what moved here is the layout, not the palette.
+ * The landing page: the layout only. Every value is a token, so this file decides where things sit
+ * and never what colour they are.
  */
 
 .container {

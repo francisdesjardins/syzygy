@@ -12,9 +12,9 @@ shadows it casts.
 | [`corona`](packages/corona)     | what a playground shows of a library, minus which library: the reference, the token tables, the site links             |
 | [`gnomon`](packages/gnomon)     | the gates: the example checker, the coverage instrumenter, the formatter                                               |
 
-| app                 | what it is                                                                                          |
-| ------------------- | --------------------------------------------------------------------------------------------------- |
-| [`home`](apps/home) | francisdesjardins.ca — the landing page, the design-system demo, and the door to the packages above |
+| app                 | what it is                                                                  |
+| ------------------- | --------------------------------------------------------------------------- |
+| [`home`](apps/home) | francisdesjardins.ca — the landing page, and the door to the packages above |
 
 ## Ports
 

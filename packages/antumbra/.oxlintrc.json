@@ -9,8 +9,8 @@
     // The MUI barrels re-export thousands of modules, and one `import { Box } from '@mui/material'`
     // puts the whole graph back into every compile. Per-module imports keep the graph at what the
     // playground actually uses; this is the lock that keeps the codemod from regressing one file
-    // at a time. It is here rather than at the root because MUI is a dependency of two workspaces,
-    // and a restriction on an import nobody can write is a rule that cannot fail.
+    // at a time. It is here rather than at the root because this is the only workspace that depends
+    // on MUI, and a restriction on an import nobody can write is a rule that cannot fail.
     "no-restricted-imports": [
       "error",
       {

@@ -1,5 +1,4 @@
-/* The site's one control. A round hover target around a lone icon, which is the whole of what MUI's
-   IconButton was doing here. */
+/* The site's one control: a round hover target around a lone icon. */
 .button {
   display: inline-flex;
   align-items: center;

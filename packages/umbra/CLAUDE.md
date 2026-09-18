@@ -184,7 +184,7 @@ application shutting down: a framework rebuilds an effect whenever its inputs ch
 unsubscribes and stops there. `bindBootstrap().destroy()` also disposes, because a caller with no
 component behind it means the page is done — that is the one place the word reads that way.
 
-**`session.attach()` is memoised, like `run()`.** A framework re-attaches its host more often than an
+**`live.attach()` is memoised, like `run()`.** A framework re-attaches its host more often than an
 author expects, and a hosted phase that ran twice would ask the user the same question twice.
 
 **A bare `Outcome` means an outcome whose step list is no longer in the type**, so its default type
@@ -196,7 +196,7 @@ promise no particular run makes — and it only shows up once somebody augments 
 and with it in the surface a `Bootstrap<MySteps>` could not be held in a variable typed as a plain
 `Bootstrap` — a papercut nobody should have to diagnose.
 
-**The Solid binding derives the session through `createMemo` before its effect reads it.** Reading
+**The Solid binding derives the live run through `createMemo` before its effect reads it.** Reading
 the whole snapshot inside the effect subscribes it to every event and every queue change, so the
 host is torn down and rebuilt dozens of times during one boot. It is the reactive twin of listing an
 unstable callback in a dependency array, and it produced the same bug.

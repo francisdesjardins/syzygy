@@ -11,8 +11,8 @@
  * comparison because the head has one language and `defaultLng` is `en`; the French strings are
  * checked for presence, not against markup that cannot hold them.
  *
- * The two colours are here because it is the same failure one layer down — a palette outside the
- * token sheets, which is how both came to be MUI's default blue.
+ * The two colours are here because it is the same failure one layer down: a colour in a `.json` or
+ * a `<meta>` is a palette outside the token sheets, where `check:literals` cannot see it.
  */
 
 import { readFileSync } from 'node:fs';

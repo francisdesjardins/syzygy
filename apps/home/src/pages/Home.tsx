@@ -14,9 +14,8 @@ type WorkItemProps = {
  * One project and the playground that demonstrates it.
  *
  * Every one of them is its own build served out of `public/playground/`, so the link is a plain
- * anchor: it leaves this application rather than being matched by the router. That used to be a
- * `ownBuild` flag with a router link on the other branch, and the last page that needed the other
- * branch was this site's own design-system page, which moved to penumbra's playground.
+ * anchor: it leaves this application rather than being matched by the router. No branch for a
+ * router link, because this application has no second page to route to.
  */
 const WorkItem = ({ href, name, description }: WorkItemProps) => {
   return (

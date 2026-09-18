@@ -9,9 +9,8 @@ import { Home } from './pages/Home';
 /**
  * One route, imported eagerly.
  *
- * There is nothing to split off it any more: the design-system page moved to penumbra's own
- * playground, taking three token sheets of text with it, and splitting the page a visitor arrives
- * on would buy a second round trip before anything paints.
+ * There is nothing to split off it: splitting the one page a visitor arrives on would buy a second
+ * round trip before anything paints.
  *
  * The three playgrounds are separate builds served from `/playground/`, so nothing here routes to
  * them — a link out of this application is how a visitor reaches one.

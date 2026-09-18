@@ -4,27 +4,6 @@
   // The rules, the plugins and the overrides every workspace shares are in the repository root's
   // [.oxlintrc.json](../../.oxlintrc.json); what is below is the site's alone.
   "extends": ["../../.oxlintrc.json"],
-  "rules": {
-    // The MUI barrels re-export thousands of modules, and one `import { Box } from '@mui/material'`
-    // puts the whole graph back into every compile. Per-module imports keep the graph at what the
-    // site actually uses. It is here rather than at the root because MUI is a dependency of two
-    // workspaces, and a restriction on an import nobody can write is a rule that cannot fail.
-    "no-restricted-imports": [
-      "error",
-      {
-        "paths": [
-          {
-            "name": "@mui/material",
-            "message": "Import the module, not the barrel: @mui/material/<Component> (styles/types via @mui/material/styles)."
-          },
-          {
-            "name": "@mui/icons-material",
-            "message": "Import the icon module: @mui/icons-material/<Icon>."
-          }
-        ]
-      }
-    ]
-  },
   // **Not inherited through `extends`** — not even by a child that declares none — so the list is
   // written out here and in every sibling, identically. Measured against oxlint 1.83.0.
   "ignorePatterns": [

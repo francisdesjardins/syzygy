@@ -1,8 +1,8 @@
-# umbra — reprise dans un dépôt neuf
+# umbra — note de transfert
 
-Note de transfert. Ce fichier existe pour qu'une session future — la mienne ou une autre — sache
-d'où vient ce code, où il s'en va, et ce qui a déjà été tranché. Il n'a rien à voir avec l'usage de
-la librairie : pour ça, lire `README.md` (le quoi) et `CLAUDE.md` (le pourquoi et les conventions).
+Ce fichier existe pour qu'une session future — la mienne ou une autre — sache d'où vient ce code, où
+il s'en va, et ce qui a déjà été tranché. Il n'a rien à voir avec l'usage de la librairie : pour ça,
+lire `README.md` (le quoi) et `CLAUDE.md` (le pourquoi et les conventions).
 
 ## D'où ça vient
 
@@ -22,13 +22,14 @@ ni aucune attribution d'IA n'y figure.
 
 ## Où ça s'en va
 
-Un dépôt neuf, à la maison, sous le nom `umbra` (libre sur npm). Rien à migrer : `git init`,
-copier le contenu de cette archive, premier commit.
+Le monorepo existe : `syzygy`, à la maison, avec `antumbra` (gestionnaire de dialogues), `penumbra`
+(le design system) et `umbra`, plus `corona` (le shell de playground partagé), `limb` (les modules
+sans renderer) et `gnomon` (les gates de doc et de couverture). Les trois playgrounds partagent leur
+shell plutôt que de le copier — c'est ce que la structure d'ici anticipait.
 
-À terme : un **monorepo** avec `antumbra` (gestionnaire de dialogues), `penumbra` (le design system) et
-`umbra`, avec un **playground partagé**. C'est pour ça que le playground d'ici copie la structure
-de celui d'antumbra jusqu'aux noms de fichiers — le jour où les trois se rejoignent, il n'y a pas deux
-architectures à réconcilier.
+**Reste le dépôt distant.** Rien n'est poussé ; `github.com/francisdesjardins/syzygy` répond encore
+« Repository not found ». C'est la dernière chose qui attend, et elle attend pour la même raison
+qu'au début : hors des heures de travail.
 
 ## Ce que c'est
 
@@ -40,7 +41,7 @@ choses que l'application récupère au montage : des **notices** (des faits cons
 modale à ouvrir, une redirection à proposer).
 
 Deux phases, et la frontière est typée, pas documentée : une étape `preflight` peut refuser le
-montage et n'a pas de port d'interface ; une étape `mounted` a le port et peut attendre une réponse,
+montage et n'a pas de port d'interface ; une étape `hosted` a le port et peut attendre une réponse,
 mais ne peut plus refuser quoi que ce soit.
 
 ## Ce qui a été conclu
@@ -63,7 +64,7 @@ complet est dans `README.md`.
   la vérité d'exécution, et les deux ont le droit de différer.
 - **Une seule politique d'échec : drain.** Les étapes en vol terminent, rien de neuf n'est
   ordonnancé.
-- **`scope: 'page'`** partage le travail identique pour toute la page via un registre sur
+- **`scope: 'shared'`** partage le travail identique pour toute la page via un registre sur
   `globalThis` keyé par `Symbol.for`, pas par identité de module — c'est ce qui fait qu'une seconde
   copie de la librairie trouve quand même la réponse de la page. C'est le seul état global du
   paquet, et il est délibéré.
@@ -77,25 +78,22 @@ complet est dans `README.md`.
 Trois noms, un mot chacun : **bootstrap** (la machine déclarée), **run** (une exécution), **step**
 (une unité de travail). Le tableau de renommage complet est dans `CHANGELOG.md`, entrée « one noun
 per concept ». Deux règles en sortent : un mot veut dire une chose (`phase` = `preflight` ou
-`mounted`, point ; la position d'une run est un `stage`), et pas d'abréviation (il n'y a plus de
+`hosted`, point ; la position d'une run est un `stage`), et pas d'abréviation (il n'y a plus de
 préfixe `Boot`).
 
-### La seule décision laissée ouverte
-
-**`Session`.** `boot.session()` est la moitié vivante d'une run, alors que `session` est ce que
-presque toute application nomme son étape de jeton. La collision est permanente chez tout
-consommateur, pas seulement dans le playground d'ici. Candidats esquissés : `boot.live()` /
-`LiveRun`, ou `RunSession`. Non tranché, volontairement — c'est un renommage plus lourd que les
-autres et il n'y a pas encore d'usage réel pour arbitrer.
+**`Session` est tranché.** C'est `LiveRun`, et `boot.session()` est `boot.live()`. Le mot `session`
+appartenait à l'application — les exemples de ce paquet déclarent eux-mêmes une étape `session` qui
+valide un jeton — et la collision était permanente chez tout consommateur. `LiveRun` était déjà le
+mot que le commentaire de doc du type utilisait pour se décrire.
 
 ## État du travail
 
-Tout est vert : `yarn check` (types TS 7, oxlint type-aware, oxfmt, typedoc), 68 tests unitaires et
-7 tests de composants, `yarn build`, `yarn verify:package`, et un smoke test navigateur sur les sept
-routes du playground.
+Tout est vert : `yarn check` (types TS 7, oxlint type-aware, oxfmt, typedoc, `doc-budget`,
+`check:tokens:used`), **88 tests unitaires et 11 tests de composants**, `yarn build`,
+`yarn verify:package`, et un smoke test navigateur sur les sept routes du playground.
 
 Le playground est un site routé en couches Feature-Sliced (`app` → `pages` → `widgets` → `entities`
-→ `shared`), sur les tokens de Penumbra, avec :
+→ `shared`), sur les tokens de Penumbra et le shell de Corona, avec :
 
 - `/getting-started` — la démo complète : le graphe, la chronologie, l'outcome, des interrupteurs
   pour casser des choses exprès, et deux bootstraps sur la même page.
@@ -103,7 +101,11 @@ Le playground est un site routé en couches Feature-Sliced (`app` → `pages` �
   **propre copie compilée** de la librairie et partage quand même.
 - `/single-spa` — intégration avec un hôte existant : la run décide si `start()` est appelé.
 - `/api` — la référence, projetée de typedoc, une page par chapitre.
-- `/design-system`, `/stories`.
+- `/skin`, `/stories`.
+
+**Attention aux fichiers sous `playground/public/`** : ils sont servis tels quels. Rien ne les
+compile, donc ni les types, ni le lint, ni le build ne les voient — seul le smoke navigateur les
+touche. C'est là qu'un renommage se perd.
 
 ## Pour repartir de zéro
 
@@ -119,11 +121,14 @@ Deux choses à savoir avant de toucher aux outils :
 - **TypeScript 7 partout dans la chaîne de vérification**, via l'alias `typescript-7`. Le
   `typescript` 6.0.3 nu reste parce que typedoc y pèse et que `typescript-7/lib` ne livre pas de
   `tsserver.js` pour l'éditeur.
-- **oxlint 1.82 et oxfmt 0.67 sont épinglés** : les versions suivantes étaient en quarantaine npm au
-  moment de l'écriture. Vérifier avant de monter.
+- **oxlint `^1.83.0`, oxfmt `0.68.0`.** Les versions ne se choisissent plus ici : `yarn.config.cjs`
+  impose une version par dépendance sur tout le dépôt, et `yarn constraints` refuse un manifeste qui
+  s'en écarte. Monter l'outil, c'est le monter partout d'un coup.
 
 ## Ce qui reste à faire
 
-- Créer le dépôt distant et pousser (hors heures de travail).
-- Trancher `Session`, ou décider explicitement de le garder.
-- Le monorepo à trois paquets avec le playground partagé, quand antumbra et penumbra suivront.
+- Créer le dépôt distant et pousser (hors heures de travail). C'est aussi ce qui débloque
+  `codeRepository` dans les données structurées du site, absent tant qu'il pointerait sur un 404.
+- `plan()` ne rend que des niveaux ; les `needs`, les `dependents` et le `scope` de chaque nœud
+  restent à l'intérieur. Les exposer rendrait un graphe de configuration dessinable par
+  l'application, sans que la librairie ait à choisir un format de diagramme.

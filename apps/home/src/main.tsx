@@ -2,8 +2,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
 // Penumbra, and it is imported before anything that reads it: the three sheets are this site's
-// palette outright, and `app.css` below them is the reset and the element defaults that used to be
-// MUI's CssBaseline.
+// palette outright, and `app.css` below them is the reset and the element defaults.
 import 'penumbra/tokens.system.css';
 import 'penumbra/tokens.skin.base.css';
 import './styles/tokens.skin.css';

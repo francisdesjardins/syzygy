@@ -77,8 +77,8 @@ are every workspace's own gate; `type-check` runs two programs in a library and 
 `vite/client` in the app that needs it. Adding either everywhere would claim a capability a package
 does not use.
 
-**`no-restricted-imports`** lives in the two workspaces that depend on MUI. A restriction on an
-import the other three cannot resolve is a rule that cannot fail.
+**`no-restricted-imports`** lives in the one workspace that still depends on MUI, antumbra's
+playground. A restriction on an import the others cannot resolve is a rule that cannot fail.
 
 **Home is a showcase; the playgrounds are the projects.** The site listed three works and hosted
 one of them — penumbra's only shopfront was `/design-system`, a page _of_ home, which made a

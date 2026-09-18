@@ -214,7 +214,7 @@ export type Step<
   readonly optional?: boolean | undefined;
   /** Milliseconds, counted from the moment `run` is entered rather than from planning. */
   readonly timeout?: number | undefined;
-  /** `page` shares the work with every other bootstrap on the page. See {@link StepScope}. */
+  /** `shared` shares the work with every other bootstrap on the page. See {@link StepScope}. */
   readonly scope?: StepScope | undefined;
   /**
    * Declared as a method rather than as a function property, and the difference is load-bearing:

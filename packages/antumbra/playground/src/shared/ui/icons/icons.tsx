@@ -1,18 +1,9 @@
 import type { SVGProps } from 'react';
 
 /**
- * The ten glyphs only this playground has. The fourteen both playgrounds drew are corona's, and
- * the sun and the moon went with the theme toggle. The shell's icon set — drawn for this app, on the mascot's engraved line rather than a component
- * library's filled silhouettes. Every glyph is a stroke on `currentColor`, so colour and size come
- * from the caller.
- *
- * The rules the set is drawn to, so a twenty-seventh glyph matches the twenty-six:
- *
- * - **24×24 grid, content inside a ~3px inset.** A glyph that touches the box reads a size bigger
- *   than its neighbours on the same row.
- * - **Stroke 1.75, round caps and joins, no fill.** The weight has to be constant — a hairline
- *   among them looks broken rather than lighter. `Palette`'s two wells are the one deliberate fill.
- * - **Open forms over closed ones**: an asymmetry stops straight lines reading as a texture.
+ * The ten glyphs only this playground needs. The ones every playground draws are corona's, and so
+ * are the rules all twenty-four are drawn to — stroke, grid and open forms — which these follow so
+ * the two sets read as one.
  */
 
 type IconProps = SVGProps<SVGSVGElement>;

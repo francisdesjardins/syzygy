@@ -99,7 +99,7 @@ example, it belongs in `entities/`.
 faces and eight colours. `app.css` imports the three in that order.
 
 **The split is a gate, not prose** —
-[design-system-layering.test.ts](src/__tests__/design-system-layering.test.ts) fails on a colour or
+[skin-layering.test.ts](src/__tests__/skin-layering.test.ts) fails on a colour or
 typeface in the system file, a `--app-*` inside the templates, or any Material easing or MD2 metric.
 Porting Penumbra elsewhere is: depend on the package, write a skin.
 
@@ -149,7 +149,7 @@ decides where a new example goes:
 | `/microfrontends`  | Four bindings, one manager, no build step                 |
 | `/ui-integrations` | One form, twice: plain elements and MUI, sharing a hook   |
 | `/ui-templates`    | Copy-paste index: Vanilla / Shared                        |
-| `/design-system`   | Penumbra, read live from the token sheet — never restated |
+| `/skin`            | Penumbra, read live from the token sheet — never restated |
 | `/api`             | Generated reference — a map, then a page per category     |
 | `/stories`         | Live `*.story.tsx` harnesses, and the suite’s gallery     |
 

@@ -12,13 +12,15 @@ const ROOT = dirname(fileURLToPath(import.meta.url));
  *
  * **Sources are named after the package; destinations are named after the capability.** A library
  * gets renamed — these two already traded places once — but a URL is a promise made to whoever
- * bookmarked it. So the dialog manager's playground is served at `/playground/dialog` and the
- * bootstrapper's at `/playground/boot`, whatever the packages end up being called.
+ * bookmarked it. So the dialog manager's playground is served at `/playground/dialog`, the
+ * bootstrapper's at `/playground/boot` and the design system's at `/playground/design`, whatever
+ * the packages end up being called.
  *
  * Four things carry each destination name and they move together or not at all: this table, the
  * rule in `apps/home/public/_redirects`, the dev-server rewrite in `apps/home/vite.config.ts`, and
  * the link on the home page itself. Missing one does not give a 404 — the SPA fallback hands back
- * its own document, which routes nowhere, and the sub-site quietly serves the wrong page.
+ * its own document, which routes nowhere, and the sub-site quietly serves the wrong page. This
+ * table is the source the other three are held to, by `yarn check:capabilities`.
  */
 const PLAYGROUNDS = [
   { workspace: 'antumbra', capability: 'dialog', label: 'the dialog manager' },

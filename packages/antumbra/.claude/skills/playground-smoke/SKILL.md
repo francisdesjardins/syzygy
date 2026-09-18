@@ -62,7 +62,7 @@ Then, across all routes: **no two rendered the same `<h1>`**.
 
 The playground ships two histories, and the probe handles both: browser
 (`yarn playground:build`, and `yarn dev`) and **hash** (`yarn playground:build:file` — the
-static-host build, which is what `deploy-playground.mjs` publishes).
+static-host build, which is what the root `yarn deploy` publishes).
 
 Under the hash build a path URL like `/api` is not a route at all: the server returns
 `index.html` and the router falls back to the index, so a plain `goto` _succeeds while showing

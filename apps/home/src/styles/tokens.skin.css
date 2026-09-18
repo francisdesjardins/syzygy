@@ -7,10 +7,9 @@
  * surfaces, the three text ranks, the divider, the control edge, the states, the four semantics,
  * the scrim and the lift are the base's and are not restated here.
  *
- * **This file is the palette, and there is no second one.** It used to be read twice — once by CSS
- * and once by `useTheme`, which resolved these names into an MUI theme — because two sources for
- * one colour is how they drift apart. There is no component library here now, so the second reader
- * is gone and the stylesheets are the only ones left.
+ * **This file is the palette, and there is no second one.** The stylesheets are its only readers;
+ * nothing resolves these names into a second representation, because two sources for one colour is
+ * how they drift apart.
  *
  * The rule the token names carry: **`--app-flame` is a fill and `--app-accent` is the ink.** Here
  * they are the same value, which is a fact about this hue rather than an exception — the deep

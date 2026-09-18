@@ -36,9 +36,7 @@ const applyScheme = (dark: boolean): void => {
 };
 
 // At module scope, not from an effect: this runs before React's first render, and an attribute
-// written afterwards paints the other scheme for a frame. It used to ride along inside the MUI
-// theme builder, which is a thing to depend on that nobody would look for — and did not survive
-// that builder being deleted.
+// written afterwards paints the other scheme for a frame.
 applyScheme(isDark);
 
 export const useTheme = () => {

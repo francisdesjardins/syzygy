@@ -292,7 +292,7 @@
   padding: 4px;
   /* The wash only. `color` is the ink and is keyed on the scheme, so transitioning it interpolates
      the outgoing theme's ink across an already-switched surface — the rule `.button` above found
-     first, and `design-system-layering.test.ts` now holds. The glyph still darkens, instantly. */
+     first, and `skin-layering.test.ts` now holds. The glyph still darkens, instantly. */
   transition: background-color var(--transition-normal);
 }
 

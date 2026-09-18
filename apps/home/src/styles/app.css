@@ -1,9 +1,9 @@
 /*
  * The page itself: the reset, the element defaults, and nothing that belongs to a component.
  *
- * It replaces MUI's `CssBaseline`, which was the last reason this site carried a component library
- * — a reset and a body colour, for 134 kB. Every value here is a token; a literal in this file is a
- * token that was never added, and the next person to need it invents a second one.
+ * A reset and a body colour is the whole of what this site needs from a component library, which is
+ * why it carries none. Every value here is a token; a literal in this file is a token that was never
+ * added, and the next person to need it invents a second one.
  */
 
 *,

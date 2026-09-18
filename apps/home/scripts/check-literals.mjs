@@ -2,10 +2,10 @@
 /**
  * No colour in the TypeScript.
  *
- * This site's palette is `src/styles/tokens.skin.css` over penumbra's two sheets, and `useTheme`
- * builds the MUI theme by resolving those names. A hexadecimal in a component is a second palette
- * starting: it renders correctly the day it is written, ignores the colour scheme, and is invisible
- * to `yarn check:contrast`, which measures the tokens.
+ * This site's palette is `src/styles/tokens.skin.css` over penumbra's two sheets, and nothing else.
+ * A hexadecimal in a component is a second palette starting: it renders correctly the day it is
+ * written, ignores the colour scheme, and is invisible to `yarn check:contrast`, which measures the
+ * tokens.
  *
  * Stylesheets are exempt by definition — they are where colour is declared.
  */

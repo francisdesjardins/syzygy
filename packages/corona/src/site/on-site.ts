@@ -2,7 +2,7 @@
  * Whether this build is being served as part of the site around it.
  *
  * A playground is a standalone build: run on its own it is the whole of what a reader can see, and
- * a link to `/design-system` or to `/` would point at a page that is not there. Assembled under
+ * a link to `/` or to a sibling playground would point at a page that is not there. Assembled under
  * `/playground/<capability>/` it is one surface of a larger site, and those links are the only way
  * out of it.
  *

@@ -130,7 +130,7 @@ export function SkinPage() {
         <ExampleSection
           id="rules"
           title="Rules with teeth"
-          description="Each of these was written down first and broken anyway, so each is a test in design-system-layering.test.ts — verified to fail when violated."
+          description="Each of these was written down first and broken anyway, so each is a test in skin-layering.test.ts — verified to fail when violated."
         >
           <SurfaceCard>
             <div style={{ padding: 'var(--app-space-5)' }}>
