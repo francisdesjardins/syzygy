@@ -3,7 +3,7 @@ import * as Shared from '@/entities/dialog-template/ui/vanilla/shared';
 import * as SlideDialog from '@/entities/dialog-template/ui/vanilla/slide-dialog';
 import { createResultStore } from '@/shared/lib/createResultStore';
 import { useStore } from '@/shared/lib/use-store';
-import { AppButton } from 'corona';
+import { AppButton } from 'corona/shell';
 import { useEffect, useState } from 'react';
 import { dialogManager, reconcileOpen, useLookup, useSlideDialog } from 'antumbra/react';
 

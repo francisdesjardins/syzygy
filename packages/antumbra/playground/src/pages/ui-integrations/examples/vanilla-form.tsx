@@ -1,4 +1,4 @@
-import { AppButton } from 'corona';
+import { AppButton } from 'corona/shell';
 import { ExampleLayout } from '@/entities/example';
 import * as Shared from '@/entities/dialog-template/ui/vanilla/shared';
 import buttonRowStyles from '@/entities/dialog-template/ui/vanilla/shared/ButtonRow.module.css';

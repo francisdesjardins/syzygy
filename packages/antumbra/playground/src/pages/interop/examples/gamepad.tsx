@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { ExampleLayout } from '@/entities/example';
 import * as MessageDialog from '@/entities/dialog-template/ui/vanilla/message-dialog';
 import * as Shared from '@/entities/dialog-template/ui/vanilla/shared';
-import { AppButton } from 'corona';
+import { AppButton } from 'corona/shell';
 import { useMessageDialog, type DialogHandle } from 'antumbra/react';
 
 const DIALOG_ID = 'gamepad-panel';

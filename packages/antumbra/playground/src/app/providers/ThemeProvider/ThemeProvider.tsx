@@ -1,7 +1,7 @@
 import { colors } from '@/entities/dialog-template/ui/shared/tokens';
 import { useMediaQuery } from '@/shared/lib/use-media-query';
 import { useCallback, useEffect, useLayoutEffect, useState, type ReactNode } from 'react';
-import { ThemeContext } from 'corona';
+import { ThemeContext } from 'corona/theme';
 
 type Mode = 'light' | 'dark';
 

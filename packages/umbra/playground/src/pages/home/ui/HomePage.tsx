@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router';
-import { useTheme } from 'corona';
+import { useTheme } from 'corona/theme';
 import { UmbraMoon } from '@/shared/ui/UmbraMoon';
-import { appButtonClass } from 'corona';
+import { appButtonClass } from 'corona/shell';
 import { CodeBlock } from '@/shared/ui/CodeBlock';
 import styles from '@/pages/home/ui/HomePage.module.css';
 

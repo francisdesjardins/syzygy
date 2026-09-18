@@ -2,15 +2,12 @@ import {
   ApiCategoryPage as CategoryView,
   ApiIndexPage as IndexView,
   ApiReferenceProvider,
-  type ApiSlots,
-  type ApiEntryPoints,
-} from 'corona';
+} from 'corona/api';
+import type { ApiEntryPoints, ApiSlots } from 'corona/api';
 import { useParams } from '@tanstack/react-router';
 import { ExampleGrid, ExampleSection } from '@/entities/example';
-import { AppButton } from 'corona';
+import { AppButton, PageLayout, SurfaceCard } from 'corona/shell';
 import { CodeBlock } from '@/shared/ui/CodeBlock';
-import { PageLayout } from 'corona';
-import { SurfaceCard } from 'corona/shell';
 import { ArrowBackIcon, ArrowForwardIcon, LinkIcon, SearchIcon } from 'corona/icons';
 
 /**

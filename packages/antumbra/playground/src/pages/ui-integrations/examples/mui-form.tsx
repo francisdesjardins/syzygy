@@ -1,5 +1,5 @@
 import Alert from '@mui/material/Alert';
-import { AppButton } from 'corona';
+import { AppButton } from 'corona/shell';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import { ExampleLayout } from '@/entities/example';

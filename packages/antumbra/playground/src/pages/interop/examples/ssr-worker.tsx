@@ -1,5 +1,5 @@
 import { ExampleLayout } from '@/entities/example';
-import { AppButton } from 'corona';
+import { AppButton } from 'corona/shell';
 import { CodeBlock } from '@/shared/ui/CodeBlock/CodeBlock';
 import { CheckCircleIcon } from '@/shared/ui/icons';
 import styles from '@/pages/interop/examples/ssr-worker.module.css';

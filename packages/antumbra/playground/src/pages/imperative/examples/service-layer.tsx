@@ -6,7 +6,7 @@ import {
   FAILURE_DIALOG_ID,
   deploymentService,
 } from '@/pages/imperative/examples/deployment-service';
-import { AppButton } from 'corona';
+import { AppButton } from 'corona/shell';
 import { useMessageDialog } from 'antumbra/react';
 import { useSyncExternalStore } from 'react';
 

@@ -1,6 +1,5 @@
-import { PageLayout } from 'corona/shell';
+import { PageLayout, SurfaceCard } from 'corona/shell';
 
-import { SurfaceCard } from 'corona/shell';
 import styles from '@/pages/rules/ui/RulesPage.module.css';
 
 /** The rules the two sheets are held to, and the gate behind each one. */

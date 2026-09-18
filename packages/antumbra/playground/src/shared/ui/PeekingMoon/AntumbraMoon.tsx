@@ -1,4 +1,4 @@
-import { EclipseMoon } from 'corona';
+import { EclipseMoon } from 'corona/mascot';
 
 /**
  * antumbra's face on [corona](../../../../../corona)'s eclipse.

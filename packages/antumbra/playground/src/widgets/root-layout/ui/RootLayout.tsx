@@ -1,12 +1,12 @@
 import { AntumbraMoon } from '@/shared/ui/PeekingMoon/AntumbraMoon';
 import { useCodeDialog } from '@/widgets/code-viewer';
 import { useCodePane } from '@/shared/lib/code-pane-context';
-import { useTheme } from 'corona';
+import { useTheme } from 'corona/theme';
 import { useMediaQuery } from '@/shared/lib/use-media-query';
 import { Sidebar } from '@/widgets/sidebar';
 import { TopBar } from '@/widgets/top-bar';
 import styles from '@/widgets/root-layout/ui/RootLayout.module.css';
-import { PeekingMoon } from 'corona';
+import { PeekingMoon } from 'corona/mascot';
 import { Outlet, useRouterState } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 

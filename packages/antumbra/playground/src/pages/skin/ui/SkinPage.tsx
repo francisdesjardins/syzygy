@@ -1,16 +1,9 @@
-import {
-  AppButton,
-  isOnSite,
-  SectionNav,
-  SelectionDropdown,
-  TokenSwatches,
-  TokenTablesProvider,
-} from 'corona';
-import type { TokenNote } from 'corona';
+import { AppButton, PageLayout, SectionNav, SelectionDropdown, SurfaceCard } from 'corona/shell';
+import { isOnSite } from 'corona/site';
+import { TokenSwatches, TokenTablesProvider } from 'corona/tokens';
+import type { TokenNote } from 'corona/tokens';
 import { ExampleSection } from '@/entities/example';
 import { CodeIcon, PlayArrowIcon } from 'corona/icons';
-import { PageLayout } from 'corona/shell';
-import { SurfaceCard } from 'corona/shell';
 import styles from '@/pages/skin/ui/SkinPage.module.css';
 
 /**

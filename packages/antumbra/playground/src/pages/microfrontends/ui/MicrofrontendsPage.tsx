@@ -1,7 +1,6 @@
 import { ExampleCard, ExampleGrid, ExampleSection } from '@/entities/example';
 import { HostFrame } from '@/pages/microfrontends/examples/host-frame';
-import { PageLayout } from 'corona/shell';
-import { SectionNav } from 'corona';
+import { PageLayout, SectionNav } from 'corona/shell';
 
 const SECTIONS = [
   { id: 'the-demo', label: 'The demo' },

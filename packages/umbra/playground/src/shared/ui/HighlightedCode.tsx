@@ -1,4 +1,4 @@
-import { useTheme } from 'corona';
+import { useTheme } from 'corona/theme';
 import { readableSyntaxStyle } from 'limb/readable-syntax';
 // Deep paths, not the barrels: `react-syntax-highlighter` re-exports the whole Prism build (every
 // grammar refractor ships) and `styles/prism` re-exports all 47 themes, and Vite serves modules

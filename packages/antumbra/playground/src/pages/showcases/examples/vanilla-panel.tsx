@@ -1,5 +1,5 @@
 import { ExampleLayout } from '@/entities/example';
-import { AppButton, SelectionDropdown } from 'corona';
+import { AppButton, SelectionDropdown } from 'corona/shell';
 import * as FormDialog from '@/entities/dialog-template/ui/vanilla/form-dialog';
 import * as PanelDialog from '@/entities/dialog-template/ui/vanilla/panel-dialog';
 import * as Shared from '@/entities/dialog-template/ui/vanilla/shared';

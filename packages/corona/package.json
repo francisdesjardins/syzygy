@@ -12,7 +12,6 @@
   },
   "type": "module",
   "exports": {
-    ".": "./src/index.ts",
     "./api": "./src/api/index.ts",
     "./contract": "./src/api/contract.ts",
     "./icons": "./src/icons/index.ts",
@@ -25,7 +24,7 @@
     "./tokens": "./src/tokens/index.ts"
   },
   "scripts": {
-    "check": "yarn type-check && yarn lint --deny-warnings && yarn format:check && yarn check:tokens && yarn check:tokens:used",
+    "check": "yarn type-check && yarn lint --deny-warnings && yarn format:check && yarn check:tokens && yarn check:tokens:used && yarn doc-budget",
     "type-check": "node node_modules/typescript-7/bin/tsc --noEmit",
     "lint": "oxlint --type-aware",
     "lint:fix": "oxlint --type-aware --fix",
@@ -38,6 +37,7 @@
     "test:component:coverage": "CT_COVERAGE=1 playwright test -c playwright.config.ts --project=component && gnomon-ct-coverage-report",
     "dev": "vite",
     "verify:all": "yarn check && yarn test",
+    "doc-budget": "gnomon-doc-budget",
     "check:tokens": "node scripts/check-token-coverage.mjs",
     "check:tokens:used": "gnomon-token-usage --declares ../penumbra/tokens.system.css ../penumbra/tokens.skin.base.css ../umbra/playground/src/app/styles/tokens.skin.css -- src"
   },

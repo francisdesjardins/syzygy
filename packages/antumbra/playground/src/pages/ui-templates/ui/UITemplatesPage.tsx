@@ -1,7 +1,6 @@
 import { ExampleSection } from '@/entities/example';
 import styles from '@/pages/ui-templates/ui/UITemplatesPage.module.css';
-import { PageLayout } from 'corona/shell';
-import { SurfaceCard } from 'corona/shell';
+import { PageLayout, SurfaceCard } from 'corona/shell';
 import { ViewCodeButton } from '@/shared/ui/ViewCodeButton/ViewCodeButton';
 import { useState, type ReactNode } from 'react';
 

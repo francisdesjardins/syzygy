@@ -5,6 +5,34 @@ Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No s
 **This file is the package's memory.** The code states what holds now; why it came to hold lives
 here.
 
+## 2026-09-18, corona has no barrel, and now has a CLAUDE.md
+
+### Removed — the `.` export
+
+`corona` was imported two ways, split by which playground you were in: 74 bare `from 'corona'`
+imports in antumbra and umbra, and none at all in penumbra, which had only ever used subpaths. One
+package, two house styles, and no rule written anywhere saying which was right.
+
+Subpaths win, on an argument the repository already makes twice: Vite serves modules unbundled in
+dev, so a barrel pays for every area whatever the named import says — the reasoning both playgrounds
+spell out for `react-syntax-highlighter`. The rewrite is mechanical and the map was read from
+corona's own area barrels, so it could not disagree with them; a name missing from the map stopped
+the run rather than being guessed at.
+
+`src/index.ts` and the `.` entry in `exports` are gone with it. **That is what makes this a rule
+rather than a convention** — the barrel does not exist, so nobody can reach for it, and no gate is
+needed to watch for one.
+
+While there: fourteen files were importing the same subpath twice. `import` and `import type` from
+one subpath stay two statements, being two declarations.
+
+### Added — `CLAUDE.md`, and a budget for it
+
+corona, penumbra, gnomon and limb had no instruction file between them — the four packages that
+exist to be shared were the four with no written rules, so every rule about them lived in a
+consumer's document, twice over. corona's is the first, at 697 words of a 1200 ceiling, and
+`yarn check` now measures it like every other one.
+
 ## 2026-09-18, one card surface, and it is the one with the arguments
 
 ### Added — `SurfaceCard`

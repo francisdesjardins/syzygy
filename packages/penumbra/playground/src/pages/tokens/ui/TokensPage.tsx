@@ -1,9 +1,8 @@
-import { PageLayout, SectionNav } from 'corona/shell';
+import { PageLayout, SectionNav, SurfaceCard } from 'corona/shell';
 import { TokenScale, TokenSwatches, TokenTablesProvider } from 'corona/tokens';
 import type { TokenNote } from 'corona/tokens';
 import type { ReactNode } from 'react';
 
-import { SurfaceCard } from 'corona/shell';
 import styles from '@/pages/tokens/ui/TokensPage.module.css';
 
 /**

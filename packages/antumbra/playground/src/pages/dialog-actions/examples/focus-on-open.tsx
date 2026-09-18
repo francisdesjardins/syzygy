@@ -2,7 +2,7 @@ import { ExampleLayout } from '@/entities/example';
 import * as FormDialog from '@/entities/dialog-template/ui/vanilla/form-dialog';
 import * as MessageDialog from '@/entities/dialog-template/ui/vanilla/message-dialog';
 import * as Shared from '@/entities/dialog-template/ui/vanilla/shared';
-import { AppButton } from 'corona';
+import { AppButton } from 'corona/shell';
 import type { CSSProperties } from 'react';
 import { useEffect, useState } from 'react';
 import { Key, useMessageDialog } from 'antumbra/react';

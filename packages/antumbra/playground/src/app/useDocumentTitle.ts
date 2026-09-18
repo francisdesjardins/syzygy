@@ -1,4 +1,4 @@
-import { useDocumentTitle as useTitle } from 'corona';
+import { useDocumentTitle as useTitle } from 'corona/shell';
 import { NAV_GROUPS } from '@/widgets/sidebar';
 
 /**

@@ -1,11 +1,10 @@
-import { PageLayout, SelectionDropdown } from 'corona/shell';
+import { PageLayout, SelectionDropdown, SurfaceCard } from 'corona/shell';
 import { useTheme } from 'corona/theme';
 import { useState } from 'react';
 
 import baseSheet from '../../../../../tokens.skin.base.css?raw';
 import replacedSheet from '@/app/styles/skins/replaced.css?raw';
 import tintSheet from '@/app/styles/skins/tint.css?raw';
-import { SurfaceCard } from 'corona/shell';
 import styles from '@/pages/skins/ui/SkinsPage.module.css';
 
 /**

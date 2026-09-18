@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { SelectionDropdown } from 'corona';
+import { SelectionDropdown } from 'corona/shell';
 import type { BootstrapPlan } from 'umbra';
 import { CopyButton } from '@/shared/ui/CopyButton';
 import { toDot, toGoldenFile, toMermaid } from '@/pages/getting-started/examples/plan-formats';

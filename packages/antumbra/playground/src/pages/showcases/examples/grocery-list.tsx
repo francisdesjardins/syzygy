@@ -3,7 +3,7 @@ import * as MessageDialog from '@/entities/dialog-template/ui/vanilla/message-di
 import * as Shared from '@/entities/dialog-template/ui/vanilla/shared';
 import * as SlideDialog from '@/entities/dialog-template/ui/vanilla/slide-dialog';
 import { simulateApiCall } from '@/shared/lib/simulate-api-call';
-import { AppButton } from 'corona';
+import { AppButton } from 'corona/shell';
 import { useState } from 'react';
 import { Key, useMessageDialog, useSlideDialog } from 'antumbra/react';
 

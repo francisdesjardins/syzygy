@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { AppButton, SelectionDropdown } from 'corona';
+import { AppButton, SelectionDropdown } from 'corona/shell';
 import { clearSharedScope, readStepData } from 'umbra';
 import type { BootstrapPlan, Outcome, StepTrace } from 'umbra';
 import { PlanGraph } from '@/pages/getting-started/ui/PlanGraph';

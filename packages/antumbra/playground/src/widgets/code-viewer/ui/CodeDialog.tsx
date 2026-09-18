@@ -1,5 +1,5 @@
 import { Spinner } from '@/shared/ui/Spinner';
-import { AppIconButton } from 'corona';
+import { AppIconButton } from 'corona/shell';
 import { CodeIcon } from 'corona/icons';
 import { CloseIcon } from '@/shared/ui/icons';
 import styles from '@/widgets/code-viewer/ui/CodeDialog.module.css';

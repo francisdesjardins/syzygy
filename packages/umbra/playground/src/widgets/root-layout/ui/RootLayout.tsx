@@ -1,10 +1,10 @@
 import { useRouterState } from '@tanstack/react-router';
 import { UmbraMoon } from '@/shared/ui/UmbraMoon';
-import { PeekingMoon } from 'corona';
+import { PeekingMoon } from 'corona/mascot';
 import { Outlet } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 import { useCodePane } from '@/shared/lib/code-pane-context';
-import { useTheme } from 'corona';
+import { useTheme } from 'corona/theme';
 import { useMediaQuery } from '@/shared/lib/use-media-query';
 import { useCodeDialog } from '@/widgets/code-viewer';
 import { Sidebar } from '@/widgets/sidebar';

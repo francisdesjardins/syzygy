@@ -1,10 +1,9 @@
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import { useState } from 'react';
 import { ExampleCard, ExampleGrid, ExampleSection } from '@/entities/example';
-import { AppButton, SectionNav } from 'corona';
+import { AppButton, PageLayout, SectionNav } from 'corona/shell';
 import { DemoControls, DemoFrame, DemoToolbar } from '@/shared/ui/DemoFrame';
 import { SwitchTable } from '@/shared/ui/SwitchTable';
-import { PageLayout } from 'corona';
 
 /*
  * Measured, not chosen: the tallest fragment with every chip it can carry — a skip and its reason

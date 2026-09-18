@@ -1,6 +1,6 @@
 import styles from '@/pages/microfrontends/examples/host-frame.module.css';
-import { useTheme } from 'corona';
-import { AppButton } from 'corona';
+import { useTheme } from 'corona/theme';
+import { AppButton } from 'corona/shell';
 import { useEffect, useRef, useState } from 'react';
 
 /**
