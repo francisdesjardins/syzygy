@@ -3,8 +3,8 @@
 The edge of the disc — the visible rim, the part of a body you actually see.
 
 The framework-free machinery the playgrounds run on, in one place instead of none or two: a fuzzy
-matcher, a contrast calculator and the syntax theme over it, a mutex, a single-flight gate, a
-shallow comparison and a declaration slicer.
+matcher, a contrast calculator and the syntax theme over it, a mutex, a single-flight gate and a
+shallow comparison.
 
 ```ts
 import { fuzzyRank } from 'limb/fuzzy-match';

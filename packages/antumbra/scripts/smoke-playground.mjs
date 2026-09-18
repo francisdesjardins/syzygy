@@ -278,14 +278,6 @@ const flows = {
       'the close rings the button that opened the source panel',
     ]);
 
-    // `/stories` is the group whose samples are *cut* out of shared files, by name, at module
-    // evaluation — so a renamed declaration type-checks, passes the stories gate and CT, and throws
-    // here on the first click. One panel is enough: opening any of them runs every slice.
-    await gotoRoute(page, '/stories');
-    await page.getByRole('button', { name: 'View source code' }).first().click();
-    await page.waitForTimeout(800);
-    const sliced = (await page.locator('dialog[open]').first().textContent()) ?? '';
-    checks.push([sliced.length > 200, 'every harness slice resolves', `${sliced.length} chars`]);
     return checks;
   },
 
@@ -707,7 +699,9 @@ const flows = {
 
   /** Section jump bars stick under the top bar (an ancestor `overflow` silently breaks this). */
   async sticky(page) {
-    await gotoRoute(page, '/stories');
+    // Any page long enough to scroll past its own jump bar answers this; `/skin` is the longest
+    // that has one, and the rule it checks belongs to `RootLayout` rather than to any page.
+    await gotoRoute(page, '/skin');
     await page.evaluate(() => window.scrollTo(0, 1400));
     await page.waitForTimeout(500);
     const box = await page.locator('nav[aria-label="Jump to section"]').boundingBox();

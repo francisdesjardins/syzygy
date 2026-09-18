@@ -1,9 +1,9 @@
 /**
- * Which samples the viewer downloads, and when: ~600 kB of source text, two thirds of it for the two
- * routes that index things — `/stories` and `/ui-templates` — so one module fetched everything.
+ * Which samples the viewer downloads, and when: hundreds of kB of source text, most of it for the
+ * route that indexes things — `/ui-templates` — so one module fetched everything.
  * **Groups are cut by where a sample comes from, not how its key is spelled** — `vanilla-form` is a
  * `/ui-integrations` example, `vanilla-msg-title` a template. Add a `?raw` import to `examples.ts`
- * (a route's own), `templates.ts` (`entities/dialog-template`, `shared/*`) or `stories.ts` (`*.story.tsx`).
+ * (a route's own) or `templates.ts` (`entities/dialog-template`, `shared/*`).
  */
 const LOADERS = {
   examples: async () => {
@@ -12,16 +12,12 @@ const LOADERS = {
   templates: async () => {
     return (await import('./code-samples/templates')).templates;
   },
-  stories: async () => {
-    return (await import('./code-samples/stories')).stories;
-  },
 } as const;
 
 type Group = keyof typeof LOADERS;
 
-/** The two routes with their own samples; keyed by route so adding one need not edit an index here. */
+/** The route with its own samples; keyed by route so adding one need not edit an index here. */
 const GROUP_FOR_ROUTE: Readonly<Record<string, Group>> = {
-  '/stories': 'stories',
   '/ui-templates': 'templates',
 };
 

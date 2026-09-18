@@ -21,7 +21,10 @@ const IS_CI = Boolean(process.env['CI']);
  * separate port, never reused, so the two servers cannot be mistaken for each other.
  */
 const PORT = withCoverage ? 3101 : 3001;
-const GALLERY_URL = `http://localhost:${String(PORT)}/stories?gallery=1`;
+// The root, not a route: `main.tsx` forks on `?gallery` before the router exists, so the path is
+// never read. It named `/stories` while a page of that name was being served, which read as a
+// dependency on a route the gallery has never gone through — and umbra's suite already says `/`.
+const GALLERY_URL = `http://localhost:${String(PORT)}/?gallery=1`;
 
 /**
  * Whether this run needs the playground served at all, and only the browser projects do.

@@ -120,7 +120,7 @@ try {
 
   // The pages with no demo in them. They carry no behaviour worth asserting, so what is checked is
   // that the route resolves and renders something — which is the way a lazy route fails.
-  for (const route of ['skin', 'stories']) {
+  for (const route of ['skin']) {
     await page.goto(`${PAGE_URL}${route}`, { waitUntil: 'domcontentloaded' });
     await page.getByRole('heading', { level: 1 }).first().waitFor({ timeout: 15_000 });
   }

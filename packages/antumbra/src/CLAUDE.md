@@ -549,8 +549,8 @@ State management lives in [store/](store/) — a hand-rolled reactive cell (a `S
 
 ## Testing Details
 
-**A component test mounts a harness by id** — `mount('BasicHarness')` — against the gallery the
-playground serves at `/stories?gallery=1`. `yarn story-ids` generates the `Stories` augmentation, so
+**A component test mounts a harness by id** — `mount('BasicHarness')` — against the gallery door the
+playground opens on `?gallery`. `yarn story-ids` generates the `Stories` augmentation, so
 a call site offers the list and checks its props, and
 [story-ids.test.ts](__tests__/story-ids.test.ts) fails on an id naming no harness — which the
 `keyof Stories | (string & {})` union cannot. Each mount is wrapped in `<DialogManagerProvider>` by
@@ -568,9 +568,6 @@ dialogManager.open('other-dialog'); // ✅ context-aware
 ```
 
 **Harness rules**: declare at module scope, not inside `test()`; follow React Compiler constraints.
-
-**Putting a harness on the `/stories` page** is three playground files and a gate, and is in
-[playground/CLAUDE.md](../playground/CLAUDE.md#registering-a-story).
 
 **Selectors**: `<dialog data-testid="dialog-{id}">`; prefer `getByTestId`/`getByRole` to CSS, with `{ exact: true }` for partial label matches.
 

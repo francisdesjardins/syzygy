@@ -18,7 +18,6 @@
     "./readable-syntax": "./src/readable-syntax.ts",
     "./shallow-equal": "./src/shallow-equal.ts",
     "./single-flight": "./src/single-flight.ts",
-    "./slice-declaration": "./src/slice-declaration.ts",
     "./src/*": "./src/*",
     "./package.json": "./package.json"
   },

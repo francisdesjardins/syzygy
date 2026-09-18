@@ -139,18 +139,6 @@ export function PlayArrowIcon(props: IconProps) {
   );
 }
 
-export function ScienceIcon(props: IconProps) {
-  return (
-    <svg {...base} {...props}>
-      <path d="M9.8 3.4h4.4" />
-      <path d="M10.6 3.4v6.3l-5.3 8.1a1.7 1.7 0 0 0 1.4 2.6h10.6a1.7 1.7 0 0 0 1.4-2.6l-5.3-8.1V3.4" />
-      {/* The fill line: what makes a flask a flask rather than a funnel. Held 1px inside each wall
-          (which is at x=7.34 / 16.66 at this height) so the round cap does not poke through. */}
-      <path d="M8.3 14.8h7.4" />
-    </svg>
-  );
-}
-
 export function SearchIcon(props: IconProps) {
   return (
     <svg {...base} {...props}>

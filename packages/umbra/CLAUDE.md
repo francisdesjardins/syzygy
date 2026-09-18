@@ -44,9 +44,8 @@ yarn verify:all      # check + build + verify:package + smoke
 
 ## Testing
 
-Playwright runs both suites; there is no vitest. The web server is config-level and skipped for a
-unit-only run, because a unit run a broken playground can fail is a unit run reporting on something
-it does not test.
+Playwright runs both suites; there is no vitest. `playwright.config.ts` carries why the web server
+is config-level and skipped for a unit-only run.
 
 | Suffix        | Purpose                                                              |
 | ------------- | -------------------------------------------------------------------- |
@@ -57,8 +56,8 @@ it does not test.
 **A component test mounts a harness by id** through the playground's gallery door — `/?gallery`,
 then `window.mount({ story })`. The stories are built by the playground's own Vite, so the code a
 test exercises is the code the demo runs rather than a parallel pipeline configured to match; the
-door is what keeps the router, the providers and the layout out of the measurement. The `/stories`
-route mounts the same harnesses for a human reading the site.
+door is what keeps the router, the providers and the layout out of the measurement. **A harness is a
+fixture and has no page** — the examples are what a reader opens.
 
 **One component test file covers both hook bindings**, against one DOM contract declared in
 `playground/src/pages/stories/model/scenario.ts`. Writing it twice would let the two halves drift

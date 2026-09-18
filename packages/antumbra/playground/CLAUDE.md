@@ -16,8 +16,8 @@ components, `antumbra` for anything that must work without React — see
 `pages/imperative/examples/deployment-service.ts`. Vite aliases both to `../src`.
 
 **The app itself is React, and stays React**, and `antumbra/solid` still costs it no second compiler.
-Two places reach it: the microfrontend frame, which has no build step at all (see below), and
-`/stories`, whose Solid harnesses are written with `h` for exactly that reason. **What they do cost
+Two places reach it: the microfrontend frame, which has no build step at all (see below), and the
+component gallery, whose Solid harnesses are written with `h` for exactly that reason. **What they do cost
 is a scope**: the React Compiler decides what a component is by naming convention, so `BasicApp` in
 the Solid binding reads as one and gets `react/compiler-runtime` injected — "Invalid hook call" the
 moment Solid runs it. `vite.config.ts` excludes `src/solid/` from the babel pass, mirroring
@@ -83,10 +83,9 @@ Two exemptions, each a decision rather than a leak:
   `import * as MessageDialog from '…/vanilla/message-dialog'` names the family. A barrel would
   flatten the distinction the slice exists to make.
 
-**Reach into the library through `antumbra/…`, never through `../../../../../src/…`.** The `/stories`
-page renders the library's own CT harnesses and the code viewer shows their source, so two files
-here import from `src/**/__tests__/` — both through the alias, since a deep relative climb is
-hostage to where a library file happens to sit today.
+**Reach into the library through `antumbra/…`, never through `../../../../../src/…`.** The gallery
+mounts the library's own CT harnesses, so it imports from `src/**/__tests__/` — through the alias,
+since a deep relative climb is hostage to where a library file happens to sit today.
 
 **A page slice owns its own examples.** `pages/<route>/examples/` may only be imported by
 `pages/<route>/ui/`. Page-to-page imports are an FSD violation — if two routes need the same
@@ -151,38 +150,29 @@ decides where a new example goes:
 | `/ui-templates`    | Copy-paste index: Vanilla / Shared                        |
 | `/skin`            | Penumbra, read live from the token sheet — never restated |
 | `/api`             | Generated reference — a map, then a page per category     |
-| `/stories`         | Live `*.story.tsx` harnesses, and the suite’s gallery     |
 
-**corona's `PeekingMoon` is suppressed on two of them**, for reasons that do not generalise: `/` already
-shows the same moon still, and `/stories` portals panels to the body edges where a mascot reads as
-a fixture misbehaving. `RootLayout` holds the pair.
+**corona's `PeekingMoon` is suppressed on `/`**, for a reason that does not generalise: the landing
+page already shows the same moon still. `RootLayout` holds it.
 
-## `/stories` is also the component suite's gallery
+## The component suite's gallery is a query, not a route
 
-Playwright's stories model ships no bundler: the page is the app's, so **this** Vite builds what the
-tests exercise — the React Compiler, the `antumbra` alias and the instrumenter (`CT_COVERAGE=1`) are
+**`?gallery` renders no app at all.** `main.tsx` forks on it before the router exists, so the path
+is never read — the fixture asks for `/?gallery=1` and anything else would answer the same. Both
+branches import **dynamically**: a static one runs whether or not its branch does, and the router's
+graph reaching a test page is how `ThemeProvider` pinned `--form-bg` inline on `:root`, outranking a
+template's dark mode. The app boots from `app/bootstrap.tsx` into `#app`, the gallery from
+`pages/stories/model/gallery.ts` into `#root`, where Playwright scopes its Locator.
+
+The gallery ships no bundler: the page is the app's, so **this** Vite builds what the tests
+exercise — the React Compiler, the `antumbra` alias and the instrumenter (`CT_COVERAGE=1`) are
 configured here once.
 
-**`?gallery` renders no app**, and both branches of `main.tsx` import **dynamically** — a static one
-runs whether or not its branch does, and the router's graph reaching a test page is how
-`ThemeProvider` pinned `--form-bg` inline on `:root`, outranking a template's dark mode. The app
-boots from `app/bootstrap.tsx` into `#app`, the gallery from `pages/stories/model/gallery.ts` into
-`#root`, where Playwright scopes its Locator.
-
 **Generated, not listed**: `yarn story-ids` writes the typed `Stories` augmentation and one lazy
-loader per id.
+loader per id, so adding a harness is adding a file.
 
-### Registering a story
-
-Export from the barrel → add a `StoryEntry` in `StoriesPage.tsx` → register the `?raw` import in
-`codeSamples.ts`. A story off the page is invisible: it builds, it runs in CT, and nobody reaches
-it — **gated** by `stories-registration.test.ts`, whose exemption list is empty, so an omission is a
-written decision rather than an oversight. A harness sharing a file is cut out of it by name
-(`sliceDeclaration`).
-
-The exception is a **parameterised** harness. `StoryEntry.component` takes no props, so one that
-requires them is a fixture rather than a demo and the gate skips it — give it a prop-free default if
-it is worth showing.
+**A harness is a fixture, not a demonstration.** Several assert that the library warns, so they are
+deliberately wrong — a dialog with no accessible name, an `aria-labelledby` pointing at nothing. The
+examples are what a reader is meant to open.
 
 ## The API reference is generated
 
@@ -232,8 +222,8 @@ page and is what a reader can guess and share.
 
 [`src/app/dialog-registry.ts`](src/app/dialog-registry.ts) names every dialog and what it closes with,
 so **a call site writes no type arguments** — writing them selects the other overload and lets the
-two drift. Add a dialog, add a line. Not enforced complete, which is what lets `/stories` render the
-library's own harnesses.
+two drift. Add a dialog, add a line. Not enforced complete, which is what lets the gallery mount the
+library's own harnesses, whose ids this registry does not name.
 
 ## Page composition
 

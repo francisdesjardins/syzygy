@@ -64,7 +64,8 @@ yarn coverage:update    # Run both coverage measurements and rewrite README + CL
 ## Testing
 
 Playwright for unit + component tests (`playwright.config.ts`). A component test mounts a harness
-**by id** against the playground gallery at `/stories?gallery=1`.
+**by id** against the playground's gallery door — see
+[playground/CLAUDE.md](playground/CLAUDE.md#the-component-suites-gallery-is-a-query-not-a-route).
 
 ```bash
 yarn test                    # All tests (unit + component)

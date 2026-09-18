@@ -6,7 +6,6 @@ import {
   MenuBookIcon,
   PaletteIcon,
   PlayArrowIcon,
-  ScienceIcon,
   WidgetsIcon,
 } from 'corona/icons';
 import {
@@ -44,13 +43,6 @@ export const NAV_GROUPS: readonly NavGroup[] = [
       { path: '/ui-templates', label: 'UI Templates', icon: WidgetsIcon },
       { path: '/skin', label: 'Our skin', icon: PaletteIcon },
       { path: '/api', label: 'API Reference', icon: MenuBookIcon },
-    ],
-  },
-  {
-    label: 'Testing',
-    items: [
-      { path: '/stories', label: 'Test Harnesses', icon: ScienceIcon },
-      // Deliberately last and deliberately empty — a scratch surface, not a tenth demonstration.
     ],
   },
 ];

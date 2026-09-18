@@ -10,7 +10,6 @@ export {
   MenuBookIcon,
   PaletteIcon,
   PlayArrowIcon,
-  ScienceIcon,
   SearchIcon,
   WidgetsIcon,
 } from './icons.tsx';

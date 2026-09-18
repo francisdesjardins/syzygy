@@ -90,21 +90,6 @@ const apiCategoryRoute = createRoute({
   }, 'ApiCategoryPage'),
 });
 
-const storiesRoute = createRoute({
-  getParentRoute: () => {
-    return rootRoute;
-  },
-  path: '/stories',
-  // The one route with a search parameter of its own, because the component suite addresses a
-  // harness by id.
-  validateSearch: (search: Record<string, unknown>): { story?: string } => {
-    return typeof search['story'] === 'string' ? { story: search['story'] } : {};
-  },
-  component: lazyRouteComponent(() => {
-    return import('@/pages/stories');
-  }, 'StoriesPage'),
-});
-
 const routeTree = rootRoute.addChildren([
   indexRoute,
   gettingStartedRoute,
@@ -113,7 +98,6 @@ const routeTree = rootRoute.addChildren([
   designSystemRoute,
   apiRoute,
   apiCategoryRoute,
-  storiesRoute,
 ]);
 
 // A build meant to be opened from a file, or served by a host that rewrites nothing, has no server

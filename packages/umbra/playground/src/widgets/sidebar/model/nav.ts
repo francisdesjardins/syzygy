@@ -1,13 +1,6 @@
 import type { NavGroup } from 'corona/shell';
 
-import {
-  HubIcon,
-  MenuBookIcon,
-  PaletteIcon,
-  PlayArrowIcon,
-  ScienceIcon,
-  WidgetsIcon,
-} from 'corona/icons';
+import { HubIcon, MenuBookIcon, PaletteIcon, PlayArrowIcon, WidgetsIcon } from 'corona/icons';
 
 /**
  * Grouped so the routes read as a path: the idea, then the shapes it takes, then the reference.
@@ -35,9 +28,5 @@ export const NAV_GROUPS: readonly NavGroup[] = [
       { path: '/skin', label: 'Our skin', icon: PaletteIcon },
       { path: '/api', label: 'API Reference', icon: MenuBookIcon },
     ],
-  },
-  {
-    label: 'Testing',
-    items: [{ path: '/stories', label: 'Test Harnesses', icon: ScienceIcon }],
   },
 ];
