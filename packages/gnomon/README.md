@@ -3,15 +3,35 @@
 The rod of a sundial: the thing a shadow is measured against. These are the gates the shadow
 libraries run against themselves.
 
-| module                           | what it does                                                       |
-| -------------------------------- | ------------------------------------------------------------------ |
-| `gnomon-examples`                | extracts every JSDoc `@example`, formats, type-checks and lints it |
-| `gnomon-ct-coverage-report`      | merges `.nyc_output/` and prints the component suite's coverage    |
-| `gnomon/vite-plugin-ct-coverage` | Istanbul instrumentation of the **source**, at `enforce: 'pre'`    |
-| `gnomon/ct-coverage-reset`       | Playwright `globalSetup` that empties `.nyc_output/` once per run  |
-| `gnomon/oxfmt`                   | the formatter, reading the `.oxfmtrc.json` at or above the caller  |
+| module                           | what it does                                                                   |
+| -------------------------------- | ------------------------------------------------------------------------------ |
+| `gnomon-examples`                | extracts every JSDoc `@example`, formats, type-checks and lints it             |
+| `gnomon-doc-budget`              | word budgets per `CLAUDE.md`, and every link and named script in them resolves |
+| `gnomon-token-usage`             | every `var(--app-…)` a package spends names a token one of its sheets declares |
+| `gnomon-ct-coverage-report`      | merges `.nyc_output/` and prints the component suite's coverage                |
+| `gnomon/vite-plugin-ct-coverage` | Istanbul instrumentation of the **source**, at `enforce: 'pre'`                |
+| `gnomon/ct-coverage-reset`       | Playwright `globalSetup` that empties `.nyc_output/` once per run              |
+| `gnomon/oxfmt`                   | the formatter, reading the `.oxfmtrc.json` at or above the caller              |
 
 Private. It exists to be depended on inside this repository, not published.
+
+## What belongs here, and what belongs in the root's `scripts/`
+
+There are two homes for tooling in this repository, and the line between them is what each one can
+see:
+
+- **A gate that runs _inside_ one workspace is gnomon's.** It reads `process.cwd()`, answers about
+  that package alone, and is invoked by its bare bin name from that package's `check` script.
+- **A gate that _compares_ workspaces is the root's**, in `scripts/`. `check-capabilities` holds the
+  same capability names across `deploy.mjs`, `_redirects`, a dev server and the mobile gate;
+  `check-error-rule` holds two packages' copies of one rule byte-identical; `check-mobile` visits a
+  site that only exists once every playground has been built into it. None of them has a single
+  package to be run from.
+
+The rule is not a preference. A per-package gate has to be a dependency to be callable as
+`gnomon-doc-budget` rather than a relative path into a sibling directory, and that is what makes it
+a package here; a repo-wide one has no workspace to belong to, so making it one would only invent a
+cwd it then has to ignore.
 
 ## Everything is read from the package that ran the command
 
