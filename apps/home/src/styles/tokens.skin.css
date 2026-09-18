@@ -10,7 +10,7 @@
  * **This file is the palette, and there is no second one.** MUI reads these names rather than
  * carrying its own hexadecimal — `src/hooks/useTheme.ts` builds the theme out of the resolved
  * values — because two sources for one colour is how they drift apart, and the site, the two
- * playgrounds and the design-system page all have to agree on what this site's fuchsia is.
+ * playgrounds and this page all have to agree on what this site's fuchsia is.
  *
  * The rule the token names carry: **`--app-flame` is a fill and `--app-accent` is the ink.** Here
  * they are the same value, which is a fact about this hue rather than an exception — the deep

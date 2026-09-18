@@ -44,8 +44,9 @@
     "type-check": "node node_modules/typescript-7/bin/tsc -p playground/tsconfig.json --noEmit",
     "lint": "oxlint --type-aware",
     "format:check": "oxfmt --check .",
-    "check": "yarn type-check && yarn lint --deny-warnings && yarn format:check && node scripts/check-tokens.mjs && node scripts/check-contrast.mjs",
-    "test": "echo \"penumbra: no-op — the package is two stylesheets; its contract is asserted by check (check-tokens, penumbra-contrast) and its demo by check:mobile\""
+    "check": "yarn type-check && yarn lint --deny-warnings && yarn format:check && node scripts/check-tokens.mjs && node scripts/check-contrast.mjs && yarn check:contrast",
+    "test": "echo \"penumbra: no-op — the package is two stylesheets; its contract is asserted by check (check-tokens, penumbra-contrast) and its demo by check:mobile\"",
+    "check:contrast": "node scripts/check-contrast.mjs playground/src/app/styles/tokens.skin.css && node scripts/check-contrast.mjs playground/src/app/styles/skins/tint.css && node scripts/check-contrast.mjs --no-base playground/src/app/styles/skins/replaced.css"
   },
   "devDependencies": {
     "oxfmt": "0.68.0",

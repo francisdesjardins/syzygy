@@ -74,6 +74,12 @@ does not use.
 **`no-restricted-imports`** lives in the two workspaces that depend on MUI. A restriction on an
 import the other three cannot resolve is a rule that cannot fail.
 
+**Home is a showcase; the playgrounds are the projects.** The site listed three works and hosted
+one of them — penumbra's only shopfront was `/design-system`, a page _of_ home, which made a
+stylesheet read as a peer of two libraries rather than as what they are built on. It has a
+playground now and home has three links. The two playgrounds kept what is theirs: six colour
+declarations and their own controls, under `/skin`.
+
 **The og-image is French on an English-default site**, and that is the author writing in his own
 voice rather than a string somebody forgot to translate — "danseur de tes rêves" does not survive
 being made bilingual. It was listed as an undecided divergence, which was a misreading of a joke.

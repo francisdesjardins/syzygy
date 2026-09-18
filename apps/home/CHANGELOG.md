@@ -4,6 +4,27 @@ Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No s
 
 **This file is the app's memory.** The code states what holds now; why it came to hold lives here.
 
+## 2026-09-17, the design system leaves the site
+
+### Removed
+
+`/design-system`, its page, the two example skins and the specimen stylesheet. All of it is
+[penumbra](../../packages/penumbra)'s playground now, at `/playground/design`.
+
+**Why it was here at all is the answer to why it left.** This site is a showcase; the three
+projects are playgrounds. Penumbra was the odd one — its only shopfront was a page _of_ the
+showcase, which made a stylesheet read as one of three works rather than as the thing the other two
+are built on. 266 of home's 1 189 lines, and every one of them about somebody else's package.
+
+The work row now points at three builds instead of two and a page. The structured data names
+`/playground/design/` for penumbra, which is where it is.
+
+### Changed
+
+`check:contrast` measures this site's own skin and nothing else; the two example skins are measured
+where they are shown. `App.tsx` has one route and no lazy boundary — there is nothing left to split
+off the landing page.
+
 ## 2026-09-17, building blocks, and the head says so too
 
 ### Changed

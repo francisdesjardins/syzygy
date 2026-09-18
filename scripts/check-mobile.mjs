@@ -78,7 +78,6 @@ const VIEWPORTS = [
 
 const ROUTES = [
   ['/', 'site'],
-  ['/design-system', 'site'],
   ['/playground/dialog/#/', 'playground'],
   ['/playground/dialog/#/getting-started', 'playground'],
   ['/playground/dialog/#/dialog-actions', 'playground'],

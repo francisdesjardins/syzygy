@@ -249,7 +249,8 @@ export const Home = memo(() => {
                   description={t('home.work.boot.description')}
                 />
                 <WorkItem
-                  href="/design-system"
+                  ownBuild
+                  href="/playground/design/"
                   name={t('home.work.designSystem.name')}
                   description={t('home.work.designSystem.description')}
                 />
