@@ -33,7 +33,9 @@
 
 .scroll {
   overflow: auto;
-  max-height: 320px;
+  /* The same ceiling a code block gets. Below it the DOT output loses its closing brace, and a
+     block cut off at the last character reads as broken rather than as scrollable. */
+  max-height: 420px;
 }
 
 .source {
