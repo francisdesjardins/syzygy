@@ -31,9 +31,12 @@
     "lint:fix": "oxlint --type-aware --fix",
     "format": "oxfmt .",
     "format:check": "oxfmt --check .",
-    "test": "yarn test:unit",
+    "test": "yarn test:unit && yarn test:component",
     "test:unit": "playwright test -c playwright.config.ts --project=unit",
     "test:unit:coverage": "c8 playwright test -c playwright.config.ts --project=unit",
+    "test:component": "playwright test -c playwright.config.ts --project=component",
+    "test:component:coverage": "CT_COVERAGE=1 playwright test -c playwright.config.ts --project=component && gnomon-ct-coverage-report",
+    "dev": "vite",
     "verify:all": "yarn check && yarn test",
     "check:tokens": "node scripts/check-token-coverage.mjs",
     "check:tokens:used": "gnomon-token-usage --declares ../penumbra/tokens.system.css ../penumbra/tokens.skin.base.css ../umbra/playground/src/app/styles/tokens.skin.css -- src"
@@ -47,6 +50,8 @@
     "@tanstack/react-router": "^1.170.36",
     "@types/node": "^24.10.1",
     "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
     "c8": "12.0.0",
     "gnomon": "workspace:^",
     "oxfmt": "0.68.0",
@@ -54,7 +59,8 @@
     "oxlint-tsgolint": "7.0.2001",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
-    "typescript-7": "npm:typescript@7.0.2"
+    "typescript-7": "npm:typescript@7.0.2",
+    "vite": "^8.3.0"
   },
   "peerDependencies": {
     "@tanstack/react-router": "^1.170.0",

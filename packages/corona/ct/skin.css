@@ -1,0 +1,35 @@
+/*
+ * The ten declarations a harness needs that the base does not carry.
+ *
+ * penumbra ships the system half and the neutral skin; the brand half is the consuming project's,
+ * and this package has no project. So the gallery declares one — deliberately not any playground's,
+ * because a harness asserting a colour would then be asserting somebody else's palette.
+ *
+ * The values are arbitrary and the *names* are the contract: `gnomon-token-usage` already holds
+ * corona to spending only names that a sheet declares, and this is the sheet for the test page.
+ * What a harness may assert is that a component reads the token, never what the token is worth.
+ */
+:root {
+  --app-font-body: system-ui, sans-serif;
+  --app-font-mono: ui-monospace, monospace;
+
+  --app-flame: #b45309;
+  --app-flame-wash: #fef3c7;
+  --app-accent: #92400e;
+  --app-primary: #b45309;
+  --app-primary-hover: #d97706;
+  --app-primary-ink: #1c1917;
+
+  --app-glow: 0 0 0 1px rgb(180 83 9 / 0.35);
+  --app-ring: #b45309;
+}
+
+:root[data-color-scheme='dark'] {
+  --app-flame: #fbbf24;
+  --app-flame-wash: #451a03;
+  --app-accent: #fcd34d;
+  --app-primary: #fbbf24;
+  --app-primary-hover: #fcd34d;
+  --app-primary-ink: #1c1917;
+  --app-ring: #fbbf24;
+}

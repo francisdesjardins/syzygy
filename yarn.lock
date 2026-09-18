@@ -1839,6 +1839,8 @@ __metadata:
     "@tanstack/react-router": "npm:^1.170.36"
     "@types/node": "npm:^24.10.1"
     "@types/react": "npm:^19.3.0"
+    "@types/react-dom": "npm:^19.3.0"
+    "@vitejs/plugin-react": "npm:^6.1.1"
     c8: "npm:12.0.0"
     gnomon: "workspace:^"
     limb: "workspace:^"
@@ -1849,6 +1851,7 @@ __metadata:
     react: "npm:^19.3.0"
     react-dom: "npm:^19.3.0"
     typescript-7: "npm:typescript@7.0.2"
+    vite: "npm:^8.3.0"
   peerDependencies:
     "@tanstack/react-router": ^1.170.0
     react: ^19.0.0

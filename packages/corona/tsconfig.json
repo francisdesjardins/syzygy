@@ -4,10 +4,10 @@
   "compilerOptions": {
     // `DOM.Iterable` because the viewer walks a `NodeList` rather than indexing one.
     "lib": ["ES2024", "DOM", "DOM.Iterable"],
-    "types": ["node"],
+    "types": ["node", "vite/client"],
     "jsx": "react-jsx",
     "allowImportingTsExtensions": true
   },
-  "include": ["src/**/*", "playwright.config.ts"],
+  "include": ["src/**/*", "ct/**/*", "playwright.config.ts", "vite.config.ts"],
   "exclude": ["node_modules"]
 }
