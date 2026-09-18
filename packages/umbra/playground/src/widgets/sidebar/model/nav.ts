@@ -6,7 +6,7 @@ import {
   PlayArrowIcon,
   ScienceIcon,
   WidgetsIcon,
-} from '@/shared/ui/icons';
+} from 'corona/icons';
 
 export type NavItem = {
   readonly path: string;

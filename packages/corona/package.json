@@ -15,13 +15,14 @@
     ".": "./src/index.ts",
     "./api": "./src/api/index.ts",
     "./contract": "./src/api/contract.ts",
+    "./icons": "./src/icons/index.ts",
     "./mascot": "./src/mascot/index.ts",
+    "./package.json": "./package.json",
     "./shell": "./src/shell/index.ts",
     "./site": "./src/site/index.ts",
-    "./theme": "./src/theme/index.ts",
-    "./tokens": "./src/tokens/index.ts",
     "./src/*": "./src/*",
-    "./package.json": "./package.json"
+    "./theme": "./src/theme/index.ts",
+    "./tokens": "./src/tokens/index.ts"
   },
   "scripts": {
     "check": "yarn type-check && yarn lint --deny-warnings && yarn format:check && yarn check:tokens && yarn check:tokens:used",

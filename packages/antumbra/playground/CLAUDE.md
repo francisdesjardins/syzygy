@@ -119,7 +119,7 @@ Porting Penumbra elsewhere is: depend on the package, write a skin.
   signature; on a mono group label it is a typographic device.
 - **The shared primitives come from [corona](../../corona)** — `AppButton`/`AppIconButton` +
   `appButtonClass`, `SelectionDropdown`, `SectionNav`, the mascot and the playground path. What
-  stays in `shared/ui` is what only this playground has: the `icons` set, `EclipseMark`, `MoonPhase`,
+  stays in `shared/ui` is what only this playground has: ten icons, `EclipseMark`, `MoonPhase`,
   `SurfaceCard`, `PageLayout` and `ResultDisplay`.
 - **The MUI island** (`shared/ui/MuiIsland` + `shared/lib/mui-theme.ts`) is **the subject, not a
   leftover**, and stays Material-looking on purpose. Scoped to the one card that needs it.

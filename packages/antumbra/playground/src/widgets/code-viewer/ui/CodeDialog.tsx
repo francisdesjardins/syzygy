@@ -1,6 +1,7 @@
 import { Spinner } from '@/shared/ui/Spinner';
 import { AppIconButton } from 'corona';
-import { CloseIcon, CodeIcon } from '@/shared/ui/icons';
+import { CodeIcon } from 'corona/icons';
+import { CloseIcon } from '@/shared/ui/icons';
 import styles from '@/widgets/code-viewer/ui/CodeDialog.module.css';
 import type { DialogHandle } from 'antumbra/react';
 import { Suspense } from 'react';

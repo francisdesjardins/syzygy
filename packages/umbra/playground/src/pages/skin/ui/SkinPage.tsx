@@ -8,7 +8,7 @@ import {
 } from 'corona';
 import type { TokenNote } from 'corona';
 import { ExampleSection } from '@/entities/example';
-import { CodeIcon, PlayArrowIcon } from '@/shared/ui/icons';
+import { CodeIcon, PlayArrowIcon } from 'corona/icons';
 import { PageLayout } from 'corona';
 import { SurfaceCard } from '@/shared/ui/SurfaceCard';
 import styles from '@/pages/skin/ui/SkinPage.module.css';

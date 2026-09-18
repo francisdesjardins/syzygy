@@ -5,6 +5,22 @@ Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No s
 **This file is the package's memory.** The code states what holds now; why it came to hold lives
 here.
 
+## 2026-09-18, the icon sets collapse
+
+### Added
+
+`corona/icons` — the fourteen glyphs every playground draws.
+
+The file that held umbra's copy predicted this: "the two sets are one set with two copies, and the
+day the playgrounds share a monorepo these collapse rather than being reconciled." Measured on that
+day, sixteen names were in both and **all sixteen were byte-identical** — the 51% a line-similarity
+probe reported was antumbra's ten extra glyphs diluting a perfect match.
+
+Two of the sixteen went nowhere. The sun and the moon belong to the theme toggle, which draws its
+own since it moved here, and nothing else had imported them.
+
+antumbra keeps the ten only it has. umbra's file is gone: its set was a strict subset.
+
 ## 2026-09-17, the shell moves here, and the way out becomes three marks
 
 ### Changed — `SiteLinks` replaces `PlaygroundPath`

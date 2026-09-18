@@ -1,6 +1,7 @@
 import type { ComponentType } from 'react';
 
-import { LayersIcon, PaletteIcon, RulerIcon } from '@/shared/ui/icons';
+import { PaletteIcon } from 'corona/icons';
+import { LayersIcon, RulerIcon } from '@/shared/ui/icons';
 
 export type NavItem = {
   readonly path: string;

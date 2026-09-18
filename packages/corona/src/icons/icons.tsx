@@ -1,17 +1,26 @@
 import type { SVGProps } from 'react';
 
 /**
- * The shell's icon set, drawn here rather than installed: the playground has no component library,
- * and one for nine glyphs would be the largest dependency on the page.
+ * The glyphs every playground draws, on the mascot's engraved line rather than a component
+ * library's filled silhouettes. Every one is a stroke on `currentColor`, so colour and size come
+ * from the caller.
  *
- * Every glyph is a stroke on `currentColor`, so colour and size come from the caller. The rules the
- * set is drawn to, so a tenth matches the nine:
+ * The rules the set is drawn to, so a fifteenth glyph matches the fourteen:
  *
  * - **24×24 grid, content inside a ~3px inset.** A glyph that touches the box reads a size bigger
  *   than its neighbours on the same row.
  * - **Stroke 1.75, round caps and joins, no fill.** The weight has to be constant — a hairline
  *   among them looks broken rather than lighter.
- * - **Open forms over closed ones**: an asymmetry stops straight lines reading as a texture.
+ * - **Open forms over closed ones**: an asymmetry stops straight lines reading as a texture, which
+ *   is why the drawer's third bar is short.
+ *
+ * **These are here because the two sets were one set with two copies**, and the file that held the
+ * second said so: "the day the playgrounds share a monorepo these collapse rather than being
+ * reconciled." Measured on that day, sixteen names were in both and all sixteen were byte-identical.
+ * Two of them, the sun and the moon, went nowhere — the theme toggle draws its own now.
+ *
+ * What a playground has that the others do not stays with it. An icon set is a voice only where the
+ * drawings differ, and these did not.
  */
 
 type IconProps = SVGProps<SVGSVGElement>;
@@ -44,24 +53,6 @@ export function ArrowForwardIcon(props: IconProps) {
   );
 }
 
-export function LinkIcon(props: IconProps) {
-  return (
-    <svg {...base} {...props}>
-      <path d="M10.4 13.6a3.9 3.9 0 0 0 5.6 0l2.6-2.6a3.9 3.9 0 0 0-5.5-5.5l-1.5 1.5" />
-      <path d="M13.6 10.4a3.9 3.9 0 0 0-5.6 0l-2.6 2.6a3.9 3.9 0 0 0 5.5 5.5l1.5-1.5" />
-    </svg>
-  );
-}
-
-export function SearchIcon(props: IconProps) {
-  return (
-    <svg {...base} {...props}>
-      <circle cx="10.5" cy="10.5" r="6.5" />
-      <path d="m15.5 15.5 4.6 4.6" />
-    </svg>
-  );
-}
-
 export function CheckIcon(props: IconProps) {
   return (
     <svg {...base} {...props}>
@@ -87,46 +78,6 @@ export function ContentCopyIcon(props: IconProps) {
   );
 }
 
-export function DarkModeIcon(props: IconProps) {
-  return (
-    <svg {...base} {...props}>
-      <path d="M20 13.2A8.2 8.2 0 1 1 10.8 4a6.4 6.4 0 0 0 9.2 9.2Z" />
-    </svg>
-  );
-}
-
-export function LightModeIcon(props: IconProps) {
-  return (
-    <svg {...base} {...props}>
-      <circle cx="12" cy="12" r="4.2" />
-      <path d="M12 2.8V5M12 19v2.2M2.8 12H5M19 12h2.2M5.5 5.5 7 7M17 17l1.5 1.5M18.5 5.5 17 7M7 17l-1.5 1.5" />
-    </svg>
-  );
-}
-
-export function MenuIcon(props: IconProps) {
-  return (
-    <svg {...base} {...props}>
-      <path d="M4 7h16M4 12h16M4 17h10" />
-    </svg>
-  );
-}
-
-/*
- * The six the sidebar names, lifted from antumbra’s set unchanged.
- *
- * They are drawn to the rules stated at the top of this file because that is where those rules
- * came from — the two sets are one set with two copies, and the day the playgrounds share a
- * monorepo these collapse rather than being reconciled.
- */
-
-export function PlayArrowIcon(props: IconProps) {
-  return (
-    <svg {...base} {...props}>
-      <path d="M7.5 5.4v13.2L18.8 12Z" />
-    </svg>
-  );
-}
 export function HubIcon(props: IconProps) {
   return (
     <svg {...base} {...props}>
@@ -139,18 +90,34 @@ export function HubIcon(props: IconProps) {
     </svg>
   );
 }
-export function WidgetsIcon(props: IconProps) {
+
+export function LinkIcon(props: IconProps) {
   return (
     <svg {...base} {...props}>
-      {/* Three squares and a diamond: the rotated one is what keeps this from reading as a
-          four-up grid, which is a different idea. */}
-      <rect x="3.4" y="3.4" width="7.2" height="7.2" rx="1.4" />
-      <rect x="3.4" y="13.4" width="7.2" height="7.2" rx="1.4" />
-      <rect x="13.4" y="13.4" width="7.2" height="7.2" rx="1.4" />
-      <path d="M17 2.6 21.4 7 17 11.4 12.6 7Z" />
+      <path d="M10.4 13.6a3.9 3.9 0 0 0 5.6 0l2.6-2.6a3.9 3.9 0 0 0-5.5-5.5l-1.5 1.5" />
+      <path d="M13.6 10.4a3.9 3.9 0 0 0-5.6 0l-2.6 2.6a3.9 3.9 0 0 0 5.5 5.5l1.5-1.5" />
     </svg>
   );
 }
+
+export function MenuIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M4 7h16M4 12h16M4 17h10" />
+    </svg>
+  );
+}
+
+export function MenuBookIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M12 6.6v13" />
+      <path d="M12 6.6C10.4 5.2 8.3 4.5 5.9 4.5c-1 0-1.9.1-2.9.4v13c1-.3 1.9-.4 2.9-.4 2.4 0 4.5.7 6.1 2" />
+      <path d="M12 6.6c1.6-1.4 3.7-2.1 6.1-2.1 1 0 1.9.1 2.9.4v13c-1-.3-1.9-.4-2.9-.4-2.4 0-4.5.7-6.1 2" />
+    </svg>
+  );
+}
+
 export function PaletteIcon(props: IconProps) {
   return (
     <svg {...base} {...props}>
@@ -163,15 +130,15 @@ export function PaletteIcon(props: IconProps) {
     </svg>
   );
 }
-export function MenuBookIcon(props: IconProps) {
+
+export function PlayArrowIcon(props: IconProps) {
   return (
     <svg {...base} {...props}>
-      <path d="M12 6.6v13" />
-      <path d="M12 6.6C10.4 5.2 8.3 4.5 5.9 4.5c-1 0-1.9.1-2.9.4v13c1-.3 1.9-.4 2.9-.4 2.4 0 4.5.7 6.1 2" />
-      <path d="M12 6.6c1.6-1.4 3.7-2.1 6.1-2.1 1 0 1.9.1 2.9.4v13c-1-.3-1.9-.4-2.9-.4-2.4 0-4.5.7-6.1 2" />
+      <path d="M7.5 5.4v13.2L18.8 12Z" />
     </svg>
   );
 }
+
 export function ScienceIcon(props: IconProps) {
   return (
     <svg {...base} {...props}>
@@ -180,6 +147,28 @@ export function ScienceIcon(props: IconProps) {
       {/* The fill line: what makes a flask a flask rather than a funnel. Held 1px inside each wall
           (which is at x=7.34 / 16.66 at this height) so the round cap does not poke through. */}
       <path d="M8.3 14.8h7.4" />
+    </svg>
+  );
+}
+
+export function SearchIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <circle cx="10.5" cy="10.5" r="6.5" />
+      <path d="m15.5 15.5 4.6 4.6" />
+    </svg>
+  );
+}
+
+export function WidgetsIcon(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      {/* Three squares and a diamond: the rotated one is what keeps this from reading as a
+          four-up grid, which is a different idea. */}
+      <rect x="3.4" y="3.4" width="7.2" height="7.2" rx="1.4" />
+      <rect x="3.4" y="13.4" width="7.2" height="7.2" rx="1.4" />
+      <rect x="13.4" y="13.4" width="7.2" height="7.2" rx="1.4" />
+      <path d="M17 2.6 21.4 7 17 11.4 12.6 7Z" />
     </svg>
   );
 }

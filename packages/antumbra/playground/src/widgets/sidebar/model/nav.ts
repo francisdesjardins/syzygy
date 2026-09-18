@@ -1,17 +1,19 @@
 import type { ComponentType, SVGProps } from 'react';
 import {
-  AutoAwesomeIcon,
   CodeIcon,
   HubIcon,
-  LocalFireDepartmentIcon,
   MenuBookIcon,
   PaletteIcon,
   PlayArrowIcon,
   ScienceIcon,
+  WidgetsIcon,
+} from 'corona/icons';
+import {
+  AutoAwesomeIcon,
+  LocalFireDepartmentIcon,
   SettingsIcon,
   TuneIcon,
   ViewSidebarIcon,
-  WidgetsIcon,
 } from '@/shared/ui/icons';
 
 export type NavItem = {

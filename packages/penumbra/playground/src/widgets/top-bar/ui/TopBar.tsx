@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { AppIconButton } from 'corona/shell';
 import { ThemeToggleButton } from 'corona/theme';
-import { MenuIcon } from '@/shared/ui/icons';
+import { MenuIcon } from 'corona/icons';
 import styles from '@/widgets/top-bar/ui/TopBar.module.css';
 
 type TopBarProps = {

@@ -11,7 +11,7 @@ import { AppButton } from 'corona';
 import { CodeBlock } from '@/shared/ui/CodeBlock';
 import { PageLayout } from 'corona';
 import { SurfaceCard } from '@/shared/ui/SurfaceCard';
-import { ArrowBackIcon, ArrowForwardIcon, LinkIcon, SearchIcon } from '@/shared/ui/icons';
+import { ArrowBackIcon, ArrowForwardIcon, LinkIcon, SearchIcon } from 'corona/icons';
 
 /**
  * This playground's half of the API reference: the components it lends, and what it is a reference

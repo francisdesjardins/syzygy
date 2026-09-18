@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { AppIconButton } from 'corona';
-import { CheckIcon, ContentCopyIcon } from '@/shared/ui/icons';
+import { CheckIcon, ContentCopyIcon } from 'corona/icons';
 import styles from '@/shared/ui/CopyButton.module.css';
 
 const CONFIRMATION_MS = 2000;

@@ -2,7 +2,7 @@ import { readableSyntaxStyle } from 'limb/readable-syntax';
 import { useTheme } from 'corona';
 import { AppIconButton } from 'corona';
 import styles from '@/shared/ui/CodeBlock/CodeBlock.module.css';
-import { CheckIcon, ContentCopyIcon } from '@/shared/ui/icons';
+import { CheckIcon, ContentCopyIcon } from 'corona/icons';
 import { useState } from 'react';
 // Deep paths, not the barrels: `react-syntax-highlighter` re-exports `Prism` (every grammar
 // refractor ships) and `styles/prism` re-exports all 47 themes, and Vite serves modules unbundled

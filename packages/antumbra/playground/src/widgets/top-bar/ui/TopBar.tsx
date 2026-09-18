@@ -1,7 +1,7 @@
 import { EclipseMark } from '@/shared/ui/EclipseMark';
 import { ThemeToggleButton } from 'corona';
 import { AppIconButton } from 'corona';
-import { MenuIcon } from '@/shared/ui/icons';
+import { MenuIcon } from 'corona/icons';
 import styles from '@/widgets/top-bar/ui/TopBar.module.css';
 import { Link } from '@tanstack/react-router';
 

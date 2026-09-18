@@ -118,7 +118,17 @@ main page was the one both siblings were already rendering.
 in substance: antumbra's feeds a template token set and writes from a layout effect. `SurfaceCard`
 is a slot by an older decision that still holds.
 
-**What is left to measure.** `HomePage.module.css` at 70% and `icons.tsx` at 51% were not looked at.
+**The icon sets were one set with two copies, and the file that held the second said so** — "the
+day the playgrounds share a monorepo these collapse rather than being reconciled". Measured on that
+day: sixteen names in both, **all sixteen byte-identical**. Fourteen are corona's now; the sun and
+the moon went nowhere, the theme toggle having started drawing its own. antumbra keeps the ten only
+it has; umbra's file is gone entirely, its set having been a strict subset.
+
+**`HomePage.module.css` stays where it is**, and this is the third time the same shape is recorded:
+20 selectors in both, 18 with identical declarations — under components that share 84 lines out of 275. The stylesheet agrees; the pages do not, and a bare CSS module in corona would make class names
+a public surface it has never had. There are three home pages now.
+
+**What is left to measure.**
 That gap the third playground found — a `var(--app-…)` naming a token nothing declares — is closed:
 `gnomon-token-usage`, run by all five consumers.
 
