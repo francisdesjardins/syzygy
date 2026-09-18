@@ -16,6 +16,26 @@ const withCoverage = process.env['CT_COVERAGE'] === '1';
    array literal gives the call no position to infer from, and the type arrives as `unknown`. */
 const coveragePlugins: Plugin[] = withCoverage ? [ctCoverage({ root: import.meta.dirname })] : [];
 
+/**
+ * `virtual:api-model` for the gallery.
+ *
+ * The real one is produced by each playground's own plugin, running typedoc over the library it
+ * documents — so this package never sees one, and its viewer would be untestable without a stand-in.
+ * The fixture is the contract's own shape, which is the thing worth testing against: a viewer that
+ * only works on antumbra's model is a viewer that has a second half nobody reads.
+ */
+const apiModelFixture: Plugin = {
+  name: 'corona:api-model-fixture',
+  resolveId: (id) => {
+    return id === 'virtual:api-model' ? '\0virtual:api-model' : null;
+  },
+  load: (id) => {
+    return id === '\0virtual:api-model'
+      ? `export { MODEL as default } from '/api-model-fixture.ts';`
+      : null;
+  },
+};
+
 export default defineConfig({
   root: resolve(import.meta.dirname, 'ct'),
   // A cache of its own, like the port: Vite's dep optimizer deletes and rewrites this directory at
@@ -23,7 +43,7 @@ export default defineConfig({
   cacheDir: withCoverage
     ? resolve(import.meta.dirname, 'node_modules/.vite-coverage')
     : resolve(import.meta.dirname, 'node_modules/.vite'),
-  plugins: [...coveragePlugins, react()],
+  plugins: [apiModelFixture, ...coveragePlugins, react()],
   resolve: {
     alias: {
       // The harnesses reach the package the way a consumer does, so a broken `exports` map fails
