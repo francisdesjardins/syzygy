@@ -5,6 +5,27 @@ Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No s
 **This file is the package's memory.** The code states what holds now; why it came to hold lives
 here.
 
+## 2026-09-18, the top bar is corona's, and the mark is the only thing it asks for
+
+### Added — `TopBar`
+
+The three playgrounds carried a copy each: same header, toolbar, menu button, brand link, wordmark,
+pill and spacer, differing in one element and one word. Roughly 135 lines of component and 90 of
+stylesheet, three times over.
+
+What the copying cost is legible in what it left behind. penumbra's stylesheet described **umbra's**
+mark, at umbra's size — "the annular ring … 26px, which is what antumbra renders its own mark at" —
+over a rule drawing a terminator at 22px. The comment travelled and the drawing did not.
+
+`name` is both the wordmark and the link's label now, so the two cannot disagree. One bar read
+`aria-label="umbra — home"` under a wordmark saying "Umbra"; a screen reader and a sighted reader
+were given different names for the same product.
+
+Each playground keeps a twenty-line adapter that supplies its name and its mark — the ring, the
+terminator, `EclipseMark` — and its stylesheet keeps only the rule that draws it. antumbra's is gone
+entirely, its mark being a component already. One more dead class name went with them:
+`antumbra-wordmark` had no rule anywhere.
+
 ## 2026-09-18, `PageLayout` is corona's, and the slot it was going to need is not
 
 ### Changed — antumbra's copy is gone
