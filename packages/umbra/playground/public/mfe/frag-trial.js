@@ -18,9 +18,29 @@ const boot = createBootstrap({
     defineStep({
       id: 'session',
       scope: demo.scope,
-      run: () => {
+      run: async (ctx) => {
         demo.log('trial', 'asking for the session');
-        return demo.api.session();
+        const session = await demo.api.session();
+        if (session === null) {
+          // Declared by all four, and with shared scope run by one. The other three adopt the
+          // refusal: a shared step is attempted once whatever its ending is.
+          return ctx.block('No session.');
+        }
+        return session;
+      },
+    }),
+    defineStep({
+      id: 'diagnostics',
+      needs: ['session'],
+      scope: demo.scope,
+      run: (ctx) => {
+        if (!demo.preview) {
+          // Declared by all four and skipped once: a branch that does not apply to this build does
+          // not apply for any module on the page either, and a skip is not a failure to adopt.
+          return ctx.skip('not a preview build');
+        }
+        demo.log('trial', 'opening a diagnostics recording');
+        return demo.api.diagnostics();
       },
     }),
     defineStep({
@@ -69,6 +89,10 @@ class TrialPanel extends HTMLElement {
               border: 1px solid var(--line); color: var(--muted); }
       .chip-ran { border-color: var(--ok); color: var(--ok); }
       .chip-adopted { border-color: var(--accent); color: var(--accent); }
+      .chip-blocked { border-color: var(--error); color: var(--error); }
+      .chip-skipped, .chip-cancelled { opacity: .6; }
+      .chip-why { border-color: transparent; font-style: italic; }
+      .refused { margin-top: 6px; color: var(--error); }
     `;
     const body = document.createElement('div');
     body.textContent = 'Starting…';
@@ -80,8 +104,6 @@ class TrialPanel extends HTMLElement {
     const outcome = await boot.run();
     const live = boot.live();
 
-    // Its own copy of the library, and still the page's session: the chips say `adopted`.
-    const config = outcome.data.config;
     const head = document.createElement('div');
     head.className = 'name';
     head.append(document.createTextNode('Trial '));
@@ -89,6 +111,16 @@ class TrialPanel extends HTMLElement {
     note.textContent = 'web component · shadow root · its own copy of umbra';
     head.append(note);
 
+    // Its own copy of the library, and it adopts what the page decided either way: the session
+    // when there is one, the refusal when there is not.
+    const verdict = demo.verdictOf(outcome);
+    if (verdict !== undefined) {
+      body.replaceChildren(head, demo.verdict(outcome), demo.chips(outcome));
+      demo.log('trial', verdict.toLowerCase());
+      return;
+    }
+
+    const config = outcome.data.config;
     const line = document.createElement('div');
     if (config === undefined) {
       line.textContent = 'No configuration.';
@@ -97,17 +129,10 @@ class TrialPanel extends HTMLElement {
       line.textContent = `${config.workspaceName} — ${config.trialDaysLeft} days left`;
     }
 
-    const chips = document.createElement('div');
-    chips.className = 'chips';
-    for (const trace of outcome.timeline) {
-      const chip = document.createElement('span');
-      const adopted = trace.shared === true;
-      chip.className = `chip ${adopted ? 'chip-adopted' : 'chip-ran'}`;
-      chip.textContent = `${trace.id} · ${adopted ? 'adopted' : 'ran it'}`;
-      chips.append(chip);
-    }
-
-    body.replaceChildren(head, line, chips);
+    // The page's own builder, used across the shadow boundary: the nodes are plain DOM, and the
+    // rules they need are restated above. A third spelling of a chip row is a third thing to keep
+    // in step with the other two.
+    body.replaceChildren(head, line, demo.chips(outcome));
 
     // This fragment has the page's dialog, so it is the one that hosts the intent.
     live.subscribe(() => {

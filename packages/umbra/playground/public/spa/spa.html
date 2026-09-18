@@ -140,6 +140,22 @@
         border-color: var(--accent);
         color: var(--accent);
       }
+      /* The step that refused. Solid rather than faded: it is the one to look at, not one of the
+         ones it stopped. */
+      .chip-blocked {
+        border-color: var(--bad);
+        color: var(--bad);
+      }
+      .chip-skipped,
+      .chip-cancelled {
+        opacity: 0.6;
+      }
+      /* The step's own words for why, which is the only thing separating the one that decided from
+         the ones wearing the same status behind it. */
+      .chip-why {
+        border-color: transparent;
+        font-style: italic;
+      }
       .log {
         grid-area: log;
         min-height: 0;
@@ -320,11 +336,30 @@
             return row;
           }
           for (const trace of outcome.timeline) {
-            const chip = document.createElement('span');
             const adopted = trace.shared === true;
-            chip.className = `chip ${adopted ? 'chip-adopted' : 'chip-ran'}`;
-            chip.textContent = `${trace.id} · ${adopted ? 'adopted' : 'ran it'}`;
+            // Two facts, and they are not the same one: what became of the step, and who did the
+            // work. Sharing is this page's subject, so a plain success says only that; anything
+            // else leads with the word for how it ended, because that is the surprise.
+            const said =
+              trace.status === 'success'
+                ? adopted
+                  ? 'adopted'
+                  : 'ran it'
+                : adopted
+                  ? `${trace.status}, adopted`
+                  : trace.status;
+            const chip = document.createElement('span');
+            chip.className = `chip chip-${
+              trace.status === 'success' ? (adopted ? 'adopted' : 'ran') : trace.status
+            }`;
+            chip.textContent = `${trace.id} · ${said}`;
             row.append(chip);
+            if (trace.reason !== undefined) {
+              const why = document.createElement('span');
+              why.className = 'chip chip-why';
+              why.textContent = trace.reason;
+              row.append(why);
+            }
           }
           return row;
         },
@@ -332,7 +367,16 @@
         status(outcome) {
           const node = document.getElementById('verdict');
           node.className = `status-${outcome.status}`;
-          node.textContent = `bootstrap: ${outcome.status}`;
+          // The run's word, and then the step that earned it. `blockedBy` says which one refused;
+          // the step's own trace says `blocked` too, so the timeline and the outcome agree without
+          // the reader having to cross-reference them.
+          const decided = outcome.timeline.find((trace) => {
+            return trace.status === 'blocked';
+          });
+          node.textContent =
+            decided === undefined
+              ? `bootstrap: ${outcome.status}`
+              : `bootstrap: ${outcome.status} — ${decided.id} is ${decided.status}: ${decided.reason ?? 'no reason given'}`;
         },
 
         mounted(names) {

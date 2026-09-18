@@ -1,0 +1,80 @@
+/*
+ * The switches both demos drive their frames with.
+ *
+ * A table rather than a row of buttons: each switch owns a line, so the thing to watch sits beside
+ * the thing that causes it instead of in a legend somewhere else. A row of buttons ran out of width
+ * at the fourth one and wrapped into a second line nobody could read as a set.
+ */
+
+.table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0 0 16px;
+}
+
+.table th:first-child,
+.table td:first-child {
+  width: 1%;
+  white-space: nowrap;
+  padding-right: 26px;
+}
+
+.table th {
+  text-align: left;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--app-text-secondary);
+  font-weight: 600;
+  padding: 0 0 6px;
+  border-bottom: 1px solid var(--app-divider);
+}
+
+.table td {
+  padding: 7px 14px 7px 0;
+  border-bottom: 1px solid var(--app-divider);
+  vertical-align: baseline;
+}
+
+.table label {
+  display: flex;
+  gap: 9px;
+  align-items: baseline;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* At phone width the two columns have nowhere to go, so each switch becomes its own block with the
+   thing to watch under it — the pairing survives, the side-by-side does not. */
+@media (max-width: 640px) {
+  .table,
+  .table tbody,
+  .table tr,
+  .table td {
+    display: block;
+    width: auto;
+  }
+
+  .table thead {
+    display: none;
+  }
+
+  .table tr {
+    border-bottom: 1px solid var(--app-divider);
+    padding: 7px 0;
+  }
+
+  .table td {
+    border-bottom: 0;
+    padding: 0;
+    white-space: normal;
+  }
+
+  .table td:first-child {
+    padding-right: 0;
+  }
+
+  .table label {
+    white-space: normal;
+  }
+}

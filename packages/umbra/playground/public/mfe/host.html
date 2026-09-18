@@ -47,6 +47,7 @@
         --accent: light-dark(#3b5bdb, #748ffc);
         --ok: light-dark(#15803d, #4ade80);
         --warn: light-dark(#b45309, #fbbf24);
+        --error: light-dark(#b91c1c, #f87171);
         /* One colour per fragment, so a badge, a log line and a panel border agree about who. */
         --topbar: light-dark(#0d9488, #2dd4bf);
         --nav: light-dark(#7c3aed, #a78bfa);
@@ -195,6 +196,27 @@
         border-color: var(--accent);
         color: var(--accent);
       }
+      /* The step that refused. Solid rather than faded: it is the one to look at, not one of the
+         ones it stopped. */
+      .chip-blocked {
+        border-color: var(--error);
+        color: var(--error);
+      }
+      .chip-skipped,
+      .chip-cancelled {
+        opacity: 0.6;
+      }
+      /* The step's own words for why, which is the only thing separating the one that decided from
+         the ones wearing the same status behind it. */
+      .chip-why {
+        border-color: transparent;
+        font-style: italic;
+      }
+
+      .refused {
+        margin-top: 6px;
+        color: var(--error);
+      }
 
       ul {
         margin: 6px 0 0;
@@ -321,6 +343,10 @@
         ><span class="chip chip-adopted">step · adopted</span> another fragment had already done it,
         and this one took the answer</span
       >
+      <span
+        ><span class="chip chip-blocked">step · blocked</span> it refused the mount, and the chip
+        beside it is the reason it gave</span
+      >
     </div>
 
     <div class="shell">
@@ -351,12 +377,20 @@
        */
       const params = new URLSearchParams(location.search);
       const scope = params.get('scope') === 'instance' ? 'instance' : 'shared';
+      const signedIn = params.get('session') !== 'none';
+      const preview = params.get('preview') === 'on';
+      const accessHangs = params.get('access') === 'hang';
 
       let calls = 0;
-      const bump = (what) => {
+      /**
+       * Counted when the request goes out, not when it comes back.
+       *
+       * The label says "actually sent", and one of the switches below makes a call that never
+       * returns — counting on the way back would quietly credit sharing for a request that left.
+       */
+      const sent = () => {
         calls += 1;
         document.getElementById('calls').textContent = String(calls);
-        return what;
       };
 
       const wait = (ms) => {
@@ -367,23 +401,39 @@
 
       window.demo = {
         scope,
+        preview,
 
         api: {
           async session() {
+            sent();
             await wait(340);
-            return bump({ userId: 'u-4821', displayName: 'F. Desjardins' });
+            // Whether it came back with a session is a different question from whether it was sent.
+            return signedIn ? { userId: 'u-4821', displayName: 'F. Desjardins' } : null;
           },
           async access() {
+            sent();
+            if (accessHangs) {
+              // Never resolves, and never looks at the signal either. The step's own timeout is
+              // what ends it, which is the ending the owner's body never sees.
+              return new Promise(() => {});
+            }
             await wait(260);
-            return bump(['projects:read', 'tags:read', 'reports:read']);
+            return ['projects:read', 'tags:read', 'reports:read'];
           },
           async config() {
+            sent();
             await wait(400);
-            return bump({ workspaceName: 'Acme Workspace', trialDaysLeft: 12 });
+            return { workspaceName: 'Acme Workspace', trialDaysLeft: 12 };
           },
           async projects() {
+            sent();
             await wait(300);
-            return bump(['Atlas migration', 'Billing rewrite', 'Search index']);
+            return ['Atlas migration', 'Billing rewrite', 'Search index'];
+          },
+          async diagnostics() {
+            sent();
+            await wait(220);
+            return { recording: 'dbg-7c1f' };
           },
         },
 
@@ -397,18 +447,80 @@
           document.getElementById('log').append(line);
         },
 
-        /** One chip per step, saying whether this fragment did the work or adopted it. */
+        /**
+         * One chip per step: what became of it, and whether this fragment did the work.
+         *
+         * `chipsOf` is the shape, and the React fragment rebuilds it with `createElement` because
+         * React cannot render a DOM node handed to it. Two spellings of one row, so they read off
+         * the same function rather than each deciding what a chip says.
+         */
+        chipsOf(outcome) {
+          return outcome.timeline.flatMap((trace) => {
+            const adopted = trace.shared === true;
+            // Two facts, and they are not the same one: what became of the step, and who did the
+            // work. Sharing is this page's subject, so a plain success says only that; anything
+            // else leads with the word for how it ended, because that is the surprise.
+            const said =
+              trace.status === 'success'
+                ? adopted
+                  ? 'adopted'
+                  : 'ran it'
+                : adopted
+                  ? `${trace.status}, adopted`
+                  : trace.status;
+            const kind = trace.status === 'success' ? (adopted ? 'adopted' : 'ran') : trace.status;
+            const chips = [{ key: trace.id, kind, text: `${trace.id} · ${said}` }];
+            if (trace.reason !== undefined) {
+              chips.push({ key: `${trace.id}:why`, kind: 'why', text: trace.reason });
+            }
+            return chips;
+          });
+        },
+
         chips(outcome) {
           const row = document.createElement('div');
           row.className = 'chips';
-          for (const trace of outcome.timeline) {
-            const chip = document.createElement('span');
-            const adopted = trace.shared === true;
-            chip.className = `chip ${adopted ? 'chip-adopted' : 'chip-ran'}`;
-            chip.textContent = `${trace.id} · ${adopted ? 'adopted' : 'ran it'}`;
-            row.append(chip);
+          for (const chip of demo.chipsOf(outcome)) {
+            const node = document.createElement('span');
+            node.className = `chip chip-${chip.kind}`;
+            node.textContent = chip.text;
+            row.append(node);
           }
           return row;
+        },
+
+        /**
+         * What a fragment says instead of its content, or `undefined` when it has content to show.
+         *
+         * `ready` and `degraded` both mount — that is what separates a boot that lost something
+         * optional from one that has nowhere to go. Everything else replaces the fragment, and says
+         * which step decided: the one wearing `blocked` chose, and the rest carry the word because
+         * they were stopped behind it.
+         *
+         * `verdictOf` is the sentence and `verdict` is the node, for the same reason `chipsOf` is
+         * split from `chips`: the React fragment cannot be handed a node.
+         */
+        verdictOf(outcome) {
+          if (outcome.status === 'ready' || outcome.status === 'degraded') {
+            return undefined;
+          }
+          const decided = outcome.timeline.find((trace) => {
+            return trace.status === 'blocked';
+          });
+          if (decided !== undefined) {
+            return `Refused by ${decided.id}: ${decided.reason ?? 'no reason given'}`;
+          }
+          const failure = outcome.errors[0];
+          return failure === undefined
+            ? `Did not start: ${outcome.status}.`
+            : `Did not start: ${failure.step} ${failure.status}.`;
+        },
+
+        verdict(outcome) {
+          const line = document.createElement('div');
+          line.className = 'refused';
+          line.textContent = demo.verdictOf(outcome);
+          return line;
         },
 
         header(name, framework) {
@@ -458,8 +570,37 @@
        * the session and access; the list needs those two plus its own reference data; the trial
        * panel needs the session and the configuration. Sharing what is the same answer for everybody
        * leaves four distinct pieces of work.
+       *
+       * With no session nothing downstream of it runs, so the count is the session calls alone —
+       * one when it is shared, one per fragment when it is not. That is the refusal being adopted,
+       * in the only number on the page that cannot be talked into agreeing.
        */
-      const EXPECTED = { shared: 4, instance: 8 };
+      /**
+       * Added up from who declares what, rather than kept as a table somebody has to remember to
+       * update. Four switches make sixteen states, and a hand-written number for each is how a demo
+       * comes to claim a total it stopped producing — which this one did, twice, before this.
+       *
+       * Shared means one call per step whatever the fragments; instance means one per fragment that
+       * declared it. The session is declared by all four, `access` by navigation and the list,
+       * `config` by the trial panel alone, `projects:reference` by the list and never shared.
+       */
+      const expectedFor = (mode) => {
+        // Nothing downstream of a refused session runs, so the count is the session calls alone.
+        if (!signedIn) {
+          return mode === 'shared' ? 1 : 4;
+        }
+        const perStep = (declarers) => {
+          return mode === 'shared' ? 1 : declarers;
+        };
+        return (
+          perStep(4) + // session
+          perStep(2) + // access
+          perStep(1) + // config
+          (accessHangs ? 0 : 1) + // projects:reference — pruned when access never answers
+          (preview ? perStep(4) : 0) // diagnostics — skipped when this is not a preview build
+        );
+      };
+      const EXPECTED = { shared: expectedFor('shared'), instance: expectedFor('instance') };
 
       /*
        * The link back out, rebuilt from the page above rather than written down.
@@ -469,24 +610,28 @@
        * deployed build routes in the hash while dev routes on the path. The parent URL already
        * carries both answers — keep all of it and swap the one parameter.
        */
-      const scopeHref = (next) => {
+      const hrefWith = (name, next) => {
         const url = new URL(parent.location.href);
         if (url.hash.startsWith('#/')) {
           const [path, query] = url.hash.slice(1).split('?');
           const params = new URLSearchParams(query ?? '');
-          params.set('scope', next);
+          params.set(name, next);
           url.hash = `#${path}?${params.toString()}`;
         } else {
-          url.searchParams.set('scope', next);
+          url.searchParams.set(name, next);
         }
         return url.href;
       };
 
+      const expected = EXPECTED;
       const note = document.getElementById('scope-note');
-      note.innerHTML =
-        scope === 'shared'
-          ? `Steps that are the same answer for everyone are shared, so the four of them do <b>${EXPECTED.shared}</b> pieces of work instead of <b>${EXPECTED.instance}</b>. <a href="${scopeHref('instance')}" target="_parent">See it without sharing</a>.`
-          : `Each fragment is doing its own, so the same session is fetched four times over: <b>${EXPECTED.instance}</b> pieces of work instead of <b>${EXPECTED.shared}</b>. <a href="${scopeHref('shared')}" target="_parent">Turn sharing back on</a>.`;
+      note.innerHTML = signedIn
+        ? scope === 'shared'
+          ? `Shared, so the four of them do <b>${expected.shared}</b> pieces of work instead of <b>${expected.instance}</b>. <a href="${hrefWith('scope', 'instance')}" target="_parent">See it without sharing</a>.`
+          : `Each fragment does its own: <b>${expected.instance}</b> pieces of work instead of <b>${expected.shared}</b>. <a href="${hrefWith('scope', 'shared')}" target="_parent">Turn sharing back on</a>.`
+        : scope === 'shared'
+          ? `No session: <b>${expected.shared}</b> request, and the other three adopted the refusal rather than asking again. <a href="${hrefWith('scope', 'instance')}" target="_parent">See the same refusal four times</a>.`
+          : `No session, found out four times over: <b>${expected.instance}</b> requests for one answer. <a href="${hrefWith('scope', 'shared')}" target="_parent">Share the step</a> and it is asked once.`;
     </script>
 
     <script type="module" src="./frag-topbar.js"></script>

@@ -3,6 +3,68 @@
 Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No semver: names change
 between commits when a better one shows up, and the entry says which and why.
 
+## 2026-09-18, one switch table, and a frame that does not scroll
+
+### Changed — the two demos drive their frames the same way
+
+The one-application page had a table of checkboxes with a "watch for" column beside each; the
+micro-frontend page had a row of buttons. Four settings written as exclusive pairs is eight buttons,
+which ran out of width and wrapped into a second row nobody reads as a set — and they are not
+alternatives anyway: a page can have no session _and_ a service that stopped answering.
+
+`shared/ui/SwitchTable` is the one of them now, checkboxes on both pages. Where the checked state
+lives stays the caller's business: component state on one page, the address on the other, because
+that frame carries links of its own. Its rules move out of `getting-started/ui/demo.css` into a
+module beside it, and two class names that had no rule at all — `switch-label`, `switch-effect` —
+go with them.
+
+The switches navigate with `resetScroll: false`. They sit above the frame they drive, so scrolling
+to the top of the page on every tick puts what you just changed out of view.
+
+### Fixed — the frame scrolled where only its log is meant to
+
+The extra chip and its reason pushed the tallest fragment past a height that had been right before
+it. `FRAME_HEIGHT` is 580 now, measured rather than chosen: across sixteen combinations of the four
+switches at four widths, nothing scrolls but the log on the right, which is the layout the frame was
+built for.
+
+The frame's own banner shrank to make room. It had grown a clause per condition, which is work the
+switch table beside it now does — and does better, because each explanation sits on the line of the
+switch that causes it.
+
+## 2026-09-18, the demos show every ending, not just the good one
+
+### Changed — three conditions on the micro-frontend frame
+
+`?session=none` was the first; `?preview=on` and `?access=hang` join it, as toggles rather than
+exclusive pairs — a page can have no session _and_ a service that stopped answering, and four pairs
+of buttons say in eight what three say in three.
+
+- **No session** — one refusal, adopted by the other three. One request instead of four.
+- **Preview build** — a `diagnostics` branch all four declare, skipped once with its reason. A skip
+  is not a failure, so the run stays `ready` and nothing downstream of it runs.
+- **Access hangs** — the step ends on its own budget and whoever shared it ends `timed-out` too.
+  The top bar and the trial panel never declared `access`, so they are untouched: the ending is
+  everyone's answer, and everyone is whoever asked.
+
+The counter is now **added up from who declares what** instead of held in a table. It claimed 4 and
+8 while the page sent 3 and 7, because a hanging `access` prunes `projects:reference` and the table
+had no way to know. Sixteen states and a hand-written number for each is how a demo comes to state a
+total it stopped producing.
+
+### Changed — one verdict, not a refusal special case
+
+`demo.refused` only knew about `blocked`, so a fragment whose required step timed out rendered an
+empty list and said nothing. `demo.verdictOf` answers for every ending: `ready` and `degraded` mount,
+and everything else replaces the fragment with the step that decided and what became of it.
+
+### Changed — single-spa says the word, not only the reason
+
+The shell read `outcome.blockedBy.reason` and printed it. It now names the step and its own
+`blocked` status beside the run's — one word at two ranks, so a reader can start from either end —
+and its chips carry status and reason like the other frame's. That was the fourth copy of the chip
+row in this playground; it is the last one to learn what the other three know.
+
 ## 2026-09-18, a shared step's timeout was only the owner's
 
 ### Fixed — a sharer adopted the owner's failure, but never its timeout
@@ -39,6 +101,38 @@ Two tests in `shared-scope.test.ts`. The timeout one gives the owner a 120ms bud
 5000ms, so the word the sharer ends with cannot be two clocks agreeing by accident. The cancellation
 one asserts the sharer is told in well under its own budget, which is the difference between an
 answer and a hang.
+
+## 2026-09-18, the four fragments can lose their session
+
+### Changed — the micro-frontend demo gains the ending nobody plans for
+
+`?session=none`, beside the scope toggle it already had. All four fragments declare the same
+refusal on the same id; with shared scope exactly one of them runs it and the other three adopt it.
+
+The counter is the argument, because it is the one number on the page that cannot be talked into
+agreeing: **1** request signed out and shared, **4** signed out without sharing, against 4 and 8
+signed in. The fragment with its own separately built copy of the library adopts the refusal too,
+which is the page's whole claim under the ending nobody writes the demo for.
+
+"A shared step is attempted once and its ending is everyone's answer, refusal and timeout included"
+was prose with no demo behind it. Half of it has one now.
+
+### Changed — the chips say what became of a step, not only who did the work
+
+`step · ran it` and `step · adopted` could not describe a step that refused, timed out or was
+pruned. A non-success leads with its status and keeps the adoption beside it —
+`session · blocked, adopted` — and the reason rides in a chip of its own, so the fragment that
+decided is legible next to the three wearing the word because they were stopped.
+
+`demo.chipsOf` and `demo.refusalOf` are the sentences; `demo.chips` and `demo.refused` are the
+nodes. The React fragment cannot take a DOM node, and the panel behind the shadow root now takes
+the page's builder instead of keeping a third copy — three spellings of one row was two too many.
+
+### Changed — `readScope` is `readDemoSearch`
+
+It reads two settings now, so `model/scope.ts` was the wrong name for the file and the function.
+Its doc also described an unrecognised value resolving to `page`, which is not a value `DemoScope`
+has ever had — rename residue, like the unsorted exports one entry below.
 
 ## 2026-09-18, a pass over the package for what had drifted
 

@@ -54,7 +54,15 @@ demo.status(outcome);
 // The decision single-spa cannot make for you. `start()` is not called at all, so no application is
 // ever asked to mount — rather than mounting a shell that then has to discover it has no session.
 if (outcome.status === 'blocked') {
-  demo.log('root', `refused: ${outcome.blockedBy.reason} — single-spa was never started`);
+  // Both halves of the same fact: the run is `blocked`, and so is the step that decided it. One
+  // word at two ranks, which is what lets a reader start from either end.
+  const decided = outcome.timeline.find((trace) => {
+    return trace.status === 'blocked';
+  });
+  demo.log(
+    'root',
+    `${decided.id} is ${decided.status}: ${decided.reason} — single-spa was never started`
+  );
   demo.signIn(outcome.intents[0]);
 } else {
   const live = boot.live();

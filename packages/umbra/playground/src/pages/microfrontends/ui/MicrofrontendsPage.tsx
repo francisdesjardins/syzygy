@@ -1,23 +1,78 @@
-import { Link, useSearch } from '@tanstack/react-router';
+import { useNavigate, useSearch } from '@tanstack/react-router';
 import { useState } from 'react';
 import { ExampleCard, ExampleGrid, ExampleSection } from '@/entities/example';
-import { AppButton, appButtonClass, SectionNav } from 'corona';
+import { AppButton, SectionNav } from 'corona';
 import { DemoControls, DemoFrame, DemoToolbar } from '@/shared/ui/DemoFrame';
+import { SwitchTable } from '@/shared/ui/SwitchTable';
 import { PageLayout } from 'corona';
 
-const FRAME_HEIGHT = 500;
+/*
+ * Measured, not chosen: the tallest fragment with every chip it can carry — a skip and its reason
+ * on top of the steps it already had — needs this much, and the layout inside is fixed so that the
+ * log on the right is the only thing that scrolls.
+ */
+const FRAME_HEIGHT = 580;
 
 const SECTIONS = [
   { id: 'the-demo', label: 'The demo' },
+  { id: 'every-ending', label: 'Every ending' },
   { id: 'its-own-copy', label: 'Its own copy' },
   { id: 'the-distribution', label: 'The distribution' },
 ] as const;
 
 export function MicrofrontendsPage() {
-  // Read from the address, not from state. The frame carries a link of its own — right beside the
-  // number it changes — and two controls for one setting disagree the moment either is used.
-  const { scope } = useSearch({ from: '/microfrontends' });
+  // Read from the address, not from state — `readDemoSearch` says why.
+  const search = useSearch({ from: '/microfrontends' });
+  const { scope, session, preview, access } = search;
   const [reloadKey, setReloadKey] = useState(0);
+
+  const navigate = useNavigate();
+
+  /**
+   * The frame's settings, as the same switches the one-application page uses.
+   *
+   * Checkboxes rather than a row of buttons, and one line each: four settings written as exclusive
+   * pairs is eight buttons, which ran out of width and wrapped into a second row nobody reads as a
+   * set. They are not alternatives either — a page can have no session *and* a service that stopped
+   * answering — so a checkbox is what they actually are.
+   *
+   * Checked is read from the address rather than from state, because the frame carries links of its
+   * own; `readDemoSearch` says why.
+   */
+  const SETTINGS = [
+    {
+      key: 'scope',
+      label: 'Share what the page has in common',
+      watch:
+        'the four do one piece of work per step instead of one each, and the counter in the frame is the whole argument',
+      checked: scope === 'shared',
+      when: { on: 'shared', off: 'instance' },
+    },
+    {
+      key: 'session',
+      label: 'No session',
+      watch:
+        'one fragment finds out and the other three adopt the refusal: one request, and each says which step decided',
+      checked: session === 'none',
+      when: { on: 'none', off: 'active' },
+    },
+    {
+      key: 'preview',
+      label: 'Preview build',
+      watch:
+        'the diagnostics branch applies and runs; leave it off and one skip answers for all four, with the run still ready',
+      checked: preview === 'on',
+      when: { on: 'on', off: 'off' },
+    },
+    {
+      key: 'access',
+      label: 'Access hangs',
+      watch:
+        'the step ends on its own timeout, and whoever shared it ends timed-out too — the two that never asked are untouched',
+      checked: access === 'hang',
+      when: { on: 'hang', off: 'ok' },
+    },
+  ] as const;
 
   return (
     <PageLayout
@@ -29,27 +84,27 @@ export function MicrofrontendsPage() {
       <ExampleSection
         id="the-demo"
         title="The demo"
-        description="Four fragments all need the session, and three need what the user may reach. With shared scope the first one to ask does it and the rest adopt the answer. Flip it and every fragment does its own."
+        description="Four fragments all need the session, and three need what the user may reach. With shared scope the first one to ask does it and the rest adopt the answer. Flip it and every fragment does its own. The three conditions are the interesting half: a refusal, a branch that does not apply, and a service that stops answering are all endings, and a shared step is attempted once whatever its ending is."
       >
+        <SwitchTable
+          rows={SETTINGS}
+          onToggle={(key, checked) => {
+            const setting = SETTINGS.find((candidate) => {
+              return candidate.key === key;
+            });
+            if (setting === undefined) {
+              return;
+            }
+            void navigate({
+              to: '/microfrontends',
+              search: { ...search, [key]: checked ? setting.when.on : setting.when.off },
+              // The switches sit above the frame they drive: scrolling back to the top of the page
+              // on every tick puts what you just changed out of view.
+              resetScroll: false,
+            });
+          }}
+        />
         <DemoToolbar>
-          <DemoControls label="Step scope">
-            <Link
-              to="/microfrontends"
-              search={{ scope: 'shared' }}
-              className={appButtonClass({ variant: scope === 'shared' ? 'contained' : 'outlined' })}
-            >
-              Share what the page has in common
-            </Link>
-            <Link
-              to="/microfrontends"
-              search={{ scope: 'instance' }}
-              className={appButtonClass({
-                variant: scope === 'instance' ? 'contained' : 'outlined',
-              })}
-            >
-              Every fragment does its own
-            </Link>
-          </DemoControls>
           <DemoControls label="The frame">
             <AppButton
               variant="outlined"
@@ -65,21 +120,42 @@ export function MicrofrontendsPage() {
         </DemoToolbar>
         <DemoFrame
           title="Four fragments on one page"
-          src={`${import.meta.env.BASE_URL}mfe/host.html?scope=${scope}`}
-          reloadKey={`${scope}-${String(reloadKey)}`}
+          src={`${import.meta.env.BASE_URL}mfe/host.html?scope=${scope}&session=${session}&preview=${preview}&access=${access}`}
+          reloadKey={`${scope}-${session}-${preview}-${access}-${String(reloadKey)}`}
           height={FRAME_HEIGHT}
         />
       </ExampleSection>
 
       <ExampleSection
+        id="every-ending"
+        title="Every ending, not just the good one"
+        description="Sharing is easy to demonstrate when the answer arrives. The conditions above are the other four fifths of what a page actually does."
+      >
+        <ExampleGrid columns={2}>
+          <ExampleCard
+            title="No session — a refusal"
+            description="One fragment finds out, and the other three adopt the refusal rather than asking again. The counter drops to one request. Each says which step decided and what it gave as the reason; the ones behind it wear the same word with nothing beside it."
+          />
+          <ExampleCard
+            title="Preview build — a branch that does not apply"
+            description="The diagnostics branch is declared by all four and skipped once, with its reason. A skip is not a failure: the run stays ready, errors stays empty, and nothing downstream of it runs. Turn the switch on and the same branch boots with nothing else edited."
+          />
+          <ExampleCard
+            title="Access hangs — a timeout"
+            description="The step ends on its own budget, and whoever shared it ends timed-out too rather than waiting out a budget of their own. The top bar and the trial panel never declared access, so they are untouched — the ending is everyone's answer, and everyone is whoever asked."
+          />
+        </ExampleGrid>
+      </ExampleSection>
+
+      <ExampleSection
         id="its-own-copy"
         title="The fragment with its own copy of the library"
-        description="It does not import umbra. It imports umbra-copy, which the host resolves to a second, separately built bundle — a genuinely different module instance. Its chips still say adopted."
+        description="It does not import umbra. It imports umbra-copy, which the host resolves to a second, separately built bundle — a genuinely different module instance. Its chips still say adopted — and with no session it adopts the refusal, which is the same claim under the ending nobody plans for."
       >
         <ExampleGrid columns={2}>
           <ExampleCard
             title="frag-trial.js — a web component on its own build"
-            description="Shared scope lives in a registry keyed by Symbol.for on globalThis rather than by module identity, which is why a second compiled copy of the library still finds the work the first one did."
+            description="Shared scope lives in a registry keyed by Symbol.for on globalThis rather than by module identity, which is why a second compiled copy of the library still finds the work the first one did — and why one refusal reaches it too, without anything on the page telling it."
             codeKey="mfe-trial"
           />
           <ExampleCard

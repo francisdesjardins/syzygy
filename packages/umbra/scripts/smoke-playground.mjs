@@ -223,10 +223,10 @@ try {
     );
   }
 
-  // The scope control is a pair of links, so the setting lives in the address. It pointed at a route
-  // that no longer existed for a while and nothing caught it: the page loads either way, and only a
-  // click tells you the link goes nowhere.
-  await page.getByRole('link', { name: 'Every fragment does its own' }).click();
+  // The switches navigate, so the setting lives in the address. One of them pointed at a route that
+  // no longer existed for a while and nothing caught it: the page loads either way, and only a
+  // click tells you the setting goes nowhere.
+  await page.getByLabel('Share what the page has in common').uncheck();
   await page.waitForURL(/scope=instance/, { timeout: 15_000 });
   const unshared = page.frameLocator('[data-testid="demo-frame"]');
   for (const marker of ['Signed in as', 'Atlas migration', 'Acme Workspace']) {

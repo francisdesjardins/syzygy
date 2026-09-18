@@ -1,10 +1,11 @@
+import { SwitchTable } from '@/shared/ui/SwitchTable';
 import type { Faults } from '@/pages/getting-started/examples/fake-api.js';
 
 /**
  * The switches, labelled by what to watch rather than by what breaks.
  *
- * The first version named the cause — "access service down" — and left the reader to work out what
- * that should look like. Naming the thing to look for is what turns a toggle into a lesson.
+ * A label naming only the cause — "access service down" — leaves the reader to work out what that
+ * should look like. Naming the thing to look for is what turns a toggle into a lesson.
  */
 const LABELS: ReadonlyArray<{ key: keyof Faults; label: string; watch: string }> = [
   {
@@ -43,34 +44,13 @@ const LABELS: ReadonlyArray<{ key: keyof Faults; label: string; watch: string }>
 
 export function FaultSwitches(props: { faults: Faults; onChange: (next: Faults) => void }) {
   return (
-    <table className="switches">
-      <thead>
-        <tr>
-          <th scope="col">Make it happen</th>
-          <th scope="col">Watch for</th>
-        </tr>
-      </thead>
-      <tbody>
-        {LABELS.map((entry) => {
-          return (
-            <tr key={entry.key}>
-              <td>
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={props.faults[entry.key]}
-                    onChange={(event) => {
-                      props.onChange({ ...props.faults, [entry.key]: event.target.checked });
-                    }}
-                  />
-                  <span className="switch-label">{entry.label}</span>
-                </label>
-              </td>
-              <td className="switch-effect">{entry.watch}</td>
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
+    <SwitchTable
+      rows={LABELS.map((entry) => {
+        return { ...entry, checked: props.faults[entry.key] };
+      })}
+      onToggle={(key, checked) => {
+        props.onChange({ ...props.faults, [key]: checked });
+      }}
+    />
   );
 }

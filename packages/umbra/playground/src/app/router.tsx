@@ -7,7 +7,7 @@ import {
 } from '@tanstack/react-router';
 import { AppRoot } from '@/app/AppRoot';
 import { RoutePending } from '@/app/RoutePending';
-import { readScope } from '@/pages/microfrontends/model/scope';
+import { readDemoSearch } from '@/pages/microfrontends/model/search';
 
 const rootRoute = createRootRoute({ component: AppRoot });
 
@@ -43,7 +43,7 @@ const microfrontendsRoute = createRoute({
   // The scope control is a pair of links rather than state, so the setting has to survive in the
   // address: the page carries a link of its own, inside the frame, next to the number it changes.
   // Two controls for one setting disagree the moment either is used.
-  validateSearch: readScope,
+  validateSearch: readDemoSearch,
   component: lazyRouteComponent(() => {
     return import('@/pages/microfrontends');
   }, 'MicrofrontendsPage'),
