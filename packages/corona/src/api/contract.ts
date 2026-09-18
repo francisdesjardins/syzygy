@@ -6,7 +6,8 @@ import type { ComponentType, ReactNode } from 'react';
  * **The generator is not here.** Producing this model means running typedoc over one library's
  * entry points, and the two libraries do that differently enough that the two plugins share only
  * about half their lines. What they can share is the shape they agree to emit — so this file is
- * the seam: each playground's Vite plugin fills `virtual:api-model` with these types, and the
+ * the seam: the Vite plugin of each playground that documents a library fills `virtual:api-model`
+ * with these types, and the
  * viewer in this package reads them without knowing which library it is looking at.
  */
 

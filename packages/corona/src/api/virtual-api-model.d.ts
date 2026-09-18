@@ -1,7 +1,8 @@
 /**
  * The model the host's Vite plugin supplies, declared here so this package type-checks alone.
  *
- * Each playground declares the same module against the same contract; whichever program a file of
+ * Each playground declares the same module against the same contract — penumbra's too, which
+ * renders no reference at all but walks this area through corona's root barrel; whichever program a file of
  * this package is compiled in, the shape it reads is this one.
  */
 declare module 'virtual:api-model' {

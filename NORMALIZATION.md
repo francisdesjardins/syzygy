@@ -29,7 +29,7 @@ being true.
 | Design tokens             | `penumbra`                               | `check-tokens.mjs`, both halves, both directions        |
 | Colour contrast           | `penumbra`                               | `penumbra-contrast`, 32 pairs × both schemes            |
 | The token tables          | `corona`                                 | `check-token-coverage.mjs` — every token is on a page   |
-| The API reference viewer  | `corona`                                 | the two playgrounds' smoke suites                       |
+| The API reference viewer  | `corona`                                 | antumbra's and umbra's smoke suites                     |
 | The way back to the site  | `corona`                                 | `yarn check:mobile`                                     |
 | Framework-free helpers    | `limb`                                   | its entry rule: if it needs a framework, it is not limb |
 | The gates themselves      | `gnomon`                                 | `yarn check` in each consumer                           |

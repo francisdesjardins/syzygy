@@ -30,7 +30,7 @@
     "lint:fix": "oxlint --type-aware --fix",
     "format": "oxfmt .",
     "format:check": "oxfmt --check .",
-    "test": "echo \"corona: no-op — no test files yet; the viewer is exercised by both playgrounds smoke suites\"",
+    "test": "echo \"corona: no-op — no test files yet; the viewer is exercised by antumbra's and umbra's smoke suites\"",
     "verify:all": "yarn check",
     "check:tokens": "node scripts/check-token-coverage.mjs"
   },

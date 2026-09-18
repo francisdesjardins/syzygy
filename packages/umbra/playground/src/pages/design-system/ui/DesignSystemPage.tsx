@@ -77,7 +77,7 @@ export function DesignSystemPage() {
         <ExampleSection
           id="palette"
           title="Palette"
-          description="Eight of these are umbra's and the rest are the neutral base every project shares, which is the only reason two playgrounds can differ in their accent without differing in their ground. The gold is the one thing the split exists to vary."
+          description="Eight of these are umbra's and the rest are the neutral base every project shares, which is the only reason three playgrounds can differ in their accent without differing in their ground. The gold is the one thing the split exists to vary."
         >
           <TokenSwatches tokens={PALETTE} />
         </ExampleSection>

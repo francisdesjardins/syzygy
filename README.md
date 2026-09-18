@@ -8,7 +8,7 @@ shadows it casts.
 | [`umbra`](packages/umbra)       | a framework-free bootstrap orchestrator over a declared step graph                                                     |
 | [`antumbra`](packages/antumbra) | a headless dialog manager on the native `<dialog>` top layer                                                           |
 | [`penumbra`](packages/penumbra) | the portable half of a design system: a scale with no colour, a palette with no brand, and the contrast gate over both |
-| [`limb`](packages/limb)         | the framework-free helpers both playgrounds need and neither owns                                                      |
+| [`limb`](packages/limb)         | the framework-free helpers the two libraries' playgrounds need and neither owns                                        |
 | [`corona`](packages/corona)     | what a playground shows of a library, minus which library: the reference, the token tables, the site links             |
 | [`gnomon`](packages/gnomon)     | the gates: the example checker, the coverage instrumenter, the formatter                                               |
 
@@ -35,8 +35,8 @@ component suite reuses a server that is already answering, the home is an SPA wh
 it. A coverage run takes its own port besides, because instrumentation is opt-in and a server
 started without it reports zero counters rather than a low number.
 
-`yarn deploy` at this root builds both playgrounds, assembles them under the home at
-`/playground/dialog` and `/playground/boot`, and leaves the Cloudflare zip. **Destinations are
+`yarn deploy` at this root builds all three playgrounds, assembles them under the home at
+`/playground/dialog`, `/playground/boot` and `/playground/design`, and leaves the Cloudflare zip. **Destinations are
 named after the capability, sources after the package** — a library gets renamed, and these two
 already have; a URL is a promise that should outlive that.
 
@@ -93,7 +93,7 @@ the names from being decoration is the last one: the word has to describe what t
 | `antumbra` | `dialog`, `modal`                  | _ante umbra_, "in front of the shadow": past the apex, light rings around the occulter | the native `<dialog>` top layer — painted in front, the page still visible around it    |
 | `penumbra` | `tokens`, `theme`, `design-system` | the partial shadow, the soft half                                                      | the half of a design system that ports: a scale with no colour, a palette with no brand |
 | `limb`     | **`utils`**, `shared`, `common`    | the apparent edge of a disc — what an observer actually sees of a body                 | the framework-free primitives, and nothing that needs a renderer                        |
-| `corona`   | `api-docs`, `reference`            | the sun's outer atmosphere — what is visible of a body once the disc is covered        | the pages both playgrounds render, minus the part that knows which library              |
+| `corona`   | `api-docs`, `reference`            | the sun's outer atmosphere — what is visible of a body once the disc is covered        | the pages the playgrounds render, minus the part that knows which library               |
 | `gnomon`   | `tooling`, `scripts`, `build`      | the rod of a sundial: the instrument a shadow is measured by                           | the gates — example checker, coverage instrumenter, formatter                           |
 | `home`     | `site`, `www`                      | —                                                                                      | the one surface that ships. `apps/` is deployed, `packages/` is depended on             |
 

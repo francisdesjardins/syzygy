@@ -3,7 +3,7 @@ import type { ComponentType, ReactNode } from 'react';
 /**
  * The one component a token table borrows.
  *
- * Both playgrounds have a card and they are not the same card — one lifts on hover behind a corona,
+ * Every playground has a card and they are not the same card — one lifts on hover behind a corona,
  * the other is a hairline and a radius. The tables have no opinion about which; they only need
  * something to sit in, so the host lends it the way it lends the API viewer's.
  */

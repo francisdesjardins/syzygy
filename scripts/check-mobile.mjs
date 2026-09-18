@@ -189,7 +189,7 @@ for (const [viewportName, viewport] of VIEWPORTS) {
       } else {
         await menu.first().click();
         await page.waitForTimeout(400);
-        // `aside a`, not `nav a`: both shells put the drawer in an `<aside>` and a page's own
+        // `aside a`, not `nav a`: every shell puts the drawer in an `<aside>` and a page's own
         // section navigation in a `<nav>`. Counting every `nav` let a page with a section list
         // stand in for the drawer, and a mutation that kept the drawer off-screen passed on eight
         // routes out of ten because of it.

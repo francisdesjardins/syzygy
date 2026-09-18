@@ -40,7 +40,7 @@
       },
       "designSystem": {
         "name": "penumbra",
-        "description": "Le design system que portent les deux playgrounds — et la page qui le démonte, une couche à la fois."
+        "description": "Le design system que portent les trois playgrounds — et la page qui le démonte, une couche à la fois."
       }
     },
     "location": {
@@ -82,7 +82,7 @@
       },
       "tint": {
         "name": "Une teinte par-dessus",
-        "note": "Onze déclarations : trois typographies et les huit couleurs dont un projet se peint. Les surfaces, les trois rangs de texte, le filet, le bord de contrôle, les états, les quatre sémantiques, le voile et l’ombre restent ceux de la base. C’est la forme qu’utilisent les deux playgrounds."
+        "note": "Onze déclarations : trois typographies et les huit couleurs dont un projet se peint. Les surfaces, les trois rangs de texte, le filet, le bord de contrôle, les états, les quatre sémantiques, le voile et l’ombre restent ceux de la base. C’est la forme qu’utilise chaque playground."
       },
       "replaced": {
         "name": "La base remplacée",
@@ -92,7 +92,7 @@
     "specimen": {
       "title": "Une carte, rien d’autre",
       "body": "Le même balisage dans les trois états : chaque valeur y est une variable, sans littérale et sans branchement sur le schéma de couleurs.",
-      "link": "Les deux playgrounds tournent sur ces feuilles.",
+      "link": "Les trois playgrounds tournent sur ces feuilles.",
       "secondary": "Texte secondaire, un rang plus bas — celui d’une légende ou d’une indication.",
       "save": "Enregistrer",
       "cancel": "Annuler",

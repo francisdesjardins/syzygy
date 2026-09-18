@@ -40,7 +40,7 @@
       },
       "designSystem": {
         "name": "penumbra",
-        "description": "The design system both playgrounds wear — and the page that takes it apart, one layer at a time."
+        "description": "The design system all three playgrounds wear — and the page that takes it apart, one layer at a time."
       }
     },
     "location": {
@@ -82,7 +82,7 @@
       },
       "tint": {
         "name": "A tint over it",
-        "note": "Eleven declarations: three typefaces and the eight colours a project paints itself with. The surfaces, the three text ranks, the divider, the control edge, the states, the four semantics, the scrim and the lift are all still the base’s. This is the shape both playgrounds use."
+        "note": "Eleven declarations: three typefaces and the eight colours a project paints itself with. The surfaces, the three text ranks, the divider, the control edge, the states, the four semantics, the scrim and the lift are all still the base’s. This is the shape every playground uses."
       },
       "replaced": {
         "name": "The base replaced",
@@ -92,7 +92,7 @@
     "specimen": {
       "title": "One card, nothing else",
       "body": "The same markup in all three states: every value in it is a variable, and there is no literal and no branch on the colour scheme.",
-      "link": "Both playgrounds run these sheets.",
+      "link": "All three playgrounds run these sheets.",
       "secondary": "Secondary text, one rank down — the rank a caption or a hint is written in.",
       "save": "Save",
       "cancel": "Cancel",
