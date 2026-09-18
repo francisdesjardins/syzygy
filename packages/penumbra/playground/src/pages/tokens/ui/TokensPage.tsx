@@ -39,6 +39,8 @@ const NEUTRALS: readonly TokenNote[] = [
   ['--app-hover', 'The neutral overlay under a hover.'],
   ['--app-selected', 'The overlay under the current row.'],
   ['--app-scrim', 'What dims the page behind a drawer.'],
+  ['--app-scrollbar-track', 'The channel a scrollbar runs in.'],
+  ['--app-scrollbar-thumb', 'The part of it you drag. On no page at all until this row existed.'],
 ];
 
 const SEMANTIC: readonly TokenNote[] = [

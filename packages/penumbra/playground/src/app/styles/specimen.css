@@ -102,6 +102,10 @@
 [data-penumbra-preview] button {
   font: inherit;
   font-size: var(--app-text-sm);
+  /* `font: inherit` brings the card's 1.6 with it, and on a short control that line box is twice
+     the ink it holds — so the padding centres a box the text does not fill and the label sits low.
+     The same value corona's real buttons carry, for the same reason. */
+  line-height: 1.25;
   border-radius: var(--app-radius-sm);
   padding: var(--app-space-2) var(--app-space-4);
   cursor: pointer;
@@ -143,6 +147,8 @@
 [data-penumbra-preview] .specimen-badge {
   display: inline-flex;
   align-items: center;
+  /* As on the buttons above: the card's line height is a paragraph's, not a control's. */
+  line-height: 1.25;
   gap: var(--app-space-2);
   font-family: var(--app-font-mono, monospace);
   font-size: var(--app-text-xs);
@@ -177,6 +183,8 @@
 [data-penumbra-preview] .specimen-ring {
   display: inline-flex;
   align-items: center;
+  /* As on the buttons above: the card's line height is a paragraph's, not a control's. */
+  line-height: 1.25;
   gap: var(--app-space-2);
   font-size: var(--app-text-sm);
   color: var(--app-text);
@@ -218,12 +226,10 @@
   padding: 0;
   border: 1px solid var(--app-divider);
   border-radius: var(--app-radius-sm);
-  /* Three rows of eight: short enough to scroll, which is the only way to see what the two
-     scrollbar tokens do, and tall enough to read as a list rather than as a clipped line. */
-  max-height: calc(var(--app-space-14) * 2);
-  overflow-y: auto;
-  scrollbar-color: var(--app-scrollbar-thumb) var(--app-scrollbar-track);
-  scrollbar-width: thin;
+  /* Not clipped. It used to scroll, and the reason was real — the two scrollbar colours were on
+     no page in the repository and a short list was the only place they showed. That reason moved
+     to the Tokens page, where they are swatches like everything else, and a list of seven names
+     that hides four of them was never the better half of that trade. */
 }
 
 [data-penumbra-preview] .specimen-list li {

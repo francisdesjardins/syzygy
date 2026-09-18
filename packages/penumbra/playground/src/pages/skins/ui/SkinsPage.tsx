@@ -1,4 +1,5 @@
 import { PageLayout, SelectionDropdown } from 'corona/shell';
+import { useTheme } from 'corona/theme';
 import { useState } from 'react';
 
 import baseSheet from '../../../../../tokens.skin.base.css?raw';
@@ -61,6 +62,7 @@ const OPTIONS = [
 ];
 
 export function SkinsPage() {
+  const { scheme } = useTheme();
   const [state, setState] = useState<StateId>('tint');
   const active = STATES[state];
 
@@ -91,7 +93,10 @@ export function SkinsPage() {
       <p className={styles['note']}>{active.note}</p>
 
       <SurfaceCard>
-        <div className={styles['preview']} data-penumbra-preview="">
+        {/* The scheme, restated on the preview: the scoped sheets carry
+            `[data-penumbra-preview][data-color-scheme='dark']`, so without this attribute here the
+            dark half of every skin matches nothing and all three states render light. */}
+        <div className={styles['preview']} data-penumbra-preview="" data-color-scheme={scheme}>
           <style>{active.sheets.map(scopeSkin).join('\n')}</style>
 
           <div className="specimen-card">

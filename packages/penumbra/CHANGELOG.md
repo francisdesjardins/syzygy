@@ -5,6 +5,31 @@ Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No s
 **This file is the package's memory.** The code states what holds now; why it came to hold lives
 here.
 
+## 2026-09-18, four things the specimen got wrong
+
+### Fixed
+
+**Every skin rendered light.** The scoped sheets carry
+`[data-penumbra-preview][data-color-scheme='dark']`, and the preview element did not carry the
+attribute — so the dark half of all three states matched nothing. It came over from the site's page,
+which had it, and was dropped in the rewrite.
+
+**The labels sat low in every control.** `[data-penumbra-preview] button` takes `font: inherit`,
+which brings the card's 1.6 line height with it, and on a short control that line box is twice the
+ink it holds: the padding centres a box the text does not fill. The buttons and the badges carry
+1.25 now — the same value corona's real buttons carry, for the same reason.
+
+**The colour list was clipped to three rows of seven.** The reason was real: the two scrollbar
+colours were on no page in the repository, and a short list was the only place they showed. That
+reason moved to the Tokens page, where they are swatches like everything else. A list that hides
+four of the seven names a skin declares was never the better half of that trade.
+
+**The mascot had its eyes shut on a blinking group.** `um-eyes` squashes to `scaleY(0.1)`, which on
+a closed eye is an eye disappearing. Half-lidded instead, which is also the better reading of the
+word: the penumbra is the part of a shadow where the source is _partly_ covered. The terminator
+drawn across the disc came out with it — at any size it crosses the nose and reads as a line
+somebody forgot to finish. The top bar's mark carries that idea, being the whole drawing.
+
 ## 2026-09-17, penumbra gets a playground
 
 ### Added
