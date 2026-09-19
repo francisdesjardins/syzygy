@@ -207,12 +207,15 @@
   padding: var(--app-space-4);
 }
 
-.footer {
-  display: flex;
-  justify-content: flex-end;
+/* The name's byline: where the work is done from, at the rank a byline has. */
+.byline {
+  max-width: var(--app-measure);
+  color: var(--app-text-tertiary);
+  font-size: var(--app-text-sm);
 }
 
 .expiry {
+  margin-top: var(--app-space-2);
   /* `text.disabled` measured 2.67:1 on white and the em-based size rendered at 9.6px on a phone —
      below the 4.5:1 floor and below what anyone reads. The secondary rank clears it at 5.9:1. */
   font-family: var(--app-font-mono);

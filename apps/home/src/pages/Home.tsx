@@ -58,6 +58,9 @@ export const Home = memo(() => {
           <div className={styles['lede']}>
             <p className={styles['body']}>{t('home.breathing')}</p>
             <p className={styles['secondary']}>{t('home.enough')}</p>
+            {/* A byline, not a section. It was an `<h2>` over three words, which spent a heading
+                rank on it and left a lone heading at the foot of a column. */}
+            <p className={styles['byline']}>{t('home.location.description')}</p>
           </div>
         </section>
 
@@ -75,13 +78,6 @@ export const Home = memo(() => {
               <p className={[styles['secondary'], styles['italic']].join(' ')}>
                 {t('home.skills.secondary')}
               </p>
-            </section>
-
-            <section className={styles['section']} aria-labelledby="location-heading">
-              <h2 className={styles['heading']} id="location-heading">
-                {t('home.location.title')}
-              </h2>
-              <p className={styles['secondary']}>{t('home.location.description')}</p>
             </section>
           </div>
 
@@ -117,11 +113,10 @@ export const Home = memo(() => {
                 description={t('home.work.dialog.description')}
               />
             </ul>
+            {/* Under the three it qualifies. At the foot of the card it read as a disclaimer on
+                the whole page, which is not what it says. */}
+            <p className={styles['expiry']}>{t('home.expiry')}</p>
           </section>
-        </div>
-
-        <div className={styles['footer']}>
-          <p className={styles['expiry']}>{t('home.expiry')}</p>
         </div>
       </div>
     </main>

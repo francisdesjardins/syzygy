@@ -4,6 +4,23 @@ Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No s
 
 **This file is the app's memory.** The code states what holds now; why it came to hold lives here.
 
+## 2026-09-18, two things that were sections and are not
+
+### Changed — the location is a byline
+
+"Based in Quebec" was an `<h2>` and a `<section>` with an `aria-labelledby` pointing at it: a
+heading rank, and a landmark, for three words. It also left a lone heading at the foot of the left
+column once the projects beside it became cards and that column grew taller.
+
+It sits under the lede now, at the rank a byline has. The page keeps two `<h2>`s, which is what it
+has two of.
+
+### Changed — the development note is attached to what it is about
+
+`... still under active development` sat at the foot of the card, right-aligned, the last thing
+anyone read. There it reads as a disclaimer on the whole page and on the person at the top of it.
+It is about the three projects, so it is under the three projects.
+
 ## 2026-09-18, the three projects are the card the playgrounds are made of
 
 ### Changed — the page's one action looks like one
