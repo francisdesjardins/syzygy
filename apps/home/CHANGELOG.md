@@ -4,6 +4,37 @@ Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No s
 
 **This file is the app's memory.** The code states what holds now; why it came to hold lives here.
 
+## 2026-09-19, three i18n packages for twenty-one strings
+
+### Removed — `i18next`, `react-i18next`, `i18next-browser-languagedetector`
+
+Two languages, twenty-one strings, one page, and — once the dead ones went — no message format in
+any of them. What the libraries carry that this page does not use: plurals, interpolation,
+namespaces, lazy bundles, a fallback chain.
+
+They also cost 160 lines of local code, of which the worst was an **82-line** helper that existed
+only because `i18next` initialises asynchronously: the language switch had to hand a promise to a
+click handler, and `changeLanguage` had to listen for an `initialized` event in case the switch was
+used before init finished. Nothing in `src/i18n/index.tsx` is asynchronous, so none of that is
+there.
+
+**55.9 KB** off the entry chunk, raw. With the router, the whole application chunk went from
+109,615 bytes to 13,586.
+
+### Fixed — `<html lang>` had three values for two languages
+
+`index.html` declares `en-CA`, an effect in `App` wrote `i18n.language` (`en`), and the switch wrote
+`en-CA`/`fr-CA`. So the attribute read `en` after a load and `fr-CA` after a toggle, for the same
+page in the same language — and `useLanguage` kept its own `localStorage` copy beside the language
+detector's. One owner now: `en-CA` then `fr-CA`, measured across a load, a toggle and a reload.
+
+### Changed — a key that does not exist no longer compiles
+
+`t` took a `string`, so `t('home.nmae')` compiled and rendered the key onto the page. Its argument is
+now the union of the dotted paths in the English bundle, and the French bundle is `satisfies
+typeof en`, so a key that drifts between the two fails the same way. Verified by introducing a typo:
+TS2345, with the twenty-one valid keys listed.
+
 ## 2026-09-19, no router, and no blank page under a 200
 
 ### Removed — `react-router-dom`

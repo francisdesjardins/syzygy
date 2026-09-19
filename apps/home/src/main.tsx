@@ -10,14 +10,15 @@ import './styles/tokens.skin.css';
 import './styles/app.css';
 
 import { App } from './App';
-
-import './i18n';
+import { TranslationProvider } from './i18n';
 
 const rootElement = document.getElementById('root');
 if (rootElement) {
   createRoot(rootElement).render(
     <StrictMode>
-      <App />
+      <TranslationProvider>
+        <App />
+      </TranslationProvider>
     </StrictMode>
   );
 }
