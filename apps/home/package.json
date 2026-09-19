@@ -24,6 +24,7 @@
     "check:tokens:used": "gnomon-token-usage --declares ../../packages/penumbra/tokens.system.css ../../packages/penumbra/tokens.skin.base.css src/styles/tokens.skin.css -- src"
   },
   "dependencies": {
+    "corona": "workspace:^",
     "i18next": "^26.3.6",
     "i18next-browser-languagedetector": "^8.2.1",
     "penumbra": "workspace:^",

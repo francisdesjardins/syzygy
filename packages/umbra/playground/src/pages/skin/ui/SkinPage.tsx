@@ -1,4 +1,5 @@
-import { AppButton, PageLayout, SectionNav, SelectionDropdown, SurfaceCard } from 'corona/shell';
+import { AppButton, PageLayout, SectionNav, SelectionDropdown } from 'corona/shell';
+import { SurfaceCard } from 'corona/surface';
 import { isOnSite } from 'corona/site';
 import { TokenSwatches, TokenTablesProvider } from 'corona/tokens';
 import type { TokenNote } from 'corona/tokens';

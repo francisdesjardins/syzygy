@@ -4,6 +4,29 @@ Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No s
 
 **This file is the app's memory.** The code states what holds now; why it came to hold lives here.
 
+## 2026-09-18, the three projects are the card the playgrounds are made of
+
+### Changed — the page's one action looks like one
+
+`umbra`, `penumbra` and `antumbra` were three words in a paragraph. They are the only thing this
+page asks anyone to do, and a five-letter word in mono was the entire target — under WCAG 2.2's
+24x24 (2.5.8) in width for two of the three.
+
+Each is a `SurfaceCard` now, corona's, the same surface every page of those three playgrounds is
+built from. This is the door to them; it should not be the one surface on the site that looks like
+something else.
+
+The link stretches over its whole card through a pseudo-element rather than sitting on the name, so
+the target is 390x182 instead of a word, and the card's own hover lift is what answers the pointer.
+The text stays selectable: the element that covers the card paints nothing.
+
+### Changed — `SurfaceCard` moved out of `corona/shell`
+
+It is not chrome, and `shell`'s barrel reaches `AppShell`, `TopBar` and `Sidebar`, all of which
+import the router. A one-page site that wants a card should not have to install a router to get one,
+so the card has its own area — `corona/surface` — and corona's router peer is now marked optional,
+which it always was for everything outside `shell` and `api`.
+
 ## 2026-09-18, the name is set in the face the rest of the site uses
 
 ### Fixed — the front door was the one page with no typography of its own

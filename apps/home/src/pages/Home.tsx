@@ -1,5 +1,6 @@
 import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { SurfaceCard } from 'corona/surface';
 
 import { useDocumentHead } from '../hooks/useDocumentHead';
 import styles from './Home.module.css';
@@ -16,14 +17,21 @@ type WorkItemProps = {
  * Every one of them is its own build served out of `public/playground/`, so the link is a plain
  * anchor: it leaves this application rather than being matched by the router. No branch for a
  * router link, because this application has no second page to route to.
+ *
+ * The card is corona's, the same one every page of those three playgrounds is built from — this is
+ * the door to them, so it should not be the one surface on the site that looks like something else.
+ * The link stretches over the whole card rather than sitting on the name: these are the page's only
+ * action, and a five-letter word was the entire target.
  */
 const WorkItem = ({ href, name, description }: WorkItemProps) => {
   return (
     <li className={styles['workItem']}>
-      <a className={styles['workLink']} href={href}>
-        {name}
-      </a>
-      <p className={styles['secondary']}>{description}</p>
+      <SurfaceCard interactive>
+        <a className={styles['workLink']} href={href}>
+          {name}
+        </a>
+        <p className={styles['secondary']}>{description}</p>
+      </SurfaceCard>
     </li>
   );
 };

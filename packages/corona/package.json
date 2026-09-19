@@ -21,6 +21,7 @@
     "./shell": "./src/shell/index.ts",
     "./site": "./src/site/index.ts",
     "./src/*": "./src/*",
+    "./surface": "./src/surface/index.ts",
     "./theme": "./src/theme/index.ts",
     "./tokens": "./src/tokens/index.ts"
   },
@@ -68,6 +69,11 @@
     "@tanstack/react-router": "^1.170.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@tanstack/react-router": {
+      "optional": true
+    }
   },
   "engines": {
     "node": ">=24"

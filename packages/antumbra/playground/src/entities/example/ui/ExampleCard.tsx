@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { SurfaceCard } from 'corona/shell';
+import { SurfaceCard } from 'corona/surface';
 import { ViewCodeButton } from '@/shared/ui/ViewCodeButton/ViewCodeButton';
 import styles from '@/entities/example/ui/ExampleCard.module.css';
 

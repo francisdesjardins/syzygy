@@ -1,4 +1,5 @@
-import { PageLayout, SelectionDropdown, SurfaceCard } from 'corona/shell';
+import { PageLayout, SelectionDropdown } from 'corona/shell';
+import { SurfaceCard } from 'corona/surface';
 import { useTheme } from 'corona/theme';
 import { useState } from 'react';
 

@@ -1,4 +1,5 @@
-import { PageLayout, SurfaceCard } from 'corona/shell';
+import { PageLayout } from 'corona/shell';
+import { SurfaceCard } from 'corona/surface';
 
 import styles from '@/pages/rules/ui/RulesPage.module.css';
 
