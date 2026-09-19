@@ -4,11 +4,11 @@ import * as Shared from '@/entities/dialog-template/ui/vanilla/shared';
 import { AppButton } from 'corona/shell';
 import { dialogManager, useMessageDialog } from 'antumbra/react';
 import { useStore } from '@/shared/lib/use-store';
-import { createImmerStore } from '@/shared/lib/immer-store';
+import { createDraftStore } from '@/shared/lib/draft-store';
 
 // ── Module-level store ────────────────────────────────────────────────────
 
-const openCountStore = createImmerStore(
+const openCountStore = createDraftStore(
   { openCount: 0, result: null as string | null },
   {
     builder: ({ update }) => {

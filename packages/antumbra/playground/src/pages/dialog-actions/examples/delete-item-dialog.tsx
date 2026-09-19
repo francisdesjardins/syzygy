@@ -6,13 +6,13 @@ import { simulateApiCall } from '@/shared/lib/simulate-api-call';
 import { AppButton } from 'corona/shell';
 import { useMessageDialog } from 'antumbra/react';
 import { useStore } from '@/shared/lib/use-store';
-import { createImmerStore } from '@/shared/lib/immer-store';
+import { createDraftStore } from '@/shared/lib/draft-store';
 
 export const DIALOG_ID = 'delete-item-dialog';
 
 // ── Module-level store ────────────────────────────────────────────────────
 
-const deleteItemStore = createImmerStore(
+const deleteItemStore = createDraftStore(
   { deleted: false, itemId: null as string | null, itemName: '' },
   {
     builder: ({ set, update }) => {

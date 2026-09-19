@@ -2,7 +2,7 @@ import { ExampleLayout } from '@/entities/example';
 import * as MessageDialog from '@/entities/dialog-template/ui/vanilla/message-dialog';
 import * as Shared from '@/entities/dialog-template/ui/vanilla/shared';
 import { createResultStore } from '@/shared/lib/createResultStore';
-import { createImmerStore } from '@/shared/lib/immer-store';
+import { createDraftStore } from '@/shared/lib/draft-store';
 import { AppButton } from 'corona/shell';
 import type { ReactNode } from 'react';
 import { useMessageDialog } from 'antumbra/react';
@@ -22,7 +22,7 @@ const INITIAL_STATE: ReactiveState = {
   severity: 'info',
 };
 
-const reactiveStore = createImmerStore(INITIAL_STATE, {
+const reactiveStore = createDraftStore(INITIAL_STATE, {
   builder: (api) => {
     return {
       reset() {

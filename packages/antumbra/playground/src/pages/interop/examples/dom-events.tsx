@@ -10,10 +10,10 @@ import {
   useSlideDialog,
 } from 'antumbra/react';
 import { useStore } from '@/shared/lib/use-store';
-import { createImmerStore } from '@/shared/lib/immer-store';
+import { createDraftStore } from '@/shared/lib/draft-store';
 import { useEffect } from 'react';
 
-const store = createImmerStore(
+const store = createDraftStore(
   { eventLog: [] as string[] },
   {
     builder: ({ update }) => {

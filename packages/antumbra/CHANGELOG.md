@@ -10,6 +10,40 @@ its own past is a story, not a record. The package has been renamed twice, so ol
 by older names: `@yourorg/dialog` before 2026-08-04, then `umbra` until 2026-09-15. It is
 `antumbra` now.
 
+## 2026-09-19, the draft is written out, and immer is gone
+
+### Removed — `immer`
+
+The playground's `createImmerStore` demonstrated the "bring your own immer" pattern: `createStore`
+offers only `set`/`reset`, and the builder's `api` is where a project adds what it wants. The
+demonstration was sound; its six consumers were not.
+
+All six mutate a **flat** object — `{ openCount, result }`, `{ eventLog }`,
+`{ count, message, severity }`, `{ deleted }`, `SetupValues & { step }`. Not one nested write among
+them, so every `update(d => { d.x = v })` was a `set(s => ({ ...s, x: v }))` and the library bought
+nothing. One of them even replaces its array wholesale, where structural sharing has nothing to
+share. That is a demonstration teaching a reader to reach for a dependency where a spread does the
+job, which is the opposite of what this repository argues everywhere else.
+
+### Added — `shared/lib/draft.ts`
+
+The small half of immer, written out: a `Proxy` records writes against a lazily-made copy, walking
+the copy up to the root so a nested write produces new objects the whole way, and a branch nobody
+touched comes back as the object it went in as. That last property is the point — it is what lets a
+memo upstream skip a subtree — so it is the one the tests are built around.
+
+Thirteen unit tests, in Node: flat write, read-without-write returning the base itself, three levels
+of nesting with an untouched sibling proving identity, two writes sharing one copy, arrays by index
+and by replacement, `push` reading its length off the copy, `Object.assign`, spread and `Object.keys`
+over a draft, `delete`, an empty recipe, and a `Date` passing through undrafted.
+
+**What it does not do**, because nothing here needs it: `Map`, `Set`, `Date`, class instances,
+frozen input, or a recipe that returns a value. Those are the parts of immer that are worth its
+size, and its doc comment says to take immer back the day one is wanted.
+
+`createImmerStore` is `createDraftStore`; both files are listed as templates, the primitive
+included, since a reader is now more likely to want the forty lines than the wrapper.
+
 ## 2026-09-18, a thrown object no longer says `[object Object]`
 
 ### Fixed — `normalizeError` could throw

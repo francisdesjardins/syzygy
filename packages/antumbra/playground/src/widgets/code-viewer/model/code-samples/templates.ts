@@ -52,7 +52,8 @@ import vanillaSlideSectionGroupSrc from '@/entities/dialog-template/ui/vanilla/s
 import vanillaSlideTitleSrc from '@/entities/dialog-template/ui/vanilla/slide-dialog/components/VanillaTitle.tsx?raw';
 import vanillaSlideStylesSrc from '@/entities/dialog-template/ui/vanilla/slide-dialog/styles.module.css?raw';
 import sharedLibAsyncStateSrc from '@/shared/lib/async-state.ts?raw';
-import sharedLibImmerStoreSrc from '@/shared/lib/immer-store.ts?raw';
+import sharedLibDraftSrc from '@/shared/lib/draft.ts?raw';
+import sharedLibDraftStoreSrc from '@/shared/lib/draft-store.ts?raw';
 import sharedLibMutexSrc from 'limb/src/mutex.ts?raw';
 import sharedLibSafeAwaitSrc from '@/shared/lib/safe-await.ts?raw';
 import sharedLibSingleFlightSrc from 'limb/src/single-flight.ts?raw';
@@ -122,6 +123,7 @@ export const templates: Record<string, string> = {
   'shared-lib-safe-await': sharedLibSafeAwaitSrc,
   'shared-lib-mutex': sharedLibMutexSrc,
   'shared-lib-single-flight': sharedLibSingleFlightSrc,
-  'shared-lib-immer-store': sharedLibImmerStoreSrc,
+  'shared-lib-draft': sharedLibDraftSrc,
+  'shared-lib-draft-store': sharedLibDraftStoreSrc,
   'shared-component-result-display': sharedComponentResultDisplaySrc,
 };

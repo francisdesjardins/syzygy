@@ -1582,7 +1582,6 @@ __metadata:
     "@types/react": "npm:^19.3.0"
     "@types/react-dom": "npm:^19.3.0"
     corona: "workspace:^"
-    immer: "npm:^11.1.18"
     limb: "workspace:^"
     penumbra: "workspace:^"
     react: "npm:^19.3.0"
@@ -2212,13 +2211,6 @@ __metadata:
   version: 2.0.2
   resolution: "html-escaper@npm:2.0.2"
   checksum: 10c0/208e8a12de1a6569edbb14544f4567e6ce8ecc30b9394fcaa4e7bb1e60c12a7c9a1ed27e31290817157e8626f3a4f29e76c8747030822eb84a6abb15c255f0a0
-  languageName: node
-  linkType: hard
-
-"immer@npm:^11.1.18":
-  version: 11.1.18
-  resolution: "immer@npm:11.1.18"
-  checksum: 10c0/afe02fcd154134eb2b3bea5a06051ef2e220677dbbc9c0b17ea2ce1c22bfc3690ac16f916922c12ad9c074617a02148ac5d94cbf0886d76e7ebac726806679d0
   languageName: node
   linkType: hard
 

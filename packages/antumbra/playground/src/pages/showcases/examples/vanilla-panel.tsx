@@ -4,7 +4,7 @@ import * as FormDialog from '@/entities/dialog-template/ui/vanilla/form-dialog';
 import * as PanelDialog from '@/entities/dialog-template/ui/vanilla/panel-dialog';
 import * as Shared from '@/entities/dialog-template/ui/vanilla/shared';
 import { createResultStore } from '@/shared/lib/createResultStore';
-import { createImmerStore } from '@/shared/lib/immer-store';
+import { createDraftStore } from '@/shared/lib/draft-store';
 import { simulateApiCall } from '@/shared/lib/simulate-api-call';
 import type { ReactNode } from 'react';
 import { Key, useMessageDialog } from 'antumbra/react';
@@ -34,7 +34,7 @@ const RECOMMENDED: SetupValues = {
 
 type SetupState = SetupValues & { step: number };
 
-const setupStore = createImmerStore<SetupState, SetupStoreMethods>(
+const setupStore = createDraftStore<SetupState, SetupStoreMethods>(
   { step: 0, ...RECOMMENDED },
   {
     builder: (api) => {
