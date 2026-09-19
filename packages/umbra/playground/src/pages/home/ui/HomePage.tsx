@@ -2,7 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { useTheme } from 'corona/theme';
 import { UmbraMoon } from '@/shared/ui/UmbraMoon';
 import { appButtonClass } from 'corona/shell';
-import { CodeBlock } from '@/shared/ui/CodeBlock';
+import { CodeBlock } from 'corona/code';
 import styles from '@/pages/home/ui/HomePage.module.css';
 
 const REPO = 'https://github.com/francisdesjardins/umbra';

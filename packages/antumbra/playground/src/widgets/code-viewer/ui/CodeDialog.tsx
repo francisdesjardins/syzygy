@@ -5,7 +5,7 @@ import { CloseIcon } from '@/shared/ui/icons';
 import styles from '@/widgets/code-viewer/ui/CodeDialog.module.css';
 import type { DialogHandle } from 'antumbra/react';
 import { Suspense } from 'react';
-import { CodeBlock } from '@/shared/ui/CodeBlock/CodeBlockLazy';
+import { CodeBlockLazy as CodeBlock } from 'corona/code';
 
 /**
  * Highlighter language by suffix — `-styles` (CSS modules), `-html` (the microfrontend host);
@@ -78,7 +78,7 @@ export const CodeDialogContent = ({
       <div className={styles['body']}>
         {code ? (
           <Suspense fallback={<Busy />}>
-            <CodeBlock code={code} language={languageForCodeKey(codeKey)} />
+            <CodeBlock source={code} language={languageForCodeKey(codeKey)} />
           </Suspense>
         ) : isLoading ? (
           <Busy />

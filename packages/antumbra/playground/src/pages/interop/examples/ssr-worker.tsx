@@ -1,6 +1,6 @@
 import { ExampleLayout } from '@/entities/example';
 import { AppButton } from 'corona/shell';
-import { CodeBlock } from '@/shared/ui/CodeBlock/CodeBlock';
+import { CodeBlock } from 'corona/code';
 import { CheckCircleIcon } from '@/shared/ui/icons';
 import styles from '@/pages/interop/examples/ssr-worker.module.css';
 import { useEffect, useRef, useState } from 'react';
@@ -170,7 +170,9 @@ export function SsrWorkerExample() {
             >
               What came back — a closed &lt;dialog&gt;, described with no DOM
             </span>
-            <CodeBlock code={html} language="html" />
+            {/* `markup` is Prism's name for HTML, and the one this repository uses. It read `html` here,
+                which no grammar is registered under — so the block had been rendering plain text. */}
+            <CodeBlock source={html} language="markup" />
           </div>
         )}
 

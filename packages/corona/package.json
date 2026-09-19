@@ -13,6 +13,7 @@
   "type": "module",
   "exports": {
     "./api": "./src/api/index.ts",
+    "./code": "./src/code/index.ts",
     "./contract": "./src/api/contract.ts",
     "./icons": "./src/icons/index.ts",
     "./mascot": "./src/mascot/index.ts",
@@ -43,7 +44,8 @@
   },
   "dependencies": {
     "limb": "workspace:^",
-    "penumbra": "workspace:^"
+    "penumbra": "workspace:^",
+    "react-syntax-highlighter": "^16.1.1"
   },
   "devDependencies": {
     "@playwright/test": "1.63.0",

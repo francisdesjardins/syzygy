@@ -59,7 +59,7 @@ import sharedLibSingleFlightSrc from 'limb/src/single-flight.ts?raw';
 import sharedLibUseAnnouncerSrc from '@/shared/lib/use-announcer.tsx?raw';
 import sharedLibUseFormSrc from '@/shared/lib/use-form.ts?raw';
 import sharedLibUseQuerySrc from '@/shared/lib/use-query.ts?raw';
-import sharedComponentCodeBlockSrc from '@/shared/ui/CodeBlock/CodeBlock.tsx?raw';
+import sharedComponentCodeBlockSrc from 'corona/src/code/CodeBlock.tsx?raw';
 import sharedComponentResultDisplaySrc from '@/shared/ui/ResultDisplay/ResultDisplay.tsx?raw';
 import sharedComponentViewCodeButtonSrc from '@/shared/ui/ViewCodeButton/ViewCodeButton.tsx?raw';
 

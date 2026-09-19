@@ -7,7 +7,7 @@ import type { ApiEntryPoints, ApiSlots } from 'corona/api';
 import { useParams } from '@tanstack/react-router';
 import { ExampleGrid, ExampleSection } from '@/entities/example';
 import { AppButton, PageLayout, SurfaceCard } from 'corona/shell';
-import { CodeBlock } from '@/shared/ui/CodeBlock';
+import { CodeBlock } from 'corona/code';
 import { ArrowBackIcon, ArrowForwardIcon, LinkIcon, SearchIcon } from 'corona/icons';
 
 /**

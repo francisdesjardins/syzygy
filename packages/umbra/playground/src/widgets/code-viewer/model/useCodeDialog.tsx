@@ -2,7 +2,7 @@ import { useSlideDialog } from 'antumbra/react';
 import { useCallback, useState } from 'react';
 import { CodeDialogContent } from '@/widgets/code-viewer/ui/CodeDialog';
 import styles from '@/widgets/code-viewer/model/useCodeDialog.module.css';
-import type { CodeLanguage } from '@/shared/ui/HighlightedCode';
+import type { CodeLanguage } from 'corona/code';
 
 /** Declared once and passed both ways, since the heading and the reference are in two files. */
 const CODE_VIEWER_TITLE_ID = 'code-viewer-title';

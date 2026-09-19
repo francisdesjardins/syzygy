@@ -28,7 +28,7 @@ import {
   topbar,
   trial,
 } from 'virtual:mfe-sources';
-import type { CodeLanguage } from '@/shared/ui/HighlightedCode';
+import type { CodeLanguage } from 'corona/code';
 
 export type CodeSample = { readonly source: string; readonly language: CodeLanguage };
 

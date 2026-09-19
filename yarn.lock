@@ -1850,6 +1850,7 @@ __metadata:
     penumbra: "workspace:^"
     react: "npm:^19.3.0"
     react-dom: "npm:^19.3.0"
+    react-syntax-highlighter: "npm:^16.1.1"
     typescript-7: "npm:typescript@7.0.2"
     vite: "npm:^8.3.0"
   peerDependencies:

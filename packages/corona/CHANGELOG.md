@@ -5,6 +5,38 @@ Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No s
 **This file is the package's memory.** The code states what holds now; why it came to hold lives
 here.
 
+## 2026-09-18, one code block, and two bugs it was hiding
+
+### Added — `corona/code`
+
+Two playgrounds highlighted source, and not from one component: one had a 102-line block doing the
+whole job, the other had the same job split three ways — a frame, a copy button and the highlighter
+under it. Same name, two components.
+
+The split one is corona's now, because the three pieces each carry a fix the monolith lacks: the
+scroll region has a keyboard stop and a name, the `<code>` background is cleared so indentation
+stops reading as a grey ladder, and the `<pre>`'s own `overflow` is turned off so one block is not
+two nested scrollers. The copy button clears its timer on unmount, which the other did not — a
+dialog that closes while the tick is pending left a `setState` behind it.
+
+Line numbers come across as a prop, off by default: worth it for a whole file in a dialog, noise
+beside a six-line example.
+
+### Fixed — a code surface that had drifted off the token
+
+`readableSyntaxStyle` raises every token colour to 4.5:1 **against the background the code is
+actually on**, so the surface has to be a literal it can measure — both copies said so in a comment
+warning that two literals drift. They had: one was `--app-paper`, the other `#1a1a1a`, which is not
+a token at all. Every token in that playground's dark code blocks was being corrected for a
+background it was not on. One literal now, and it matches the token in both schemes.
+
+### Fixed — a block that rendered plain text and said nothing
+
+One call site asked for `language="html"`. No grammar is registered under that name — Prism's is
+`markup`, which is what every other call site in both playgrounds uses — and an unregistered
+language renders as plain text and raises nothing. It is `markup` now, and `CodeLanguage` is a union
+rather than a `string`, so the next one fails to compile instead of rendering grey.
+
 ## 2026-09-18, the whole shell is corona's
 
 ### Added — `AppShell`

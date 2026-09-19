@@ -1,7 +1,7 @@
 import styles from '@/pages/home/ui/HomePage.module.css';
 import { useTheme } from 'corona/theme';
 import { AppButton, appButtonClass } from 'corona/shell';
-import { CodeBlock } from '@/shared/ui/CodeBlock/CodeBlock';
+import { CodeBlock } from 'corona/code';
 import { MoonPhase, type Phase } from '@/shared/ui/MoonPhase';
 import { AntumbraMoon } from '@/shared/ui/PeekingMoon/AntumbraMoon';
 import { Link } from '@tanstack/react-router';
@@ -226,14 +226,14 @@ export const HomePage = () => {
             <MoonPhase phase="first-quarter" size={14} />
             Getting it
           </p>
-          <CodeBlock code={GETTING_IT} language="bash" />
+          <CodeBlock source={GETTING_IT} language="bash" />
         </div>
         <div className={styles['snippet']}>
           <p className={styles['overline']}>
             <MoonPhase phase="last-quarter" size={14} />
             The whole API of a confirm dialog
           </p>
-          <CodeBlock code={HELLO} language="tsx" />
+          <CodeBlock source={HELLO} language="tsx" />
         </div>
       </div>
 

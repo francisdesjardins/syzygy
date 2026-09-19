@@ -1,7 +1,7 @@
 import type { DialogHandle } from 'antumbra/react';
 import { AppButton } from 'corona/shell';
-import { CopyButton } from '@/shared/ui/CopyButton';
-import { type CodeLanguage, HighlightedCode } from '@/shared/ui/HighlightedCode';
+import { CopyButton } from 'corona/code';
+import { type CodeLanguage, HighlightedCode } from 'corona/code';
 import styles from '@/widgets/code-viewer/ui/CodeDialog.module.css';
 
 /**
