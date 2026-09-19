@@ -40,7 +40,8 @@ anything goes.
 
 | Area     | What is in it                                                                  |
 | -------- | ------------------------------------------------------------------------------ |
-| `shell`  | `TopBar`, `Sidebar`, `PageLayout`, `SectionNav`, `SurfaceCard`, the buttons    |
+| `shell`  | `AppShell` and what it composes — bar, drawer, layout, card, buttons           |
+| `code`   | `CodeBlock`, its lazy twin, `HighlightedCode`, `CopyButton`                    |
 | `theme`  | the scheme context and its toggle                                              |
 | `tokens` | the token tables the design pages render, through `TokenSlots`                 |
 | `api`    | the reference pages, through `ApiSlots` — each playground brings its own model |
@@ -53,10 +54,15 @@ anything goes.
 
 ## What stays with the playground
 
-**The mark, never the bar.** `TopBar` asks for a `name` and a `mark` and draws everything else; the
-ring, the terminator and `EclipseMark` are each their own playground's. The rule generalises: when
-two playgrounds differ inside a shared component, the difference becomes a prop and the component
-stays here — it does not become a second copy.
+**Four things, and `AppShell` asks for exactly them**: a name, a mark, a set of routes and a moon.
+Everything else about the chrome is drawn here. The rule generalises — when two playgrounds differ
+inside a shared component, the difference becomes a prop and the component stays here; it does not
+become a second copy. The ring, the terminator and `EclipseMark` are marks, not bars.
+
+**A surface a colour is measured against is a literal, not a `var()`.** `HighlightedCode` raises
+every token to 4.5:1 against the background the code is painted on, and a custom property cannot be
+measured — so `SURFACE` is spelled out and must equal `--app-paper`. It was spelled out twice once,
+and the second copy drifted.
 
 **`SurfaceCard` takes no `className` and no `sx`.** That escape hatch is what let one playground's
 cards drift apart before the three drifted from each other.
@@ -73,8 +79,14 @@ up, and a deployed URL that followed it would break every link anybody kept.
 ## Environment
 
 React 19 and `@tanstack/react-router` are **peers**, not dependencies: the playground owns the
-version, and two copies of a router are two route trees. `penumbra` and `limb` are the real
-dependencies — the tokens every surface here reads, and the small helpers.
+version, and two copies of a router are two route trees. `penumbra`, `limb` and
+`react-syntax-highlighter` are the real dependencies — the tokens every surface reads, the small
+helpers, and the grammars `corona/code` registers.
+
+**The highlighter is imported through deep paths, never its barrels**: they re-export the whole
+Prism build and all 47 themes, which unbundled dev serving makes a named import pay for in full.
+`code/react-syntax-highlighter-subpaths.d.ts` restates their types, because a successful resolution
+to the shipped `.js` is not reconsidered against the ambient declaration beside it.
 
 ## Conventions
 
