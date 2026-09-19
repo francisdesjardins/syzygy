@@ -5,6 +5,28 @@ Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No s
 **This file is the package's memory.** The code states what holds now; why it came to hold lives
 here.
 
+## 2026-09-19, the highlighter's declarations travel with it
+
+### Fixed — corona's ambient types did not reach corona's consumers
+
+`corona/code` owns the syntax highlighter and imports it through deep paths, which have no
+declarations of their own — `@types/react-syntax-highlighter` declares them and the compiler
+reports TS7016 anyway, because a specifier that resolves to a shipped `.js` is not reconsidered
+against an ambient declaration beside it. So the deep paths are restated in a `.d.ts`.
+
+That file sat beside `HighlightedCode.tsx` and did nothing for anyone else: a consumer's program
+compiles corona's **source** but does not include corona's stray declaration files, so both
+playgrounds kept a copy of the same seven `declare module` blocks. Deleting theirs made both fail to
+type-check, which is how the copies were earning their keep.
+
+The module that needs them now references them, so they travel with the import. Both playground
+copies are gone, and `@types/react-syntax-highlighter` leaves the repository with them — it was a
+devDependency in two places and covered nothing the `.d.ts` does not.
+
+The `react-syntax-highlighter` dependency **stays** declared in both playgrounds. Hoisting is
+limited per package here, so it is not at the root, and antumbra's Vite config names its deep paths
+in `optimizeDeps.include` — it has to resolve from the playground.
+
 ## 2026-09-18, one code block, and two bugs it was hiding
 
 ### Added — `corona/code`

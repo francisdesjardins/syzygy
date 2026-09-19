@@ -1,3 +1,14 @@
+/*
+ * A consumer's program compiles corona's source without including corona's stray `.d.ts`, so these
+ * declarations travel only if the module that needs them asks for them. Two playgrounds each kept
+ * their own copy of the file before this line existed.
+ *
+ * The rule asks for an `import`, which is the one thing that cannot work: the file is ambient
+ * `declare module`, and a `declare module` is only ambient in a script.
+ */
+// oxlint-disable-next-line typescript/triple-slash-reference -- see above
+/// <reference path="./react-syntax-highlighter-subpaths.d.ts" />
+
 import { useTheme } from '../theme/index.ts';
 import { readableSyntaxStyle } from 'limb/readable-syntax';
 // Deep paths, not the barrels: `react-syntax-highlighter` re-exports the whole Prism build (every

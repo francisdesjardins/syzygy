@@ -2,7 +2,9 @@ import { createStore, type CreateStoreOptions, type Store, type StoreApi } from 
 import { produce, type Draft } from 'immer';
 
 // The "bring your own immer" pattern: the library's `createStore` offers only `set`/`reset`, and
-// this adds a draft-mutation `update`. immer stays a playground devDependency, never in the bundle.
+// this adds a draft-mutation `update`. immer is the playground's, never antumbra's — six example
+// files build a store with it, so it is a real dependency here and absent from what the library
+// ships.
 
 /** Builder API extended with an immer-backed `update`. */
 export type ImmerStoreApi<TSnapshot, TContext = never> = StoreApi<TSnapshot, TContext> & {
