@@ -22,9 +22,11 @@
  */
 
 :root {
-  --app-font-display: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
-  --app-font-body: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
-  --app-font-mono: ui-monospace, 'Cascadia Code', 'SF Mono', Menlo, Consolas, monospace;
+  /* The same three the playgrounds wear, and the fallbacks behind them are what the page had on
+     its own — a visitor whose download fails still gets the old rendering rather than a default. */
+  --app-font-display: 'Newsreader', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+  --app-font-body: 'Geist', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+  --app-font-mono: 'Geist Mono', ui-monospace, 'Cascadia Code', 'SF Mono', Menlo, monospace;
 
   --app-primary: #c13584;
   --app-primary-ink: #ffffff;

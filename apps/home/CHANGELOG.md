@@ -4,6 +4,21 @@ Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No s
 
 **This file is the app's memory.** The code states what holds now; why it came to hold lives here.
 
+## 2026-09-18, the name is set in the face the rest of the site uses
+
+### Fixed — the front door was the one page with no typography of its own
+
+`--app-font-display` read `'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif` and
+this app shipped no font at all. So the site's own name — the first thing anyone reads here —
+rendered in whatever the visitor happened to have: Iowan on a Mac, Palatino Linotype on a Windows
+machine with Office, Georgia on everything else. Three different first impressions, none of them
+chosen, and none of them the face the three playgrounds behind this page have self-hosted all along.
+
+Newsreader, Geist and Geist Mono now ship from this origin too, byte-identical with the
+playgrounds', preloaded so they arrive before first paint rather than re-laying out every block
+under the name. The old stack stays behind each one as the fallback, so a failed download lands on
+the rendering the page had before instead of on a browser default.
+
 ## 2026-09-17, the site drops MUI
 
 ### Removed

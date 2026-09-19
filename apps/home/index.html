@@ -6,6 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!--
+      Preloaded, not merely declared: the name at the top of this page is the site's first
+      impression, and a face that arrives after first paint re-lays out every block under it.
+      `@font-face` lives in src/styles/fonts.css.
+    -->
+    <link rel="preload" href="/fonts/geist.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/newsreader.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/geist-mono.woff2" as="font" type="font/woff2" crossorigin />
+
+    <!--
       This head is the whole page as far as a link scraper is concerned: `#root` is empty until the
       bundle runs, and Slack, LinkedIn, X and iMessage do not run it. So the four strings below are
       the same four the application renders — `seo.home.*` in `src/i18n/translations/en/common.json`

@@ -1,0 +1,35 @@
+/**
+ * The three faces, served from this origin so they can be preloaded and arrive before first paint.
+ *
+ * The page said `'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif` and shipped
+ * nothing, so the name at the top of the site rendered in whatever the visitor happened to have —
+ * Iowan on a Mac, Palatino Linotype on a Windows machine with Office, Georgia on the rest. The
+ * three playgrounds behind this page have self-hosted these same files all along.
+ *
+ * Latin subsets only, variable weight axes. The files are byte-identical with the playgrounds';
+ * regenerate them together with antumbra's `scripts/fetch-fonts.mjs`.
+ */
+
+@font-face {
+  font-family: 'Geist';
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url('/fonts/geist.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Geist Mono';
+  font-style: normal;
+  font-weight: 400 500;
+  font-display: swap;
+  src: url('/fonts/geist-mono.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Newsreader';
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url('/fonts/newsreader.woff2') format('woff2');
+}
