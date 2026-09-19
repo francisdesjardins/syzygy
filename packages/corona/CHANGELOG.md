@@ -5,6 +5,32 @@ Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No s
 **This file is the package's memory.** The code states what holds now; why it came to hold lives
 here.
 
+## 2026-09-18, the whole shell is corona's
+
+### Added — `AppShell`
+
+The bar and the drawer were already here; what each playground still kept was the thing that
+composes them — the breakpoint, the drawer's open state, the `shell`/`main`/`toolbarSpacer`/
+`content` skeleton, the outlet under it and the mascot over it.
+
+They were the same file. One stylesheet was **byte-identical** to another; the third differed by a
+comment's wording and a `transition: margin-right` on a margin nothing anywhere changes.
+
+What a playground actually owns turned out to be four things, and they are the four arguments:
+its name, its mark, its routes and its moon. Each `RootLayout` is now that call and whatever else
+that playground genuinely has — two of them wire a code dialog into `overlay`.
+
+Three widget folders per playground become one. `widgets/top-bar` is gone in all three, the mark
+moving to a `BrandMark` beside the other shared UI; `widgets/sidebar` keeps only the nav model it
+always owned.
+
+### Fixed — a drawer that arrived a frame late on every phone load
+
+`useMediaQuery` existed twice. One version read `false`, then corrected in an effect: the desktop
+layout rendered first and the drawer replaced it a frame later, on every narrow load. The other
+subscribed through `useSyncExternalStore` and was right on the first paint. That one is corona's
+now, and the two playgrounds that had the other one stop flashing.
+
 ## 2026-09-18, corona has no barrel, and now has a CLAUDE.md
 
 ### Removed — the `.` export

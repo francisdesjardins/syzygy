@@ -1,16 +1,18 @@
+import { AppShell } from 'corona/shell';
 import { AntumbraMoon } from '@/shared/ui/PeekingMoon/AntumbraMoon';
+import { EclipseMark } from '@/shared/ui/EclipseMark';
 import { useCodeDialog } from '@/widgets/code-viewer';
 import { useCodePane } from '@/shared/lib/code-pane-context';
-import { useTheme } from 'corona/theme';
-import { useMediaQuery } from '@/shared/lib/use-media-query';
-import { Sidebar } from '@/widgets/sidebar';
-import { TopBar } from '@/widgets/top-bar';
-import styles from '@/widgets/root-layout/ui/RootLayout.module.css';
-import { PeekingMoon } from 'corona/mascot';
-import { Outlet, useRouterState } from '@tanstack/react-router';
-import { useEffect, useState } from 'react';
+import { NAV_GROUPS } from '@/widgets/sidebar';
+import { useEffect } from 'react';
 
-const MainContent = () => {
+/**
+ * The shell is corona's; what this playground owns is its name, its mark, its routes and its moon.
+ *
+ * Providers stay above it — they are `app/router.tsx`'s job, and a widget reaching up for them
+ * inverts the layer order.
+ */
+export const RootLayout = () => {
   const codeDialog = useCodeDialog();
   const { setCodeDialogOpen } = useCodePane();
 
@@ -28,60 +30,20 @@ const MainContent = () => {
   }, [open, setCodeDialogOpen]);
 
   return (
-    <main className={styles['main']}>
-      <div className={styles['toolbarSpacer']} />
-      <div className={styles['content']}>
-        <Outlet />
-      </div>
-      {codeDialog.Dialog}
-    </main>
-  );
-};
-
-const ResponsiveShell = () => {
-  // Below MUI's old `md` (900px) — spelled out, so the layout does not move without the theme.
-  const isMobile = useMediaQuery('(max-width: 899.95px)');
-  const [mobileOpen, setMobileOpen] = useState(false);
-
-  const handleToggleSidebar = () => {
-    setMobileOpen((prev) => {
-      return !prev;
-    });
-  };
-
-  const handleCloseSidebar = () => {
-    setMobileOpen(false);
-  };
-
-  return (
-    <div className={styles['shell']}>
-      <TopBar isMobile={isMobile} onMenuClick={handleToggleSidebar} />
-      <Sidebar isMobile={isMobile} mobileOpen={mobileOpen} onClose={handleCloseSidebar} />
-      <MainContent />
-    </div>
-  );
-};
-
-export const RootLayout = () => {
-  // Two reasons, one flag: `/` already shows the same moon still, so a hider beside a full-size
-  // twin reads as a stray render; `/stories` opens panels at the card edges, where a mascot
-  // reads as a fixture misbehaving.
-  const { scheme } = useTheme();
-  const hidesPeekingMoon = useRouterState({
-    select: (state) => {
-      return state.location.pathname === '/' || state.location.pathname === '/stories';
-    },
-  });
-
-  // The shell and nothing above it: providers are `app/router.tsx`'s job, and a widget reaching up
-  // for them inverts the layer order.
-  return (
-    <>
-      <ResponsiveShell />
-      {/* Rendered last, so `--app-z-mascot` is what keeps it under the shell rather than document
-          order. A dialog is out of reach either way: the manager assigns 1300+ and a modal one
-          paints in the top layer, where no `z-index` reaches it. */}
-      {!hidesPeekingMoon && <PeekingMoon moon={<AntumbraMoon isDark={scheme === 'dark'} />} />}
-    </>
+    <AppShell
+      name="Antumbra"
+      /* The flat mark, not the mascot and not a moon phase: the bar says what the product is, and
+         says the same thing the browser tab does. `MoonPhase` keeps its real job as a heading
+         ornament — a lunar phase is a different drawing from an eclipse. */
+      mark={<EclipseMark size={26} />}
+      groups={NAV_GROUPS}
+      current="dialog"
+      moon={(isDark) => {
+        return <AntumbraMoon isDark={isDark} />;
+      }}
+      // `/stories` opens panels at the card edges, where a mascot reads as a fixture misbehaving.
+      hideMascotOn={['/', '/stories']}
+      overlay={codeDialog.Dialog}
+    />
   );
 };

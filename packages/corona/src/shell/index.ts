@@ -1,3 +1,4 @@
+export { AppShell } from './AppShell.tsx';
 export { AppButton } from './AppButton.tsx';
 export { AppIconButton } from './AppIconButton.tsx';
 export { appButtonClass, type AppButtonLook } from './button-recipe.ts';
