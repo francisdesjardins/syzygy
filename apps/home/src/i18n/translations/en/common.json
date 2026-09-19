@@ -1,21 +1,4 @@
 {
-  "title": "hello",
-  "patate": {
-    "magie": "bleg"
-  },
-  "otherTitle": "goodbye goodbye",
-  "errorBoundary": {
-    "title": "Oops! Something went wrong",
-    "message": "We're sorry, but an error occurred while rendering this component",
-    "technicalDetails": "Technical Details",
-    "refreshButton": "Refresh Page"
-  },
-  "eventStatus": {
-    "title": "Event Status:",
-    "namespace": "{{namespace}} events",
-    "allowed": "Allowed",
-    "notAllowed": "Not Allowed"
-  },
   "home": {
     "name": "Francis Desjardins",
     "breathing": "Infrastructure engineer — building blocks, client side and server side · Breathing air since 1980.",
@@ -53,14 +36,6 @@
       "description": "Infrastructure engineer. Framework-free cores with thin bindings over them: the core is plain TypeScript that runs in a browser, a worker or a service, and the binding is the only part that knows which. Zero runtime dependencies.",
       "ogTitle": "Francis Desjardins — building blocks, client side and server side",
       "ogDescription": "Framework-free cores, thin bindings, zero runtime dependencies. What a library refuses to do is the first decision, not the last."
-    },
-    "playground": {
-      "title": "Playground - Francis Desjardins",
-      "description": "Experimental playground for testing modal system, events, and other features"
-    },
-    "formPlayground": {
-      "title": "Form Components - Francis Desjardins",
-      "description": "Interactive playground for FormComponents system with live demos and examples"
     }
   }
 }

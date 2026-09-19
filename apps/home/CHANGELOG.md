@@ -4,6 +4,23 @@ Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No s
 
 **This file is the app's memory.** The code states what holds now; why it came to hold lives here.
 
+## 2026-09-19, fifteen strings from a site that no longer exists
+
+### Removed — dead translations, in both languages
+
+Of thirty-six strings, twenty-one were used. The rest were shipped to production twice over, once
+per language:
+
+- `errorBoundary.*` — four strings for a boundary this application does not have.
+- `eventStatus.*` — four more, "Allowed" and "Not Allowed", from a playground that is not here.
+- `seo.playground.*` and `seo.formPlayground.*` — heads for two pages that do not exist, one of
+  them describing a "FormComponents system".
+- `title`, `otherTitle` and `patate.magie` — `"hello"`, `"goodbye goodbye"` and `"bleg"`.
+
+Nothing referenced any of them; the only `title` in the source is a CSS class. `eventStatus.namespace`
+was also the file's only `{{interpolation}}`, so what remains is twenty-one plain strings with no
+message format in them at all.
+
 ## 2026-09-18, two things that were sections and are not
 
 ### Changed — the location is a byline

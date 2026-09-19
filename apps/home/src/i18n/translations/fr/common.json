@@ -1,21 +1,4 @@
 {
-  "title": "salut",
-  "patate": {
-    "magie": "bleg"
-  },
-  "otherTitle": "aurevoir aurevoir",
-  "errorBoundary": {
-    "title": "Oups! Quelque chose s'est mal passé",
-    "message": "Nous sommes désolés, mais une erreur s'est produite lors du rendu de ce composant",
-    "technicalDetails": "Détails techniques",
-    "refreshButton": "Actualiser la page"
-  },
-  "eventStatus": {
-    "title": "État des événements:",
-    "namespace": "événements {{namespace}}",
-    "allowed": "Autorisé",
-    "notAllowed": "Non autorisé"
-  },
   "home": {
     "name": "Francis Desjardins",
     "breathing": "Ingénieur en infrastructure — des blocs de construction, côté client comme côté serveur · Respire de l’air depuis 1980.",
@@ -53,14 +36,6 @@
       "description": "Ingénieur en infrastructure. Des cores sans framework, avec des bindings minces par-dessus : le core est du TypeScript ordinaire qui tourne dans un navigateur, un worker ou un service, et le binding est la seule partie qui sait lequel. Zéro dépendance d’exécution.",
       "ogTitle": "Francis Desjardins — des blocs de construction, côté client comme côté serveur",
       "ogDescription": "Des cores sans framework, des bindings minces, zéro dépendance d’exécution. Ce qu’une librairie refuse de faire est la première décision, pas la dernière."
-    },
-    "playground": {
-      "title": "Terrain de jeu - Francis Desjardins",
-      "description": "Terrain de jeu expérimental pour tester le système de modales, événements et autres fonctionnalités"
-    },
-    "formPlayground": {
-      "title": "Composants de formulaires - Francis Desjardins",
-      "description": "Terrain de jeu interactif pour le système FormComponents avec démos en direct et exemples"
     }
   }
 }
