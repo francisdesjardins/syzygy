@@ -4,6 +4,26 @@ Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No s
 
 **This file is the app's memory.** The code states what holds now; why it came to hold lives here.
 
+## 2026-09-19, no router, and no blank page under a 200
+
+### Removed — `react-router-dom`
+
+A `BrowserRouter` around a single `<Route path="/">`, for an application with one page. The three
+playgrounds are separate builds served from `/playground/`; nothing here has ever routed to them.
+
+**38.6 KB** off the entry chunk, raw — 108,165 bytes to 69,510.
+
+### Fixed — every path but `/` rendered nothing
+
+`public/_redirects` ends `/* /index.html 200`, so the host hands this document to every request it
+cannot serve a file for. The router then matched no route and rendered an empty body: a blank white
+page, under a status code saying it was fine. A stale link, a typo, or a crawler following either
+got that. Measured against arbitrary paths this site has never had — zero characters rendered.
+
+Without the router there is nothing to match and nothing to fail to match: the page renders. That
+is not a 404, and a real one would need the host to answer differently; it is the difference
+between landing somewhere and landing on nothing.
+
 ## 2026-09-19, fifteen strings from a site that no longer exists
 
 ### Removed — dead translations, in both languages
