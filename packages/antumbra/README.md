@@ -442,6 +442,21 @@ The same pair is quoted in [CLAUDE.md](CLAUDE.md#what-coverage-measures), which 
 "together": this file drifted two points behind it by moving one copy and not the other, which is the
 document-level version of the mistake the paragraph above warns about.
 
+## <img src="docs/brand/moon-last-quarter.svg" width="18" height="18" alt="" /> On dependencies
+
+Zero runtime dependencies is not a badge, and it is not a rule against libraries. `playground/`
+takes MUI, Emotion, TanStack Router and a syntax highlighter — a demo is not what gets shipped, and
+the line is drawn at what is.
+
+What is left is one question, asked earlier than usual: how much of this library am I using? For a
+dialog the honest answer is that the hard parts are already specified by the platform — the top
+layer, the focus restore, the scroll lock, the close semantics. What sits on top of those is a taste
+nobody shares, which is why no UI ships and the renderer stays yours. That is the same decision as
+the dependency count, made one layer up.
+
+The trade is real: this is code to maintain forever, and it earns that where the platform has
+already done the specifying. It would not earn it for time zones or for cryptography.
+
 ## <img src="docs/brand/moon-last-quarter.svg" width="18" height="18" alt="" /> How this repo is run
 
 Friendly warning, so nothing here surprises you: **I commit to `main`.** No release branches, no

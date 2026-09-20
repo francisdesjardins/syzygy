@@ -462,6 +462,22 @@ not at all: one number moved without the other is two projects being compared ac
 `yarn coverage:update` is that rule made mechanical — it runs both commands and rewrites this
 paragraph and the two badges above in one move. Still a snapshot, not a gate.
 
+## On dependencies
+
+Zero runtime dependencies is not a badge, and it is not a rule against libraries. `playground/`
+takes TanStack Router, react-syntax-highlighter, single-spa, Solid and React — a demo is not what
+gets shipped, and the line is drawn at what is.
+
+What is left is one question, asked earlier than usual: how much of this library am I using? A
+bootstrapper answers it badly by construction. It runs before everything else, inside whatever the
+consumer already boots — a page, a worker, a service — so anything it drags along lands in their
+critical path and in their audit. The graph, the scheduler and the intent queue are each small
+enough to own outright, and something you own is something you can replace in an afternoon.
+
+The trade is real: this is code to maintain forever. It earns that where the domain is small and
+already understood. It would not earn it for time zones, for cryptography, or for anything whose
+hard part is the part you have not met yet.
+
 ## How this repo is run
 
 Friendly warning, so nothing here surprises you: **I commit to `main`.** No release branches, no
