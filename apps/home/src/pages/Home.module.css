@@ -28,11 +28,17 @@
 
 /* ── The identity ─────────────────────────────────────────────────────────── */
 
+/*
+ * Centred against the writing, because with no title under it the name is two lines against the
+ * bio's twelve. Aligned to the top it left a third of the column empty and read as a gap where
+ * something had been removed; centred, the space is distributed and reads as margin.
+ */
 .identity {
   grid-area: identity;
   display: flex;
   flex-direction: column;
   gap: var(--app-space-3);
+  align-self: center;
 }
 
 /*
@@ -51,14 +57,6 @@
   letter-spacing: -0.02em;
   text-wrap: balance;
   color: var(--app-text);
-}
-
-.role {
-  max-width: 28ch;
-  margin: 0;
-  font-size: var(--app-text-lg);
-  line-height: var(--app-lh-snug);
-  color: var(--app-text-secondary);
 }
 
 .byline {
@@ -348,10 +346,6 @@
   .identity,
   .bio {
     max-width: 34rem;
-  }
-
-  .role {
-    max-width: none;
   }
 
   .bio {

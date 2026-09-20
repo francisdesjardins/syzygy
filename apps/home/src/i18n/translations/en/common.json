@@ -1,13 +1,12 @@
 {
   "home": {
     "name": "Francis Desjardins",
-    "breathing": "Infrastructure engineer — building blocks, client side and server side · Breathing air since 1980.",
-    "enough": "Prefers explicit over implicit, predictable over magical. Writes primitives other people build things with — which is either very useful or very humbling depending on the day. What a library refuses to do is the first decision, not the last.",
+    "enough": "A dependency is easy to add and hard to remove, and most of what one does goes unused. The three libraries here ship none. The pages that demonstrate them take a router, a component kit and two renderers — a demo is not what gets shipped.",
     "expiry": "... still under active development",
     "skills": {
       "title": "What I build",
-      "description": "Framework-free cores with thin bindings over them. The core is plain TypeScript that runs in a browser, a worker or a service, and the binding is the only part that knows which — a test walks the import graph and fails if the core ever reaches a framework. Zero runtime dependencies, three for three.",
-      "thinking": "The same habits either side of the wire: derive behaviour from what was declared instead of adding a flag for it, write the refusals down before the features, and put a gate where a convention would otherwise be a comment nobody re-reads. Measures things in nanoseconds when nobody is watching.",
+      "description": "Framework-free cores with thin bindings over them. The core is plain TypeScript that runs in a browser, a worker or a service, and the binding is the only part that knows which — a test walks the import graph and fails if the core ever reaches a framework.",
+      "thinking": "None of this is a rule against libraries. It is one question, asked earlier than usual: how much of this one am I using? A draft library left here when it turned out all six stores it served mutated a flat object, where a spread does the same work. Software that runs for fifteen years pays for asking. A showcase never notices.",
       "secondary": "Also: a self-declared cat person. No further questions."
     },
     "work": {
@@ -27,15 +26,15 @@
       }
     },
     "location": {
-      "description": "Based in Quebec"
+      "description": "Based in Quebec · Breathing air since 1980"
     }
   },
   "seo": {
     "home": {
-      "title": "Francis Desjardins — building blocks, client side and server side",
-      "description": "Infrastructure engineer. Framework-free cores with thin bindings over them: the core is plain TypeScript that runs in a browser, a worker or a service, and the binding is the only part that knows which. Zero runtime dependencies.",
-      "ogTitle": "Francis Desjardins — building blocks, client side and server side",
-      "ogDescription": "Framework-free cores, thin bindings, zero runtime dependencies. What a library refuses to do is the first decision, not the last."
+      "title": "Francis Desjardins — framework-free cores, nothing shipped with them",
+      "description": "Framework-free cores with thin bindings over them: the core is plain TypeScript that runs in a browser, a worker or a service, and the binding is the only part that knows which. Three libraries, no runtime dependencies between them.",
+      "ogTitle": "Francis Desjardins — framework-free cores, nothing shipped with them",
+      "ogDescription": "A dependency is easy to add and hard to remove, and most of what one does goes unused. Three libraries that ship none, and the demos that take plenty."
     }
   }
 }

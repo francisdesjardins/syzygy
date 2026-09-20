@@ -56,7 +56,7 @@ export const Home = memo(() => {
         <h1 className={styles['name']} id="main-heading">
           {t('home.name')}
         </h1>
-        <p className={styles['role']}>{t('home.breathing')}</p>
+        {/* No title under the name. What he does is the argument in the next column, not a label. */}
         <p className={styles['byline']}>{t('home.location.description')}</p>
       </header>
 
