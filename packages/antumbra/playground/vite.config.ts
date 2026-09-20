@@ -77,7 +77,6 @@ export default defineConfig({
     include: [
       '@mui/material/styles',
       '@tanstack/react-router',
-      'immer',
       'react-syntax-highlighter/dist/esm/prism-light',
       'react-syntax-highlighter/dist/esm/languages/prism/bash',
       'react-syntax-highlighter/dist/esm/languages/prism/css',

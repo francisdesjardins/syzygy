@@ -67,7 +67,7 @@ store.set((prev) => ({ ...prev, count: prev.count + 1 }));
 store.reset(); // back to the initial baseline
 ```
 
-There is **no `update(draft => …)`** — the store carries no draft/immutability engine, keeping it dependency-free. For nested updates, compose any immutable-update helper at the call site: `store.set((s) => produce(s, (d) => { d.a.b.c = 1 }))`. The playground wraps that as `createImmerStore` (`shared/lib/immer-store.ts`, ~10 lines), with immer a **playground devDependency** that never enters the shipped bundle.
+There is **no `update(draft => …)`** — the store carries no draft/immutability engine, keeping it dependency-free. For nested updates, compose any immutable-update helper at the call site: `store.set((s) => produce(s, (d) => { d.a.b.c = 1 }))`. The playground wraps that as `createDraftStore` (`shared/lib/draft-store.ts`), over a copy-on-write `Proxy` it writes out itself in `shared/lib/draft.ts` — so even the playground carries no dependency for it.
 
 ## Nothing writes during render
 
