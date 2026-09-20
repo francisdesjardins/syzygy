@@ -16,6 +16,7 @@
     "./code": "./src/code/index.ts",
     "./contract": "./src/api/contract.ts",
     "./icons": "./src/icons/index.ts",
+    "./lib": "./src/lib/index.ts",
     "./mascot": "./src/mascot/index.ts",
     "./package.json": "./package.json",
     "./shell": "./src/shell/index.ts",

@@ -1,5 +1,5 @@
 import { colors } from '@/entities/dialog-template/ui/shared/tokens';
-import { useMediaQuery } from '@/shared/lib/use-media-query';
+import { useMediaQuery } from 'corona/lib';
 import { useCallback, useEffect, useLayoutEffect, useState, type ReactNode } from 'react';
 import { ThemeContext } from 'corona/theme';
 

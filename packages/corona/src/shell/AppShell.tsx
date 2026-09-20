@@ -6,7 +6,7 @@ import { useTheme } from '../theme/index.ts';
 import type { PlaygroundSlug } from '../site/index.ts';
 import { Sidebar, type NavGroup } from './Sidebar.tsx';
 import { TopBar } from './TopBar.tsx';
-import { useMediaQuery } from './use-media-query.ts';
+import { useMediaQuery } from '../lib/use-media-query.ts';
 import styles from './AppShell.module.css';
 
 /** Below the drawer breakpoint. Spelled out, so the layout does not move without the sheet. */

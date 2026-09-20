@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { sectionSlug } from '@/shared/lib/section-slug';
+import { sectionSlug } from 'corona/lib';
 import styles from '@/entities/example/ui/ExampleSection.module.css';
 
 /**
