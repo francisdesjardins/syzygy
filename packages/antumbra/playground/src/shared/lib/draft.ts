@@ -88,10 +88,7 @@ function draft(node: Node): unknown {
       return true;
     },
     deleteProperty(_target, key) {
-      // Deleting the key it was handed is the whole of what this trap is for; a static key would
-      // mean it answered for one property.
-      // oxlint-disable-next-line typescript/no-dynamic-delete -- see above
-      delete ensureCopy(node)[key];
+      Reflect.deleteProperty(ensureCopy(node), key);
       node.children.delete(key);
       return true;
     },

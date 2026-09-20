@@ -1,12 +1,8 @@
 import { createStore, type CreateStoreOptions, type Store, type StoreApi } from 'antumbra/react';
 import { produce } from '@/shared/lib/draft';
 
-// The "extend the builder" pattern: the library's `createStore` offers only `set`/`reset`, and the
-// builder's `api` is where a project adds what it wants on top — here a draft-mutating `update`.
-//
-// It was immer, and immer was worth measuring rather than assuming: all six stores in this
-// playground mutate a **flat** object, where `update(d => { d.x = v })` is `set(s => ({ ...s, x: v }))`
-// and the library buys nothing. `draft.ts` beside this file is the small half of it, written out.
+// The "extend the builder" pattern: the library offers `set`/`reset`, and the builder's `api` is
+// where a project adds what it wants on top — here an `update` that runs `draft.ts` beside it.
 
 /** Builder API extended with a draft-mutating `update`. */
 export type DraftStoreApi<TSnapshot, TContext = never> = StoreApi<TSnapshot, TContext> & {
