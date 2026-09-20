@@ -161,8 +161,9 @@ export const CATEGORIES: readonly CategoryDef[] = [
     id: 'watching',
     label: 'Watching a run happen',
     specifier: CORE,
-    blurb: 'What the outcome cannot tell you, because it only exists once the run is over.',
-    symbols: ['RunEvent'],
+    blurb:
+      'What the outcome cannot tell you, because it only exists once the run is over — the stream for your code, the logger for your own eyes.',
+    symbols: ['RunEvent', 'setLogLevel'],
   },
   {
     id: 'shared',

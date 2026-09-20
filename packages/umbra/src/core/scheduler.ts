@@ -1,4 +1,5 @@
 import type { Clock } from '../utils/clock.js';
+import { createLogger } from '../utils/logger.js';
 import { serializeError } from '../utils/serialize-error.js';
 import { BlockSignal, BootstrapError } from './errors.js';
 import type { EventHub } from './events.js';
@@ -20,6 +21,25 @@ import type {
   StepStatus,
   StepTrace,
 } from './types.js';
+
+const log = createLogger('step');
+
+/**
+ * The console level each ending earns, exhaustive so the next status cannot be added without one.
+ *
+ * `blocked` and `skipped` are decisions the step made, and a warning about either would train a
+ * reader to ignore warnings. Only what nobody asked for raises its voice.
+ */
+const STEP_LEVEL: Readonly<
+  Record<StepStatus, (message: string, data?: Record<string, unknown>) => void>
+> = {
+  success: log,
+  skipped: log,
+  blocked: log,
+  cancelled: log.warn,
+  'timed-out': log.warn,
+  failed: log.error,
+};
 
 /**
  * What a shared step's ending looks like to everyone else waiting on its key.
@@ -377,6 +397,15 @@ export async function runPreflight(
         ...(attempt.lateWrites === 0 ? {} : { lateWrites: attempt.lateWrites }),
       };
       timeline.push(trace);
+      // Beside `step:settle` and not inside `attemptStep`, because this is the first place the
+      // ending is the one the outcome will report: a refusal leaves the attempt saying `cancelled`,
+      // and a console disagreeing with `outcome.timeline` is worse than no console at all.
+      STEP_LEVEL[status](`Step ${status}`, {
+        step: planned.id,
+        ms: Math.round(trace.durationMs),
+        ...(reason === undefined ? {} : { reason }),
+        ...(trace.error === undefined ? {} : { error: trace.error.message }),
+      });
       events?.emit({ kind: 'step:settle', trace });
 
       if (status === 'success') {

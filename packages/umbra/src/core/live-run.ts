@@ -1,4 +1,5 @@
 import type { Clock } from '../utils/clock.js';
+import { createLogger } from '../utils/logger.js';
 import { createStore } from '../store/create-store.js';
 import { BootstrapError } from './errors.js';
 import type { IntentEntry, IntentSink } from './intent-queue.js';
@@ -9,6 +10,9 @@ import { attemptStep, skippedTrace } from './run-step.js';
 import type { PreflightResult } from './scheduler.js';
 import { createHostedContext } from './step-context.js';
 import type { Intent, Notice, StepFailure, StepStatus, StepTrace } from './types.js';
+
+const intentLog = createLogger('intent');
+const liveLog = createLogger('live');
 
 /** What the hosted phase did, since the outcome was frozen before it ran. */
 export type HostReport = {
@@ -172,6 +176,13 @@ export function createLiveRun(deps: LiveRunDeps): LiveRun {
 
   const transition = (intentId: string, next: Partial<Intent>): void => {
     const current = find(intentId);
+    // Every status an intent reaches passes through here, so the type and the id are enough to
+    // follow one across the queue. The payload never is: it is the caller's data.
+    intentLog(`Intent ${next.status ?? current.status}`, {
+      intent: intentId,
+      type: current.type,
+      ...(next.droppedReason === undefined ? {} : { reason: next.droppedReason }),
+    });
     setIntents(replace(store.get().intents, Object.freeze({ ...current, ...next })));
   };
 
@@ -216,6 +227,7 @@ export function createLiveRun(deps: LiveRunDeps): LiveRun {
       // an author expects — StrictMode doubles effects, and a reactive effect re-runs whenever
       // anything it read changed — and a hosted phase that ran twice would ask the user the same
       // question twice.
+      liveLog('Host attached');
       mounting ??= runHosted({ deps, host, sink: liveSink, awaitIntent }).then((report) => {
         // Published, not just returned: the graph a binding draws needs the mounted half too, and
         // only the caller that happened to await `mount` would otherwise ever see it.
@@ -226,6 +238,7 @@ export function createLiveRun(deps: LiveRunDeps): LiveRun {
     },
 
     dispose: () => {
+      liveLog('Live run disposed');
       disposed = true;
       for (const intent of store.get().intents) {
         if (intent.status === 'pending') {

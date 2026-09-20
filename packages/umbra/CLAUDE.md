@@ -159,10 +159,8 @@ queues "redirect to sign-in" and then throws is precisely the case where the int
 key to scope it by: a type that needs to queue twice with different payloads is describing two
 things.
 
-**Nothing in `run-step.ts` ever rejects an unawaited promise.** The step's work is folded into a
-promise that resolves with either branch, and the abort side resolves rather than rejects. A step
-that loses the race and fails a second later would otherwise take the process down with an unhandled
-rejection, which turns a red test into a dead test runner.
+**Nothing in `run-step.ts` ever rejects an unawaited promise**, and `attemptStep`'s own doc comment
+is where that argument lives rather than a second copy of it here.
 
 **A step's timeout starts when `run` is entered**, not when the plan was computed. A step waiting
 behind a dependency has spent none of its own budget.

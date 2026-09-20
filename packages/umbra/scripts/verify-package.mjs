@@ -44,6 +44,13 @@ const files = walk(DIST);
 // which is what the `mustReach` assertions exist to catch, and did.
 const importPattern = /from\s+["']([^"']+)["']/g;
 
+// Comments first: `tsc` copies JSDoc into the declarations, so a public `@example` showing how to
+// import this package reads here as the package importing itself. A library whose examples cannot
+// name it is the wrong trade.
+function code(source) {
+  return source.replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|[^:"'`])\/\/[^\n]*/g, '$1');
+}
+
 const PEERS = ['react', 'react-dom', 'react/jsx-runtime', 'solid-js'];
 function isPeer(specifier) {
   return PEERS.includes(specifier) || specifier.startsWith('solid-js/');
@@ -67,7 +74,7 @@ function graphOf(entryFile) {
     const file = queue.pop();
     if (files.has(file) || !existsSync(file)) continue;
     files.add(file);
-    for (const [, specifier] of readFileSync(file, 'utf8').matchAll(importPattern)) {
+    for (const [, specifier] of code(readFileSync(file, 'utf8')).matchAll(importPattern)) {
       if (specifier.startsWith('.')) queue.push(join(file, '..', specifier));
       else packages.add(specifier.startsWith('solid-js/') ? 'solid-js' : specifier);
     }
@@ -76,7 +83,7 @@ function graphOf(entryFile) {
 }
 
 for (const file of files) {
-  const source = readFileSync(file, 'utf8');
+  const source = code(readFileSync(file, 'utf8'));
   for (const [, specifier] of source.matchAll(importPattern)) {
     // 2. A relative import without an extension is invalid under node16/nodenext resolution, and
     //    `skipLibCheck` hides it in every consumer until one turns it off.

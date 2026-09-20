@@ -10,6 +10,17 @@ const SRC = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 // package's own `verify:package` shipped exactly that bug until a `mustReach` assertion caught it.
 const IMPORT_PATTERN = /(?:^|\n)\s*(?:import|export)[\s\S]*?from\s+["']([^"']+)["']/g;
 
+/**
+ * Comments go before the scan, because `[\s\S]*?` above crosses anything.
+ *
+ * An `export` with no `from` of its own pairs with the next one in the file, and a JSDoc `@example`
+ * showing how to import this package is exactly that — one phantom edge from the package to itself,
+ * asserted against a list that cannot contain it.
+ */
+function withoutComments(source: string): string {
+  return source.replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|[^:"'`])\/\/[^\n]*/g, '$1');
+}
+
 /** Every module the given entry can reach, as paths relative to `src`, and every package. */
 function graphFrom(entry: string): { files: Set<string>; packages: Set<string> } {
   const files = new Set<string>();
@@ -22,7 +33,7 @@ function graphFrom(entry: string): { files: Set<string>; packages: Set<string> }
       continue;
     }
     files.add(file);
-    const source = readSource(file);
+    const source = withoutComments(readSource(file));
     for (const match of source.matchAll(IMPORT_PATTERN)) {
       const specifier = match[1] ?? '';
       if (!specifier.startsWith('.')) {

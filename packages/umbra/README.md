@@ -327,6 +327,35 @@ Open it before `run()`: it buffers from the moment it is created and ends on its
 The stream reports what is happening, never what it means. Whether the app may mount is the
 outcome's answer, and a consumer that reduces these events into its own version of it will drift.
 
+## Following a run in the console
+
+The event stream is for your code. For your own eyes there is a debug logger, off until you say
+otherwise and near-free while it is off. Every line carries a monotonic `#0001` id shared across
+namespaces: note the latest, do the thing you are investigating, then read everything above it.
+
+```ts
+import { setLogLevel } from 'umbra';
+
+setLogLevel('*'); // every namespace
+setLogLevel('step,intent'); // two of them
+setLogLevel(false); // off again
+```
+
+| Namespace | Description                               |
+| --------- | ----------------------------------------- |
+| `run`     | The run itself, and how it settled        |
+| `step`    | Each attempt and the ending it reached    |
+| `plan`    | The levels the graph compiled to          |
+| `intent`  | Every status an intent passes through     |
+| `live`    | The live run: a host attaching, a dispose |
+
+There is no `localStorage` switch, unlike antumbra's logger. The core reads no DOM global at all —
+that is what lets it run in a worker, a service or a server render, and `no-dom.test.ts` measures
+it — so the pattern is set in code. That costs nothing here: the host decides when the boot happens,
+so it has a moment to say so first.
+
+Ids, statuses and durations are logged. Step data, notice payloads and intent payloads are not.
+
 ## What else does this
 
 Nothing that covers the whole shape, as far as I can tell. Every ecosystem re-solves a piece of it

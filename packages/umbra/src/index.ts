@@ -33,6 +33,7 @@ export { DEFAULT_DEADLINE_MS } from './core/scheduler.js';
 export type { HostReport, LiveRun, LiveRunState } from './core/live-run.js';
 export type { RunObserver, RunStage, RunSnapshot } from './core/run-observer.js';
 export type { ReadableStore, Store } from './store/create-store.js';
+export { setLogLevel } from './utils/logger.js';
 export { serializeError } from './utils/serialize-error.js';
 export { systemClock } from './utils/clock.js';
 export type { Clock } from './utils/clock.js';

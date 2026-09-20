@@ -1,4 +1,5 @@
 import { type Clock, systemClock } from '../utils/clock.js';
+import { createLogger } from '../utils/logger.js';
 import { BootstrapError } from './errors.js';
 import { type RunEvent, type EventHub, createEventHub } from './events.js';
 import { compilePlan } from './plan.js';
@@ -13,6 +14,9 @@ import type {
   PartialRunData,
   StepListCheck,
 } from './types.js';
+
+const runLog = createLogger('run');
+const planLog = createLogger('plan');
 
 /** Everything `createBootstrap` accepts. Only `steps` is required. */
 export type BootstrapOptions<TSteps extends readonly AnyStep[]> = {
@@ -158,6 +162,16 @@ export function createBootstrap<const TSteps extends readonly AnyStep[]>(
   const compiled = compilePlan(options.steps);
   const clock = options.clock ?? systemClock;
 
+  // The whole argument of the library in one line: what you declared, and the parallelism that fell
+  // out of it. Widths rather than ids, so a fifty-step graph stays one line.
+  planLog('Plan compiled', {
+    steps: compiled.plan.nodes.length,
+    levels: compiled.plan.levels.length,
+    widths: compiled.plan.levels.map((level) => {
+      return level.ids.length;
+    }),
+  });
+
   const hub: EventHub = createEventHub();
   if (options.onEvent !== undefined) {
     hub.listen(options.onEvent);
@@ -169,6 +183,8 @@ export function createBootstrap<const TSteps extends readonly AnyStep[]>(
   let observer: RunObserver<TSteps> | undefined;
 
   const execute = async (): Promise<Outcome<TSteps>> => {
+    const startedElapsed = clock.elapsed();
+    runLog('Run started');
     hub.emit({ kind: 'run:start', plan: compiled.plan, at: clock.wall() });
     const schedulerOptions: SchedulerOptions = {
       clock,
@@ -178,6 +194,15 @@ export function createBootstrap<const TSteps extends readonly AnyStep[]>(
     };
     const result = await runPreflight(compiled, schedulerOptions);
     preflight = result;
+    // Counts, not contents: the notice and intent payloads are the caller's data, and this is a
+    // console.
+    (result.status === 'ready' ? runLog : runLog.warn)(`Run ${result.status}`, {
+      ms: Math.round(clock.elapsed() - startedElapsed),
+      notices: result.notices.length,
+      intents: result.intents.length,
+      errors: result.errors.length,
+      ...(result.blockedBy === undefined ? {} : { blockedBy: result.blockedBy }),
+    });
     hub.emit({ kind: 'run:settle', status: result.status, at: clock.wall() });
 
     // The same untyped boundary as `ctx.get`: settled values live in a `Map<StepId, unknown>`

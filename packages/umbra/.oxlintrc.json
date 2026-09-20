@@ -30,6 +30,15 @@
       }
     },
     {
+      // The one module allowed to reach the console, because printing to it is what it is for. The
+      // exemption is a path here rather than an `oxlint-disable` in the file: `CLAUDE.md` keeps
+      // shipped code free of those, and a reader auditing what may log reads this list.
+      "files": ["src/utils/logger.ts"],
+      "rules": {
+        "no-console": "off"
+      }
+    },
+    {
       // Type fixtures are written to be rejected. A `@ts-expect-error` line is a bare expression by
       // construction, and a deliberately wrong `run` is a concise arrow because the point is the
       // return type rather than the body.
