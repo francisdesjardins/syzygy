@@ -37,6 +37,41 @@
   --app-flame-wash: rgb(193 53 132 / 0.1);
   --app-ring: #ff69b4;
   --app-glow: 0 0 0 1px rgb(255 105 180 / 0.55), 0 0 32px -10px rgb(255 105 180 / 0.4);
+
+  /*
+   * The base's neutrals are blue-grey. Overriding them is the deliberate act penumbra's README
+   * describes: this page is about an eclipse, so its greys carry the accent's violet instead.
+   *
+   * `--app-bg` is as dark as it can be and still hold the accent as a link: the gate refused
+   * #ece8f0 at 4.23:1, and this measures 4.61:1.
+   */
+  --app-bg: #f5f2f8;
+  --app-paper: #fdfcfe;
+  --app-text: #17111d;
+  --app-text-secondary: #4a4055;
+  --app-text-tertiary: #6d6278;
+  --app-divider: rgb(23 17 29 / 0.12);
+
+  /*
+   * The three shadows an eclipse casts, which is where the three projects get their names and their
+   * order. They are grounds rather than decoration: each project sits on its own, and the page
+   * reads outward from the umbra, so the sequence needs no number beside it.
+   *
+   * **The middle one is dark, and the contrast gate is why.** A pale penumbra was tried first and
+   * the deep fuchsia could not live on it — 3.39:1, and still only 4.41:1 against a ground so light
+   * it stopped being distinguishable from the antumbra. So the middle zone went the other way, which
+   * is also what it is: a penumbra is a shadow, and only the antumbra is back out in the light.
+   * Each zone carries the accent that can be read on it.
+   */
+  --app-umbra: #17111d;
+  --app-umbra-ink: #f2ecf5;
+  --app-umbra-accent: #ff8bc4;
+  --app-penumbra: #3a2f46;
+  --app-penumbra-ink: #f2ecf5;
+  --app-penumbra-accent: #ff8bc4;
+  --app-antumbra: #fdfcfe;
+  --app-antumbra-ink: #241b2c;
+  --app-antumbra-accent: #c13584;
 }
 
 :root[data-color-scheme='dark'] {
@@ -51,4 +86,24 @@
   --app-flame-wash: rgb(255 139 196 / 0.14);
   --app-ring: #ffaed5;
   --app-glow: 0 0 0 1px rgb(255 174 213 / 0.5), 0 0 32px -8px rgb(255 174 213 / 0.35);
+
+  --app-bg: #0c0910;
+  --app-paper: #15111c;
+  --app-text: #f2ecf5;
+  --app-text-secondary: #b2a7bf;
+  --app-text-tertiary: #8d8199;
+  --app-divider: rgb(242 236 245 / 0.14);
+
+  /* The same three, with the range compressed: on a dark page the umbra cannot go further down, so
+     the distance between the zones is made at the light end instead — and every zone can carry the
+     one light fuchsia, which the light scheme's antumbra cannot. */
+  --app-umbra: #070509;
+  --app-umbra-ink: #e7dfec;
+  --app-umbra-accent: #ff8bc4;
+  --app-penumbra: #241c2d;
+  --app-penumbra-ink: #ebe4ef;
+  --app-penumbra-accent: #ff8bc4;
+  --app-antumbra: #3a2f46;
+  --app-antumbra-ink: #f4eff7;
+  --app-antumbra-accent: #ff8bc4;
 }

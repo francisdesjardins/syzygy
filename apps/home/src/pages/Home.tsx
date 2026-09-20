@@ -1,37 +1,39 @@
 import { memo } from 'react';
 import { useTranslation } from '../i18n';
-import { SurfaceCard } from 'corona/surface';
 
 import { useDocumentHead } from '../hooks/useDocumentHead';
 import styles from './Home.module.css';
 
-type WorkItemProps = {
+type Zone = 'umbra' | 'penumbra' | 'antumbra';
+
+type ShadowProps = {
+  readonly zone: Zone;
   readonly href: string;
   readonly name: string;
   readonly description: string;
 };
 
 /**
- * One project and the playground that demonstrates it.
+ * One project, standing on the shadow it is named after.
  *
- * Every one of them is its own build served out of `public/playground/`, so the link is a plain
- * anchor: it leaves this application rather than being matched by the router. No branch for a
- * router link, because this application has no second page to route to.
+ * The three are the regions an eclipse casts, read outward from the middle — the full shadow, the
+ * partial one around it, and what is left past its tip. So the ground each one stands on is the
+ * ordering: nothing here is numbered, because the page already darkens and lightens in the order
+ * the names do.
  *
- * The card is corona's, the same one every page of those three playgrounds is built from — this is
- * the door to them, so it should not be the one surface on the site that looks like something else.
- * The link stretches over the whole card rather than sitting on the name: these are the page's only
- * action, and a five-letter word was the entire target.
+ * Every playground is its own build served out of `public/playground/`, so the link is a plain
+ * anchor: it leaves this application rather than being matched by a router, and this application
+ * has no second page to route to.
  */
-const WorkItem = ({ href, name, description }: WorkItemProps) => {
+const Shadow = ({ zone, href, name, description }: ShadowProps) => {
   return (
-    <li className={styles['workItem']}>
-      <SurfaceCard interactive>
-        <a className={styles['workLink']} href={href}>
-          {name}
-        </a>
-        <p className={styles['secondary']}>{description}</p>
-      </SurfaceCard>
+    <li className={[styles['zone'], styles[zone]].join(' ')}>
+      <a className={styles['zoneLink']} href={href}>
+        {/* How much of the disc the shadow covers: all of it, half of it, only its edge. */}
+        <span className={styles['mark']} aria-hidden="true" />
+        <span className={styles['zoneName']}>{name}</span>
+      </a>
+      <p className={styles['zoneText']}>{description}</p>
     </li>
   );
 };
@@ -49,76 +51,57 @@ export const Home = memo(() => {
   });
 
   return (
-    <main className={styles['container']}>
-      <div className={styles['card']}>
-        <section className={styles['intro']}>
-          <h1 className={styles['title']} id="main-heading">
-            {t('home.name')}
-          </h1>
-          <div className={styles['lede']}>
-            <p className={styles['body']}>{t('home.breathing')}</p>
-            <p className={styles['secondary']}>{t('home.enough')}</p>
-            {/* A byline, not a section. It was an `<h2>` over three words, which spent a heading
-                rank on it and left a lone heading at the foot of a column. */}
-            <p className={styles['byline']}>{t('home.location.description')}</p>
-          </div>
-        </section>
+    <main className={styles['page']}>
+      <header className={styles['identity']}>
+        <h1 className={styles['name']} id="main-heading">
+          {t('home.name')}
+        </h1>
+        <p className={styles['role']}>{t('home.breathing')}</p>
+        <p className={styles['byline']}>{t('home.location.description')}</p>
+      </header>
 
-        <hr className={styles['rule']} />
+      {/*
+        The bio carries its heading for the document outline and not for the eye: "What I build"
+        over a paragraph that says what he builds restates its own content, and the page has one
+        screen to spend.
+      */}
+      <section className={styles['bio']} aria-labelledby="bio-heading">
+        <h2 className={styles['hidden']} id="bio-heading">
+          {t('home.skills.title')}
+        </h2>
+        <p className={styles['lede']}>{t('home.enough')}</p>
+        <p>{t('home.skills.description')}</p>
+        <p>{t('home.skills.thinking')}</p>
+        <p className={styles['quiet']}>{t('home.skills.secondary')}</p>
+      </section>
 
-        <div className={styles['columns']}>
-          {/* Left column: what the work is, and where it is done from */}
-          <div className={styles['column']}>
-            <section className={styles['section']} aria-labelledby="skills-heading">
-              <h2 className={styles['heading']} id="skills-heading">
-                {t('home.skills.title')}
-              </h2>
-              <p className={styles['secondary']}>{t('home.skills.description')}</p>
-              <p className={styles['secondary']}>{t('home.skills.thinking')}</p>
-              <p className={[styles['secondary'], styles['italic']].join(' ')}>
-                {t('home.skills.secondary')}
-              </p>
-            </section>
-          </div>
-
-          {/*
-            Right column: the three projects, each linking out to its own playground.
-
-            Outward from the middle of the eclipse — umbra, penumbra, antumbra — which is the order
-            `PLAYGROUNDS` in corona uses for the same three, and the order the sentence above sets
-            the reader up for by saying where the names come from.
-          */}
-          <section
-            className={[styles['section'], styles['aside']].join(' ')}
-            aria-labelledby="work-heading"
-          >
-            <h2 className={styles['heading']} id="work-heading">
-              {t('home.work.title')}
-            </h2>
-            <p className={styles['secondary']}>{t('home.work.description')}</p>
-            <ul className={styles['work']}>
-              <WorkItem
-                href="/playground/boot/"
-                name={t('home.work.boot.name')}
-                description={t('home.work.boot.description')}
-              />
-              <WorkItem
-                href="/playground/design/"
-                name={t('home.work.designSystem.name')}
-                description={t('home.work.designSystem.description')}
-              />
-              <WorkItem
-                href="/playground/dialog/"
-                name={t('home.work.dialog.name')}
-                description={t('home.work.dialog.description')}
-              />
-            </ul>
-            {/* Under the three it qualifies. At the foot of the card it read as a disclaimer on
-                the whole page, which is not what it says. */}
-            <p className={styles['expiry']}>{t('home.expiry')}</p>
-          </section>
-        </div>
-      </div>
+      <section className={styles['work']} aria-labelledby="work-heading">
+        <h2 className={styles['workHeading']} id="work-heading">
+          {t('home.work.title')}
+        </h2>
+        <p className={styles['workLede']}>{t('home.work.description')}</p>
+        <ul className={styles['shadows']}>
+          <Shadow
+            zone="umbra"
+            href="/playground/boot/"
+            name={t('home.work.boot.name')}
+            description={t('home.work.boot.description')}
+          />
+          <Shadow
+            zone="penumbra"
+            href="/playground/design/"
+            name={t('home.work.designSystem.name')}
+            description={t('home.work.designSystem.description')}
+          />
+          <Shadow
+            zone="antumbra"
+            href="/playground/dialog/"
+            name={t('home.work.dialog.name')}
+            description={t('home.work.dialog.description')}
+          />
+        </ul>
+        <p className={styles['note']}>{t('home.expiry')}</p>
+      </section>
     </main>
   );
 });
