@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { spawn } from 'node:child_process';
-import { access, cp, readFile, rm } from 'node:fs/promises';
+import { access, cp, open, readFile, rm } from 'node:fs/promises';
 import { dirname, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -160,6 +160,30 @@ async function ensureDist(dist, producedBy) {
     await access(resolve(dist, 'index.html'));
   } catch {
     throw new Error(`No build output at ${dist}\n    Expected ${producedBy} to have produced it.`);
+  }
+}
+
+/**
+ * The archive is a zip, and nothing about the file name says so.
+ *
+ * `tar -a` picks its format from the suffix, so the wrong `tar` on PATH writes a plain tar called
+ * `.zip` and reports success. `PK\x03\x04` is a zip's local file header; `./` is what a tar starts
+ * with. Cloudflare is the other place this gets caught, which is one upload too late.
+ */
+async function ensureZip(archive) {
+  const magic = Buffer.alloc(4);
+  const handle = await open(archive, 'r');
+  try {
+    await handle.read(magic, 0, 4, 0);
+  } finally {
+    await handle.close();
+  }
+
+  if (!magic.equals(Buffer.from([0x50, 0x4b, 0x03, 0x04]))) {
+    throw new Error(
+      `${ZIP_NAME} is not a zip — it starts with ${[...magic].map((b) => b.toString(16).padStart(2, '0')).join(' ')}.\n` +
+        '    A `tar` that cannot write zip wrote it; see the comment on the zip step.'
+    );
   }
 }
 
@@ -365,13 +389,19 @@ async function main() {
           // Relative to the repository root, not absolute: tar reads `host:path` as a remote
           // archive, and a Windows drive letter is exactly that shape — `D:\…` fails with
           // "Cannot connect to D".
-          await run('tar', {
+          //
+          // By full path rather than by name: a Git Bash or MSYS shell puts GNU tar ahead of the
+          // Windows one, and GNU tar cannot write a zip — it writes a plain tar under the name,
+          // 3MB larger and refused on upload.
+          await run(resolve(process.env['SystemRoot'] ?? 'C:\\Windows', 'System32', 'tar.exe'), {
             args: ['-a', '-cf', ZIP_NAME, '-C', relative(ROOT, HOME_DIST), '.'],
             cwd: ROOT,
           });
         } else {
           await run('zip', { args: ['-r', DEPLOY_ZIP, '.'], cwd: HOME_DIST });
         }
+
+        await ensureZip(DEPLOY_ZIP);
       },
     }
   );
