@@ -76,10 +76,13 @@ const toRgb = (value) => {
   return rgb ? [Number(rgb[1]), Number(rgb[2]), Number(rgb[3])] : null;
 };
 
+// `0.04045` is the sRGB transfer function's own threshold; WCAG 2.x writes `0.03928`, carried from
+// an early draft of it. No 8-bit channel falls between the two, so this picks the number a reader
+// can look up rather than a different answer. limb's `color-contrast.ts` holds the other copy.
 const luminance = ([r, g, b]) => {
   const channel = (value) => {
     const v = value / 255;
-    return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+    return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
   };
   return 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b);
 };

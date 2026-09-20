@@ -70,6 +70,10 @@ export const parseCssColor = (input: string): Rgb | null => {
   return null;
 };
 
+// `0.04045` is the sRGB transfer function's own threshold; WCAG 2.x writes `0.03928`, carried from
+// an early draft of it. No 8-bit channel falls between the two, so this picks the number a reader
+// can look up rather than a different answer. penumbra's contrast gate holds the other copy: it
+// judges a palette, this chooses an ink, and they share six lines rather than a module.
 const luminance = ({ r, g, b }: Rgb): number => {
   const channel = (v: number) => {
     const x = v / 255;
