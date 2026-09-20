@@ -6,16 +6,13 @@ import type { Api } from './fake-api.js';
  *
  * Nothing here is about micro-frontends. It is the ordinary shape of a modular app: one module owns
  * the session, another owns access, two more own reference data they would each otherwise fetch on
- * first render. Written as a graph, the two module prefetches overlap because nothing says they
- * should not, and the guard runs first because everything says it should.
+ * first render. Written as a graph, the two prefetches overlap because nothing says they should
+ * not; the guard runs first because everything does.
  *
- * The same graph works unchanged when those modules are deployed separately. That is a property of
- * the shape, not the reason for it.
- *
- * **Three steps are `scope: 'shared'`.** The session, the access check and the configuration are the
- * same answer for every module on the page, so the first bootstrap to reach one does the work and
- * the rest adopt it. The two reference lists stay app-scoped, because each module owns its own —
- * which is also what makes the contrast visible in the timeline.
+ * **Three steps are `scope: 'shared'`.** The session, the access check and the configuration are
+ * the same answer for every module on the page, so the first bootstrap to reach one does the work
+ * and the rest adopt it. The two reference lists stay app-scoped, which is what makes the contrast
+ * visible in the timeline.
  */
 export function createSteps(api: Api) {
   const session = defineStep({

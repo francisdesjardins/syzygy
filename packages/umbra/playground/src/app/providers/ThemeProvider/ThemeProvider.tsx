@@ -31,10 +31,9 @@ export function ThemeProvider({ children }: { readonly children: ReactNode }) {
   useEffect(() => {
     const root = document.documentElement;
     root.dataset['colorScheme'] = scheme;
-    // `color-scheme` rides along because CSS cannot reach what the UA paints on its own — a native
-    // `<select>` popup most visibly. It is also what index.html's inline script seeds before first
-    // paint; an inline style outranks a stylesheet, so if this effect did not restate it the boot
-    // scheme would survive every toggle.
+    // `color-scheme` rides along because CSS cannot reach what the UA paints — a native `<select>`
+    // popup most visibly. `index.html`'s inline script seeds it before first paint, and an inline
+    // style outranks a stylesheet, so without this line the boot scheme survives every toggle.
     root.style.colorScheme = scheme;
     try {
       localStorage.setItem(STORAGE_KEY, scheme);

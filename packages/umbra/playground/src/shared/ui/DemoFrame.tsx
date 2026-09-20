@@ -30,17 +30,14 @@ export function DemoToolbar({ children }: { readonly children: ReactNode }) {
 /**
  * A demo that is genuinely another page, in a frame of a fixed size.
  *
- * The page inside is deliberately not part of this app: plain HTML, an import map, script tags. A
- * build step that resolved `umbra` for everything on it would prove nothing about what the
- * import map does — and one fragment's whole point is that it is *not* on the shared build and
- * shares anyway.
+ * The page inside is not part of this app: plain HTML, an import map, script tags. Resolving
+ * `umbra` for it at build time would prove nothing, and one fragment's point is that it is *not*
+ * on the shared build and shares anyway.
  *
- * **The frame sets the height; the page inside does not.** The other direction — polling the inner
- * `scrollHeight` and resizing the frame to it — moves the site under the reader while the demo
- * boots: four heights in two seconds, 205px apart, because every fragment that renders and every
- * line the log adds makes the document taller. Handing the page a viewport instead is what lets the
- * log scroll in its own panel and the page around it hold still. Under 820px the page inside stacks and grows past this, which is the
- * one place it is allowed to scroll.
+ * **The frame sets the height; the page inside does not.** Polling the inner `scrollHeight` and
+ * resizing to it moves the site under the reader as the demo boots: four heights in two seconds,
+ * 205px apart. A viewport instead lets the log scroll in its panel and the page hold still. Under
+ * 820px it stacks and grows past this, the one place it may scroll.
  */
 export function DemoFrame({
   title,

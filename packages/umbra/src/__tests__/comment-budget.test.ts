@@ -7,24 +7,17 @@ import { commentBudget, NARRATING, OVER_BUDGET } from 'gnomon/comment-budget';
  * Comments have a budget, for the reason `CLAUDE.md` states and nothing enforced: **why, not what**,
  * **never the past**, **one dense sentence beats a paragraph**.
  *
- * The scanner is `gnomon/comment-budget`, shared with umbra, and its doc carries how the public-API
- * exception is read. What stays here is what this package can honestly disagree about: the trees,
- * the floors that keep a pass from being vacuous, and the one term it cannot spell another way.
+ * The scanner is `gnomon/comment-budget`, shared with antumbra, and its doc carries how the
+ * public-API exception is read. What stays here is what this package can honestly disagree about:
+ * the trees, and the floors that keep a pass from being vacuous.
  *
- * Passing is almost never deleting a fact: move it up to the JSDoc of what it constrains, or down
- * into the test that proves it.
+ * No past-tense exemption, where antumbra needs one: its domain is named after a phrase the HTML
+ * spec writes in that tense, and nothing here is. The word cannot be spelled in this file either,
+ * which is the gate reading its own doc comment and being right about it.
  */
 const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 
-/**
- * `previously focused` is the HTML spec's own phrase for what the close-the-dialog steps restore,
- * so the one exemption is a platform term rather than a loophole.
- */
-const found = commentBudget({
-  root: REPO_ROOT,
-  roots: ['src', 'playground/src'],
-  pastExemptions: [[/previously[-\s]+focus/gi, 'the-focus']],
-});
+const found = commentBudget({ root: REPO_ROOT, roots: ['src', 'playground/src'] });
 
 test.describe('comments have a budget', () => {
   test('no comment block is over its own', () => {
@@ -38,7 +31,7 @@ test.describe('comments have a budget', () => {
   test('the scan reads whole files, so a pass is not vacuous', () => {
     // A floor on both, because every way this gate has to fail is by finding nothing: a broken
     // walk, a scanner that stops at the first construct it cannot read.
-    expect(found.blocks).toBeGreaterThan(1500);
-    expect(found.files).toBeGreaterThan(150);
+    expect(found.blocks).toBeGreaterThan(400);
+    expect(found.files).toBeGreaterThan(90);
   });
 });

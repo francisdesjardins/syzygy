@@ -301,7 +301,7 @@ test("a shared step's timeout is everyone's timeout, not just the owner's", asyn
           timeout,
           run: () => {
             // Ignores its signal on purpose: an ending decided entirely by the abort is the one
-            // the owner's body never sees, and the one a sharer used to wait forever for.
+            // the owner's body never sees, and the one a sharer would otherwise wait forever for.
             return new Promise<never>(() => {});
           },
         }),

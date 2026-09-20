@@ -18,6 +18,10 @@
   },
   "type": "module",
   "exports": {
+    "./comment-budget": {
+      "types": "./comment-budget.d.mts",
+      "default": "./comment-budget.mjs"
+    },
     "./oxfmt": {
       "types": "./oxfmt.d.mts",
       "default": "./oxfmt.mjs"

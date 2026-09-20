@@ -30,9 +30,9 @@ export const defaultFaults: Faults = {
   configDown: false,
   tagsHang: false,
   accessBroken: false,
-  // Off, like the rest. This one queues an intent that a mounted step waits on, and the app's
-  // answer to that is a modal dialog — so leaving it on greeted every reader with a question over
-  // a page they had not read yet. The demonstration is better as something they switch on.
+  // Off, like the rest. This one queues an intent a mounted step waits on, and the app answers
+  // with a modal dialog — leaving it on greets every reader with a question over a page they have
+  // not read. The demonstration is better as something they switch on.
   trialExpiring: false,
   previewBuild: false,
 };

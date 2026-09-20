@@ -23,8 +23,7 @@ type Node = {
  * say it in one look: anything sharing a column goes out together, and the arrows are the reason.
  *
  * Positions are computed rather than measured. Every box is the same size, so the geometry is
- * arithmetic — no refs, no layout effect, no frame where the edges point at where the boxes used to
- * be.
+ * arithmetic — no refs, no layout effect, no frame where the edges point where the boxes are not.
  */
 export function PlanGraph(props: {
   plan: BootstrapPlan | undefined;

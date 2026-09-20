@@ -252,9 +252,8 @@ export async function runPreflight(
         return context.skip(result.reason);
       }
       // Two endings a sharer cannot reach on its own: it waited on a promise, so nothing of its
-      // own timed out and nothing of its own was stopped. It throws to end, and the status it
-      // wears is put back from `adopted` below — the same shape `blocked` uses, and for the same
-      // reason: the word must not depend on how the step happened to finish.
+      // own timed out or was stopped. It throws to end, and `adopted` below puts the real word
+      // back — the status must not depend on how the wait finished.
       if (result.kind === 'timed-out' || result.kind === 'cancelled') {
         adopted.set(planned.id, result.kind);
         throw result.kind === 'timed-out'
@@ -367,9 +366,8 @@ export async function runPreflight(
 
     for (const { planned, attempt } of attempts) {
       // `blocks` decides this, not the attempt. A refusal aborts the level, and that abort can
-      // settle the refusing step as `cancelled` before its own rejection is ever seen — the race
-      // the `block` callback above is written around. Reading the authoritative record here is
-      // what makes `blocked` mean the step that decided rather than whoever won the race.
+      // settle the refusing step as `cancelled` before its own rejection is seen. Reading the
+      // authoritative record here is what makes `blocked` mean the step that decided.
       const refusal = blocks.find((signal) => {
         return signal.step === planned.id;
       });
@@ -413,10 +411,9 @@ export async function runPreflight(
         continue;
       }
 
-      // Neither of these is a failure, for two different reasons. A `cancelled` step was stopped
-      // and never given the chance to fail; a `blocked` one made a decision, and `blockedBy` is
-      // where that is reported. Listing either beside a real 401 would make a refused boot read as
-      // a crash — and a `blocked` step reaching the line below would also halt the run twice over.
+      // Neither is a failure, for different reasons. A `cancelled` step never got the chance; a
+      // `blocked` one made a decision, reported through `blockedBy`. Listing either beside a real
+      // 401 would read as a crash, and a `blocked` step reaching below would halt the run twice.
       if (status === 'cancelled' || status === 'blocked' || status === 'skipped') {
         continue;
       }

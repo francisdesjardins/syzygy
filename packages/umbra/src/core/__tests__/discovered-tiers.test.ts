@@ -6,16 +6,13 @@ import { clearSharedScope } from '../shared-scope.js';
 /**
  * Bootstrapping something whose shape is only known once it has started talking.
  *
- * The rest of this suite declares a graph the author knew in advance. This file covers the case
- * that looks, at first, like it needs a feature this package refuses to add: a robot whose arm is
- * assembled from whatever the base reports at power-on — seven axes or four, a gripper, a camera,
- * both, neither. No process running this can write `steps` ahead of time.
+ * The rest of this suite declares a graph known in advance. This file covers what looks like a
+ * feature this package refuses to add: a robot whose arm is assembled from whatever the base
+ * reports at power-on — seven axes or four, a gripper, a camera, both, neither.
  *
- * **The answer is one bootstrap per tier, not a bootstrap that grows.** `createBootstrap` compiles
- * the graph once and `plan()` is that compilation handed back; a step added mid-run would make the
- * plan a description of something that did not happen, which is the one promise the planner makes.
- * So a tier that discovers the next one hands its outcome over, and the next `createBootstrap`
- * reads it. Every tier keeps the whole model — derived parallelism, refusals, timeouts, notices.
+ * **The answer is one bootstrap per tier, not a bootstrap that grows**, and the README's "When the
+ * graph is not known in advance" carries it. A tier that discovers the next hands its outcome
+ * over, and the next `createBootstrap` reads it.
  *
  * This runs in Node, with no DOM and no framework, which is the second thing it is here to show.
  */
