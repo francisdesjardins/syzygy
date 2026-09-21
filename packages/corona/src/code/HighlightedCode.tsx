@@ -1,10 +1,7 @@
 /*
- * A consumer's program compiles corona's source without including corona's stray `.d.ts`, so these
- * declarations travel only if the module that needs them asks for them. Two playgrounds each kept
- * their own copy of the file before this line existed.
- *
- * The rule asks for an `import`, which is the one thing that cannot work: the file is ambient
- * `declare module`, and a `declare module` is only ambient in a script.
+ * A consumer compiles corona's source without picking up its stray `.d.ts`, so these declarations
+ * travel only if the module needing them asks. The rule wants an `import`, which is the one thing
+ * that cannot work here: `declare module` is ambient only in a script.
  */
 // oxlint-disable-next-line typescript/triple-slash-reference -- see above
 /// <reference path="./react-syntax-highlighter-subpaths.d.ts" />
@@ -36,10 +33,8 @@ export type CodeLanguage = 'tsx' | 'markup' | 'bash' | 'css';
 
 /*
  * `--app-paper`, spelled out: the block paints it *and* `readableSyntaxStyle` measures every token
- * colour against it, and a `var()` cannot be measured. Keep it equal to the token.
- *
- * It was spelled out twice, and the second copy had drifted to `#1a1a1a` — correcting every token
- * for a background the code was not on. One copy is the fix; the comment was already there.
+ * colour against it, and a `var()` cannot be measured. One copy, kept equal to the token — a second
+ * one drifts, and a drifted background corrects every token for a surface the code is not on.
  */
 const SURFACE = { light: '#ffffff', dark: '#111a2b' } as const;
 

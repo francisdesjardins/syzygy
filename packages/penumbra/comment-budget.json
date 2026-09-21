@@ -1,0 +1,7 @@
+{
+  "roots": ["playground/src"],
+  "floors": {
+    "blocks": 20,
+    "files": 12
+  }
+}

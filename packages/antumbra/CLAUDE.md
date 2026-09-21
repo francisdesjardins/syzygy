@@ -147,9 +147,8 @@ it bites and gnomon's coverage report prints them all when it finds nothing.
 - **Files**: kebab-case. **Exports**: PascalCase types/components, camelCase functions/hooks
 - **Comments**: **why, not what** — and never the past (`used to`, `previously`); the CHANGELOG is
   the history. One dense sentence beats a paragraph; JSDoc on public API is the exception, being
-  the documentation. **All of that is a gate** —
-  [comment-budget.test.ts](src/__tests__/comment-budget.test.ts) carries the budgets, the two ways
-  the public-API exception is read, and the one seam it cannot close.
+  the documentation. **All of that is a gate** — `yarn comment-budget`, numbers in
+  [comment-budget.json](comment-budget.json), scanner shared by every package here.
 - **No implicit returns**: every arrow function uses a block body with an explicit `return` (`arrow-body-style: ['error', 'always']`, `yarn lint:fix` auto-fixes)
 - **Optional props**: `| undefined` suffix (`onClose?: ((r: CloseResult) => void) | undefined`)
 - **Type safety**: No `as` casts in shipped `src/` — use `Extract<Source, Target>` for narrowing, `satisfies` to prevent widening. A test may assert a shape at an untyped boundary (`JSON.parse`, `globalThis`).

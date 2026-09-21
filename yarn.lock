@@ -2118,6 +2118,7 @@ __metadata:
     vite:
       optional: true
   bin:
+    gnomon-comment-budget: ./check-comment-budget.mjs
     gnomon-ct-coverage-report: ./ct-coverage-report.mjs
     gnomon-doc-budget: ./check-doc-budget.mjs
     gnomon-examples: ./check-examples.mjs

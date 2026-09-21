@@ -22,7 +22,8 @@
     "./package.json": "./package.json"
   },
   "scripts": {
-    "check": "yarn type-check && yarn lint --deny-warnings && yarn format:check",
+    "comment-budget": "gnomon-comment-budget",
+    "check": "yarn type-check && yarn lint --deny-warnings && yarn format:check && yarn comment-budget",
     "format": "oxfmt .",
     "format:check": "oxfmt --check .",
     "lint": "oxlint --type-aware",

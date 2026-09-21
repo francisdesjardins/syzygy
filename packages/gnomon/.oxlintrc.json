@@ -15,6 +15,7 @@
       // one-shot script is theirs; the modules beside them are not one-shot scripts and keep the
       // house style.
       "files": [
+        "check-comment-budget.mjs",
         "check-examples.mjs",
         "check-doc-budget.mjs",
         "check-token-usage.mjs",

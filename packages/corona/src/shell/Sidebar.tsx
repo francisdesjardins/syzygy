@@ -168,13 +168,11 @@ export function Sidebar({ groups, current, isMobile, mobileOpen, onClose }: Side
   });
 
   /*
-   * Escape closes the overlay, and nothing else here closes anything.
+   * Escape closes the overlay, and nothing else here does.
    *
-   * There used to be an effect that called `onClose()` whenever `currentPath` *or* `onClose`
-   * changed — and `onClose` is an inline arrow from the shell, so its identity changed on every
-   * render. Opening the drawer re-rendered the shell, which handed this a new `onClose`, which ran
-   * it, which closed the drawer again: the mobile menu could never open. Navigation already closes
-   * it through `onNavigate` on the links below, which is where that belongs.
+   * An effect depending on `onClose` cannot: it is an inline arrow, so opening the drawer re-renders
+   * the shell, hands this a new identity, and closes the drawer again. Navigation closes it through
+   * `onNavigate` below.
    */
   useEffect(() => {
     if (!isMobile || !mobileOpen) {

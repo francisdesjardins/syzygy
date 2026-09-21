@@ -27,7 +27,8 @@
     "./tokens": "./src/tokens/index.ts"
   },
   "scripts": {
-    "check": "yarn type-check && yarn lint --deny-warnings && yarn format:check && yarn check:tokens && yarn check:tokens:used && yarn doc-budget",
+    "comment-budget": "gnomon-comment-budget",
+    "check": "yarn type-check && yarn lint --deny-warnings && yarn format:check && yarn check:tokens && yarn check:tokens:used && yarn doc-budget && yarn comment-budget",
     "type-check": "node node_modules/typescript-7/bin/tsc --noEmit",
     "lint": "oxlint --type-aware",
     "lint:fix": "oxlint --type-aware --fix",

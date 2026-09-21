@@ -38,13 +38,9 @@ export const test = base.extend<{
     // oxlint-disable-next-line react-hooks/rules-of-hooks -- Playwright's fixture callback, not React's `use` hook: the rule matches on the name alone
     await use(async (story: string, props?: Record<string, unknown>) => {
       /*
-       * The door is installed by a module, and `goto` resolves on `load` — which in dev is before
-       * Vite has finished walking the graph, so the function is waited for rather than assumed.
-       *
-       * The retry is for the other half: on a cold cache Vite's dependency optimiser reloads the
-       * page once it has found what to pre-bundle, and a reload destroys the execution context the
-       * wait is running in. A coverage run gets a fresh `cacheDir` every time, so it meets this on
-       * its first navigation, every time.
+       * The door is a module and `goto` resolves on `load`, so the function is waited for rather
+       * than assumed. The retry is the other half: a dependency discovered mid-session re-runs
+       * Vite's optimizer and reloads the page, destroying the context the wait runs in.
        */
       for (let attempt = 0; ; attempt += 1) {
         try {

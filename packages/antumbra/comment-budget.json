@@ -1,0 +1,8 @@
+{
+  "roots": ["src", "playground/src"],
+  "floors": {
+    "blocks": 1500,
+    "files": 150
+  },
+  "pastExemptions": [["previously[-\\s]+focus", "the-focus"]]
+}

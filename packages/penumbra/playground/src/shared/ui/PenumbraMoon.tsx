@@ -4,18 +4,15 @@ import { EclipseMoon } from 'corona/mascot';
  * penumbra's face on [corona](../../../../../corona)'s eclipse.
  *
  * Where antumbra smirks and umbra watches, this one is at rest. The penumbra is the partial shade
- * at a shadow's edge — the region that is neither lit nor dark, and the only one of the three with
- * nothing to resolve. A package that ships a scale with no colour and a palette with no brand has
- * no argument to win, which is a face with its eyes softly closed.
+ * at a shadow's edge, the only one of the three with nothing to resolve — a package shipping a
+ * scale with no colour and a palette with no brand has no argument to win.
  *
- * Two things were tried and taken out. A terminator across the disc — the shadow's own edge, which
- * is what the word means — crosses the nose at any size and reads as a line somebody forgot to
- * finish; the top bar's mark carries that idea instead, being the whole drawing with nothing to cut
- * through. And the eyes were closed rather than half-lidded, which put a blink on a shape that had
- * nothing left to close: `um-eyes` squashes to `scaleY(0.1)`, and a shut eye doing that disappears.
+ * Two things this face refuses. A terminator across the disc crosses the nose at any size and reads
+ * as a line somebody forgot to finish; the top bar's mark carries that idea whole. And the eyes stay
+ * closed rather than half-lidded, since `um-eyes` squashes to `scaleY(0.1)` and a shut eye doing
+ * that disappears.
  *
- * The drawing around it — the corona, the disc, the flicker — is the same in every playground and
- * lives there.
+ * The drawing around it — corona, disc, flicker — is shared and lives there.
  */
 export function PenumbraMoon({
   isDark,

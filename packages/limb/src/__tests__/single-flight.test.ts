@@ -367,10 +367,9 @@ test.describe('createSingleFlight — last mode', () => {
   });
 
   test('a task superseded before a settlement still loses after it', async () => {
-    // Three generations inside one flight does not cover a generation counter *reset* at
-    // settlement: a stale task outliving a completed flight would match the fresh count and answer
-    // for a call it never belonged to. The later flight has to still be in the air when the ghost
-    // arrives — a settled one has no resolver left to hijack, which is what hides the bug.
+    // Three generations in one flight does not cover a counter *reset* at settlement: a stale task
+    // outliving a completed flight would match the fresh count and answer for a call it never
+    // belonged to. The later flight must still be in the air — a settled one hides the bug.
     const flight = createSingleFlight({ mode: 'last' });
     let releaseStale: ((value: string) => void) | undefined;
     let releaseAfter: ((value: string) => void) | undefined;
