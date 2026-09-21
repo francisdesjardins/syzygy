@@ -9,15 +9,6 @@ import stepsSource from '@/pages/getting-started/examples/steps.ts?raw';
 import fakeApiSource from '@/pages/getting-started/examples/fake-api.ts?raw';
 import optionalTierSource from '@/pages/getting-started/examples/optional-tier.ts?raw';
 import registrySource from '@/pages/getting-started/examples/registry.d.ts?raw';
-import hostSource from '@/pages/getting-started/examples/ui-port.ts?raw';
-import scenarioSource from '@/pages/stories/model/scenario.ts?raw';
-// The harnesses themselves, so a card on the Test Harnesses page can show the fixture it is
-// running rather than only describing it. The two under `umbra/` live beside the binding they
-// exercise, which is why they are reached through the subpath alias.
-import reactStorySource from '@/pages/stories/ui/react-story.tsx?raw';
-import solidStorySource from '@/pages/stories/ui/solid-story.ts?raw';
-import reactNoProviderSource from 'umbra/react/__tests__/no-provider.story.tsx?raw';
-import solidNoProviderSource from 'umbra/solid/__tests__/no-provider.story.ts?raw';
 import {
   host,
   list,
@@ -39,12 +30,6 @@ export const codeSamples: Readonly<Record<string, CodeSample>> = {
   'boot-api': { source: fakeApiSource, language: 'tsx' },
   'boot-optional-tier': { source: optionalTierSource, language: 'tsx' },
   'boot-registry': { source: registrySource, language: 'tsx' },
-  'boot-host': { source: hostSource, language: 'tsx' },
-  'story-scenario': { source: scenarioSource, language: 'tsx' },
-  'story-react-bootstrap': { source: reactStorySource, language: 'tsx' },
-  'story-solid-bootstrap': { source: solidStorySource, language: 'tsx' },
-  'story-react-no-provider': { source: reactNoProviderSource, language: 'tsx' },
-  'story-solid-no-provider': { source: solidNoProviderSource, language: 'tsx' },
   'mfe-host': { source: host, language: 'markup' },
   'mfe-topbar': { source: topbar, language: 'tsx' },
   'mfe-nav': { source: nav, language: 'tsx' },
