@@ -119,12 +119,12 @@ yarn test               # unit and component tests
 yarn verify:all         # the full gate each package defines for itself
 yarn playgrounds:build  # the relocatable playground builds the site serves
 yarn deploy             # assemble the site, then:
-yarn check:mobile       # drive the assembled site at two phone widths
+yarn check:layout       # drive the assembled site at two phone and two desktop widths
 ```
 
 Each package also runs standalone: `yarn workspace umbra run test`, and so on.
 
-**`check:mobile` is separate because it needs the assembled site**, not a package. It loads
+**`check:layout` is separate because it needs the assembled site**, not a package. It loads
 `apps/home/dist` — the playgrounds included, at the paths the site serves them from — in a real
 browser at 390px and 360px, and asserts three things per route: nothing crosses the right edge, the
 drawer opens with its links on screen, and every dialog the page can open stays inside the viewport.

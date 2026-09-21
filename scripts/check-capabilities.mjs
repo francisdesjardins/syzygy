@@ -5,7 +5,7 @@
  * A capability — `dialog`, `boot`, `design` — is written down four times, and each copy does a
  * different job: `deploy.mjs` decides what gets built and where it lands, `_redirects` makes the
  * bare directory resolve on the host, home's dev server does the same thing one layer earlier, and
- * `check-mobile` is the only thing that ever visits the result.
+ * `check-layout` is the only thing that ever visits the result.
  *
  * **Missing from any one of them fails silently, and in the same direction.** A request for a
  * playground with no rule falls through to the SPA, which answers 200 with the home page — so the
@@ -55,8 +55,8 @@ const sources = [
     ),
   ],
   [
-    'scripts/check-mobile.mjs',
-    listOf(read('scripts/check-mobile.mjs'), /'\/playground\/([a-z-]+)\/#/g),
+    'scripts/check-layout.mjs',
+    listOf(read('scripts/check-layout.mjs'), /'\/playground\/([a-z-]+)\/#/g),
   ],
 ];
 
@@ -119,5 +119,5 @@ if (failures.length > 0) {
 }
 
 console.log(
-  `check:capabilities: ${[...declared].sort((a, b) => a.localeCompare(b)).join(', ')} — named identically in deploy.mjs, _redirects, the dev server and the mobile gate, and shown as ${canonical.join(' → ')} by both the drawer and the home page.`
+  `check:capabilities: ${[...declared].sort((a, b) => a.localeCompare(b)).join(', ')} — named identically in deploy.mjs, _redirects, the dev server and the layout gate, and shown as ${canonical.join(' → ')} by both the drawer and the home page.`
 );

@@ -9,7 +9,7 @@
     "build:file": "VITE_HASH_ROUTER=true vite build",
     "preview": "vite preview",
     "check": "echo \"penumbra-playground: no-op by design — the parent runs tsc -p playground/tsconfig.json --noEmit and lints playground/** through its own .oxlintrc.json\"",
-    "test": "echo \"penumbra-playground: no-op by design — the package ships stylesheets; what this demo asserts is asserted by check-tokens, penumbra-contrast and check:mobile\""
+    "test": "echo \"penumbra-playground: no-op by design — the package ships stylesheets; what this demo asserts is asserted by check-tokens, penumbra-contrast and check:layout\""
   },
   "dependencies": {
     "@tanstack/react-router": "^1.170.38",

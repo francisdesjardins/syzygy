@@ -30,16 +30,16 @@ being true.
 | Colour contrast           | `penumbra`                               | `penumbra-contrast`, 32 pairs × both schemes            |
 | The token tables          | `corona`                                 | `check-token-coverage.mjs` — every token is on a page   |
 | The API reference viewer  | `corona`                                 | antumbra's and umbra's smoke suites                     |
-| The way back to the site  | `corona`                                 | `yarn check:mobile`                                     |
+| The way back to the site  | `corona`                                 | `yarn check:layout`                                     |
 | Framework-free helpers    | `limb`                                   | its entry rule: if it needs a framework, it is not limb |
 | The gates themselves      | `gnomon`                                 | `yarn check` in each consumer                           |
 | Agent-instruction budgets | `gnomon-doc-budget`                      | `yarn doc-budget`, a ceiling and a headroom line each   |
 | Tokens that are read      | `gnomon-token-usage`                     | `check:tokens:used` in all five consumers               |
 | The capability list       | `deploy.mjs` is the source               | `yarn check:capabilities`, four places held to agree    |
-| Phone layout              | —                                        | `yarn check:mobile`, 16 routes × 2 widths               |
+| Phone layout              | —                                        | `yarn check:layout`, 19 routes × 4 widths               |
 | The stacking scale        | `penumbra/tokens.system.css`             | `check-tokens.mjs` — no two layers share a number       |
-| The playground shell      | `corona/shell`, `/theme`, `/mascot`      | each playground's `verify:all`, and `yarn check:mobile` |
-| The way between them      | `corona/site` — one table of three       | `yarn check:mobile`, 19 routes × 2 widths               |
+| The playground shell      | `corona/shell`, `/theme`, `/mascot`      | each playground's `verify:all`, and `yarn check:layout` |
+| The way between them      | `corona/site` — one table of three       | `yarn check:layout`, 19 routes × 4 widths               |
 
 **No component library anywhere.** The three playgrounds were always CSS modules on penumbra's
 tokens; home carried MUI for ten primitives and dropped it. The one exception is deliberate and

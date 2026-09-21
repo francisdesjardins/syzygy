@@ -1,17 +1,17 @@
 #!/usr/bin/env node
 /**
- * The mobile gate, over the assembled site.
+ * The layout gate, over the assembled site.
  *
- * Two things have actually gone wrong at phone width and neither was visible to any other check
- * here: the navigation became unreachable, and a panel laid itself out past the right edge. A unit
- * test, a type-check and a contrast measurement all pass through both. So this drives the built
- * site in a real browser at two phone widths and measures pixels.
+ * Two things have gone wrong here that no other check could see: the navigation became unreachable
+ * at phone width, and a panel laid itself out past the right edge. A unit test, a type-check and a
+ * contrast measurement pass through both. So this drives the built site in a real browser and
+ * measures pixels — now at desktop widths too, where nothing had ever looked.
  *
  * **It runs against `apps/home/dist`, which is what ships** — the playgrounds included, at the
  * paths the site serves them from. A playground measured on its own dev server is a different
  * layout from the one a reader gets, and the shell is the part being measured.
  *
- *     yarn deploy && yarn check:mobile
+ *     yarn deploy && yarn check:layout
  *
  * Three assertions per route: nothing crosses the right edge, the drawer opens and its links are
  * reachable, and every dialog the page can open stays inside the viewport. The dialog count is
@@ -28,7 +28,7 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const DIST = join(ROOT, 'apps', 'home', 'dist');
 
 if (!existsSync(join(DIST, 'index.html'))) {
-  console.error(`check:mobile: no assembled site at ${DIST}.\n  Run \`yarn deploy\` first.`);
+  console.error(`check:layout: no assembled site at ${DIST}.\n  Run \`yarn deploy\` first.`);
   process.exit(1);
 }
 
@@ -69,11 +69,26 @@ const server = createServer((request, response) => {
 await new Promise((ready) => server.listen(0, ready));
 const base = `http://localhost:${server.address().port}`;
 
-// 390 is the common iPhone; 360 is the narrowest width worth supporting, and is the one that
-// caught the shared site link pushing the theme toggle off the bar.
+/**
+ * The widths that have caught something, and the ones a reader actually has.
+ *
+ * 390 is the common iPhone; 360 is the narrowest worth supporting, and is the one that caught the
+ * shared site link pushing the theme toggle off the bar.
+ *
+ * The two desktop widths are newer. 1440 is the common laptop, 1280 the narrowest desktop this
+ * site is laid out for, and until they were here nothing measured a pixel above 390 — a page can
+ * be perfect on a phone and put a heading through the right edge on a laptop.
+ *
+ * **What they still do not see**, and it is worth knowing: an element inside a declared scroller.
+ * The walk below skips those on purpose, because a `.graph-scroll` that scrolls is doing its job.
+ * So umbra's step graph outgrowing its page is not this gate's to catch — that one is a claim
+ * about one component against its own container, and `plan-graph.ct.ts` makes it.
+ */
 const VIEWPORTS = [
-  ['iPhone 14 — 390x844', { width: 390, height: 844 }],
-  ['small Android — 360x640', { width: 360, height: 640 }],
+  ['iPhone 14 — 390x844', { width: 390, height: 844 }, 'phone'],
+  ['small Android — 360x640', { width: 360, height: 640 }, 'phone'],
+  ['laptop — 1440x900', { width: 1440, height: 900 }, 'desktop'],
+  ['narrow desktop — 1280x800', { width: 1280, height: 800 }, 'desktop'],
 ];
 
 const ROUTES = [
@@ -150,13 +165,16 @@ const overflowing = (page) => {
 
 const browser = await chromium.launch();
 
-for (const [viewportName, viewport] of VIEWPORTS) {
+for (const [viewportName, viewport, size] of VIEWPORTS) {
   console.log(`\n  ${viewportName}`);
+  const phone = size === 'phone';
   const context = await browser.newContext({
-    ...devices['iPhone 14'],
+    // A desktop is not a large phone: the touch flags change hit-testing and the descriptor changes
+    // the user agent, so keeping them would measure a layout nobody is served.
+    ...(phone ? devices['iPhone 14'] : {}),
     viewport,
-    isMobile: true,
-    hasTouch: true,
+    isMobile: phone,
+    hasTouch: phone,
     // A "copy" control is one of the buttons this clicks, and a denied clipboard is a console
     // error about the harness rather than about the page.
     permissions: ['clipboard-read', 'clipboard-write'],
@@ -181,7 +199,9 @@ for (const [viewportName, viewport] of VIEWPORTS) {
       fail(`${route} puts an element outside the viewport`, atRest.found.join(' | '));
     }
 
-    if (kind === 'playground') {
+    // The drawer and the dialogs belong to a phone: at desktop the sidebar is permanent, and a
+    // dialog's geometry has already been measured where it is tightest.
+    if (kind === 'playground' && phone) {
       const menu = page.locator('button[aria-label="Open navigation"]');
       if ((await menu.count()) === 0 || !(await menu.first().isVisible())) {
         fail(`${route} has no navigation button at phone width`);
@@ -227,7 +247,7 @@ for (const [viewportName, viewport] of VIEWPORTS) {
     }
 
     // The dialog manager's own playground is where a dialog's geometry is worth measuring.
-    if (route.includes('/dialog/')) {
+    if (route.includes('/dialog/') && phone) {
       const triggers = page.locator('main button:visible');
       const count = Math.min(await triggers.count(), 14);
       for (let index = 0; index < count; index += 1) {
@@ -299,9 +319,9 @@ if (dialogsMeasured < DIALOG_FLOOR) {
 }
 
 if (failures > 0) {
-  console.error(`\ncheck:mobile: ${failures} failure(s).`);
+  console.error(`\ncheck:layout: ${failures} failure(s).`);
   process.exit(1);
 }
 console.log(
-  `\ncheck:mobile: ${ROUTES.length} routes × 2 phone widths — no overflow, navigation reachable, ${dialogsMeasured} dialogs measured inside the viewport.`
+  `\ncheck:layout: ${ROUTES.length} routes × ${VIEWPORTS.length} widths, two phone and two desktop — no overflow anywhere, navigation reachable on a phone, ${dialogsMeasured} dialogs measured inside the viewport.`
 );

@@ -14,7 +14,7 @@
     "playgrounds:build": "yarn workspaces foreach --all --topological-dev run playground:build:file",
     "deploy": "node deploy.mjs",
     "build": "yarn workspaces foreach --all --topological-dev run build",
-    "check:mobile": "node scripts/check-mobile.mjs",
+    "check:layout": "node scripts/check-layout.mjs",
     "lint": "oxlint --type-aware",
     "lint:fix": "oxlint --type-aware --fix",
     "check:gates": "node scripts/check-gates.mjs",
