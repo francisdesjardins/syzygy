@@ -24,6 +24,9 @@ type ShadowProps = {
  * Every playground is its own build served out of `public/playground/`, so the link is a plain
  * anchor: it leaves this application rather than being matched by a router, and this application
  * has no second page to route to.
+ *
+ * Each one lands on the page that answers what the piece does, not on its home. A reader who has
+ * decided to look has already been sold; making them navigate is asking them to decide twice.
  */
 const Shadow = ({ zone, href, name, description }: ShadowProps) => {
   return (
@@ -90,19 +93,19 @@ export const Home = memo(() => {
         <ul className={styles['shadows']}>
           <Shadow
             zone="umbra"
-            href="/playground/boot/"
+            href="/playground/boot/#/getting-started"
             name={t('home.work.boot.name')}
             description={t('home.work.boot.description')}
           />
           <Shadow
             zone="penumbra"
-            href="/playground/design/"
+            href="/playground/design/#/tokens"
             name={t('home.work.designSystem.name')}
             description={t('home.work.designSystem.description')}
           />
           <Shadow
             zone="antumbra"
-            href="/playground/dialog/"
+            href="/playground/dialog/#/getting-started"
             name={t('home.work.dialog.name')}
             description={t('home.work.dialog.description')}
           />

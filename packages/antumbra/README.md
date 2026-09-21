@@ -6,7 +6,6 @@
 
 Framework-agnostic core, with React, Solid and vanilla bindings over it.
 
-[![CI](https://github.com/francisdesjardins/antumbra/actions/workflows/ci.yml/badge.svg)](https://github.com/francisdesjardins/antumbra/actions/workflows/ci.yml)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-19-61dafb?style=flat-square&logo=react&logoColor=black)](https://react.dev/)
 [![Solid](https://img.shields.io/badge/Solid-1.9-2c4f7c?style=flat-square&logo=solid&logoColor=white)](https://www.solidjs.com/)
@@ -15,7 +14,7 @@ Framework-agnostic core, with React, Solid and vanilla bindings over it.
 [![Dependencies](https://img.shields.io/badge/dependencies-0-f59e0b?style=flat-square)](#)
 [![License: MIT](https://img.shields.io/badge/License-MIT-64748b?style=flat-square)](./LICENSE)
 
-**[Open the playground →](https://francisdesjardins.ca/playground/dialog/)**
+**[Open the playground →](https://francisdesjardins.ca/playground/dialog/#/getting-started)**
 
 Every example on this page, running — plus the generated API reference for all four entry points,
 the component test harnesses, and four microfrontends sharing one manager across React, Solid,
@@ -26,6 +25,39 @@ vanilla and a web component.
 ---
 
 A **headless**, fully typed dialog manager. The core is plain TypeScript with no framework in it; **React, Solid and vanilla ship as three bindings over it**. The two hook bindings share a surface — same names, same options, same typed close — and the vanilla one is a _controller_ for a `<dialog>` you wrote yourself. The library exports zero UI components — you bring your own (MUI, Tailwind, vanilla HTML/CSS).
+
+```tsx
+import { useMessageDialog } from 'antumbra/react';
+
+function ConfirmDelete() {
+  const dialog = useMessageDialog<void, 'confirm' | 'cancel'>({
+    id: 'confirm-delete',
+    ariaLabelledBy: 'confirm-delete-title',
+    render: ({ action }) => (
+      <div>
+        <h2 id="confirm-delete-title">Delete item</h2>
+        <button {...action('cancel')}>Cancel</button>
+        <button {...action('confirm', deleteItem)}>Delete</button>
+      </div>
+    ),
+  });
+
+  return (
+    <>
+      <button onClick={() => dialog.open()}>Delete</button>
+      {dialog.Dialog}
+    </>
+  );
+}
+```
+
+An action is declared by being rendered: `action('confirm', handler)` names the reason, binds the
+handler, and returns the props to spread. There is no action config and nothing to pass in — and
+`'confirm' | 'cancel'` is the whole of what this dialog can close with, so a typo is a type error and
+`onClose` can switch exhaustively.
+
+The rest of this document is reference. [Quick Start](#quick-start) is the same example with its
+error handling; everything above it decides whether you want any of this.
 
 ## <img src="docs/brand/moon-first-quarter.svg" width="18" height="18" alt="" /> Entry points
 
@@ -153,10 +185,10 @@ Clone the repo and run the playground, or lift what you need straight out of `sr
 plain TypeScript with no build magic and no runtime dependencies.
 
 ```bash
-git clone https://github.com/francisdesjardins/antumbra.git
-cd antumbra
+git clone https://github.com/francisdesjardins/syzygy.git
+cd syzygy
 yarn install
-yarn dev
+yarn workspace antumbra dev
 ```
 
 **Both frameworks are optional peers.** The root is plain TypeScript and resolves with neither
