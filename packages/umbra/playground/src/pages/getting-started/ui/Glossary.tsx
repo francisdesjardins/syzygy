@@ -16,6 +16,14 @@ const WORDS: ReadonlyArray<{ term: string; what: string }> = [
     what: 'UI work the framework-free layer cannot do itself. The app decides what to forward, and an intent nobody forwards is recorded as dropped rather than lost.',
   },
   {
+    term: 'optional: true',
+    what: 'A failure the run tolerates. It settles degraded rather than failed and everything else carries on. Without it a failure ends the run, and ending it means nothing further is scheduled — so a step whose own needs all succeeded can still be reported skipped, because its turn never came.',
+  },
+  {
+    term: 'skipped',
+    what: 'Three endings under one word: the step decided it does not apply, one of its needs did not succeed, or the run had already stopped. The graph says which of the three under each box, because the status alone cannot.',
+  },
+  {
     term: "scope: 'instance'",
     what: 'The default. This step is this bootstrap’s work, so every module that declares it does it. Two modules on a page means two requests.',
   },
@@ -25,7 +33,7 @@ const WORDS: ReadonlyArray<{ term: string; what: string }> = [
   },
 ];
 
-/** The five words the rest of the page uses. Defined once, before anything uses them. */
+/** The words the rest of the page uses. Defined once, before anything uses them. */
 export function Glossary() {
   return (
     <div className="panel glossary">

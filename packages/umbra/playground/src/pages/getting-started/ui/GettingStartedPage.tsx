@@ -133,7 +133,7 @@ export function GettingStartedPage() {
       <ExampleSection
         id="the-words"
         title="The words"
-        description="The five this page uses, defined before it uses them."
+        description="The ones this page uses, defined before it uses them — including the two that decide what a failure costs."
       >
         <Glossary />
       </ExampleSection>
