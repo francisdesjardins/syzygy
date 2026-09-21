@@ -7,6 +7,7 @@
  */
 import stepsSource from '@/pages/getting-started/examples/steps.ts?raw';
 import fakeApiSource from '@/pages/getting-started/examples/fake-api.ts?raw';
+import optionalTierSource from '@/pages/getting-started/examples/optional-tier.ts?raw';
 import registrySource from '@/pages/getting-started/examples/registry.d.ts?raw';
 import hostSource from '@/pages/getting-started/examples/ui-port.ts?raw';
 import scenarioSource from '@/pages/stories/model/scenario.ts?raw';
@@ -36,6 +37,7 @@ export type CodeSample = { readonly source: string; readonly language: CodeLangu
 export const codeSamples: Readonly<Record<string, CodeSample>> = {
   'boot-steps': { source: stepsSource, language: 'tsx' },
   'boot-api': { source: fakeApiSource, language: 'tsx' },
+  'boot-optional-tier': { source: optionalTierSource, language: 'tsx' },
   'boot-registry': { source: registrySource, language: 'tsx' },
   'boot-host': { source: hostSource, language: 'tsx' },
   'story-scenario': { source: scenarioSource, language: 'tsx' },

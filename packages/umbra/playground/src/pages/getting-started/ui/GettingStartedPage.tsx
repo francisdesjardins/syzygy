@@ -168,7 +168,14 @@ export function GettingStartedPage() {
         title="An optional branch, and what it starts"
         description="A plugin host that may not be installed. Its whole branch is optional; what it discovers is a tier that is required, because a module loaded halfway is worse than one that is absent."
       >
-        <OptionalTier />
+        <ExampleGrid columns={1}>
+          <ExampleCard
+            title="Two tiers, and the switch that decides whether there is a second"
+            description="Tier one always runs. Tier two is declared from what tier one found, so the ids in it did not exist when the file was written."
+            codeKey="boot-optional-tier"
+            example={<OptionalTier />}
+          />
+        </ExampleGrid>
       </ExampleSection>
 
       <ExampleSection

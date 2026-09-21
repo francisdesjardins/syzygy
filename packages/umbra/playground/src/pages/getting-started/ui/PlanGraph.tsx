@@ -91,10 +91,29 @@ export function PlanGraph(props: {
     return node.slot * (BOX_H + GAP_Y);
   };
 
-  const statusOf = (id: string): string | undefined => {
+  const traceOf = (id: string): StepTrace | undefined => {
     return props.timeline.find((trace) => {
       return String(trace.id) === id;
-    })?.status;
+    });
+  };
+
+  /**
+   * Why a box says what it says, for the one status that covers two different endings.
+   *
+   * `skipped` is both the step that decided it does not apply and every step pruned behind a need
+   * that did not succeed — and a reader looking at a graph where an upstream step failed has no way
+   * to tell which they are looking at. The trace does: only the step that decided carries a reason.
+   */
+  const why = (trace: StepTrace | undefined): string | undefined => {
+    if (trace === undefined) {
+      return undefined;
+    }
+    if (trace.reason !== undefined) {
+      return `${trace.status}: ${trace.reason}`;
+    }
+    return trace.status === 'skipped'
+      ? 'skipped: a step it needs did not succeed, so this one was never attempted'
+      : trace.status;
   };
 
   return (
@@ -148,9 +167,11 @@ export function PlanGraph(props: {
         })}
 
         {nodes.map((node) => {
-          const status = statusOf(node.id);
+          const trace = traceOf(node.id);
+          const status = trace?.status;
           return (
             <g key={node.id} transform={`translate(${String(x(node))}, ${String(y(node))})`}>
+              <title>{why(trace) ?? node.id}</title>
               <rect
                 width={BOX_W}
                 height={BOX_H}
