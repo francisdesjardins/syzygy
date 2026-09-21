@@ -6,7 +6,7 @@
     "skills": {
       "title": "Ce que je fais",
       "description": "Alors ces trois-là n’en emportent aucune. Des cores sans framework, des bindings minces par-dessus : le core est du TypeScript ordinaire qui tourne dans un navigateur, un worker ou un service, et le binding est la seule partie qui sait lequel. Un test parcourt le graphe d’imports et échoue si le core touche un framework.",
-      "thinking": "Ce n’était pas évident au départ. Une des couches d’état a tourné sur un framework maison, puis sur deux librairies, avant qu’un ensemble d’écouteurs et une comparaison de surface se révèlent suffisants. Les écrire a retiré neuf kilo-octets du bundle publié, sans rien changer pour un appelant. L’habitude n’est pas d’écrire soi-même : c’est de demander quelle part d’une librairie on utilise, assez tôt pour agir.",
+      "thinking": "Tout tient dans une question posée tôt : quelle part de cette librairie j’utilise vraiment ? Une couche d’état en portait deux pour obtenir un ensemble d’écouteurs et une comparaison de surface — neuf kilo-octets de bundle publié, sans rien de visible pour un appelant. Ça s’arrête là où c’est la librairie qui est la partie difficile : les fuseaux horaires, la cryptographie, tout ce dont le plus dur est ce qu’on n’a pas encore rencontré.",
       "secondary": "Aussi : amateur de chats autoproclamé. Pas d’autres questions."
     },
     "work": {

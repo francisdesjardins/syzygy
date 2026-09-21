@@ -6,7 +6,7 @@
     "skills": {
       "title": "What I build",
       "description": "So these three carry none. Framework-free cores with thin bindings over them: the core is plain TypeScript that runs in a browser, a worker or a service, and the binding is the only part that knows which — a test walks the import graph and fails if the core ever reaches a framework.",
-      "thinking": "That was not obvious from the start. One of the state layers ran on a house framework, then on two libraries, before it was clear it needed a set of listeners and a shallow compare. Writing those out took nine kilobytes off the published bundle and changed nothing a caller could see. The habit is not writing it yourself; it is asking how much of a library you use, early enough to act on the answer.",
+      "thinking": "The habit is one question asked earlier than usual: how much of this library am I actually using? A state layer that needed a set of listeners and a shallow compare was carrying two libraries to get them — nine kilobytes of published bundle, for nothing a caller could see. It stops where the library is the hard part: time zones, cryptography, anything whose difficulty is the part you have not met yet.",
       "secondary": "Also: a self-declared cat person. No further questions."
     },
     "work": {
