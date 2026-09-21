@@ -1,12 +1,12 @@
 {
   "home": {
     "name": "Francis Desjardins",
-    "enough": "Une dépendance s’ajoute facilement et se retire mal, et la plus grande part de ce qu’elle fait ne sert jamais. Les trois librairies ici n’en livrent aucune. Les pages qui les démontrent prennent un routeur, une trousse de composants et deux renderers — une démo n’est pas ce qui est livré.",
+    "enough": "Une dépendance s’ajoute facilement et se retire mal, et la plus grande part de ce qu’elle fait ne sert jamais. Ces trois-là n’en livrent aucune — pas par pureté, mais parce qu’un core sur lequel d’autres logiciels sont bâtis emporte ce qu’il prend dans le chemin critique de quelqu’un d’autre.",
     "expiry": "... toujours en développement actif",
     "skills": {
       "title": "Ce que je fais",
       "description": "Des cores sans framework, avec des bindings minces par-dessus. Le core est du TypeScript ordinaire qui tourne dans un navigateur, un worker ou un service, et le binding est la seule partie qui sait lequel — un test parcourt le graphe d’imports et échoue si le core touche un framework.",
-      "thinking": "Rien là-dedans n’est une règle contre les librairies. C’est une seule question, posée plus tôt que d’habitude : quelle part de celle-ci j’utilise vraiment ? Une librairie de drafts est sortie d’ici le jour où il est apparu que les six stores qu’elle servait mutaient un objet plat, là où un spread fait le même travail. Un logiciel qui tourne quinze ans paie pour cette question. Une vitrine ne la remarque jamais.",
+      "thinking": "Rien là-dedans n’est une règle contre les librairies. C’est une seule question, posée plus tôt que d’habitude : quelle part de celle-ci j’utilise vraiment ? La couche d’état d’un gestionnaire de dialogues a besoin d’un ensemble d’écouteurs et d’une comparaison de surface, pas d’une librairie d’état et d’un moteur de drafts — environ neuf kilo-octets de bundle publié qui répondaient à une question que personne ne posait. Un logiciel qui tourne quinze ans paie pour la poser. Une vitrine n’a jamais à le faire.",
       "secondary": "Aussi : amateur de chats autoproclamé. Pas d’autres questions."
     },
     "work": {
@@ -34,7 +34,7 @@
       "title": "Francis Desjardins — des cores sans framework, et rien de livré avec",
       "description": "Des cores sans framework, avec des bindings minces par-dessus : le core est du TypeScript ordinaire qui tourne dans un navigateur, un worker ou un service, et le binding est la seule partie qui sait lequel. Trois librairies, aucune dépendance d’exécution entre elles.",
       "ogTitle": "Francis Desjardins — des cores sans framework, et rien de livré avec",
-      "ogDescription": "Une dépendance s’ajoute facilement et se retire mal, et la plus grande part de ce qu’elle fait ne sert jamais. Trois librairies qui n’en livrent aucune, et les démos qui en prennent beaucoup."
+      "ogDescription": "Une dépendance s’ajoute facilement et se retire mal, et la plus grande part de ce qu’elle fait ne sert jamais. Trois librairies qui n’en livrent aucune, et la raison mesurée."
     }
   }
 }

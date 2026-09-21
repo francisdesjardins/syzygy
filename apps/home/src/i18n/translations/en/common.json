@@ -1,12 +1,12 @@
 {
   "home": {
     "name": "Francis Desjardins",
-    "enough": "A dependency is easy to add and hard to remove, and most of what one does goes unused. The three libraries here ship none. The pages that demonstrate them take a router, a component kit and two renderers — a demo is not what gets shipped.",
+    "enough": "A dependency is easy to add and hard to remove, and most of what one does goes unused. These three ship none — not out of purity, but because a core that other software is built on carries whatever it takes into someone else’s critical path.",
     "expiry": "... still under active development",
     "skills": {
       "title": "What I build",
       "description": "Framework-free cores with thin bindings over them. The core is plain TypeScript that runs in a browser, a worker or a service, and the binding is the only part that knows which — a test walks the import graph and fails if the core ever reaches a framework.",
-      "thinking": "None of this is a rule against libraries. It is one question, asked earlier than usual: how much of this one am I using? A draft library left here when it turned out all six stores it served mutated a flat object, where a spread does the same work. Software that runs for fifteen years pays for asking. A showcase never notices.",
+      "thinking": "None of this is a rule against libraries. It is one question asked earlier than usual: how much of this one am I using? A dialog manager’s state layer needs a set of listeners and a shallow compare, not a state library and a draft engine — about nine kilobytes of published bundle answering a question nobody asked. Code that runs for fifteen years pays for asking it. A showcase never has to.",
       "secondary": "Also: a self-declared cat person. No further questions."
     },
     "work": {
@@ -34,7 +34,7 @@
       "title": "Francis Desjardins — framework-free cores, nothing shipped with them",
       "description": "Framework-free cores with thin bindings over them: the core is plain TypeScript that runs in a browser, a worker or a service, and the binding is the only part that knows which. Three libraries, no runtime dependencies between them.",
       "ogTitle": "Francis Desjardins — framework-free cores, nothing shipped with them",
-      "ogDescription": "A dependency is easy to add and hard to remove, and most of what one does goes unused. Three libraries that ship none, and the demos that take plenty."
+      "ogDescription": "A dependency is easy to add and hard to remove, and most of what one does goes unused. Three libraries that ship none, and the measured reason why."
     }
   }
 }

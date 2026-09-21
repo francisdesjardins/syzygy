@@ -444,18 +444,26 @@ document-level version of the mistake the paragraph above warns about.
 
 ## <img src="docs/brand/moon-last-quarter.svg" width="18" height="18" alt="" /> On dependencies
 
-Zero runtime dependencies is not a badge, and it is not a rule against libraries. `playground/`
-takes MUI, Emotion, TanStack Router and a syntax highlighter — a demo is not what gets shipped, and
-the line is drawn at what is.
+Zero runtime dependencies is not a badge, and it is not a rule against libraries. It is one
+question, asked earlier than usual: how much of this one am I using?
 
-What is left is one question, asked earlier than usual: how much of this library am I using? For a
-dialog the honest answer is that the hard parts are already specified by the platform — the top
-layer, the focus restore, the scroll lock, the close semantics. What sits on top of those is a taste
-nobody shares, which is why no UI ships and the renderer stays yours. That is the same decision as
-the dependency count, made one layer up.
+`src/store/` is the worked answer, and it was not answered from first principles — the state layer
+went from Stardust to zustand plus immer before it landed here. What it needs is a `Set` of
+listeners, a `get`/`set` pair, and a shallow compare that understands objects, arrays, `Map` and
+`Set`. Writing those out took about **9 kB gzip** off the published bundle, immer alone being 6.3 of
+it, and the facade in front of them did not change.
 
-The trade is real: this is code to maintain forever, and it earns that where the platform has
-already done the specifying. It would not earn it for time zones or for cryptography.
+The same decision one layer up is why no UI ships. The hard parts of a dialog are already specified
+by the platform — the top layer, the focus restore, the scroll lock, the close semantics — and what
+sits on top of those is a taste nobody shares.
+
+The trade is real: this is code to maintain forever, and it earns that where the domain is small and
+already specified. It would not earn it for time zones or for cryptography.
+
+`playground/` is a different question, and it depends on MUI, Emotion, a router and a syntax
+highlighter. What it has to prove is that four bindings hold up inside a real application — and that
+the layering underneath them is worth sharing and worth testing — none of which is an argument about
+what the library ships.
 
 ## <img src="docs/brand/moon-last-quarter.svg" width="18" height="18" alt="" /> How this repo is run
 
