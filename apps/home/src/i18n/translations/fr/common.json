@@ -7,7 +7,7 @@
       "title": "Ce que je fais",
       "description": "Des cores sans framework, avec des bindings minces par-dessus : le core est du TypeScript ordinaire qui tourne dans un navigateur, un worker ou un service, et le binding est la seule partie qui sait lequel — un test parcourt le graphe d’imports et échoue si le core touche un framework.",
       "thinking": "Une librairie d’état et un moteur de drafts, pour quelques objets simples, c’est un canon pour tuer une mouche : des écouteurs et une comparaison de surface font le même travail, neuf kilo-octets plus léger. Certains problèmes sont l’inverse — les fuseaux horaires, la cryptographie, tout ce dont le plus dur est ce qu’on n’a pas vu venir. Entre les deux, une librairie gagne sa place le jour où les besoins dépassent ce qu’on a écrit.",
-      "secondary": "Aussi : amateur de chats autoproclamé. Pas d’autres questions."
+      "secondary": "Aussi : amateur de chats autoproclamé. Les chats n’ont pas encore objecté."
     },
     "work": {
       "title": "Ce qui tourne",
