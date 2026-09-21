@@ -302,7 +302,7 @@ declare module 'antumbra' {
   interface DialogRegistry {
     'confirm-delete': { closesWith: { confirm: { id: string }; cancel: void } };
     'session-warning': { closesWith: 'extend' | 'sign-out' };
-    'patient:merge': { opensWith: { patientId: string }; closesWith: 'merged' | 'cancel' };
+    'project:merge': { opensWith: { projectId: string }; closesWith: 'merged' | 'cancel' };
     'command-palette': Record<string, never>;
   }
 }
@@ -318,12 +318,12 @@ From then on the id is checked wherever one is accepted, in both directions:
 dialogManager.open('confirm-delete'); // fine
 dialogManager.open('confirm-delet'); // Allowed — an unknown id is a supported one
 dialogManager.close('confirm-delete', 'extend'); // Type error: that reason belongs to another dialog
-dialogManager.requestOpen('patient:merge', { payload: { patientId: 42 } }); // Type error: it declared a string
+dialogManager.requestOpen('project:merge', { payload: { projectId: 42 } }); // Type error: it declared a string
 ```
 
 `payload` types the **asking** side, where both call sites are yours. `onOpenRequest` still receives
 `unknown` on purpose — that is where a message from outside the project arrives, and a declaration
-is a contract between call sites rather than a check on what turns up. Parse it; `PayloadOf<'patient:merge'>`
+is a contract between call sites rather than a check on what turns up. Parse it; `PayloadOf<'project:merge'>`
 is the type to parse to.
 
 And `useDialog` reads the contract off the id, so a declared dialog needs no type arguments at all:

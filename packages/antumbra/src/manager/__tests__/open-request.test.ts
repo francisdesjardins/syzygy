@@ -63,10 +63,10 @@ test.describe('requestOpen', () => {
       },
     });
 
-    dm.requestOpen('asked', { payload: { patientId: '42' }, context: { source: 'portal:nav' } });
+    dm.requestOpen('asked', { payload: { projectId: '42' }, context: { source: 'portal:nav' } });
 
     expect(seen).toHaveLength(1);
-    expect(seen[0]?.payload).toEqual({ patientId: '42' });
+    expect(seen[0]?.payload).toEqual({ projectId: '42' });
     expect(seen[0]?.context?.source).toBe('portal:nav');
     expect(store.phase).toBe('closed');
     expect(dm.lookup('asked').isVisible).toBe(false);
@@ -322,8 +322,8 @@ test.describe('requestOpenAndWait', () => {
 
 test.describe('createOpenRequest', () => {
   test('names the two halves at the boundary, and omits what was not given', () => {
-    expect(createOpenRequest({ patientId: '42' }, { source: 'portal:nav' })).toEqual({
-      payload: { patientId: '42' },
+    expect(createOpenRequest({ projectId: '42' }, { source: 'portal:nav' })).toEqual({
+      payload: { projectId: '42' },
       context: { source: 'portal:nav' },
     });
 

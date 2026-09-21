@@ -1219,8 +1219,8 @@ The envelope, built rather than typed out:
 import { createOpenRequest, dialogManager } from 'antumbra';
 
 dialogManager.requestOpen(
-  'patient:merge',
-  createOpenRequest({ patientId: '42' }, { source: 'portal:nav' })
+  'project:merge',
+  createOpenRequest({ projectId: '42' }, { source: 'portal:nav' })
 );
 
 // No payload — just say who is asking.

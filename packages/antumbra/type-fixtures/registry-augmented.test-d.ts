@@ -13,7 +13,7 @@ declare module '../src/core/registry.js' {
   interface DialogRegistry {
     'delete-account': { closesWith: { confirm: { id: string }; cancel: void } };
     'session-warning': { closesWith: 'extend' | 'sign-out' };
-    'patient:merge': { opensWith: { patientId: string }; closesWith: 'merged' | 'cancel' };
+    'project:merge': { opensWith: { projectId: string }; closesWith: 'merged' | 'cancel' };
   }
 }
 
@@ -31,7 +31,7 @@ export type _DataNarrows = Assert<Equals<DataOf<'delete-account'>, { id: string 
 export type _NoDataIsVoid = Assert<Equals<DataOf<'session-warning'>, void>>;
 
 /** The other direction: what a declared dialog is *opened* with. */
-export type _PayloadNarrows = Assert<Equals<PayloadOf<'patient:merge'>, { patientId: string }>>;
+export type _PayloadNarrows = Assert<Equals<PayloadOf<'project:merge'>, { projectId: string }>>;
 
 /**
  * And the two fallbacks differ on purpose — an undeclared close carries nothing, an undeclared
@@ -147,24 +147,24 @@ export async function _openAndWaitStaysOpen() {
 
 /** The ask is checked against what the dialog said it takes, in both doors. */
 export function _requestOpenChecksThePayload() {
-  dialogManager.requestOpen('patient:merge', { payload: { patientId: '42' } });
-  dialogManager.requestOpen('patient:merge', createOpenRequest({ patientId: '42' }));
+  dialogManager.requestOpen('project:merge', { payload: { projectId: '42' } });
+  dialogManager.requestOpen('project:merge', createOpenRequest({ projectId: '42' }));
 
-  // @ts-expect-error `patientId` is a string, and the dialog declared as much
-  dialogManager.requestOpen('patient:merge', { payload: { patientId: 42 } });
+  // @ts-expect-error `projectId` is a string, and the dialog declared as much
+  dialogManager.requestOpen('project:merge', { payload: { projectId: 42 } });
 
   // @ts-expect-error a payload of the wrong shape entirely
-  dialogManager.requestOpen('patient:merge', { payload: { patient: '42' } });
+  dialogManager.requestOpen('project:merge', { payload: { project: '42' } });
 
   // Asking with nothing stays legal: the contract types the payload, it does not require one.
-  dialogManager.requestOpen('patient:merge');
-  dialogManager.requestOpen('patient:merge', { context: { source: 'portal:nav' } });
+  dialogManager.requestOpen('project:merge');
+  dialogManager.requestOpen('project:merge', { context: { source: 'portal:nav' } });
 
   // And the builder's own payload-free form fits a *declared* contract too — the one shape a
   // single generic signature got wrong, since it inferred `OpenRequest<undefined>` there.
-  dialogManager.requestOpen('patient:merge', createOpenRequest(undefined, { source: 'nav' }));
-  dialogManager.requestOpen('patient:merge', createOpenRequest());
-  void dialogManager.requestOpenAndWait('patient:merge', createOpenRequest(undefined, {}));
+  dialogManager.requestOpen('project:merge', createOpenRequest(undefined, { source: 'nav' }));
+  dialogManager.requestOpen('project:merge', createOpenRequest());
+  void dialogManager.requestOpenAndWait('project:merge', createOpenRequest(undefined, {}));
   dialogManager.requestOpen('someone-elses-dialog', createOpenRequest(undefined, { source: 'x' }));
 }
 
@@ -174,17 +174,17 @@ export function _requestOpenChecksThePayload() {
  * that one and land on the permissive one, which is the shape `close` avoided by staying generic.
  */
 export async function _requestOpenAndWaitChecksThePayloadToo() {
-  const ok = await dialogManager.requestOpenAndWait('patient:merge', {
-    payload: { patientId: '42' },
+  const ok = await dialogManager.requestOpenAndWait('project:merge', {
+    payload: { projectId: '42' },
   });
   if (ok.accepted) {
     const [, result] = await ok.closed;
     void result;
   }
 
-  await dialogManager.requestOpenAndWait('patient:merge', {
+  await dialogManager.requestOpenAndWait('project:merge', {
     // @ts-expect-error the second signature must not rescue a payload the first rejected
-    payload: { patientId: 42 },
+    payload: { projectId: 42 },
   });
 }
 

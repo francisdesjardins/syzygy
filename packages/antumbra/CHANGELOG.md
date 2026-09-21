@@ -2370,11 +2370,11 @@ A contract may now declare a third thing, and `PayloadOf<TId>` reads it the way 
 ```ts
 declare module 'umbra' {
   interface ModalRegistry {
-    'patient:merge': { payload: { patientId: string }; reason: 'merged' | 'cancel' };
+    'project:merge': { payload: { projectId: string }; reason: 'merged' | 'cancel' };
   }
 }
 
-dialogManager.requestOpen('patient:merge', { payload: { patientId: 42 } });
+dialogManager.requestOpen('project:merge', { payload: { projectId: 42 } });
 //                                                     ^ Type error: it declared a string
 ```
 
@@ -7503,7 +7503,7 @@ over it with a browser rather than a type-checker turned up defects no gate coul
   is a tile showing the edge it arrives from, because a row of buttons over a line of monospace
   reads as a status bar.
 - **~2,000 lines cut** across five examples that taught nothing the rest did not (a 702-line
-  pharmacy showcase, a 495-line Zod form, three smaller duplicates), and `zod` left the
+  workspace showcase, a 495-line Zod form, three smaller duplicates), and `zod` left the
   playground's dependencies with them. The end-to-end flow returns as a 170-line grocery list:
   panel → nested confirm → async action that fails → typed payload back.
 - **The dead API vocabulary is gone from what a visitor reads.** `defineAction` was rendered
@@ -7791,7 +7791,7 @@ they must forward `aria-keyshortcuts`.
 
 ### Fixed
 
-- **A branch that could never run.** The pharmacy example compared
+- **A branch that could never run.** The workspace example compared
   `closeResult.reason === 'close-rx'` against an action named `closeRx`. A bare `string` reason
   hid the mismatch completely; declaring the union surfaced it immediately.
 
@@ -8345,7 +8345,7 @@ Between the two, the library no longer performs any render-phase write. Verified
 ### Changed (playground — information architecture)
 
 - **The Service Layer example demonstrates its claim instead of asserting it** — the "React-free service" was declared inside the `.tsx` beside the component, with a comment saying it _would_ live in a separate file in a real app, in a file importing React on line 1. It is now `deployment-service.ts`: a real module importing only the package root, which awaits the confirm dialog's close reason (`open()` plus a one-shot `subscribe()` — the imperative equivalent of `waitForClose()`), calls the API, and raises the failure dialog itself. The component registers the two modals and mirrors service state through `useSyncExternalStore`; it orchestrates nothing. Both halves are on the page, the service as a code-only card.
-- **Seven examples were invisible; three are now on a page and four are gone** — they were registered in `codeSamples` and fully built into the bundle, but no page ever rendered them, so the only way to reach them was to know the file existed. Restored: the **Pharmacy Prescription Review** showcase (717 lines — a slide panel driving nested message modals over a `createStoreContext`-scoped store, with mutex + single-flight around submit), the **Service Layer** connector demo (a React-free module raising modals by id through `umbra/connector`), and the **Vanilla Form + Zod** example (499 lines, schema-driven per-field errors). Deleted: `slide-modal`, `dismiss-key`, and `non-modal-slide`, each of which demonstrated one toggle that the Slide Modal Configurator now covers in a single card. All three restored examples were verified to still open and render correctly in a real browser before being placed.
+- **Seven examples were invisible; three are now on a page and four are gone** — they were registered in `codeSamples` and fully built into the bundle, but no page ever rendered them, so the only way to reach them was to know the file existed. Restored: the **Workspace Review** showcase (717 lines — a slide panel driving nested message modals over a `createStoreContext`-scoped store, with mutex + single-flight around submit), the **Service Layer** connector demo (a React-free module raising modals by id through `umbra/connector`), and the **Vanilla Form + Zod** example (499 lines, schema-driven per-field errors). Deleted: `slide-modal`, `dismiss-key`, and `non-modal-slide`, each of which demonstrated one toggle that the Slide Modal Configurator now covers in a single card. All three restored examples were verified to still open and render correctly in a real browser before being placed.
 - **`pages/headless-integration` and `pages/vanilla` folded into `pages/ui-integrations`** — both were page slices with no route and no `ui/` segment: folders of examples that only `UIIntegrationsPage` imported, which is a page-to-page import and an FSD violation. Their examples now live in `pages/ui-integrations/examples/`, where the page that renders them owns them.
 - **One section and one grid primitive for every page** — pages hand-rolled their own headings (`variant="overline"` with per-page `mt`/`mb`, or an `h6` + `<Divider>`) and their own card grids (`flex: '1 1 calc(50% - 8px)'`, `grid` with `1fr`, or bare `<Box mb={4}>` stacks), so identical-looking sections had different rhythm and different collapse behaviour. All six content pages now compose `PageLayout` → `ExampleSection` → `ExampleGrid`. `ExampleSection` also stamps an anchor id, which is what made the jump bars possible.
 - **UI Integrations regrouped by use case** — six cards alternating MUI/vanilla in one flat wall became three sections (Message, Slide panel, Form) that place each pair side by side, so the comparison the page exists to make is the thing you actually see.
@@ -8534,14 +8534,14 @@ The action surface had accumulated overlapping ways to do the same thing and the
 
 ### Changed (playground)
 
-- **`pharmacy-rx` and `vanilla-zod-form` rewritten onto immer `update()`** — replacing `createArrayMethods`, `setByPath`, `batch`, and `createStoreDispatch`. `pharmacy-rx`'s three `createDerivedStore` projections became inline computed values; the `shared/lib/store-path-helpers.ts` module was removed. Example stores are flattened to zustand-style (no `actions` wrapper) and pass `{ name }` for DevTools.
+- **`workspace-review` and `vanilla-zod-form` rewritten onto immer `update()`** — replacing `createArrayMethods`, `setByPath`, `batch`, and `createStoreDispatch`. `workspace-review`'s three `createDerivedStore` projections became inline computed values; the `shared/lib/store-path-helpers.ts` module was removed. Example stores are flattened to zustand-style (no `actions` wrapper) and pass `{ name }` for DevTools.
 - **`connectDebugLog` example → Redux DevTools example** — `advanced/examples/connect-debug-log.tsx` is now `devtools.tsx`, demonstrating the `{ name }` option.
 
 ## 2026-04-23 — 2026-02-18 · compacted
 
 **41 date blocks and 342 entries, summarised rather than kept.** This range is largely the record of
 a _predecessor_ store library — `connectDevtools`, `useSuspenseStore`, `createDerivedStore`,
-`connectDebugLog`, `watch`, `deepClone`, `setByPath`, a benchmark suite and a Pharmacy Rx demo. None
+`connectDebugLog`, `watch`, `deepClone`, `setByPath`, a benchmark suite and a Workspace Review demo. None
 of it exists in this package: `src/store/` is a hand-rolled reactive cell with `get`/`set`/`reset`
 and nothing else, and `src/CLAUDE.md` names `createDerivedStore` only to say there is no such thing.
 

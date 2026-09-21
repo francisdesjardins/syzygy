@@ -100,8 +100,8 @@ export type OpenRequest<TPayload = unknown> = {
  * @example
  * // The two halves, named, at the boundary.
  * dialogManager.requestOpen(
- *   'patient:merge',
- *   createOpenRequest({ patientId: '42' }, { source: 'portal:nav' })
+ *   'project:merge',
+ *   createOpenRequest({ projectId: '42' }, { source: 'portal:nav' })
  * );
  *
  * // No payload — just say who is asking. Fits a declared contract as well as an open one.
@@ -141,11 +141,11 @@ export function createOpenRequest<TPayload>(
  * sites are the project's own and a mismatch is a mistake the checker can catch. This side is where
  * a message from outside the project arrives, and a parameter annotated with a declaration nobody
  * checked at run time would read as a guarantee that had never been made. Parse it — the
- * declaration is there to be the type you parse *to* — `PayloadOf<'patient:merge'>` is what a
+ * declaration is there to be the type you parse *to* — `PayloadOf<'project:merge'>` is what a
  * schema for this door should produce, and checking that it does is one line:
  *
  * ```ts
- * const schema: z.ZodType<PayloadOf<'patient:merge'>> = z.object({ patientId: z.string() });
+ * const schema: z.ZodType<PayloadOf<'project:merge'>> = z.object({ projectId: z.string() });
  * ```
  */
 export type OpenRequestHandler = (
@@ -476,8 +476,8 @@ export type DialogManager = {
    *
    * @example
    * // The shell asks; the dialog's owner decides.
-   * dialogManager.requestOpen('patient:merge', {
-   *   payload: { patientId: '42' },
+   * dialogManager.requestOpen('project:merge', {
+   *   payload: { projectId: '42' },
    *   context: { source: 'portal:nav' },
    * });
    */

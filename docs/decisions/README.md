@@ -14,20 +14,22 @@ resolves every link it finds, so a reference that rots fails a gate that already
 
 ## The repository
 
-| #                                                      | Decision                                                | Status   |
-| ------------------------------------------------------ | ------------------------------------------------------- | -------- |
-| [0001](0001-nothing-here-is-published.md)              | Nothing here is published                               | accepted |
-| [0002](0002-one-toolchain-for-every-workspace.md)      | One toolchain for every workspace                       | accepted |
-| [0003](0003-typescript-7-for-the-gates.md)             | TypeScript 7 for the gates, TypeScript 6 for the editor | accepted |
-| [0004](0004-the-decision-log-is-the-history.md)        | The decision log is the history                         | accepted |
-| [0005](0005-a-rule-without-a-gate-is-a-preference.md)  | A rule without a gate is a preference                   | accepted |
-| [0006](0006-gates-measure-the-artifact.md)             | Gates measure the artifact, not a declared list         | accepted |
-| [0007](0007-one-lockfile-and-the-hoisting-boundary.md) | One lockfile, and the hoisting boundary is the package  | accepted |
-| [0008](0008-no-component-library.md)                   | No component library anywhere                           | accepted |
-| [0009](0009-the-playgrounds-are-dogfood.md)            | The playgrounds are dogfood, the site is the showcase   | accepted |
-| [0010](0010-coverage-is-a-local-command.md)            | Coverage is a local command, not a CI job               | accepted |
-| [0011](0011-what-is-deliberately-different.md)         | What is deliberately different                          | accepted |
-| [0022](0022-the-shared-surface.md)                     | The shared surface, and what holds each part            | accepted |
+| #                                                      | Decision                                                 | Status   |
+| ------------------------------------------------------ | -------------------------------------------------------- | -------- |
+| [0001](0001-nothing-here-is-published.md)              | Nothing here is published                                | accepted |
+| [0002](0002-one-toolchain-for-every-workspace.md)      | One toolchain for every workspace                        | accepted |
+| [0003](0003-typescript-7-for-the-gates.md)             | TypeScript 7 for the gates, TypeScript 6 for the editor  | accepted |
+| [0004](0004-the-decision-log-is-the-history.md)        | The decision log is the history                          | accepted |
+| [0005](0005-a-rule-without-a-gate-is-a-preference.md)  | A rule without a gate is a preference                    | accepted |
+| [0006](0006-gates-measure-the-artifact.md)             | Gates measure the artifact, not a declared list          | accepted |
+| [0007](0007-one-lockfile-and-the-hoisting-boundary.md) | One lockfile, and the hoisting boundary is the package   | accepted |
+| [0008](0008-no-component-library.md)                   | No component library anywhere                            | accepted |
+| [0009](0009-the-playgrounds-are-dogfood.md)            | The playgrounds are dogfood, the site is the showcase    | accepted |
+| [0010](0010-coverage-is-a-local-command.md)            | Coverage is a local command, not a CI job                | accepted |
+| [0011](0011-what-is-deliberately-different.md)         | What is deliberately different                           | accepted |
+| [0022](0022-the-shared-surface.md)                     | The shared surface, and what holds each part             | accepted |
+| [0027](0027-one-word-one-meaning.md)                   | One word means one thing, and there are no abbreviations | accepted |
+| [0028](0028-this-repository-names-no-employer.md)      | This repository names no employer                        | accepted |
 
 ## antumbra
 
@@ -42,10 +44,14 @@ resolves every link it finds, so a reference that rots fails a gate that already
 
 ## umbra
 
-| #                                                | Decision                                | Status   |
-| ------------------------------------------------ | --------------------------------------- | -------- |
-| [0018](0018-a-required-failure-stops-the-run.md) | A required step's failure stops the run | accepted |
-| [0019](0019-skipped-covers-three-endings.md)     | `skipped` covers three endings          | accepted |
+| #                                                | Decision                                        | Status   |
+| ------------------------------------------------ | ----------------------------------------------- | -------- |
+| [0018](0018-a-required-failure-stops-the-run.md) | A required step's failure stops the run         | accepted |
+| [0019](0019-skipped-covers-three-endings.md)     | `skipped` covers three endings                  | accepted |
+| [0023](0023-parallelism-is-derived.md)           | Parallelism is derived, never declared          | accepted |
+| [0024](0024-no-upstream-ready-channel.md)        | No upstream "module ready" channel              | accepted |
+| [0025](0025-shared-work-crosses-copies.md)       | Shared work crosses copies through `globalThis` | accepted |
+| [0026](0026-a-failure-is-a-status.md)            | A failure is a status, a bug is a throw         | accepted |
 
 ## penumbra, limb
 

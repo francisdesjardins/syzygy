@@ -453,13 +453,13 @@ export type UseDialogBaseOptions<
    *
    * @example
    * const { open, Dialog } = useDialog<void, 'confirm'>({
-   *   id: 'patient:merge',
+   *   id: 'project:merge',
    *   onOpenRequest: (payload, request) => {
    *     const parsed = mergeRequestSchema.safeParse(payload);
    *     if (!parsed.success) {
    *       return request.refuse('invalid-payload');
    *     }
-   *     setPatientId(parsed.data.patientId);
+   *     setProjectId(parsed.data.projectId);
    *     void open();
    *   },
    *   render: () => {

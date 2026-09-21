@@ -80,11 +80,10 @@ Everything in this package belongs to exactly one of three things, and the name 
 
 Two rules fall out of it:
 
-- **A word means one thing.** `phase` is `preflight` or `hosted` and nothing else, which is why a
-  run's position is a `stage`. `Outcome` is the object a run produced, which is why how one step
-  ended is a `status`: one noun at two ranks reads as one thing.
-- **No abbreviations.** There is no `Boot` prefix — a short `Bootstrap` on types that mostly
-  describe a run puts three prefixes on one concept.
+- **A word means one thing, and there are no abbreviations.** `phase` is `preflight` or `hosted`, a
+  run's position is a `stage`, how a step ended is a `status`, and there is no `Boot` prefix. The
+  reasoning and both rename tables are
+  [0027](../../docs/decisions/0027-one-word-one-meaning.md).
 
 The three lifecycle enums are one family and read the same way: `RunStatus`, `StepStatus`,
 `IntentStatus`.
@@ -92,12 +91,10 @@ The three lifecycle enums are one family and read the same way: `RunStatus`, `St
 ## The model, and the decisions inside it
 
 **Parallelism is derived, never declared.** Steps list what they read in `needs`; the planner turns
-that into topological levels and everything on a level goes out together. There is no `parallel`
-flag and no concurrency cap — a cap would make `plan()` a description of something other than what
-ran.
-
-**`plan()` returns levels, not waves.** It is a static analysis of the graph, computed before
-anything runs. `outcome.timeline` is what actually happened, and the two are allowed to differ.
+that into topological levels. There is no `parallel` flag and no concurrency cap. **`plan()` returns
+levels, not waves** — a static analysis, where `outcome.timeline` is what happened, and the two are
+allowed to differ. Why, and what to reach for instead of a cap:
+[0023](../../docs/decisions/0023-parallelism-is-derived.md).
 
 **`levels` is the answer, `nodes` is the reason.** Only the edges draw as arrows, so the plan
 carries both — and it carries the graph, never a diagram.
@@ -185,8 +182,10 @@ application shutting down: a framework rebuilds an effect whenever its inputs ch
 unsubscribes and stops there. `bindBootstrap().destroy()` also disposes, because a caller with no
 component behind it means the page is done — that is the one place the word reads that way.
 
-**`live.attach()` is memoised, like `run()`.** A framework re-attaches its host more often than an
-author expects, and a hosted phase that ran twice would ask the user the same question twice.
+**`live.attach()` is memoised, like `run()`**, for correctness rather than speed — a framework
+re-attaches its host more often than an author expects, and a hosted phase that ran twice would ask
+the user the same question twice. `run()` never rejects on a step failure either:
+[0026](../../docs/decisions/0026-a-failure-is-a-status.md).
 
 **A bare `Outcome` means an outcome whose step list is no longer in the type**, so its default type
 argument is the empty list and its data is opaque; `readStepData` is how a value comes back out.
@@ -202,11 +201,9 @@ the whole snapshot inside the effect subscribes it to every event and every queu
 host is torn down and rebuilt dozens of times during one boot. It is the reactive twin of listing an
 unstable callback in a dependency array, and it produced the same bug.
 
-**`scope: 'shared'` shares work across bootstraps through a `Symbol.for` registry on `globalThis`.**
-Module scope would give each separately built copy of this file its own map and share nothing, which
-is the whole difficulty: two modules on a page have no way to import each other. The symbol is
-versioned, so a future shape simply does not share with the old one — not sharing is slower, sharing
-something misread is wrong.
+**`scope: 'shared'` shares work across bootstraps through a versioned `Symbol.for` registry on
+`globalThis`** — the package's only global state, and deliberate. Why module scope cannot do it:
+[0025](../../docs/decisions/0025-shared-work-crosses-copies.md).
 
 **The claim is taken synchronously, and that is what makes it a lock.** Two bootstraps reaching the
 same level in the same tick both call `claimSharedStep`; an `await` anywhere before the registration
@@ -301,7 +298,12 @@ playground/src/
   widgets/    root-layout, sidebar, top-bar, code-viewer
   entities/   example — the card, grid and section every page composes
   shared/     lib/ and ui/, the pieces with no page of their own
+  public/     served byte-for-byte — nothing compiles it
 ```
+
+**Nothing under `public/` is checked by anything.** It is served as it sits, so neither the types,
+nor the lint, nor the build see it — the browser smoke test is the only thing that touches it. That
+is where a rename gets lost, and the micro-frontend and single-spa fixtures live there.
 
 **Three stylesheets, and the split is the point.** The `penumbra` package carries what a second
 project takes unchanged — spacing, radii, shadows and type scale in `tokens.system.css`, then
