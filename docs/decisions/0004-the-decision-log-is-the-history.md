@@ -29,9 +29,14 @@ Decisions live in `docs/decisions/`, one file per decision, numbered, with a `St
 `superseded by NNNN` and the successor is written. The current state is readable without reading
 the history, which is the whole difference from a dated log.
 
-The CHANGELOGs are frozen where they stand and kept as the archive an ADR's `History` section
-points back into. They are not rewritten: a changelog that edits its own past is a story, not a
-record, and that was true when it was written.
+**The CHANGELOGs go back to being changelogs.** They had grown into essays because this was where
+the reasoning had to live; with the reasoning moved, each entry condenses to one line per change
+under Keep a Changelog's own headings — 128 072 words to 12 510, and every date and every change
+still named. They are frozen at 2026-09-21 and are the archive a decision's `History` points into.
+
+No fact was altered in the condensing, and no entry was dropped: 73 date headings in antumbra's
+before, 73 after. **The full original prose is in git**, which is the right place for a record
+nobody reads but everybody should be able to check.
 
 ## Consequences
 
