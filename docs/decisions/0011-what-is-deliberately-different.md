@@ -43,6 +43,13 @@ does not use.
 both. Two internals sharing a name are not a divergence, and renaming one to fix a clash nobody can
 hit is churn.
 
+**Two playgrounds have a smoke probe and the third does not.** antumbra's and umbra's walk their
+routes and drive flows — dialogs, a code viewer, typed close payloads, a sticky jump bar. penumbra's
+playground is four static routes of token tables with nothing to drive, so those flows would be
+empty, and the half that would not be is already done: `check:layout` walks those four routes at
+four widths and fails on a `pageerror` or a `console.error`. Writing a third probe to match the
+other two would be symmetry bought with maintenance.
+
 **Three things did not move into `corona`**, each for a reason. antumbra's `PageLayout` is a
 superset, with a `result` panel backed by a component only it has, across 29 call sites. Its
 `ThemeProvider` differs in substance — it feeds a template token set and writes from a layout

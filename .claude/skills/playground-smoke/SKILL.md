@@ -17,8 +17,12 @@ exists only when this tool is present. This file is the guide to it.
 | umbra    | [scripts/smoke-playground.mjs](../../../packages/umbra/scripts/smoke-playground.mjs)    | `yarn workspace umbra smoke`    |
 | penumbra | — none                                                                                  | —                               |
 
-The flows named below are antumbra's; umbra's probe walks its own routes. penumbra's playground has
-no smoke probe, which is a gap rather than a decision.
+The flows named below are antumbra's; umbra's probe walks its own routes.
+
+**penumbra has no probe on purpose.** Its playground is four static routes of token tables with no
+interaction to drive, so the flows below would all be empty — and the per-route half is already
+covered: `yarn check:layout` walks those four routes at four widths and fails on a `pageerror` or a
+`console.error`, which is the assertion that matters for a page that only renders.
 
 ## Why this exists
 
