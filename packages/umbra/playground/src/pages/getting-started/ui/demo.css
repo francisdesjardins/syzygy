@@ -85,6 +85,16 @@
   stroke: var(--app-error);
 }
 
+/* The same rule, for the status that covers both endings. `skipped` is the step that decided it
+   does not apply *and* every step pruned behind a need that did not succeed — so the one that
+   decided stops fading, and a reader can tell them apart across the graph rather than by hovering
+   each box. Only the deciding step carries a reason, which is what marks it. */
+.node-skipped.node-decided {
+  stroke: var(--app-text-secondary);
+  stroke-dasharray: none;
+  opacity: 1;
+}
+
 .node-phase-mounted {
   stroke: var(--app-accent);
 }
@@ -99,6 +109,22 @@
   font-size: 10.5px;
   fill: var(--app-text-secondary);
   letter-spacing: 0.03em;
+}
+
+/* The third line, and the only one that answers a question rather than stating a fact. Italic so it
+   reads as a note on the box rather than as more of its identity. */
+.node-why {
+  font-size: 10.5px;
+  font-style: italic;
+  fill: var(--app-text-tertiary);
+}
+
+/* The declaration that decides what a failure costs: a required step stops the run, a tolerated one
+   does not. Quiet, because it is true before the run and does not change with it. */
+.node-optional {
+  font-size: 9.5px;
+  fill: var(--app-text-tertiary);
+  letter-spacing: 0.04em;
 }
 
 .edge {

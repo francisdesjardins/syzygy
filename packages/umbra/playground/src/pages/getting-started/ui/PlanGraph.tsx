@@ -1,8 +1,14 @@
 import type { BootstrapPlan } from 'umbra/react';
 import type { StepTrace } from 'umbra/react';
+import { fitNote, stepNote } from '@/pages/getting-started/model/step-note';
 
+// The width is the scarce one: five columns of it decide whether the graph fits the page at all,
+// so everything a box has to say is paid for in height instead.
 const BOX_W = 152;
-const BOX_H = 46;
+// Four lines: the id, what it is, whether it was ever required, and — for the endings that need
+// one — why. Most boxes leave the last two blank and the height is uniform anyway, because the
+// geometry below is arithmetic.
+const BOX_H = 78;
 const GAP_X = 46;
 const GAP_Y = 14;
 
@@ -13,6 +19,7 @@ type Node = {
   phase: string;
   needs: readonly string[];
   scope: string;
+  optional: boolean;
 };
 
 /**
@@ -52,6 +59,7 @@ export function PlanGraph(props: {
         return String(need);
       }),
       scope: node.scope,
+      optional: node.optional,
     };
   });
 
@@ -95,25 +103,6 @@ export function PlanGraph(props: {
     return props.timeline.find((trace) => {
       return String(trace.id) === id;
     });
-  };
-
-  /**
-   * Why a box says what it says, for the one status that covers two different endings.
-   *
-   * `skipped` is both the step that decided it does not apply and every step pruned behind a need
-   * that did not succeed — and a reader looking at a graph where an upstream step failed has no way
-   * to tell which they are looking at. The trace does: only the step that decided carries a reason.
-   */
-  const why = (trace: StepTrace | undefined): string | undefined => {
-    if (trace === undefined) {
-      return undefined;
-    }
-    if (trace.reason !== undefined) {
-      return `${trace.status}: ${trace.reason}`;
-    }
-    return trace.status === 'skipped'
-      ? 'skipped: a step it needs did not succeed, so this one was never attempted'
-      : trace.status;
   };
 
   return (
@@ -169,22 +158,57 @@ export function PlanGraph(props: {
         {nodes.map((node) => {
           const trace = traceOf(node.id);
           const status = trace?.status;
+          const reason = stepNote({
+            trace,
+            needs: node.needs,
+            statusOf: (id) => {
+              return traceOf(id)?.status;
+            },
+          });
           return (
             <g key={node.id} transform={`translate(${String(x(node))}, ${String(y(node))})`}>
-              <title>{why(trace) ?? node.id}</title>
+              <title>
+                {status === undefined
+                  ? node.id
+                  : `${status}${reason === undefined ? '' : `: ${reason}`}`}
+              </title>
               <rect
                 width={BOX_W}
                 height={BOX_H}
                 rx={8}
-                className={`node node-${status ?? 'idle'} node-phase-${node.phase}`}
+                className={[
+                  'node',
+                  `node-${status ?? 'idle'}`,
+                  `node-phase-${node.phase}`,
+                  // Only the step that decided carries a reason; that is the whole difference.
+                  trace?.reason === undefined ? '' : 'node-decided',
+                ]
+                  .filter(Boolean)
+                  .join(' ')}
               />
               <text x={12} y={19} className="node-id">
                 {node.id}
               </text>
+
               <text x={12} y={35} className="node-meta">
                 {node.phase === 'hosted' ? 'hosted' : node.scope}
                 {status === undefined ? '' : ` · ${status}`}
               </text>
+              {/*
+                The one word that explains why two failures do not end the same way: a required step
+                stops the run, a tolerated one does not. Its own line, because the id line is full at
+                `projects:reference` and the status line is full at `instance · timed-out`.
+              */}
+              {node.optional ? (
+                <text x={12} y={51} className="node-optional">
+                  optional
+                </text>
+              ) : null}
+              {reason === undefined ? null : (
+                <text x={12} y={67} className="node-why">
+                  {fitNote(reason)}
+                </text>
+              )}
             </g>
           );
         })}
