@@ -47,7 +47,24 @@ export const test = base.extend<{
   openStory: async ({ page }, use) => {
     // oxlint-disable-next-line react-hooks/rules-of-hooks -- Playwright's fixture callback, not React's `use` hook: the rule matches on the name alone
     await use(async (story: StoryId) => {
-      await page.goto('/?gallery');
+      /*
+       * The door is a module and `goto` resolves on `load`, so the function is waited for rather
+       * than assumed. The retry is the other half: a dependency discovered mid-session re-runs
+       * Vite's optimizer and reloads the page, destroying the context the wait runs in.
+       */
+      for (let attempt = 0; ; attempt += 1) {
+        try {
+          await page.goto('/?gallery');
+          await page.waitForFunction(() => {
+            return typeof window.mount === 'function';
+          });
+          break;
+        } catch (error: unknown) {
+          if (attempt >= 2) {
+            throw error;
+          }
+        }
+      }
       await page.evaluate(async (id) => {
         await window.mount({ story: id });
       }, story);

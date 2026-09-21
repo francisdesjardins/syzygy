@@ -3,9 +3,9 @@ import { mkdirSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 /**
- * The CT `test`, carrying two automatic fixtures: coverage, and a guard on uncaught page errors.
- * `auto: true` applies both unasked — the price is every CT file importing `test` from here, which
- * `ct-test-wiring.test.ts` holds.
+ * The CT `test`, carrying two automatic fixtures — coverage and a guard on uncaught page errors —
+ * and one override. `auto: true` applies the two unasked; the price is every CT file importing
+ * `test` from here, which `ct-test-wiring.test.ts` holds.
  */
 
 declare global {
@@ -16,7 +16,38 @@ const OUTPUT_DIR = resolve(import.meta.dirname, '../../.nyc_output');
 
 let written = 0;
 
+/**
+ * The two ways a page reload shows up in the fixture that was mid-navigation when it happened.
+ *
+ * Both are the reload itself rather than anything a dialog did, which is why they are matched by
+ * text: Playwright raises a plain `Error` for the first and the driver raises the second.
+ */
+const RELOAD_RACE = /does not define window\.mount|Execution context was destroyed/;
+
 export const test = base.extend<{ coverage: void; uncaught: void }>({
+  /**
+   * Playwright's own `mount`, retried when Vite reloaded the page out from under it.
+   *
+   * Discovering a dependency mid-session re-runs the optimizer and reloads the page —
+   * `playground/vite.config.ts` says so over its `optimizeDeps.include`. A component test lazily
+   * imports one story, so that lands on whichever test first reaches a name the list does not
+   * carry: intermittent, and a different test each time. `include` cannot close it, since a new
+   * harness may always import something new. corona's `openStory` retries its own door for this.
+   */
+  mount: async ({ mount }, use) => {
+    // oxlint-disable-next-line react-hooks/rules-of-hooks -- Playwright's fixture callback, not React's `use` hook: the rule matches on the name alone
+    await use(async (storyId, props) => {
+      for (let attempt = 0; ; attempt += 1) {
+        try {
+          return await mount(storyId, props);
+        } catch (error: unknown) {
+          if (attempt >= 2 || !RELOAD_RACE.test(error instanceof Error ? error.message : '')) {
+            throw error;
+          }
+        }
+      }
+    });
+  },
   /**
    * An exception nothing in the page catches fails the test that provoked it. A spec asserts what it
    * looks at, so one thrown *after* the work it measures is done leaves every assertion green — and
