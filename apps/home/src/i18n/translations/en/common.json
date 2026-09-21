@@ -1,7 +1,7 @@
 {
   "home": {
     "name": "Francis Desjardins",
-    "enough": "A dependency is easy to add and hard to remove, and most of what one does goes unused. That is cheap to be wrong about in a website, and expensive in software that has to still be running in fifteen years.",
+    "enough": "A dependency is easy to add and hard to remove, and most of what one does goes unused. The cost of adding one never arrives on the day you add it.",
     "expiry": "... still under active development",
     "skills": {
       "title": "What I build",

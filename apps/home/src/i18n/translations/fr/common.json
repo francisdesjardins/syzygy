@@ -1,7 +1,7 @@
 {
   "home": {
     "name": "Francis Desjardins",
-    "enough": "Une dépendance s’ajoute facilement et se retire mal, et la plus grande part de ce qu’elle fait ne sert jamais. Bon marché dans un site web, coûteux dans un logiciel qui doit encore tourner dans quinze ans.",
+    "enough": "Une dépendance s’ajoute facilement et se retire mal, et la plus grande part de ce qu’elle fait ne sert jamais. Le coût d’en ajouter une n’arrive jamais le jour où on l’ajoute.",
     "expiry": "... toujours en développement actif",
     "skills": {
       "title": "Ce que je fais",
