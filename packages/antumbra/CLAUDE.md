@@ -21,8 +21,8 @@ the optional layer.
 **There are two kinds of binding, and the distinction is load-bearing.**
 
 _Hook_ bindings — `./react` and `./solid` — **render**: a `render` callback returns the content and
-the binding returns a `Dialog` to place. They share a surface down to the file names, so a team
-running both writes the same dialog twice with the same words. Three differences, all the renderer's:
+the binding returns a `Dialog` to place. They share a surface down to the file names, which
+`binding-parity.test.ts` holds. Three differences, all the renderer's:
 Solid's live values are getters over signals — so **do not destructure the render args** —
 `useLookup` returns an accessor, and `portal: true` mounts the dialog itself, leaving `Dialog` as
 `null`.

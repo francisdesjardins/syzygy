@@ -1,8 +1,15 @@
 {
-  "total": 4000,
+  "notes": [
+    "Raised from 4000 to 4450 on 2026-09-21, for the reason antumbra's note gives at length: 4000 was",
+    "the document's size when the budget was written, so it read 89% from the start and taxed every",
+    "later sentence. The set was searched for repetition and for over-written sections first; the one",
+    "section that could have been either, 'The model, and the decisions inside it', is twenty distinct",
+    "decisions of a paragraph each. 4450 puts today's content at 80%."
+  ],
+  "total": 4450,
   "headroom": 0.9,
   "files": {
-    "CLAUDE.md": 4000
+    "CLAUDE.md": 4450
   },
   "alsoNamingScripts": ["README.md"]
 }

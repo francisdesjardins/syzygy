@@ -347,10 +347,9 @@ that reaches the DOM, and both the dispatch selector and `engine.ownsHotkey` are
 `formatHotkeyLabel` produces the human form (`Ctrl+Enter`) and is for reading only. They agree by
 construction, and how is in [utils/hotkey-utils.ts](utils/hotkey-utils.ts).
 
-**Scoped to the declaring dialog** ([utils/dialog-scope.ts](utils/dialog-scope.ts)). A dialog opened
-from inside another renders its `<dialog>` in that subtree, so its events bubble through every dialog
-underneath: `isOwnEventTarget` drops those at the keydown listener and `queryOwn` keeps dispatch off
-a nested dialog's buttons. Without them one Escape unwinds the whole stack.
+**Scoped to the declaring dialog** ([utils/dialog-scope.ts](utils/dialog-scope.ts)), whose doc holds
+why: a nested dialog's events bubble through every dialog underneath, and without the two guards
+there one Escape unwinds the whole stack.
 
 ### Opening focus
 
@@ -510,9 +509,9 @@ caught by [api-categories.test.ts](../playground/src/__tests__/api-categories.te
   ref-like, so reach for the `GetDialog` getter pattern.
 - **No property assignment on `useState` values** — `st.x = value` is forbidden everywhere. Use
   closure mutations or `Map.set()` (method calls are exempt).
-- `open()`, `openAndWait()` and `handle` close over the store alone, so they are built once in
-  `useDialog`'s `useState` initialiser and are reference-stable — the compiler treats the store as
-  opaque and cannot memoise them, and hoisting is what makes them usable as effect deps.
+- `open()`, `openAndWait()` and `handle` are built once in `useDialog`'s `useState` initialiser and
+  are reference-stable; [core/dialog-runtime.ts](core/dialog-runtime.ts) says why that is the only
+  shape the compiler leaves usable as effect deps.
 
 **The wiring is by hand and the obvious form does nothing** — `react({ babel: … })` is accepted under
 this Vite and transforms nothing. That, the `src/react/` scoping and the externals predicate are
