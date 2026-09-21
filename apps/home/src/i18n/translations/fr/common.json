@@ -26,7 +26,8 @@
       }
     },
     "location": {
-      "description": "Basé au Québec · Respire de l’air depuis 1980"
+      "place": "Québec, Canada",
+      "since": "Respire depuis le début des années 80"
     }
   },
   "seo": {

@@ -57,7 +57,14 @@ export const Home = memo(() => {
           {t('home.name')}
         </h1>
         {/* No title under the name. What he does is the argument in the next column, not a label. */}
-        <p className={styles['byline']}>{t('home.location.description')}</p>
+        {/*
+          Two facts, two elements, so a narrow screen can only break between them. Written as one
+          string with a `·` in it, the wrap fell inside "Breathing air" and split the joke.
+        */}
+        <p className={styles['byline']}>
+          <span>{t('home.location.place')}</span>
+          <span>{t('home.location.since')}</span>
+        </p>
       </header>
 
       {/*

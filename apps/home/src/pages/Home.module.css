@@ -59,10 +59,21 @@
   color: var(--app-text);
 }
 
+/*
+ * Two facts, one per line, at every width.
+ *
+ * As one string with a `·` in it, a phone broke the line inside "Breathing air" and split the
+ * joke. Letting the two wrap as units fixed that and left the separator leading the second line,
+ * which is a mark pointing at nothing. Stacked, no separator is needed at all — and the column
+ * this sits in is the short one, so the extra line costs the page nothing.
+ */
 .byline {
+  display: flex;
+  flex-direction: column;
   margin: 0;
   font-family: var(--app-font-mono);
   font-size: var(--app-text-xs);
+  line-height: var(--app-lh-snug);
   letter-spacing: 0.04em;
   color: var(--app-text-tertiary);
 }
