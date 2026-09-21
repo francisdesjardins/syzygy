@@ -25,8 +25,9 @@ positions** — the reliable signal for "did it actually slide?".
 
 ## Prerequisites
 
-1. Dev server running: `yarn dev` (Vite, auto-detected on ports 3000–3010).
-2. Run from the **project root** so `playwright` resolves from `node_modules`.
+1. antumbra's playground running: `yarn workspace antumbra dev` (Vite, auto-detected on ports
+   3000–3010).
+2. Run from the **monorepo root**, where `playwright` resolves from `node_modules`.
 
 ## Usage
 

@@ -25,3 +25,8 @@ apps/home/public/playground/
 
 # The deploy artifact.
 francisdesjardins.ca-dist.zip
+
+# Agent tooling is shared and committed; what a single session leaves behind is not.
+.claude/settings.local.json
+.claude/plans/
+.claude/worktrees/

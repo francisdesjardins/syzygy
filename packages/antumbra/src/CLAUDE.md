@@ -513,6 +513,10 @@ caught by [api-categories.test.ts](../playground/src/__tests__/api-categories.te
   are reference-stable; [core/dialog-runtime.ts](core/dialog-runtime.ts) says why that is the only
   shape the compiler leaves usable as effect deps.
 
+Those four are the rules. [docs/react-compiler.md](../docs/react-compiler.md) is the longer
+reference beside them — worked examples per rule, the patterns that keep coming up, and how to read
+the compiled output when a component is not being memoised and nothing says why.
+
 **The wiring is by hand and the obvious form does nothing** — `react({ babel: … })` is accepted under
 this Vite and transforms nothing. That, the `src/react/` scoping and the externals predicate are
 documented where they are configured: [vite.config.esm.ts](../vite.config.esm.ts).

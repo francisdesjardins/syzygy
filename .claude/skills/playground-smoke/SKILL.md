@@ -5,12 +5,20 @@ description: Smoke-test the playground in a real browser — walk every route as
 
 # Playground Smoke
 
-A Playwright probe — [`scripts/smoke-playground.mjs`](../../../scripts/smoke-playground.mjs) — that
-boots nothing itself: point it at a running playground and it reports pass/fail per route and per
-flow, exiting non-zero on failure.
+A Playwright probe that boots nothing itself: point it at a running playground and it reports
+pass/fail per route and per flow, exiting non-zero on failure.
 
-**It lives in `scripts/`, not here.** CI runs it as `yarn smoke`, so it is a gate the repository
-owns rather than one that exists only when this tool is present. This file is the guide to it.
+**It lives in each package, not here**, so it is a gate the repository owns rather than one that
+exists only when this tool is present. This file is the guide to it.
+
+| Package  | Probe                                                                                   | Run it as                       |
+| -------- | --------------------------------------------------------------------------------------- | ------------------------------- |
+| antumbra | [scripts/smoke-playground.mjs](../../../packages/antumbra/scripts/smoke-playground.mjs) | `yarn workspace antumbra smoke` |
+| umbra    | [scripts/smoke-playground.mjs](../../../packages/umbra/scripts/smoke-playground.mjs)    | `yarn workspace umbra smoke`    |
+| penumbra | — none                                                                                  | —                               |
+
+The flows named below are antumbra's; umbra's probe walks its own routes. penumbra's playground has
+no smoke probe, which is a gap rather than a decision.
 
 ## Why this exists
 
@@ -27,24 +35,27 @@ These are found by rendering the app and measuring, which is what this does.
 
 ## Usage
 
-Start a server first (either works):
+Start a server first, in the package you are testing (either works):
 
 ```bash
-yarn dev                 # dev server
-yarn playground:build && yarn playground:preview   # production build — use this before committing
+yarn workspace antumbra dev                          # dev server
+yarn workspace antumbra playground:build && \
+  yarn workspace antumbra playground:preview         # production build — use this before committing
 ```
 
-Then, from the repo root:
+Then, from the monorepo root:
 
 ```bash
-yarn smoke                      # all routes + all flows
-yarn smoke --flow service       # one flow
-yarn smoke --shots <tmpdir>     # screenshot every route
-yarn smoke --theme dark         # run in dark mode
-yarn smoke --base http://localhost:3001
+yarn workspace antumbra smoke                      # all routes + all flows
+yarn workspace antumbra smoke --flow service       # one flow
+yarn workspace antumbra smoke --shots <tmpdir>     # screenshot every route
+yarn workspace antumbra smoke --theme dark         # run in dark mode
+yarn workspace antumbra smoke --base http://localhost:3001
 ```
 
-Run it from the repo root so Node resolves `@playwright/test` from `node_modules`.
+Swap `antumbra` for `umbra` to walk the other playground. `yarn workspace <pkg> smoke` sets the
+package as the working directory, and `@playwright/test` resolves from the root `node_modules`
+either way.
 
 ## What it checks
 
