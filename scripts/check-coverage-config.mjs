@@ -2,7 +2,7 @@
 /**
  * Every `.c8rc.json` agrees about everything except what its package can reach.
  *
- * Four workspaces measure coverage and four files say how. Three of the four keys are the same
+ * Each workspace that measures coverage says how in its own `.c8rc.json`. Three keys are the same
  * answer for all of them — report in the same formats, into the same directory, over every file
  * rather than only the imported ones — and `all: true` is the load-bearing one: without it a module
  * no test imports is absent from the report instead of being 0%, which reads as covered.
@@ -14,19 +14,38 @@
  * c8 has no `extends`, so the files cannot inherit; they agree by being checked.
  */
 
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
-/** Every workspace that measures coverage. One that starts measuring adds its path here. */
-const CONFIGS = [
-  'packages/antumbra/.c8rc.json',
-  'packages/umbra/.c8rc.json',
-  'packages/limb/.c8rc.json',
-  'packages/corona/.c8rc.json',
-];
+/**
+ * Every workspace that measures coverage, found rather than listed.
+ *
+ * A declared list is what the fifth package gets left off, and this gate would then pass while
+ * saying nothing about it — the failure mode it exists to prevent, one level up.
+ */
+const configs = () => {
+  const found = [];
+  for (const group of ['packages', 'apps']) {
+    const base = resolve(root, group);
+    if (!existsSync(base)) continue;
+    for (const entry of readdirSync(base, { withFileTypes: true })) {
+      if (!entry.isDirectory()) continue;
+      const path = `${group}/${entry.name}/.c8rc.json`;
+      if (existsSync(join(root, path))) found.push(path);
+    }
+  }
+  return found.sort();
+};
+
+const CONFIGS = configs();
+
+if (CONFIGS.length === 0) {
+  console.log('check:coverage-config: no workspace measures coverage.');
+  process.exit(0);
+}
 
 /** The keys that are one answer for the whole repository. */
 const SHARED = ['all', 'reporter', 'reportsDir'];

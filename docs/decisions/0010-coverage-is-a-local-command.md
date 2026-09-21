@@ -34,5 +34,14 @@ direction — a line only WebKit reaches was perfectly tested and counted as mis
 
 **The cost of this decision is a number in a document that nothing recomputes.** A measured
 percentage quoted in prose is stale the day after it is written, and a stale number is worse than
-no number. Quote coverage where a command prints it; if a document must carry one, it carries the
-date it was measured and is read as a snapshot.
+no number.
+
+So there is exactly one copy. `README.md` carries the pair and its badges, written only by
+`yarn coverage:update`, whose patterns fail loudly if the prose around them is reworded. **No
+`CLAUDE.md` quotes a coverage number**: that file loads into every session, so a measurement there
+is paid for on every task and goes stale where nobody is looking.
+
+`check:coverage-config` holds the one key that would make a report lie — `all: true`, without which
+a module no test imports is absent rather than 0% — and it finds the configs by walking the
+workspaces, per [0006](0006-gates-measure-the-artifact.md), rather than from a list that the fifth
+package would be left off.

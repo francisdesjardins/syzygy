@@ -58,7 +58,7 @@ yarn format             # Format code
 yarn docs:examples      # Format, type-check and lint every JSDoc @example (part of `yarn check`)
 yarn docs:examples:fix  # Rewrite those examples through the formatter, in place
 yarn verify:all         # lint + type-check + build + package checks + smoke
-yarn coverage:update    # Run both coverage measurements and rewrite README + CLAUDE.md + badges
+yarn coverage:update    # Run both coverage measurements and rewrite README + badges
 ```
 
 ## Testing
@@ -110,11 +110,14 @@ made the number lie in a specific way: a line only WebKit reaches (the caret res
 clicked button never gives) is perfectly tested and was counted as missed. Measured: six such lines,
 0.28 points, for twice the wall clock on a command nobody runs in CI. `component-focus` is still
 out — it needs one worker, and serialising the whole run to reach a handful of lines is the trade
-that is not worth it. Measured 2026-09-18: **91.80% over 61 files**, against unit's **96.94%**. Never add them; re-measure both or neither — **and the
-pair is quoted twice**, here and in [README.md](README.md#development), which also carries two
-badges from it. Moving one copy is how the README came to be two points behind, which is why
-**`yarn coverage:update` does the whole move**: both measurements, both documents, both badges, one
-command — its patterns fail loudly if this prose is reworded.
+that is not worth it. Never add them; re-measure both or neither.
+
+**The numbers are not written down here**, because a measurement quoted in a file that loads into
+every session is stale from the day after it is taken and costs on every task until someone
+notices. [README.md](README.md#development) carries the pair and its badges, and
+`yarn coverage:update` is the only thing that writes them — both measurements, one document, one
+command, with patterns that fail loudly if the prose is reworded. Run it to see where coverage
+stands.
 
 **So a partially-covered file is either a genuine gap or a DOM branch, and both are worth a look.**
 Three moves, in order. **A DOM type in a signature is not a DOM dependency** — narrow the parameter

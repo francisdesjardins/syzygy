@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 // The coverage pair, measured and written down in one move: the rule is "re-measure both or
-// neither", and holding it by hand drifted README.md and CLAUDE.md apart twice, in both directions.
+// neither", and a number held by hand drifts from the run that produced it.
 // The replacements below are anchored on the surrounding prose and must match exactly once each, so
 // a reworded paragraph fails loudly instead of leaving a stale number. The write goes through the
 // formatter, which owns this repository's markdown layout.
-// Usage: `yarn coverage:update` — run both coverage commands, rewrite README.md and CLAUDE.md.
+// README.md is the only document that quotes the numbers — one copy is the cheapest thing to keep
+// true. Usage: `yarn coverage:update` — run both coverage commands, rewrite README.md and badges.
 
 import { execSync } from 'node:child_process';
 import { readFileSync, writeFileSync } from 'node:fs';
@@ -89,9 +90,5 @@ await rewrite('README.md', [
   [/Both measured \d{4}-\d{2}-\d{2}/, `Both measured ${today}`],
 ]);
 
-await rewrite('CLAUDE.md', [
-  [
-    /Measured \d{4}-\d{2}-\d{2}: \*\*[\d.]+%\s+over \d+ files\*\*, against unit's \*\*[\d.]+%\*\*/,
-    `Measured ${today}: **${component}% over ${fileCount} files**, against unit's **${unit}%**`,
-  ],
-]);
+// `CLAUDE.md` deliberately quotes no number: it loads into every session, so a measurement there
+// is a cost paid on every task and a staleness nobody is looking at. README.md is the one copy.
