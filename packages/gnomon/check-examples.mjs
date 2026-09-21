@@ -12,7 +12,7 @@
 //   gnomon-examples --keep   # leave the generated modules for inspection
 
 import { execFileSync } from 'node:child_process';
-import { mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { formatAs } from './oxfmt.mjs';
 
@@ -34,7 +34,8 @@ const NAME = PKG.name;
 /** `{ specifier: 'lib/react', source: 'react.ts' }` for every published subpath. */
 const BINDINGS = Object.keys(PKG.exports ?? {})
   .filter((subpath) => {
-    return subpath !== '.' && subpath !== './package.json';
+    // `./src/*` is an escape hatch, not an entry point, and a pattern names no file to read.
+    return subpath !== '.' && subpath !== './package.json' && !subpath.includes('*');
   })
   .map((subpath) => {
     const name = subpath.slice(2);
@@ -277,8 +278,14 @@ function specifierFor(file) {
 /** Every public export of one entry point (plus the root it re-exports), by specifier. */
 function publicExports(binding) {
   const exported = new Map();
+  // The root barrel is one shape a package can have, not the only one: limb exports its modules
+  // directly and has no `index.ts` to re-export them from.
   for (const entry of ['index.ts', binding]) {
-    const source = readFileSync(join(SRC, entry), 'utf8');
+    const path = join(SRC, entry);
+    if (!existsSync(path)) {
+      continue;
+    }
+    const source = readFileSync(path, 'utf8');
     for (const match of source.matchAll(/export\s+(type\s+)?\{([^}]*)\}/g)) {
       for (const name of match[2].split(',')) {
         const clean = name
@@ -336,6 +343,11 @@ function assertSpecifiersMapped() {
   const mapped = new Set(Object.keys(JSON.parse(config).compilerOptions.paths ?? {}));
 
   const missing = Object.keys(published)
+    .filter((subpath) => {
+      // The same two an entry point is never built from: a pattern names no file, and the manifest
+      // is not a module an example can import.
+      return subpath !== './package.json' && !subpath.includes('*');
+    })
     .map((subpath) => {
       return subpath === '.' ? NAME : `${NAME}${subpath.slice(1)}`;
     })

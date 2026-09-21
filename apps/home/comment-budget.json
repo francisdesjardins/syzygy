@@ -1,0 +1,7 @@
+{
+  "roots": ["src"],
+  "floors": {
+    "blocks": 35,
+    "files": 8
+  }
+}

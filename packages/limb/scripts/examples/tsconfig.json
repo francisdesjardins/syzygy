@@ -1,0 +1,45 @@
+{
+  // The compiler contract a doc example is held to — umbra's, minus what only umbra needs.
+  //
+  // Its own config rather than the package's, because an `@example` is a snippet: it shows a call
+  // and stops, so `noUnusedLocals` or `noImplicitAny` would report the shape of a snippet rather
+  // than a mistake in it. Everything that decides whether it would compile in a reader's app is
+  // kept exactly as the package has it.
+  //
+  // Generated inputs come from `gnomon-examples`; `generated/` is not committed.
+  "compilerOptions": {
+    "target": "ES2024",
+    "lib": ["ES2024", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "moduleDetection": "force",
+    "jsx": "react-jsx",
+    "noEmit": true,
+
+    "strict": true,
+    "exactOptionalPropertyTypes": true,
+    "noUncheckedIndexedAccess": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "verbatimModuleSyntax": true,
+    "skipLibCheck": true,
+
+    // Snippet allowances — see above.
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noImplicitAny": false,
+    "allowUnreachableCode": true,
+
+    // Every published specifier, mapped to source. **All of them, or the check is not hermetic:**
+    // an unmapped one falls through to node resolution and answers from whatever `dist/` happens
+    // to exist on the machine.
+    "paths": {
+      "limb/color-contrast": ["../../src/color-contrast.ts"],
+      "limb/fuzzy-match": ["../../src/fuzzy-match.ts"],
+      "limb/mutex": ["../../src/mutex.ts"],
+      "limb/readable-syntax": ["../../src/readable-syntax.ts"],
+      "limb/shallow-equal": ["../../src/shallow-equal.ts"],
+      "limb/single-flight": ["../../src/single-flight.ts"]
+    }
+  },
+  "include": ["globals.d.ts", "generated/**/*.tsx"]
+}

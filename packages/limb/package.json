@@ -23,7 +23,9 @@
   },
   "scripts": {
     "comment-budget": "gnomon-comment-budget",
-    "check": "yarn type-check && yarn lint --deny-warnings && yarn format:check && yarn comment-budget",
+    "docs:examples": "gnomon-examples",
+    "docs:examples:fix": "gnomon-examples --fix",
+    "check": "yarn type-check && yarn lint --deny-warnings && yarn format:check && yarn comment-budget && yarn docs:examples",
     "format": "oxfmt .",
     "format:check": "oxfmt --check .",
     "lint": "oxlint --type-aware",
