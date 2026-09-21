@@ -493,7 +493,7 @@ of them did in a single pass.
 That is a deliberate trade, not neglect. The library is not published, so nobody's build breaks when
 a name improves; what you get instead is a surface that says what it means. The day I publish, that
 freedom ends and the usual ceremony starts — versions, a migration note per break, the lot. Until
-then the CHANGELOG is the migration guide, organised by date, and it explains _why_ each name moved
+then the CHANGELOG records every rename, organised by date, and it explains _why_ each name moved
 rather than only that it did.
 
 If you have lifted code out of `src/`, pin the commit you took it from.

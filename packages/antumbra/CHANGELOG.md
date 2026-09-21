@@ -4,11 +4,20 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-**This file is the project's memory.** The code comments never narrate history, so the reasoning
-behind a decision lives here and nowhere else. Entries are left as written — a changelog that edits
-its own past is a story, not a record. The package has been renamed twice, so older entries call it
-by older names: `@yourorg/dialog` before 2026-08-04, then `umbra` until 2026-09-15. It is
-`antumbra` now.
+> **Everything below this line is frozen, 2026-09-21.**
+>
+> Decisions live in [`docs/decisions/`](../../docs/decisions/README.md) now — one file per decision, changed
+> in place rather than restated on a new date. See
+> [0004](../../docs/decisions/0004-the-decision-log-is-the-history.md) for why.
+>
+> These entries are left exactly as written: a changelog that edits its own past is a story,
+> not a record. They are the archive a decision's history points back into. New entries go
+> above this line, one line each, naming the decision they carry out.
+>
+> **Reading them needs one key**: the package has been renamed twice, so older entries call it by
+> older names — `@yourorg/dialog` before 2026-08-04, then `umbra` until 2026-09-15. It is
+> `antumbra` now. The API was renamed with it: `useModal` is `useDialog`, `useSlideModal` is
+> `useSlideDialog`. Searching the archive for a current name finds nothing.
 
 ## 2026-09-19, the draft is written out, and immer is gone
 

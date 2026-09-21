@@ -37,8 +37,9 @@ written for exactly this purpose — the short list that comes up most:
 - **No UI ships.** Ever. Reference markup belongs in the playground's templates.
 - **A compatibility fact goes in the matrix** (`src/__tests__/compatibility-matrix.ts`), not in
   prose — and a ✓ cell cites the test that proves it.
-- **Comments say why, never what or used-to.** The CHANGELOG is the history, and your change
-  needs an entry in the current date's block.
+- **Comments say why, never what or used-to.** [The decision log](../../docs/decisions/README.md)
+  is the history; a change that shifts a decision edits its file rather than adding a dated entry
+  beneath it.
 - **Conventional Commits**, present tense, and the message explains the reasoning — read
   `git log` for the house style before writing one.
 

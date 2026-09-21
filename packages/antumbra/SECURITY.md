@@ -25,5 +25,6 @@ Not a vulnerability in this library: XSS through content **you** render into a d
 ## Fixes
 
 There are no release branches and no backports — `main` is the only line, and a fix lands there
-as an ordinary commit with a CHANGELOG entry. If you pinned a commit (the README recommends it
-when lifting code), the CHANGELOG is where a fix worth re-pinning for is announced.
+as an ordinary commit. If you pinned a commit (the README recommends it when lifting code), the
+commit log is where a fix worth re-pinning for is announced, and anything that changed a decision
+rather than only the code says so in [docs/decisions](../../docs/decisions/README.md).

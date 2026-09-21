@@ -261,4 +261,4 @@ export const OVER_BUDGET =
   'One dense sentence beats a paragraph. Move the rest up to the JSDoc of what it constrains, or down into the test that proves it.';
 
 export const NARRATING =
-  'The CHANGELOG is the history. State the invariant that holds now, rather than the shape it replaced.';
+  'docs/decisions/ is the history. State the invariant that holds now, rather than the shape it replaced.';

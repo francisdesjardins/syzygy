@@ -47,7 +47,7 @@ promise. A name can change between two commits if a better one turns up, and it 
 That is a deliberate trade, not neglect. Nothing here is published, so nobody's build breaks when a
 name improves; what you get instead is a surface that says what it means. The day any of it is
 published, that freedom ends and the usual ceremony starts — versions, a migration note per break,
-the lot. Until then the CHANGELOG is the migration guide, organised by date, and it explains _why_
+the lot. Until then the CHANGELOG records every rename, organised by date, and it explains _why_
 each name moved rather than only that it did.
 
 If you have lifted code out of `src/`, pin the commit you took it from.

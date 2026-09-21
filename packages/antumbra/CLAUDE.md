@@ -145,9 +145,9 @@ it bites and gnomon's coverage report prints them all when it finds nothing.
 - **Commits**: [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
 - **Changelog**: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date
 - **Files**: kebab-case. **Exports**: PascalCase types/components, camelCase functions/hooks
-- **Comments**: **why, not what** — and never the past (`used to`, `previously`); the CHANGELOG is
-  the history. One dense sentence beats a paragraph; JSDoc on public API is the exception, being
-  the documentation. **All of that is a gate** — `yarn comment-budget`, numbers in
+- **Comments**: **why, not what** — and never the past (`used to`, `previously`);
+  [the decision log](../../docs/decisions/README.md) is the history. One dense sentence beats a
+  paragraph; JSDoc on public API is the exception, being the documentation. **All of that is a gate** — `yarn comment-budget`, numbers in
   [comment-budget.json](comment-budget.json), scanner shared by every package here.
 - **No implicit returns**: every arrow function uses a block body with an explicit `return` (`arrow-body-style: ['error', 'always']`, `yarn lint:fix` auto-fixes)
 - **Optional props**: `| undefined` suffix (`onClose?: ((r: CloseResult) => void) | undefined`)

@@ -191,12 +191,12 @@ what make "every file" true.
 
 ## What is shared, and what is not
 
-[NORMALIZATION.md](NORMALIZATION.md) is the register: what has been unified and which gate holds it,
-what is deliberately still different and why, and what is simply not done yet.
+Two decisions carry it: [what is shared and which gate holds it](docs/decisions/0022-the-shared-surface.md),
+and [what is deliberately still different](docs/decisions/0011-what-is-deliberately-different.md).
 
-It exists because the second list is the one that rots. A divergence nobody decided on and nobody is
-tracking reads exactly like one that was argued for — which is what every row in the first list used
-to be.
+Both are needed, because the second list is the one that rots. A divergence nobody decided on and
+nobody is tracking reads exactly like one that was argued for — and the cheapest way to look
+thorough is to unify something that should not be.
 
 ## AI involvement
 

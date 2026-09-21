@@ -93,5 +93,6 @@ to the shipped `.js` is not reconsidered against the ambient declaration beside 
 - **Commits**: [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
 - **Changelog**: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date
 - **Files**: PascalCase for components, kebab-case for everything else
-- **Comments**: **why, not what** — and never the past; the CHANGELOG is the history. JSDoc on the
-  public surface is the exception, being the documentation.
+- **Comments**: **why, not what** — and never the past;
+  [the decision log](../../docs/decisions/README.md) is the history. JSDoc on the public surface is
+  the exception, being the documentation.

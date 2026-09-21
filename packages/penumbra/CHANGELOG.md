@@ -2,8 +2,15 @@
 
 Kept per [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), by date. No semver.
 
-**This file is the package's memory.** The code states what holds now; why it came to hold lives
-here.
+> **Everything below this line is frozen, 2026-09-21.**
+>
+> Decisions live in [`docs/decisions/`](../../docs/decisions/README.md) now — one file per decision, changed
+> in place rather than restated on a new date. See
+> [0004](../../docs/decisions/0004-the-decision-log-is-the-history.md) for why.
+>
+> These entries are left exactly as written: a changelog that edits its own past is a story,
+> not a record. They are the archive a decision's history points back into. New entries go
+> above this line, one line each, naming the decision they carry out.
 
 ## 2026-09-18, four things the specimen got wrong
 
