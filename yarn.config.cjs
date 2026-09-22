@@ -37,6 +37,17 @@ module.exports = {
       }
     }
 
+    // ── Playwright, pinned exactly ───────────────────────────────────────────
+    //
+    // CI tags its container with this version, read from the root manifest, and the browsers in that
+    // image only fit the `@playwright/test` they shipped with. A `^` would let the install move while
+    // the tag stays put, and the mismatch surfaces as a missing browser rather than as a version.
+    for (const dependency of Yarn.dependencies({ ident: `@playwright/test` })) {
+      if (dependency.type !== `peerDependencies` && !/^\d+\.\d+\.\d+$/.test(dependency.range)) {
+        dependency.error(`@playwright/test must be an exact version, not ${dependency.range}`);
+      }
+    }
+
     // ── One Yarn, named once ─────────────────────────────────────────────────
     //
     // Yarn reads `packageManager` from the project root and nowhere else, so a copy in a nested

@@ -40,10 +40,10 @@ jobs:
   # Two facts the other jobs cannot compute for themselves, and one guard.
   #
   # `container.image` is evaluated before a job starts, so a job cannot read its own workspace to tag
-  # its own container — the version has to arrive through `needs`. It comes from `yarn.lock` rather
-  # than a manifest: the root has no `devDependencies`, antumbra and umbra pin `1.63.0` and limb asks
-  # for `^1.57.0`, so the resolved version is the only one that describes what will be installed.
-  # Node is never installed here — grep and awk are enough, which keeps this job at checkout speed.
+  # its own container — the version has to arrive through `needs`. It comes from the root
+  # `package.json`, which pins it exactly: `yarn.config.cjs` refuses a range on `@playwright/test`
+  # and holds every other manifest to the same version, so the declared version is the installed one.
+  # Node is never installed here — jq is on the runner, which keeps this job at checkout speed.
   resolve:
     name: Resolve
     runs-on: ubuntu-latest
@@ -69,13 +69,14 @@ jobs:
       - name: Resolve the Playwright version
         id: playwright
         run: |
-          keys=$(grep -c '^"\?@playwright/test@' yarn.lock)
-          if [ "$keys" != "1" ]; then
-            echo "::error::@playwright/test has $keys lockfile entries; one container tag cannot serve them."
-            grep -n '^"\?@playwright/test@' yarn.lock
+          version=$(jq -r '.devDependencies["@playwright/test"] // empty' package.json)
+          # `yarn constraints` already refuses a range, but this job runs before any install. Anything
+          # but a bare version becomes an image reference Docker refuses, two jobs away and under a
+          # name that says nothing about the manifest.
+          if ! printf '%s' "$version" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "::error::package.json declares @playwright/test as '$version'; the container tag needs an exact x.y.z."
             exit 1
           fi
-          version=$(awk '/^"?@playwright\/test@/ { found = 1; next } found && /^  version: / { print $2; exit }' yarn.lock)
           echo "version=$version" >> "$GITHUB_OUTPUT"
           echo "Playwright $version"
 
