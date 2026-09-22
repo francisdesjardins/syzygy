@@ -44,16 +44,25 @@ jobs:
   # its own container — the version has to arrive through `needs`. It comes from the root
   # `package.json`, which pins it exactly: `yarn.config.cjs` refuses a range on `@playwright/test`
   # and holds every other manifest to the same version, so the declared version is the installed one.
-  # Node is never installed here — jq is on the runner, which keeps this job at checkout speed.
+  #
+  # The test suites come from `scripts/ci-plan.mjs`: only those a change can affect. On a push the
+  # change is measured from the last commit whose CI passed, not from the previous push — a push
+  # cancels the run before it, and diffing against that one would leave its changes untested.
   resolve:
     name: Resolve
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: read
     outputs:
       playwright-version: ${{ steps.playwright.outputs.version }}
       tests: ${{ steps.tests.outputs.tests }}
     steps:
       - uses: actions/checkout@v6
+        with:
+          # The diff needs the base commit, wherever it is in the history.
+          fetch-depth: 0
 
       # `env.YARN` names a file; `.yarnrc.yml` is what every local `yarn` obeys. A `yarn set version`
       # moves one and not the other, and the failure would be this workflow running an older Yarn
@@ -82,35 +91,27 @@ jobs:
           echo "version=$version" >> "$GITHUB_OUTPUT"
           echo "Playwright $version"
 
-      # The Test matrix, one entry per suite so a red run names the suite and the engine. Listed
-      # here rather than in the job so it can be checked: a workspace whose `test` runs anything
-      # must appear, or the job fails instead of quietly skipping it.
-      - name: List the test suites
+      - uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      # No base on a manual run, or when the last green commit is gone from the history: the
+      # script then runs every suite.
+      - name: List the affected test suites
         id: tests
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          tests='[
-            {"id": "antumbra-unit",         "workspace": "antumbra", "script": "test:unit"},
-            {"id": "antumbra-chromium",     "workspace": "antumbra", "script": "test:component:chromium"},
-            {"id": "antumbra-firefox",      "workspace": "antumbra", "script": "test:component:firefox"},
-            {"id": "antumbra-webkit",       "workspace": "antumbra", "script": "test:component:webkit"},
-            {"id": "antumbra-touch",        "workspace": "antumbra", "script": "test:component:touch"},
-            {"id": "antumbra-touch-webkit", "workspace": "antumbra", "script": "test:component:touch-webkit"},
-            {"id": "umbra-unit",            "workspace": "umbra",    "script": "test:unit"},
-            {"id": "umbra-component",       "workspace": "umbra",    "script": "test:component"},
-            {"id": "corona-unit",           "workspace": "corona",   "script": "test:unit"},
-            {"id": "corona-component",      "workspace": "corona",   "script": "test:component"},
-            {"id": "limb-unit",             "workspace": "limb",     "script": "test"}
-          ]'
-          for manifest in packages/*/package.json packages/*/playground/package.json apps/*/package.json; do
-            name=$(jq -r '.name' "$manifest")
-            script=$(jq -r '.scripts.test // ""' "$manifest")
-            case "$script" in "" | echo*) continue ;; esac
-            if ! jq -e --arg name "$name" 'any(.[]; .workspace == $name)' <<< "$tests" > /dev/null; then
-              echo "::error::$name has a test script the Test matrix does not run. Add it to this list."
-              exit 1
-            fi
-          done
-          echo "tests=$(jq -c . <<< "$tests")" >> "$GITHUB_OUTPUT"
+          case "${{ github.event_name }}" in
+            pull_request) base="${{ github.event.pull_request.base.sha }}" ;;
+            push)
+              base=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow ci.yml --branch "$GITHUB_REF_NAME" \
+                --status success --limit 1 --json headSha --jq '.[0].headSha // empty')
+              ;;
+            *) base="" ;;
+          esac
+          echo "Comparing against ${base:-nothing}"
+          node scripts/ci-plan.mjs ${base:+--base "$base"}
 
   # ── Check ────────────────────────────────────────────────────────────────────
   # `yarn check` at the root: the constraints, `dedupe --check`, then oxfmt and oxlint over the whole
@@ -172,8 +173,8 @@ jobs:
       - run: $YARN check
 
   # ── Test ─────────────────────────────────────────────────────────────────────
-  # One job per suite, from the list Resolve checks, so a red run names the workspace and the engine
-  # in the job list instead of inside a log. `fail-fast: false`: the engines genuinely disagree (a
+  # One job per affected suite, as Resolve lists them, so a red run names the workspace and the
+  # engine in the job list instead of inside a log. Skipped when a change affects no suite. `fail-fast: false`: the engines genuinely disagree (a
   # focus assertion has been green on Chromium and red on WebKit), and one red leg must not hide
   # whether the others were green. Each leg has its own container, so the ports cannot collide.
   #
@@ -183,6 +184,8 @@ jobs:
   test:
     name: Test (${{ matrix.id }})
     needs: resolve
+    # An empty matrix is an error rather than nothing to do.
+    if: needs.resolve.outputs.tests != '[]'
     runs-on: ubuntu-latest
     # The longest leg is one antumbra engine: 4.5 to 7.5 min measured on this runner.
     timeout-minutes: 20
