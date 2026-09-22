@@ -319,11 +319,19 @@ function writeModules(examples, from) {
 
 // ── Gates ────────────────────────────────────────────────────────────────────
 
+/**
+ * A tool's output, whether it passed or failed — the caller parses it either way. A tool that never
+ * started throws instead: an empty string reads as "no findings", and on Windows that is exactly
+ * what spawning the extensionless `.bin/oxlint` shim produced, so the lint pass reported clean
+ * without ever running.
+ */
 function run(command, args) {
   try {
-    execFileSync(command, args, { cwd: ROOT, stdio: 'pipe', encoding: 'utf8' });
-    return '';
+    return execFileSync(command, args, { cwd: ROOT, stdio: 'pipe', encoding: 'utf8' });
   } catch (error) {
+    if (typeof error.status !== 'number') {
+      throw error;
+    }
     return `${error.stdout ?? ''}${error.stderr ?? ''}`;
   }
 }
@@ -380,7 +388,9 @@ function typeCheck() {
  * pass silently reports the syntax half only.
  */
 function lint() {
-  const output = run(join(ROOT, 'node_modules', '.bin', 'oxlint'), [
+  // Through Node, like `tsc` above: the `.bin` entry is a shell shim that only POSIX can spawn.
+  const output = run(process.execPath, [
+    join(ROOT, 'node_modules', 'oxlint', 'bin', 'oxlint'),
     relative(ROOT, GENERATED).replaceAll('\\', '/'),
     '--type-aware',
     '-f',

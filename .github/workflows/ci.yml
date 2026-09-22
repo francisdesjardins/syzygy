@@ -170,7 +170,7 @@ jobs:
     # 2:22 / 2:40 / 3:00 per engine at ~317 tests a leg. Expect 12–16 min; 30 is the ceiling that
     # catches a hang without cutting a slow-but-honest run.
     timeout-minutes: 30
-    # Browsers are pre-installed, and the tag is the version the lockfile resolved — a hand-written
+    # Browsers are pre-installed, and the tag is the version the root manifest pins — a hand-written
     # tag drifts the moment the dependency moves, and the mismatch arrives as a driver error that
     # reads like a broken test. `--user 1001`, and `actions/setup-node` inside the container, are the
     # shape Playwright's own CI page documents (https://playwright.dev/docs/ci, "Via Containers") —

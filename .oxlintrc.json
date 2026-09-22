@@ -242,6 +242,45 @@
       }
     },
     {
+      // JSDoc `@example` blocks, extracted by `gnomon-examples`. A doc example is code a
+      // reader copies, so it is linted — but as a snippet: it shows a call and stops, leaves
+      // bindings unread, and leans on `declare`d `any` stand-ins for the app around it. It also
+      // uses concise arrows on purpose, which is the opposite of what the library asks. What stays
+      // on is the class of rule that would make an example teach a bug.
+      //
+      // `generated/` is not committed, so this matches nothing until the script runs.
+      "files": ["**/scripts/examples/generated/**/*.tsx"],
+      "rules": {
+        "arrow-body-style": "off",
+        "curly": "off",
+        // An elliptical example shows one option of an object (`render: (ctx) => …`) and stops,
+        // which parses standalone as a label followed by an expression. That is the illustration
+        // working as intended; the type pass is what still holds it to the library's API.
+        "no-unused-labels": "off",
+        "no-unused-expressions": "off",
+        // Three findings about the harness rather than the example. The generated module carries an
+        // `export {}` so `moduleDetection: force` has something to see, and the snippet is wrapped
+        // in an `async` function so it can host an awaited call site — which makes every hook call
+        // in an example structurally "called in an async function". A component example ends in
+        // its own `return`, after which the wrapper's `return null` is unreachable; the examples
+        // tsconfig sets `allowUnreachableCode` for the same reason.
+        "typescript/no-useless-empty-export": "off",
+        "react-hooks/rules-of-hooks": "off",
+        "no-unreachable": "off",
+        "no-unused-vars": "off",
+        "typescript/no-explicit-any": "off",
+        "typescript/no-unsafe-argument": "off",
+        "typescript/no-unsafe-assignment": "off",
+        "typescript/no-unsafe-call": "off",
+        "typescript/no-unsafe-member-access": "off",
+        "typescript/no-unsafe-return": "off",
+        "typescript/require-await": "off",
+        "typescript/no-unnecessary-condition": "off",
+        "typescript/no-confusing-void-expression": "off",
+        "no-console": "off"
+      }
+    },
+    {
       "files": ["**/*.test.ts", "**/*.test-d.ts", "**/*.ct.tsx", "**/*.story.tsx"],
       "rules": {
         "no-console": "off",
