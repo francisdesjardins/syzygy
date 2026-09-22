@@ -1,15 +1,19 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    // The program legitimately spans two workspaces: the demo consumes the library through its
-    // public specifiers, aliased to source, so the common root is the repo rather than this folder.
-    "rootDir": "..",
+    // The program legitimately spans three workspaces: the demo consumes umbra and its sibling
+    // antumbra through their public specifiers, aliased to source, so the common root is `packages/`.
+    "rootDir": "../..",
     "declaration": false,
     "declarationMap": false,
     "jsx": "react-jsx",
     "types": ["node", "vite/client"],
     "paths": {
       "@/*": ["./src/*"],
+      // The sibling library, to source as `vite.config.ts` aliases it. Through its `exports` it would
+      // resolve to `dist/`, which a clean checkout does not have: every import typed as `error`.
+      "antumbra": ["../../antumbra/src/index.ts"],
+      "antumbra/react": ["../../antumbra/src/react.ts"],
       "umbra": ["../src/index.ts"],
       "umbra/react": ["../src/react.ts"],
       "umbra/solid": ["../src/solid.ts"],
