@@ -11,6 +11,7 @@
     "check": "yarn constraints && yarn dedupe --check && yarn format:check && yarn lint --deny-warnings && yarn workspaces foreach --all --topological-dev run check && yarn check:capabilities && yarn check:error-rule && yarn check:coverage-config && yarn check:gates",
     "test": "yarn workspaces foreach --all --topological-dev run test",
     "verify:all": "yarn workspaces foreach --all --topological-dev run verify:all",
+    "verify": "yarn build && yarn workspaces foreach --all --topological-dev run verify:package && yarn workspaces foreach --all --topological-dev run smoke",
     "playgrounds:build": "yarn workspaces foreach --all --topological-dev run playground:build:file",
     "deploy": "node deploy.mjs",
     "build": "yarn workspaces foreach --all --topological-dev run build",

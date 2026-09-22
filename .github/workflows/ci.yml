@@ -204,10 +204,10 @@ jobs:
           retention-days: 7
 
   # ── Verify ───────────────────────────────────────────────────────────────────
-  # `check` and `test` never compile anything. This job is where the artifact is proved. Root
-  # `verify:all` is `lint && type-check && build && verify:package` in both libraries, plus umbra's
-  # `smoke` — which spawns its own `vite preview` on :4002 and drives the built playground in a real
-  # Chromium, so it needs this container rather than a plain runner.
+  # `check` and `test` never compile anything. This job is where the artifact is proved, and only
+  # that: root `verify` is `build`, then `verify:package` and `smoke` wherever they exist. Not
+  # `verify:all`, which reruns `check` and `test` in several workspaces and would repeat the other
+  # two jobs. `smoke` drives each built playground in a real Chromium, hence the container.
   #
   # `playgrounds:build` then compiles the hash-router builds (`VITE_HASH_ROUTER=true`), which is the
   # artifact `yarn deploy` actually ships. The two builds differ in how the router reads a URL, so a
@@ -227,5 +227,5 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
       - run: $YARN install --immutable
-      - run: $YARN verify:all
+      - run: $YARN verify
       - run: $YARN playgrounds:build

@@ -117,6 +117,7 @@ that refuses to run this project at all.
 yarn check              # format and lint every file, then each package's own gate
 yarn test               # unit and component tests
 yarn verify:all         # the full gate each package defines for itself
+yarn verify             # only the artifact: build, package checks, playground smoke
 yarn playgrounds:build  # the relocatable playground builds the site serves
 yarn deploy             # assemble the site, then:
 yarn check:layout       # drive the assembled site at two phone and two desktop widths
