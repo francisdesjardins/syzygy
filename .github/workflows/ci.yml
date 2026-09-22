@@ -37,7 +37,8 @@ env:
 
 jobs:
   # ── Resolve ──────────────────────────────────────────────────────────────────
-  # Two facts the other jobs cannot compute for themselves, and one guard.
+  # What the other jobs cannot compute for themselves — the Playwright version and the list of test
+  # suites — and the guards on both.
   #
   # `container.image` is evaluated before a job starts, so a job cannot read its own workspace to tag
   # its own container — the version has to arrive through `needs`. It comes from the root
@@ -50,6 +51,7 @@ jobs:
     timeout-minutes: 5
     outputs:
       playwright-version: ${{ steps.playwright.outputs.version }}
+      tests: ${{ steps.tests.outputs.tests }}
     steps:
       - uses: actions/checkout@v6
 
@@ -79,6 +81,36 @@ jobs:
           fi
           echo "version=$version" >> "$GITHUB_OUTPUT"
           echo "Playwright $version"
+
+      # The Test matrix, one entry per suite so a red run names the suite and the engine. Listed
+      # here rather than in the job so it can be checked: a workspace whose `test` runs anything
+      # must appear, or the job fails instead of quietly skipping it.
+      - name: List the test suites
+        id: tests
+        run: |
+          tests='[
+            {"id": "antumbra-unit",         "workspace": "antumbra", "script": "test:unit"},
+            {"id": "antumbra-chromium",     "workspace": "antumbra", "script": "test:component:chromium"},
+            {"id": "antumbra-firefox",      "workspace": "antumbra", "script": "test:component:firefox"},
+            {"id": "antumbra-webkit",       "workspace": "antumbra", "script": "test:component:webkit"},
+            {"id": "antumbra-touch",        "workspace": "antumbra", "script": "test:component:touch"},
+            {"id": "antumbra-touch-webkit", "workspace": "antumbra", "script": "test:component:touch-webkit"},
+            {"id": "umbra-unit",            "workspace": "umbra",    "script": "test:unit"},
+            {"id": "umbra-component",       "workspace": "umbra",    "script": "test:component"},
+            {"id": "corona-unit",           "workspace": "corona",   "script": "test:unit"},
+            {"id": "corona-component",      "workspace": "corona",   "script": "test:component"},
+            {"id": "limb-unit",             "workspace": "limb",     "script": "test"}
+          ]'
+          for manifest in packages/*/package.json packages/*/playground/package.json apps/*/package.json; do
+            name=$(jq -r '.name' "$manifest")
+            script=$(jq -r '.scripts.test // ""' "$manifest")
+            case "$script" in "" | echo*) continue ;; esac
+            if ! jq -e --arg name "$name" 'any(.[]; .workspace == $name)' <<< "$tests" > /dev/null; then
+              echo "::error::$name has a test script the Test matrix does not run. Add it to this list."
+              exit 1
+            fi
+          done
+          echo "tests=$(jq -c . <<< "$tests")" >> "$GITHUB_OUTPUT"
 
   # ── Check ────────────────────────────────────────────────────────────────────
   # `yarn check` at the root: the constraints, `dedupe --check`, then oxfmt and oxlint over the whole
@@ -140,42 +172,28 @@ jobs:
       - run: $YARN check
 
   # ── Test ─────────────────────────────────────────────────────────────────────
-  # `yarn test` at the root: unit and component, every workspace that has a `test` script — umbra,
-  # antumbra and limb today.
-  #
-  # **One job, and the cost is named.** antumbra's own workflow split its component suite into six
-  # jobs, and the reasons were good: the engines genuinely disagree (a focus assertion has been green
-  # on Chromium and red on WebKit), `fail-fast: false` kept the comparison, and a job name says which
-  # engine broke where a 1 400-test log does not. The aggregate gives that up: `foreach` stops at the
-  # first failing workspace and `test-engines.mjs` stops at the first failing engine, so a red run
-  # says "antumbra, component-webkit" and stops rather than reporting that Gecko was fine. That is
-  # the price of a CI that follows the root scripts instead of restating them, and it is paid once —
-  # when the cross-engine picture is what a run is for, `yarn workspace antumbra test:component:webkit`
-  # answers it locally in under four minutes.
-  #
-  # **Ports.** `foreach` is serial unless `-p` is passed, so antumbra's suite has :3001 to itself and
-  # then umbra's has :3002 — both `strictPort`, both assigned in the root README, so neither can
-  # slide onto the other's server. `-p` would be port-safe for that same reason and is still wrong
-  # here: both suites run `workers: 1` under CI and would only contend for one runner's cores.
+  # One job per suite, from the list Resolve checks, so a red run names the workspace and the engine
+  # in the job list instead of inside a log. `fail-fast: false`: the engines genuinely disagree (a
+  # focus assertion has been green on Chromium and red on WebKit), and one red leg must not hide
+  # whether the others were green. Each leg has its own container, so the ports cannot collide.
   #
   # **`CI=true`**, which GitHub sets in container jobs too, is what turns on `forbidOnly` (a stray
-  # `.only` fails the run), `retries: 2`, `workers: 1` and `reuseExistingServer: false` in both
-  # Playwright configs. Nothing here needs to set it.
+  # `.only` fails the run), `retries: 2`, `workers: 1` and `reuseExistingServer: false` in every
+  # Playwright config. Nothing here needs to set it.
   test:
-    name: Test
+    name: Test (${{ matrix.id }})
     needs: resolve
     runs-on: ubuntu-latest
-    # Measured here: 598 antumbra unit tests in 7s on one worker, 88 umbra, 59 limb. The component
-    # suites are the wall clock — 460 tests per desktop engine, where antumbra's CI measured
-    # 2:22 / 2:40 / 3:00 per engine at ~317 tests a leg. Expect 12–16 min; 30 is the ceiling that
-    # catches a hang without cutting a slow-but-honest run.
-    timeout-minutes: 30
+    # The longest leg is one antumbra engine: 4.5 to 7.5 min measured on this runner.
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.resolve.outputs.tests) }}
     # Browsers are pre-installed, and the tag is the version the root manifest pins — a hand-written
     # tag drifts the moment the dependency moves, and the mismatch arrives as a driver error that
     # reads like a broken test. `--user 1001`, and `actions/setup-node` inside the container, are the
-    # shape Playwright's own CI page documents (https://playwright.dev/docs/ci, "Via Containers") —
-    # which is also where antumbra's copy got it. No `HOME` override and no `--ipc=host`: the
-    # documented example carries neither.
+    # shape Playwright's own CI page documents (https://playwright.dev/docs/ci, "Via Containers").
     container:
       image: mcr.microsoft.com/playwright:v${{ needs.resolve.outputs.playwright-version }}-noble
       options: --user 1001
@@ -190,16 +208,15 @@ jobs:
       # this repository's to reason about. antumbra's container jobs installed from the network every
       # time, which is the arrangement with a track record.
       - run: $YARN install --immutable
-      - run: $YARN test
+      - run: $YARN workspace ${{ matrix.workspace }} run ${{ matrix.script }}
       # Only on red. The report carries the trace `on-first-retry` recorded, which is the difference
       # between reading a failure and reproducing it; on a green run it is an artifact nobody opens.
-      # Both suites write to `<package>/playwright-report/`, hence the glob.
-      - name: Upload the Playwright reports
+      - name: Upload the Playwright report
         if: failure()
         uses: actions/upload-artifact@v7
         with:
-          name: playwright-report-test
-          path: packages/*/playwright-report/
+          name: playwright-report-${{ matrix.id }}
+          path: packages/${{ matrix.workspace }}/playwright-report/
           if-no-files-found: ignore
           retention-days: 7
 
