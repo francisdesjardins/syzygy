@@ -11,7 +11,7 @@ between commits when a better one shows up, and the entry says which and why.
 >
 > These entries were written as essays, because this file used to be where the reasoning lived.
 > The reasoning has moved, so what is left here is the record: what changed, on which date. **The
-> full original prose is in this file's git history, at commit 8d295df and earlier.** New entries
+> full original prose is in this file's git history, at commit ab066b7 and earlier.** New entries
 > go above this line, one line each.
 
 ## 2026-09-18, one switch table, and a frame that does not scroll
