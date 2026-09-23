@@ -25,11 +25,25 @@ import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
-/** One entry per suite, so a red run names the workspace and the engine in the job list. */
+/**
+ * One entry per suite, so a red run names the workspace and the engine in the job list. `args` is
+ * appended to the script; Firefox is the slowest engine, so it runs as two Playwright shards.
+ */
 const SUITES = [
   { id: 'antumbra-unit', workspace: 'antumbra', script: 'test:unit' },
   { id: 'antumbra-chromium', workspace: 'antumbra', script: 'test:component:chromium' },
-  { id: 'antumbra-firefox', workspace: 'antumbra', script: 'test:component:firefox' },
+  {
+    id: 'antumbra-firefox-1',
+    workspace: 'antumbra',
+    script: 'test:component:firefox',
+    args: '--shard=1/2',
+  },
+  {
+    id: 'antumbra-firefox-2',
+    workspace: 'antumbra',
+    script: 'test:component:firefox',
+    args: '--shard=2/2',
+  },
   { id: 'antumbra-webkit', workspace: 'antumbra', script: 'test:component:webkit' },
   { id: 'antumbra-touch', workspace: 'antumbra', script: 'test:component:touch' },
   { id: 'antumbra-touch-webkit', workspace: 'antumbra', script: 'test:component:touch-webkit' },

@@ -187,7 +187,7 @@ jobs:
     # An empty matrix is an error rather than nothing to do.
     if: needs.resolve.outputs.tests != '[]'
     runs-on: ubuntu-latest
-    # The longest leg is one antumbra engine: 4.5 to 7.5 min measured on this runner.
+    # The longest leg is one antumbra engine: about 4.5 to 5.5 min measured on this runner.
     timeout-minutes: 20
     strategy:
       fail-fast: false
@@ -211,7 +211,7 @@ jobs:
       # this repository's to reason about. antumbra's container jobs installed from the network every
       # time, which is the arrangement with a track record.
       - run: $YARN install --immutable
-      - run: $YARN workspace ${{ matrix.workspace }} run ${{ matrix.script }}
+      - run: $YARN workspace ${{ matrix.workspace }} run ${{ matrix.script }} ${{ matrix.args }}
       # Only on red. The report carries the trace `on-first-retry` recorded, which is the difference
       # between reading a failure and reproducing it; on a green run it is an artifact nobody opens.
       - name: Upload the Playwright report
