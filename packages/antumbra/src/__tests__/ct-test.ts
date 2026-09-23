@@ -57,12 +57,15 @@ export const test = base.extend<{ coverage: void; uncaught: void }>({
   uncaught: [
     async ({ page }, use) => {
       const thrown: string[] = [];
-      page.on('pageerror', (error) => {
+      const record = (error: Error) => {
         // The stack, so a red in CI names the file rather than only the sentence.
         thrown.push(error.stack ?? error.message);
-      });
+      };
+      page.on('pageerror', record);
 
       await use();
+      // The page outlives the test under `reuseContext`, so its listener must not.
+      page.off('pageerror', record);
 
       expect(
         thrown,

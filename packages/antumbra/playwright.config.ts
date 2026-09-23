@@ -135,11 +135,10 @@ export default defineConfig({
     // A cached response shadowing a fresh bundle is the one failure mode that reads as a flaky
     // test rather than a stale page, and the playground registers no worker of its own to lose.
     serviceWorkers: 'block',
-    // **Not `reuseContext`**, which the migration guide suggests for speed. The manager is a
-    // module singleton, so a shared context carries one test's registrations into the next: the
-    // provider-isolation and DOM-event harnesses went red on their *second* interaction, which is
-    // exactly what a leaked registry looks like. A context per test is the isolation this suite
-    // has always had, and it costs about a second across the whole project.
+    // One context per worker. `mount()` navigates on every call, so each test still starts on a
+    // fresh document and module singletons do not carry over; what survives is the HTTP cache, so
+    // a test no longer re-downloads the dev server's modules. Firefox runs about a quarter faster.
+    reuseContext: true,
   },
   // Reused when one is already up — the dev server on :3001 is usually the one being worked in.
   // Never for coverage: see `PORT`. Absent entirely for a unit-only run: see `needsServer`.

@@ -73,12 +73,15 @@ export const test = base.extend<{
   uncaught: [
     async ({ page }, use) => {
       const thrown: string[] = [];
-      page.on('pageerror', (error) => {
+      const record = (error: Error) => {
         // The stack, so a red names the file rather than only the sentence.
         thrown.push(error.stack ?? error.message);
-      });
+      };
+      page.on('pageerror', record);
 
       await use();
+      // The page outlives the test under `reuseContext`, so its listener must not.
+      page.off('pageerror', record);
 
       if (thrown.length > 0) {
         throw new Error(`The page threw and nothing caught it:\n\n${thrown.join('\n\n')}`);

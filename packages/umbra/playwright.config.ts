@@ -47,6 +47,9 @@ export default defineConfig({
     // A cached response shadowing a fresh bundle is the one failure that reads as a flaky test
     // rather than a stale page, and the playground registers no worker of its own to lose.
     serviceWorkers: 'block',
+    // One context per worker, keeping the HTTP cache between tests. `mount()` still navigates on
+    // every call, so each test starts on a fresh document.
+    reuseContext: true,
   },
   ...(needsServer
     ? {

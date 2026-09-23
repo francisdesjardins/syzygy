@@ -41,6 +41,9 @@ export default defineConfig({
     baseURL: BASE_URL,
     trace: 'on-first-retry',
     serviceWorkers: 'block',
+    // One context per worker, keeping the HTTP cache between tests. `mount()` still navigates on
+    // every call, so each test starts on a fresh document.
+    reuseContext: true,
   },
   ...(needsServer
     ? {
