@@ -10,8 +10,8 @@ import type { ViteDevServer } from 'vite';
  * through to the SPA, which renders the home instead — the same silent wrong answer the
  * `_redirects` rules exist to prevent, one layer earlier.
  *
- * The names here are capabilities, not libraries: `dialog`, `boot` and `design` outlive whatever
- * the packages behind them are called. **The list has to grow with `PLAYGROUNDS` in `deploy.mjs`**
+ * The names here are capabilities, not libraries: `dialog`, `boot`, `design` and `bead` outlive
+ * whatever the packages behind them are called. **The list has to grow with `PLAYGROUNDS` in `deploy.mjs`**
  * — a capability missing here is served the home page instead of its playground, which looks like
  * a routing bug in the playground and is not one.
  */
@@ -22,7 +22,7 @@ const playgroundRewrites = {
     server.middlewares.use((req, _res, next) => {
       if (req.url) {
         req.url = req.url.replace(
-          /^(\/playground\/(?:dialog|boot|design)\/)(\?.*)?$/,
+          /^(\/playground\/(?:dialog|boot|design|bead)\/)(\?.*)?$/,
           '$1index.html$2'
         );
       }

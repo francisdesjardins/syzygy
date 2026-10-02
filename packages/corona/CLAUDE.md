@@ -67,14 +67,16 @@ and the second copy drifted.
 **`SurfaceCard` takes no `className` and no `sx`.** That escape hatch is what let one playground's
 cards drift apart before the three drifted from each other.
 
-## `PLAYGROUNDS` is the only place the three are named
+## `PLAYGROUNDS` is the only place the playgrounds are named
 
 `site/playgrounds.ts`, and the order is the eclipse, outward from the middle: umbra is the full
-shadow, penumbra the partial one around it, antumbra beyond the umbra's tip. The home page shows the
-same three, and the root's `check:capabilities` fails when the two orders disagree.
+shadow, penumbra the partial one around it, antumbra beyond the umbra's tip, then Bead, the beads of
+light at the disc's edge. The home page shows the same four, and the root's `check:capabilities`
+fails when the two orders disagree.
 
 **A slug is a capability; a name is a package.** A package is renamed the day a better word turns
-up, and a deployed URL that followed it would break every link anybody kept.
+up, and a deployed URL that followed it would break every link anybody kept. Bead's slug is the one
+that is its name: it names a protocol, which its wire carries and no rename touches.
 
 ## Environment
 

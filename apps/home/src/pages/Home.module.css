@@ -1,8 +1,8 @@
 /*
- * The landing page: one screen, and the three shadows an eclipse casts.
+ * The landing page: one screen, the three shadows an eclipse casts, and the light at its edge.
  *
  * Every value is a token, so this file decides where things sit and never what colour they are —
- * the palette is `styles/tokens.skin.css`, which is also where the three grounds are measured
+ * the palette is `styles/tokens.skin.css`, which is also where the grounds are measured
  * against the accent each one has to carry.
  *
  * **The page stopped being a card on a ground.** That card was 928px wide holding text that wanted
@@ -128,7 +128,7 @@
   white-space: nowrap;
 }
 
-/* ── The three shadows ────────────────────────────────────────────────────── */
+/* ── The shadows, and the light ──────────────────────────────────────────── */
 
 .work {
   grid-area: work;
@@ -155,7 +155,7 @@
 }
 
 /*
- * Three grounds, edge to edge, not three cards floating on one.
+ * Four grounds, edge to edge, not four cards floating on one.
  *
  * A single pixel of gap rather than a gutter: the zones meet the way the regions of a shadow meet,
  * and the page behind shows through as the seam. A shared radius and a shared drop shadow would
@@ -166,7 +166,7 @@
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 1px;
   border-radius: var(--app-radius-lg);
   overflow: clip;
@@ -195,6 +195,15 @@
 .antumbra {
   background: var(--app-antumbra);
   color: var(--app-antumbra-ink);
+}
+
+/*
+ * The beads are light, not shadow, so their ground is the brand's own fill, and their ink the one
+ * the contrast gate already measures on it — on the fill and on its hover, in both schemes.
+ */
+.bead {
+  background: var(--app-primary);
+  color: var(--app-primary-ink);
 }
 
 /* The whole zone is the target: the name alone was a five-letter word, under WCAG 2.2's 24x24. */
@@ -237,6 +246,10 @@
   color: var(--app-antumbra-accent);
 }
 
+.bead .zoneName {
+  color: var(--app-primary-ink);
+}
+
 .zoneText {
   margin: 0;
   font-size: var(--app-text-sm);
@@ -247,8 +260,8 @@
 /*
  * The mark is how much of the disc the shadow covers: all of it, half of it, only its edge.
  *
- * Drawn from the accent its own zone can carry, so the three read as one drawing at three depths
- * rather than as three icons.
+ * Drawn from the accent its own zone can carry, so the marks read as one drawing at four depths
+ * rather than as four icons.
  */
 .mark {
   flex: none;
@@ -270,6 +283,15 @@
   box-shadow: inset 0 0 0 2px var(--app-antumbra-accent);
 }
 
+/* The disc's edge, and three beads of light breaking through just inside it. */
+.bead .mark {
+  background:
+    radial-gradient(circle at 83% 53%, var(--app-primary-ink) 0 1.8px, transparent 2.3px),
+    radial-gradient(circle at 74% 74%, var(--app-primary-ink) 0 1.8px, transparent 2.3px),
+    radial-gradient(circle at 53% 83%, var(--app-primary-ink) 0 1.8px, transparent 2.3px);
+  box-shadow: inset 0 0 0 1.5px var(--app-primary-ink);
+}
+
 /* The zone lifts toward the light rather than moving: a shadow that slid would be a card. */
 .zone:hover,
 .zone:focus-within {
@@ -279,6 +301,13 @@
 .antumbra:hover,
 .antumbra:focus-within {
   filter: brightness(0.97);
+}
+
+/* A filter would lift the fill past what its ink is measured on: it moves to the fill's hover. */
+.bead:hover,
+.bead:focus-within {
+  background: var(--app-primary-hover);
+  filter: none;
 }
 
 .zoneLink:focus-visible {

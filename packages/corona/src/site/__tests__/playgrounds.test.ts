@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 import { PLAYGROUNDS, SITE } from '../playgrounds.js';
 
 /**
- * The table every playground's drawer reads to link to the other two.
+ * The table every playground's drawer reads to link to the others.
  *
  * It is data rather than logic, so what is worth asserting is the shape the drawer depends on: a
  * slug that repeats would render two entries pointing at one build, and a slug that drifts from
@@ -10,8 +10,8 @@ import { PLAYGROUNDS, SITE } from '../playgrounds.js';
  * half; this holds the first, which no gate was watching.
  */
 
-test('there are three playgrounds, and the drawer shows two of them from any one', () => {
-  expect(PLAYGROUNDS).toHaveLength(3);
+test('there are four playgrounds, and the drawer shows three of them from any one', () => {
+  expect(PLAYGROUNDS).toHaveLength(4);
 });
 
 test('no slug repeats, or one build would be linked twice and another not at all', () => {
@@ -38,8 +38,13 @@ test('a slug is a capability, so none of them is a package name', () => {
     return playground.name.toLowerCase();
   });
 
+  // Bead's slug is its name: it names a protocol, which its wire carries and no rename touches.
+  const PROTOCOLS = new Set(['bead']);
+
   for (const playground of PLAYGROUNDS) {
-    expect(names).not.toContain(playground.slug.toLowerCase());
+    if (!PROTOCOLS.has(playground.slug)) {
+      expect(names).not.toContain(playground.slug.toLowerCase());
+    }
   }
 });
 

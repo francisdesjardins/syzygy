@@ -4,7 +4,7 @@ import { useTranslation } from '../i18n';
 import { useDocumentHead } from '../hooks/useDocumentHead';
 import styles from './Home.module.css';
 
-type Zone = 'umbra' | 'penumbra' | 'antumbra';
+type Zone = 'umbra' | 'penumbra' | 'antumbra' | 'bead';
 
 type ShadowProps = {
   readonly zone: Zone;
@@ -16,8 +16,9 @@ type ShadowProps = {
 /**
  * One project, standing on the shadow it is named after.
  *
- * The three are the regions an eclipse casts, read outward from the middle — the full shadow, the
- * partial one around it, and what is left past its tip. So the ground each one stands on is the
+ * The first three are the regions an eclipse casts, read outward from the middle — the full shadow,
+ * the partial one around it, and what is left past its tip — and the fourth is the light itself,
+ * the beads that break through at the disc's edge. So the ground each one stands on is the
  * ordering: nothing here is numbered, because the page already darkens and lightens in the order
  * the names do.
  *
@@ -32,7 +33,7 @@ const Shadow = ({ zone, href, name, description }: ShadowProps) => {
   return (
     <li className={[styles['zone'], styles[zone]].join(' ')}>
       <a className={styles['zoneLink']} href={href}>
-        {/* How much of the disc the shadow covers: all of it, half of it, only its edge. */}
+        {/* How much of the disc the shadow covers: all of it, half of it, only its edge — or the light at it. */}
         <span className={styles['mark']} aria-hidden="true" />
         <span className={styles['zoneName']}>{name}</span>
       </a>
@@ -108,6 +109,12 @@ export const Home = memo(() => {
             href="/playground/dialog/#/getting-started"
             name={t('home.work.dialog.name')}
             description={t('home.work.dialog.description')}
+          />
+          <Shadow
+            zone="bead"
+            href="/playground/bead/#/"
+            name={t('home.work.bead.name')}
+            description={t('home.work.bead.description')}
           />
         </ul>
         <p className={styles['note']}>{t('home.expiry')}</p>

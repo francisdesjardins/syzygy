@@ -11,7 +11,7 @@
     },
     "work": {
       "title": "Ce qui tourne",
-      "description": "Trois pièces, chacune avec une surface à essayer. Les noms viennent des ombres que projette une éclipse. Ce qu’elles refusent de faire est documenté aussi soigneusement que le reste.",
+      "description": "Quatre pièces, chacune avec une surface à essayer. Les noms viennent d’une éclipse : les trois ombres qu’elle projette, et les grains de lumière qui percent à son bord. Ce qu’elles refusent de faire est documenté aussi soigneusement que le reste.",
       "dialog": {
         "name": "antumbra",
         "description": "Gestionnaire de dialogues sur le top layer natif. Zéro UI livrée : le renderer reste le tien. Bindings React, Solid et vanilla."
@@ -22,7 +22,11 @@
       },
       "designSystem": {
         "name": "penumbra",
-        "description": "Le design system que portent les trois playgrounds — et la page qui le démonte, une couche à la fois."
+        "description": "Le design system que portent trois des quatre playgrounds — et la page qui le démonte, une couche à la fois."
+      },
+      "bead": {
+        "name": "bead",
+        "description": "Un protocole d’appels binaire et la pile qui le parle : requêtes, abonnements au rythme du client, transferts, annulation. Ici, le serveur tourne dans un Web Worker de la page."
       }
     },
     "location": {

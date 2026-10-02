@@ -1,7 +1,7 @@
 import { Link, useRouterState } from '@tanstack/react-router';
 import { useEffect, type ComponentType, type ReactElement } from 'react';
 
-import { AntumbraMark, HouseMark, PenumbraMark, UmbraMark } from '../site/marks.tsx';
+import { AntumbraMark, BeadMark, HouseMark, PenumbraMark, UmbraMark } from '../site/marks.tsx';
 import { isOnSite } from '../site/on-site.ts';
 import { PLAYGROUNDS, SITE, type PlaygroundSlug } from '../site/playgrounds.ts';
 import styles from './Sidebar.module.css';
@@ -32,6 +32,7 @@ const MARKS: Record<PlaygroundSlug, () => ReactElement> = {
   dialog: AntumbraMark,
   boot: UmbraMark,
   design: PenumbraMark,
+  bead: BeadMark,
 };
 
 /**

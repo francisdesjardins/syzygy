@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { spawn } from 'node:child_process';
+import { execFileSync, spawn } from 'node:child_process';
 import { access, cp, open, readFile, rm } from 'node:fs/promises';
 import { dirname, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -13,8 +13,13 @@ const ROOT = dirname(fileURLToPath(import.meta.url));
  * **Sources are named after the package; destinations are named after the capability.** A library
  * gets renamed — these two already traded places once — but a URL is a promise made to whoever
  * bookmarked it. So the dialog manager's playground is served at `/playground/dialog`, the
- * bootstrapper's at `/playground/boot` and the design system's at `/playground/design`, whatever
- * the packages end up being called.
+ * bootstrapper's at `/playground/boot`, the design system's at `/playground/design` and Bead's demo
+ * at `/playground/bead`, whatever the packages end up being called.
+ *
+ * A playground is built into its workspace's `playground/dist`. Bead's comes from Bead's own
+ * repository, checked out beside this one (`../bead`, or wherever `BEAD_REPOSITORY` points): its
+ * TypeScript side is installed and built there, with that repository's own Yarn, into
+ * `demo/dist/playground`. What ships is a commit of Bead's, and the deploy prints which.
  *
  * Four things carry each destination name and they move together or not at all: this table, the
  * rule in `apps/home/public/_redirects`, the dev-server rewrite in `apps/home/vite.config.ts`, and
@@ -26,6 +31,14 @@ const PLAYGROUNDS = [
   { workspace: 'antumbra', capability: 'dialog', label: 'the dialog manager' },
   { workspace: 'umbra', capability: 'boot', label: 'the bootstrapper' },
   { workspace: 'penumbra', capability: 'design', label: 'the design system' },
+  {
+    repository: resolve(process.env.BEAD_REPOSITORY ?? resolve(ROOT, '..', 'bead')),
+    name: 'Bead',
+    project: 'implementations/typescript',
+    capability: 'bead',
+    label: 'the Bead demo',
+    dist: 'demo/dist/playground',
+  },
 ];
 
 const HOME = resolve(ROOT, 'apps', 'home');
@@ -104,32 +117,33 @@ function run(cmd, { args, cwd }) {
 }
 
 /**
- * Invoke the Yarn release vendored in this repository, through the current Node binary.
+ * Invoke the Yarn release vendored in a project, this repository's by default, through the current
+ * Node binary.
  *
- * One workspace root means one resolution, where the old script needed three. The version comes
- * from `packageManager`, with `yarnPath` as a second source — both are rewritten by
- * `yarn set version`, so an upgrade needs no change here.
+ * One workspace root means one resolution here; a playground from another repository brings its own
+ * project and its own release. The version comes from `packageManager`, with `yarnPath` as a second
+ * source — both are rewritten by `yarn set version`, so an upgrade needs no change here.
  */
-async function resolveYarn() {
+async function resolveYarn(root = ROOT) {
   const candidates = [];
 
   try {
-    const pkg = JSON.parse(await readFile(resolve(ROOT, 'package.json'), 'utf8'));
+    const pkg = JSON.parse(await readFile(resolve(root, 'package.json'), 'utf8'));
     const version = /^yarn@([^+\s]+)/.exec(pkg.packageManager ?? '')?.[1];
 
     if (version) {
-      candidates.push(resolve(ROOT, '.yarn', 'releases', `yarn-${version}.cjs`));
+      candidates.push(resolve(root, '.yarn', 'releases', `yarn-${version}.cjs`));
     }
   } catch {
     // Unreadable or malformed package.json — try the next source.
   }
 
   try {
-    const yarnrc = await readFile(resolve(ROOT, '.yarnrc.yml'), 'utf8');
+    const yarnrc = await readFile(resolve(root, '.yarnrc.yml'), 'utf8');
     const yarnPath = /^yarnPath:\s*['"]?(.+?)['"]?\s*$/m.exec(yarnrc)?.[1];
 
     if (yarnPath) {
-      candidates.push(resolve(ROOT, yarnPath));
+      candidates.push(resolve(root, yarnPath));
     }
   } catch {
     // No .yarnrc.yml — try the next source.
@@ -138,7 +152,7 @@ async function resolveYarn() {
   for (const release of candidates) {
     try {
       await access(release);
-      return (args) => run(process.execPath, { args: [release, ...args], cwd: ROOT });
+      return (args) => run(process.execPath, { args: [release, ...args], cwd: root });
     } catch {
       // Declared but not on disk — try the next candidate.
     }
@@ -147,7 +161,50 @@ async function resolveYarn() {
   console.log(
     `  ${c.dim}No vendored Yarn release found, falling back to \`yarn\` on PATH.${c.reset}`
   );
-  return (args) => run('yarn', { args, cwd: ROOT });
+  return (args) => run('yarn', { args, cwd: root });
+}
+
+/**
+ * The commit a playground from another repository is built from. A deploy ships a commit, never a
+ * working tree: a checkout with changes not committed, or with no commit yet, is refused, unless
+ * `ALLOW_DIRTY_PLAYGROUNDS=1` asks for its tree as it is — a trial build, not one to upload.
+ */
+async function repositoryCommit(repository) {
+  try {
+    await access(resolve(repository, '.git'));
+  } catch {
+    throw new Error(
+      `No checkout at ${repository}\n    Clone it beside this repository, or point BEAD_REPOSITORY at it.`
+    );
+  }
+
+  const git = (...args) => {
+    return execFileSync('git', ['-C', repository, ...args], { encoding: 'utf8' }).trim();
+  };
+
+  let commit;
+  try {
+    commit = git('rev-parse', '--short', 'HEAD');
+  } catch {
+    // An unborn branch: nothing committed yet.
+  }
+  const changed = git('status', '--porcelain') !== '';
+
+  if (commit && !changed) {
+    return commit;
+  }
+
+  const why = commit
+    ? `${repository} has changes not committed`
+    : `${repository} has no commit yet`;
+  if (process.env.ALLOW_DIRTY_PLAYGROUNDS !== '1') {
+    throw new Error(
+      `${why}: a deploy ships a commit.\n    Commit there first, or set ALLOW_DIRTY_PLAYGROUNDS=1 for a trial build.`
+    );
+  }
+
+  console.log(`  ${c.yellow}${why}; building it as it is, for a trial.${c.reset}`);
+  return commit ? `${commit} and its changes` : 'its tree, with no commit';
 }
 
 /**
@@ -294,7 +351,13 @@ async function revealZip() {
   }
 }
 
-const TOTAL_STEPS = 3 + PLAYGROUNDS.length * 3;
+// three steps for each playground, and one more for one from another repository: its install
+const TOTAL_STEPS =
+  3 +
+  PLAYGROUNDS.length * 3 +
+  PLAYGROUNDS.filter((playground) => {
+    return playground.repository;
+  }).length;
 let stepNumber = 0;
 
 const timings = [];
@@ -337,22 +400,41 @@ async function main() {
     work: () => yarn(['install', '--immutable']),
   });
 
-  for (const { workspace, capability, label } of PLAYGROUNDS) {
-    const dist = resolve(ROOT, 'packages', workspace, 'playground', 'dist');
+  for (const playground of PLAYGROUNDS) {
+    const { capability, label, dist: built = 'playground/dist' } = playground;
+    const name = playground.name ?? playground.workspace;
+    const project = playground.repository
+      ? resolve(playground.repository, ...playground.project.split('/'))
+      : resolve(ROOT, 'packages', playground.workspace);
+    const dist = resolve(project, ...built.split('/'));
     const destination = resolve(SITE_PLAYGROUND, capability);
+
+    // One of this repository's playgrounds is a workspace, installed above; one from another
+    // repository is installed there, by that repository's own Yarn, at the commit it names.
+    let build = () => {
+      return yarn(['workspace', playground.workspace, 'run', 'playground:build:file']);
+    };
+    if (playground.repository) {
+      const commit = await repositoryCommit(playground.repository);
+      const yarnThere = await resolveYarn(project);
+      await step(`${icon.install} Installing ${c.yellow}${name}${c.reset} at ${commit}...`, {
+        label: `Install ${name}`,
+        work: () => yarnThere(['install', '--immutable']),
+      });
+      build = () => {
+        return yarnThere(['run', 'playground:build:file']);
+      };
+    }
 
     // `build:file`, never `build`. The `:file` variant is what makes the bundle relocatable:
     // relative asset URLs and the route in the hash. A plain build writes absolute `/assets/…`
     // paths, every one of which 404s under `/playground/<capability>/` — and the SPA fallback
     // answers each 404 with the home page's HTML, so the failure arrives as a blank sub-site
     // rather than as an error anyone can read.
-    await step(
-      `${icon.build} Building ${c.yellow}${workspace}${c.reset}'s playground (${label})...`,
-      {
-        label: `Build ${workspace} playground`,
-        work: () => yarn(['workspace', workspace, 'run', 'playground:build:file']),
-      }
-    );
+    await step(`${icon.build} Building ${c.yellow}${name}${c.reset}'s playground (${label})...`, {
+      label: `Build ${name} playground`,
+      work: build,
+    });
 
     await step(`${icon.clean}Removing existing public/playground/${capability}...`, {
       label: `Remove old ${capability}`,
@@ -362,9 +444,9 @@ async function main() {
     await step(
       `${icon.copy} Copying dist \u2192 ${c.yellow}public/playground/${capability}${c.reset}`,
       {
-        label: `Copy ${workspace} dist`,
+        label: `Copy ${name} dist`,
         work: async () => {
-          await ensureDist(dist, `${workspace}'s playground:build:file`);
+          await ensureDist(dist, `${name}'s playground:build:file`);
           await cp(dist, destination, { recursive: true });
         },
       }

@@ -111,6 +111,10 @@ const ROUTES = [
   ['/playground/design/#/tokens', 'playground'],
   ['/playground/design/#/skins', 'playground'],
   ['/playground/design/#/rules', 'playground'],
+  // a page of its own, framework-free, so it wears no drawer: what is measured is its width. Its
+  // server runs in a shared worker, whose script Chromium's network idle never counts as done, so it
+  // is waited for to load, and given the time to connect and fill its panels
+  ['/playground/bead/#/', 'site', 'load'],
 ];
 
 let failures = 0;
@@ -180,7 +184,7 @@ for (const [viewportName, viewport, size] of VIEWPORTS) {
     permissions: ['clipboard-read', 'clipboard-write'],
   });
 
-  for (const [route, kind] of ROUTES) {
+  for (const [route, kind, waitUntil = 'networkidle'] of ROUTES) {
     const page = await context.newPage();
     const errors = [];
     page.on('pageerror', (error) => errors.push(String(error)));
@@ -188,8 +192,8 @@ for (const [viewportName, viewport, size] of VIEWPORTS) {
       if (message.type() === 'error') errors.push(message.text());
     });
 
-    await page.goto(base + route, { waitUntil: 'networkidle' });
-    await page.waitForTimeout(350);
+    await page.goto(base + route, { waitUntil });
+    await page.waitForTimeout(waitUntil === 'networkidle' ? 350 : 1500);
 
     const atRest = await overflowing(page);
     if (atRest.scrollWidth > atRest.innerWidth + 1) {

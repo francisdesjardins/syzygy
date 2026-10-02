@@ -11,7 +11,7 @@
     },
     "work": {
       "title": "What's running",
-      "description": "Three pieces, each with a surface you can try. The names come from the shadows an eclipse casts. What they refuse to do is documented as carefully as the rest.",
+      "description": "Four pieces, each with a surface you can try. The names come from an eclipse: the three shadows it casts, and the beads of light that break through at its edge. What they refuse to do is documented as carefully as the rest.",
       "dialog": {
         "name": "antumbra",
         "description": "Dialog manager on the native top layer. Zero shipped UI: the renderer stays yours. React, Solid and vanilla bindings."
@@ -22,7 +22,11 @@
       },
       "designSystem": {
         "name": "penumbra",
-        "description": "The design system all three playgrounds wear — and the page that takes it apart, one layer at a time."
+        "description": "The design system three of the four playgrounds wear — and the page that takes it apart, one layer at a time."
+      },
+      "bead": {
+        "name": "bead",
+        "description": "A binary call protocol and the stack that speaks it: requests, subscriptions at the client's pace, transfers, cancellation. Here the server runs in a Web Worker of the page."
       }
     },
     "location": {

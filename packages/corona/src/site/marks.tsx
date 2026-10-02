@@ -1,5 +1,5 @@
 /**
- * The four glyphs the drawer's foot is drawn with, on the same rules as a playground's own set: a
+ * The five glyphs the drawer's foot is drawn with, on the same rules as a playground's own set: a
  * 24×24 grid, content inside a ~3px inset, stroke 1.75 on `currentColor`, round caps and joins.
  *
  * **Three of them are the naming.** Antumbra, umbra and penumbra are the three regions of a shadow,
@@ -47,6 +47,22 @@ export function AntumbraMark() {
     <svg {...base}>
       <circle cx="12" cy="12" r="8" />
       <circle cx="12" cy="12" r="4.4" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+/**
+ * The beads: at the disc's edge, the light breaking through the valleys along it in points —
+ * what the Bead protocol is named after.
+ */
+export function BeadMark() {
+  return (
+    <svg {...base}>
+      <circle cx="12" cy="12" r="7.5" />
+      {/* Just inside the edge and touching it: on the stroke itself, a bead would be lost in it. */}
+      <circle cx="17.18" cy="12.45" r="1.5" fill="currentColor" stroke="none" />
+      <circle cx="15.68" cy="15.68" r="1.5" fill="currentColor" stroke="none" />
+      <circle cx="12.45" cy="17.18" r="1.5" fill="currentColor" stroke="none" />
     </svg>
   );
 }

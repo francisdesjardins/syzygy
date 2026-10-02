@@ -3,7 +3,8 @@
 # These paths name the capability, not the library. A library gets renamed — umbra and antumbra
 # have already traded places once — and a URL is a promise that should outlive that. So the dialog
 # manager's playground lives at /playground/dialog whatever the package behind it is called, the
-# bootstrapper's at /playground/boot and the design system's at /playground/design.
+# bootstrapper's at /playground/boot, the design system's at /playground/design and Bead's demo at
+# /playground/bead.
 #
 # A rule here pointing at a directory the deploy does not fill is worse than no rule: the request
 # resolves to nothing, falls through to the SPA, and the visitor is handed the home page under a
@@ -13,6 +14,7 @@
 /playground/dialog/ /playground/dialog/index.html 200
 /playground/boot/ /playground/boot/index.html 200
 /playground/design/ /playground/design/index.html 200
+/playground/bead/ /playground/bead/index.html 200
 
 # The bootstrapper's playground was served under the library's name before the capability paths
 # existed. Kept so links already in the wild survive. Both forms, because only the trailing-slash
