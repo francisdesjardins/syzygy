@@ -38,9 +38,9 @@
   "seo": {
     "home": {
       "title": "Francis Desjardins — framework-free cores, nothing shipped with them",
-      "description": "Framework-free cores with thin bindings over them: the core is plain TypeScript that runs in a browser, a worker or a service, and the binding is the only part that knows which. Three libraries, no runtime dependencies between them.",
+      "description": "Framework-free cores with thin bindings over them: the core is plain TypeScript that runs in a browser, a worker or a service, and the binding is the only part that knows which. Three libraries with no runtime dependencies between them, and Bead, a binary call protocol in TypeScript and C#.",
       "ogTitle": "Francis Desjardins — framework-free cores, nothing shipped with them",
-      "ogDescription": "A dependency is easy to add and hard to remove, and most of what one does goes unused. Three libraries that ship none, and the measured reason why."
+      "ogDescription": "A dependency is easy to add and hard to remove, and most of what one does goes unused. Three libraries that ship none, a binary call protocol in two languages, and the measured reason why."
     }
   }
 }

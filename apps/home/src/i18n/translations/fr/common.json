@@ -38,9 +38,9 @@
   "seo": {
     "home": {
       "title": "Francis Desjardins — des cores sans framework, et rien de livré avec",
-      "description": "Des cores sans framework, avec des bindings minces par-dessus : le core est du TypeScript ordinaire qui tourne dans un navigateur, un worker ou un service, et le binding est la seule partie qui sait lequel. Trois librairies, aucune dépendance d’exécution entre elles.",
+      "description": "Des cores sans framework, avec des bindings minces par-dessus : le core est du TypeScript ordinaire qui tourne dans un navigateur, un worker ou un service, et le binding est la seule partie qui sait lequel. Trois librairies sans dépendance d’exécution entre elles, et Bead, un protocole d’appels binaire en TypeScript et en C#.",
       "ogTitle": "Francis Desjardins — des cores sans framework, et rien de livré avec",
-      "ogDescription": "Une dépendance s’ajoute facilement et se retire mal, et la plus grande part de ce qu’elle fait ne sert jamais. Trois librairies qui n’en livrent aucune, et la raison mesurée."
+      "ogDescription": "Une dépendance s’ajoute facilement et se retire mal, et la plus grande part de ce qu’elle fait ne sert jamais. Trois librairies qui n’en livrent aucune, un protocole d’appels binaire en deux langages, et la raison mesurée."
     }
   }
 }

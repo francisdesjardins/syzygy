@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Every surface a reader can open, including the three playgrounds. They were disallowed in
+  Every surface a reader can open, including the four playgrounds. They were disallowed in
   robots.txt as "development and testing routes"; they are the work the landing page exists to
   point at, and each is a built, documented site of its own.
 
@@ -12,7 +12,7 @@
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://francisdesjardins.ca/</loc>
-    <lastmod>2026-09-17</lastmod>
+    <lastmod>2026-10-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="en-CA" href="https://francisdesjardins.ca/?lng=en"/>
@@ -23,7 +23,7 @@
   </url>
   <url>
     <loc>https://francisdesjardins.ca/?lng=en</loc>
-    <lastmod>2026-09-17</lastmod>
+    <lastmod>2026-10-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="en-CA" href="https://francisdesjardins.ca/?lng=en"/>
@@ -32,7 +32,7 @@
   </url>
   <url>
     <loc>https://francisdesjardins.ca/?lng=fr</loc>
-    <lastmod>2026-09-17</lastmod>
+    <lastmod>2026-10-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="en-CA" href="https://francisdesjardins.ca/?lng=en"/>
@@ -59,7 +59,7 @@
   </url>
   <url>
     <loc>https://francisdesjardins.ca/playground/bead/</loc>
-    <lastmod>2026-10-01</lastmod>
+    <lastmod>2026-10-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
