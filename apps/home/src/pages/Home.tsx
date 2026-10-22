@@ -11,6 +11,8 @@ type ShadowProps = {
   readonly href: string;
   readonly name: string;
   readonly description: string;
+  /** Where its code is read, for the one piece whose repository is public. */
+  readonly source?: { readonly href: string; readonly label: string };
 };
 
 /**
@@ -29,7 +31,7 @@ type ShadowProps = {
  * Each one lands on the page that answers what the piece does, not on its home. A reader who has
  * decided to look has already been sold; making them navigate is asking them to decide twice.
  */
-const Shadow = ({ zone, href, name, description }: ShadowProps) => {
+const Shadow = ({ zone, href, name, description, source }: ShadowProps) => {
   return (
     <li className={[styles['zone'], styles[zone]].join(' ')}>
       <a className={styles['zoneLink']} href={href}>
@@ -38,6 +40,11 @@ const Shadow = ({ zone, href, name, description }: ShadowProps) => {
         <span className={styles['zoneName']}>{name}</span>
       </a>
       <p className={styles['zoneText']}>{description}</p>
+      {source === undefined ? null : (
+        <p className={styles['zoneSource']}>
+          <a href={source.href}>{source.label}</a>
+        </p>
+      )}
     </li>
   );
 };
@@ -112,9 +119,13 @@ export const Home = memo(() => {
           />
           <Shadow
             zone="bead"
-            href="/playground/bead/#/"
+            href="/playground/bead/"
             name={t('home.work.bead.name')}
             description={t('home.work.bead.description')}
+            source={{
+              href: 'https://github.com/francisdesjardins/bead',
+              label: t('home.work.bead.source'),
+            }}
           />
         </ul>
         <p className={styles['note']}>{t('home.expiry')}</p>

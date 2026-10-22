@@ -22,11 +22,12 @@
       },
       "designSystem": {
         "name": "penumbra",
-        "description": "The design system three of the four playgrounds wear — and the page that takes it apart, one layer at a time."
+        "description": "The design system all four playgrounds wear — and the page that takes it apart, one layer at a time."
       },
       "bead": {
         "name": "bead",
-        "description": "A binary call protocol and the stack that speaks it: requests, subscriptions at the client's pace, transfers, cancellation. Here the server runs in a Web Worker of the page."
+        "description": "A binary call protocol in TypeScript and C#, at parity, with a builder that generates both sides from a .proto. It covers requests, subscriptions at the client's pace, transfers, cancellation, payload rules, and the same calls over HTTP and JSON with their OpenAPI document. Here the server runs in a Web Worker of the page.",
+        "source": "Source on GitHub"
       }
     },
     "location": {

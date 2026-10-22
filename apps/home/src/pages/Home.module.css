@@ -258,6 +258,28 @@
 }
 
 /*
+ * A second way in, for a reader who would rather read the code: ranked above the zone's overlay,
+ * or the overlay takes its click for the playground's.
+ */
+.zoneSource {
+  margin: 0;
+  font-size: var(--app-text-xs);
+}
+
+.zoneSource a {
+  position: relative;
+  z-index: 2;
+  color: inherit;
+  text-underline-offset: 0.2em;
+}
+
+.zoneSource a:focus-visible {
+  outline: 2px solid var(--app-ring);
+  outline-offset: 2px;
+  border-radius: var(--app-radius-sm);
+}
+
+/*
  * The mark is how much of the disc the shadow covers: all of it, half of it, only its edge.
  *
  * Drawn from the accent its own zone can carry, so the marks read as one drawing at four depths

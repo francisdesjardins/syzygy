@@ -22,11 +22,12 @@
       },
       "designSystem": {
         "name": "penumbra",
-        "description": "Le design system que portent trois des quatre playgrounds — et la page qui le démonte, une couche à la fois."
+        "description": "Le design system que portent les quatre playgrounds — et la page qui le démonte, une couche à la fois."
       },
       "bead": {
         "name": "bead",
-        "description": "Un protocole d’appels binaire et la pile qui le parle : requêtes, abonnements au rythme du client, transferts, annulation. Ici, le serveur tourne dans un Web Worker de la page."
+        "description": "Un protocole d’appels binaire en TypeScript et en C#, à parité, avec un builder qui génère les deux côtés depuis un .proto. Il couvre les requêtes, les abonnements au rythme du client, les transferts, l’annulation, les règles de payload, et les mêmes appels en HTTP et JSON avec leur document OpenAPI. Ici, le serveur tourne dans un Web Worker de la page.",
+        "source": "Source sur GitHub"
       }
     },
     "location": {
