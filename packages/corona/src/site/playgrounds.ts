@@ -6,20 +6,20 @@
  * link anybody kept. `deploy.mjs` says the same thing from the other end — the playgrounds are
  * served by what they demonstrate, "whatever the packages end up being called".
  *
- * **The order is the eclipse**, outward from the middle: the umbra is the full shadow, the penumbra
- * is the partial one around it, and the antumbra lies beyond the umbra's tip; then the beads, the
- * light that breaks through at the disc's edge, which the Bead protocol is named after. Every
- * listing reads off this one, so they cannot each pick an order — and an order with a reason is
- * what stops the next person from picking another.
+ * **The order is the light, then the eclipse** outward from the middle: first the beads, the light
+ * that breaks through at the disc's edge, which the Bead protocol is named after and which a visitor
+ * should meet first; then the umbra, the full shadow, the penumbra, the partial one around it, and
+ * the antumbra beyond the umbra's tip. Every listing reads off this one, so they cannot each pick an
+ * order — and an order with a reason is what stops the next person from picking another.
  *
  * Bead's slug and name are both the protocol's: its playground is built in Bead's own repository,
  * beside this one, and the deploy brings it in.
  */
 export const PLAYGROUNDS = [
+  { slug: 'bead', name: 'Bead' },
   { slug: 'boot', name: 'Umbra' },
   { slug: 'design', name: 'Penumbra' },
   { slug: 'dialog', name: 'Antumbra' },
-  { slug: 'bead', name: 'Bead' },
 ] as const;
 
 export type PlaygroundSlug = (typeof PLAYGROUNDS)[number]['slug'];

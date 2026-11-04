@@ -69,6 +69,7 @@
  */
 .byline {
   display: flex;
+  align-items: flex-start;
   flex-direction: column;
   margin: 0;
   font-family: var(--app-font-mono);
@@ -76,6 +77,13 @@
   line-height: var(--app-lh-snug);
   letter-spacing: 0.04em;
   color: var(--app-text-tertiary);
+}
+
+/* Where the code is: the byline's one link, quiet as the two facts above it. */
+.bylineLink {
+  margin-top: var(--app-space-2);
+  color: inherit;
+  text-underline-offset: 0.2em;
 }
 
 /* ── The writing ──────────────────────────────────────────────────────────── */
@@ -100,7 +108,7 @@
   margin: 0;
   max-width: none;
   font-size: var(--app-text-md);
-  line-height: var(--app-lh-relaxed);
+  line-height: var(--app-lh-body);
   color: var(--app-text-secondary);
 }
 
@@ -166,7 +174,7 @@
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1px;
   border-radius: var(--app-radius-lg);
   overflow: clip;
@@ -200,10 +208,18 @@
 /*
  * The beads are light, not shadow, so their ground is the brand's own fill, and their ink the one
  * the contrast gate already measures on it — on the fill and on its hover, in both schemes.
+ *
+ * The light takes the whole first row: on a 1280x720 laptop it is on the first screen, and the
+ * three shadows under it keep their order and a width a sentence can breathe in.
  */
 .bead {
+  grid-column: 1 / -1;
   background: var(--app-primary);
   color: var(--app-primary-ink);
+}
+
+.bead .zoneText {
+  max-width: 76ch;
 }
 
 /* The whole zone is the target: the name alone was a five-letter word, under WCAG 2.2's 24x24. */
@@ -262,8 +278,11 @@
  * or the overlay takes its click for the playground's.
  */
 .zoneSource {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--app-space-4);
   margin: 0;
-  font-size: var(--app-text-xs);
+  font-size: var(--app-text-sm);
 }
 
 .zoneSource a {

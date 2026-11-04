@@ -18,8 +18,10 @@
  * **Order is checked separately, and only where a reader sees one.** The four lists above are
  * lookups, so the order in them means nothing. Two other places present the three *to a person* —
  * corona's `PLAYGROUNDS`, which draws every playground's drawer, and the home page's own column —
- * and those sat in one arbitrary order until somebody asked why. They follow the eclipse outward
- * from the middle now, and this is what keeps the second copy from drifting off the first.
+ * and those sat in one arbitrary order until somebody asked why. They follow the light, then the
+ * eclipse outward from the middle, and this is what keeps the second copy from drifting off the
+ * first. The home links Bead's tile to its page and its playground from the tile's links, so both
+ * forms of a link are read.
  */
 
 import { readFileSync } from 'node:fs';
@@ -98,7 +100,10 @@ const canonical = ordered(
   read('packages/corona/src/site/playgrounds.ts'),
   /\{ slug: '([a-z-]+)', name: '[A-Za-z]+' \}/g
 );
-const onHome = ordered(read('apps/home/src/pages/Home.tsx'), /href="\/playground\/([a-z-]+)\//g);
+const onHome = ordered(
+  read('apps/home/src/pages/Home.tsx'),
+  /href(?:=|: )["']\/playground\/([a-z-]+)\//g
+);
 
 if (canonical.length !== declared.size) {
   failures.push(

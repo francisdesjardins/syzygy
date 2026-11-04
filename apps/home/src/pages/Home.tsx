@@ -11,18 +11,18 @@ type ShadowProps = {
   readonly href: string;
   readonly name: string;
   readonly description: string;
-  /** Where its code is read, for the one piece whose repository is public. */
-  readonly source?: { readonly href: string; readonly label: string };
+  /** Further ways in beside the zone's own: its demo, its code. */
+  readonly links?: readonly { readonly href: string; readonly label: string }[];
 };
 
 /**
  * One project, standing on the shadow it is named after.
  *
- * The first three are the regions an eclipse casts, read outward from the middle — the full shadow,
- * the partial one around it, and what is left past its tip — and the fourth is the light itself,
- * the beads that break through at the disc's edge. So the ground each one stands on is the
- * ordering: nothing here is numbered, because the page already darkens and lightens in the order
- * the names do.
+ * The light comes first, the beads that break through at the disc's edge, and then the regions the
+ * eclipse casts, read outward from the middle — the full shadow, the partial one around it, and
+ * what is left past its tip. So the ground each one stands on is the ordering: nothing here is
+ * numbered, because the page already lightens and darkens in the order the names do. The light
+ * leads because it is the piece a visitor should meet on the first screen.
  *
  * Every playground is its own build served out of `public/playground/`, so the link is a plain
  * anchor: it leaves this application rather than being matched by a router, and this application
@@ -31,7 +31,7 @@ type ShadowProps = {
  * Each one lands on the page that answers what the piece does, not on its home. A reader who has
  * decided to look has already been sold; making them navigate is asking them to decide twice.
  */
-const Shadow = ({ zone, href, name, description, source }: ShadowProps) => {
+const Shadow = ({ zone, href, name, description, links }: ShadowProps) => {
   return (
     <li className={[styles['zone'], styles[zone]].join(' ')}>
       <a className={styles['zoneLink']} href={href}>
@@ -40,9 +40,15 @@ const Shadow = ({ zone, href, name, description, source }: ShadowProps) => {
         <span className={styles['zoneName']}>{name}</span>
       </a>
       <p className={styles['zoneText']}>{description}</p>
-      {source === undefined ? null : (
+      {links === undefined ? null : (
         <p className={styles['zoneSource']}>
-          <a href={source.href}>{source.label}</a>
+          {links.map((link) => {
+            return (
+              <a key={link.href} href={link.href}>
+                {link.label}
+              </a>
+            );
+          })}
         </p>
       )}
     </li>
@@ -50,12 +56,15 @@ const Shadow = ({ zone, href, name, description, source }: ShadowProps) => {
 };
 
 export const Home = memo(() => {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
 
   useDocumentHead({
     title: t('seo.home.title'),
     description: t('seo.home.description'),
-    canonical: 'https://francisdesjardins.ca/',
+    // The bare address is the English page and `?lng=fr` the French one, each the sitemap's: one
+    // address a language, so a crawler neither folds the French into `/` nor reads two English pages.
+    canonical:
+      language === 'fr' ? 'https://francisdesjardins.ca/?lng=fr' : 'https://francisdesjardins.ca/',
     ogTitle: t('seo.home.ogTitle'),
     ogDescription: t('seo.home.ogDescription'),
     ogType: 'website',
@@ -75,6 +84,9 @@ export const Home = memo(() => {
         <p className={styles['byline']}>
           <span>{t('home.location.place')}</span>
           <span>{t('home.location.since')}</span>
+          <a className={styles['bylineLink']} href="https://github.com/francisdesjardins">
+            {t('home.location.github')}
+          </a>
         </p>
       </header>
 
@@ -89,6 +101,7 @@ export const Home = memo(() => {
         </h2>
         <p className={styles['lede']}>{t('home.enough')}</p>
         <p>{t('home.skills.description')}</p>
+        <p>{t('home.skills.habits')}</p>
         <p>{t('home.skills.thinking')}</p>
         <p className={styles['quiet']}>{t('home.skills.secondary')}</p>
       </section>
@@ -99,6 +112,19 @@ export const Home = memo(() => {
         </h2>
         <p className={styles['workLede']}>{t('home.work.description')}</p>
         <ul className={styles['shadows']}>
+          <Shadow
+            zone="bead"
+            href="/bead/"
+            name={t('home.work.bead.name')}
+            description={t('home.work.bead.description')}
+            links={[
+              { href: '/playground/bead/', label: t('home.work.bead.demo') },
+              {
+                href: 'https://github.com/francisdesjardins/bead',
+                label: t('home.work.bead.source'),
+              },
+            ]}
+          />
           <Shadow
             zone="umbra"
             href="/playground/boot/#/getting-started"
@@ -116,16 +142,6 @@ export const Home = memo(() => {
             href="/playground/dialog/#/getting-started"
             name={t('home.work.dialog.name')}
             description={t('home.work.dialog.description')}
-          />
-          <Shadow
-            zone="bead"
-            href="/playground/bead/"
-            name={t('home.work.bead.name')}
-            description={t('home.work.bead.description')}
-            source={{
-              href: 'https://github.com/francisdesjardins/bead',
-              label: t('home.work.bead.source'),
-            }}
           />
         </ul>
         <p className={styles['note']}>{t('home.expiry')}</p>
