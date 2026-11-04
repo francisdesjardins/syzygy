@@ -16,6 +16,11 @@
 /playground/design/ /playground/design/index.html 200
 /playground/bead/ /playground/bead/index.html 200
 
+# Bead's page: one document Bead's repository commits, the language chosen inside it by `?lng=`, the
+# visitor's stored choice or the browser. Both forms, as for the playgrounds.
+/bead /bead/ 301
+/bead/ /bead/index.html 200
+
 # The bootstrapper's playground was served under the library's name before the capability paths
 # existed. Kept so links already in the wild survive. Both forms, because only the trailing-slash
 # one would otherwise match and the bare path would fall through to the SPA.

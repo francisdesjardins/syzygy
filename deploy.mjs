@@ -41,6 +41,22 @@ const PLAYGROUNDS = [
   },
 ];
 
+/**
+ * A page another repository commits built, copied as it is: no install and no build, since its
+ * repository's own gate holds the file to its sources. Bead's is served at `/bead/`, beside its
+ * playground, from the same checkout.
+ */
+const PAGES = [
+  {
+    repository: PLAYGROUNDS.find((playground) => {
+      return playground.capability === 'bead';
+    }).repository,
+    source: 'site/dist/index.html',
+    path: 'bead',
+    label: "Bead's page",
+  },
+];
+
 const HOME = resolve(ROOT, 'apps', 'home');
 const HOME_DIST = resolve(HOME, 'dist');
 const SITE_PLAYGROUND = resolve(HOME, 'public', 'playground');
@@ -351,9 +367,11 @@ async function revealZip() {
   }
 }
 
-// three steps for each playground, and one more for one from another repository: its install
+// three steps for each playground, one more for one from another repository (its install), and
+// one for each page
 const TOTAL_STEPS =
   3 +
+  PAGES.length +
   PLAYGROUNDS.length * 3 +
   PLAYGROUNDS.filter((playground) => {
     return playground.repository;
@@ -453,7 +471,21 @@ async function main() {
     );
   }
 
-  // Whatever now sits in apps/home/public/playground/ is carried into dist/ by Vite.
+  for (const page of PAGES) {
+    const source = resolve(page.repository, ...page.source.split('/'));
+    const destination = resolve(HOME, 'public', page.path);
+
+    await step(`${icon.copy} Copying ${c.yellow}${page.label}${c.reset} → public/${page.path}`, {
+      label: `Copy ${page.label}`,
+      work: async () => {
+        await access(source);
+        await rm(destination, { recursive: true, force: true });
+        await cp(source, resolve(destination, 'index.html'));
+      },
+    });
+  }
+
+  // Whatever now sits in apps/home/public/playground/ and public/bead/ is carried into dist/ by Vite.
   await step(`${icon.build} Building ${c.yellow}the home${c.reset}...`, {
     label: 'Build home',
     work: () => yarn(['workspace', 'home', 'run', 'build']),

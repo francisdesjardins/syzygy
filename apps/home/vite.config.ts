@@ -25,6 +25,8 @@ const playgroundRewrites = {
           /^(\/playground\/(?:dialog|boot|design|bead)\/)(\?.*)?$/,
           '$1index.html$2'
         );
+        // Bead's page, one file the deploy drops into `public/bead/`, as `_redirects` serves it.
+        req.url = req.url.replace(/^(\/bead\/)(\?.*)?$/, '$1index.html$2');
       }
       next();
     });
