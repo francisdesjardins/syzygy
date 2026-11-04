@@ -21,7 +21,7 @@
       — and `yarn check:head` fails when they drift apart, which is how they came to disagree in the
       first place.
     -->
-    <title>Francis Desjardins — framework-free cores, nothing shipped with them</title>
+    <title>Francis Desjardins: framework-free libraries, and Bead, a binary call protocol</title>
     <meta
       name="description"
       content="Framework-free cores with thin bindings over them: the core is plain TypeScript that runs in a browser, a worker or a service, and the binding is the only part that knows which. Three libraries with no runtime dependencies between them, and Bead, a binary call protocol in TypeScript and C#."
@@ -40,7 +40,7 @@
     <meta property="og:url" content="https://francisdesjardins.ca/" />
     <meta
       property="og:title"
-      content="Francis Desjardins — framework-free cores, nothing shipped with them"
+      content="Francis Desjardins: framework-free libraries, and Bead, a binary call protocol"
     />
     <meta
       property="og:description"
@@ -54,7 +54,7 @@
     <meta name="twitter:url" content="https://francisdesjardins.ca/" />
     <meta
       name="twitter:title"
-      content="Francis Desjardins — framework-free cores, nothing shipped with them"
+      content="Francis Desjardins: framework-free libraries, and Bead, a binary call protocol"
     />
     <meta
       name="twitter:description"
@@ -62,8 +62,10 @@
     />
     <meta name="twitter:image" content="https://francisdesjardins.ca/og-image.png" />
 
-    <!-- Canonical URL -->
-    <link rel="canonical" href="https://francisdesjardins.ca/" />
+    <!--
+      No canonical here: the page writes its own, `/` or the `?lng=` address it was opened at. A
+      second one in the markup would disagree with it on `?lng=fr`, and a crawler picks either.
+    -->
 
     <!-- PWA Manifest -->
     <link rel="manifest" href="/manifest.json" />

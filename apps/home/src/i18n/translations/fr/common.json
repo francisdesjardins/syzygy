@@ -5,16 +5,17 @@
     "expiry": "... toujours en développement actif",
     "skills": {
       "title": "Ce que je fais",
-      "description": "Des cores sans framework, avec des bindings minces par-dessus : le core est du TypeScript ordinaire qui tourne dans un navigateur, un worker ou un service, et le binding est la seule partie qui sait lequel — un test parcourt le graphe d’imports et échoue si le core touche un framework.",
-      "thinking": "Une librairie d’état et un moteur de drafts, pour quelques objets simples, c’est un canon pour tuer une mouche : des écouteurs et une comparaison de surface font le même travail, neuf kilo-octets plus léger. Certains problèmes sont l’inverse — les fuseaux horaires, la cryptographie, tout ce dont le plus dur est ce qu’on n’a pas vu venir. Entre les deux, une librairie gagne sa place le jour où les besoins dépassent ce qu’on a écrit.",
-      "secondary": "Aussi : amateur de chats autoproclamé. Les chats n’ont pas encore objecté."
+      "description": "J’écris du code depuis le secondaire, et j’en vis depuis 2000. La couche à laquelle je reviens toujours se tient entre un client et un serveur : un protocole de communication propriétaire, une couche client-serveur en temps réel, des interfaces entre processus, et les bancs d’essai qui les tiennent.",
+      "habits": "Deux habitudes en sont sorties. Des cores qui ne touchent aucun framework, avec des bindings minces par-dessus : du TypeScript ordinaire qui tourne dans un navigateur, un worker ou un service, et un test qui échoue si le core touche un framework. Et des protocoles écrits d’abord, puis construits à la lettre dans chaque langage qui les parle.",
+      "thinking": "Une bibliothèque d’état et un moteur de drafts, pour quelques objets simples, c’est un canon pour tuer une mouche : des écouteurs et une comparaison de surface font le même travail, neuf kilo-octets plus léger. Certains problèmes sont l’inverse — les fuseaux horaires, la cryptographie, tout ce dont le plus dur est ce qu’on n’a pas vu venir. Entre les deux, une bibliothèque gagne sa place le jour où les besoins dépassent ce qu’on a écrit.",
+      "secondary": "Aussi : amateur de chats autoproclamé. Les chats n’ont pas encore objecté. Et je délègue à des agents IA ; l’un d’eux est là pour contredire les autres."
     },
     "work": {
       "title": "Ce qui tourne",
-      "description": "Quatre pièces, chacune avec une surface à essayer. Les noms viennent d’une éclipse : les trois ombres qu’elle projette, et les grains de lumière qui percent à son bord. Ce qu’elles refusent de faire est documenté aussi soigneusement que le reste.",
+      "description": "Quatre pièces, chacune avec une surface à essayer. Les noms viennent d’une éclipse : les grains de lumière qui percent à son bord, et les trois ombres qu’elle projette. Ce qu’elles refusent de faire est documenté aussi soigneusement que le reste.",
       "dialog": {
         "name": "antumbra",
-        "description": "Gestionnaire de dialogues sur le top layer natif. Zéro UI livrée : le renderer reste le tien. Bindings React, Solid et vanilla."
+        "description": "Gestionnaire de dialogues sur le top layer natif. Zéro UI livrée : le renderer reste le vôtre. Bindings React, Solid et vanilla."
       },
       "boot": {
         "name": "umbra",
@@ -25,22 +26,24 @@
         "description": "Le design system que portent les quatre playgrounds — et la page qui le démonte, une couche à la fois."
       },
       "bead": {
-        "name": "bead",
-        "description": "Un protocole d’appels binaire en TypeScript et en C#, à parité, avec un builder qui génère les deux côtés depuis un .proto. Il couvre les requêtes, les abonnements au rythme du client, les transferts, l’annulation, les règles de payload, et les mêmes appels en HTTP et JSON avec leur document OpenAPI. Ici, le serveur tourne dans un Web Worker de la page.",
-        "source": "Source sur GitHub"
+        "name": "Bead",
+        "description": "Un protocole d’appels binaire, la spécification d’abord. TypeScript et C# à parité, Rust en chemin : chacun joue les mêmes fichiers de conformance, et ils s’appellent l’un l’autre dans la CI sur WebSocket, HTTP, MQTT 5 et AMQP 1.0. Un builder génère un serveur typé et son client depuis un .proto. Ici, le serveur tourne dans un Web Worker de la page.",
+        "source": "Source sur GitHub",
+        "demo": "Essayer la démo"
       }
     },
     "location": {
       "place": "Québec, Canada",
-      "since": "Respire depuis le début des années 80"
+      "since": "Respire depuis le début des années 80",
+      "github": "GitHub"
     }
   },
   "seo": {
     "home": {
-      "title": "Francis Desjardins — des cores sans framework, et rien de livré avec",
-      "description": "Des cores sans framework, avec des bindings minces par-dessus : le core est du TypeScript ordinaire qui tourne dans un navigateur, un worker ou un service, et le binding est la seule partie qui sait lequel. Trois librairies sans dépendance d’exécution entre elles, et Bead, un protocole d’appels binaire en TypeScript et en C#.",
-      "ogTitle": "Francis Desjardins — des cores sans framework, et rien de livré avec",
-      "ogDescription": "Une dépendance s’ajoute facilement et se retire mal, et la plus grande part de ce qu’elle fait ne sert jamais. Trois librairies qui n’en livrent aucune, un protocole d’appels binaire en deux langages, et la raison mesurée."
+      "title": "Francis Desjardins : des bibliothèques sans framework, et Bead, un protocole d’appels binaire",
+      "description": "Des cores sans framework, avec des bindings minces par-dessus : le core est du TypeScript ordinaire qui tourne dans un navigateur, un worker ou un service, et le binding est la seule partie qui sait lequel. Trois bibliothèques sans dépendance d’exécution entre elles, et Bead, un protocole d’appels binaire en TypeScript et en C#.",
+      "ogTitle": "Francis Desjardins : des bibliothèques sans framework, et Bead, un protocole d’appels binaire",
+      "ogDescription": "Une dépendance s’ajoute facilement et se retire mal, et la plus grande part de ce qu’elle fait ne sert jamais. Trois bibliothèques qui n’en livrent aucune, un protocole d’appels binaire en deux langages, et la raison mesurée."
     }
   }
 }
