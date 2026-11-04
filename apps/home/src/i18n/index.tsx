@@ -54,14 +54,37 @@ export type TranslationKey = Paths<typeof en>;
 const TAGS = { en: 'en-CA', fr: 'fr-CA' } as const;
 
 const STORAGE_KEY = 'language';
+const PARAMETER = 'lng';
 const DEFAULT: Language = 'en';
 
 function isLanguage(value: string | null): value is Language {
   return value !== null && value in BUNDLES;
 }
 
-/** What the visitor asked for, in the order their answers are worth: a choice, then a preference. */
+/**
+ * The language the address names, `?lng=en` or `?lng=fr`, or `null` where it names none.
+ *
+ * The sitemap lists one address per language. A crawler has no stored choice and an English
+ * browser, so without this every one of them renders English and the French page is never read.
+ */
+export function asked(): Language | null {
+  const named = new URLSearchParams(window.location.search).get(PARAMETER);
+  return isLanguage(named) ? named : null;
+}
+
+/** This page's address in `language`, as the sitemap and the language switch name it. */
+export function addressOf(language: Language): string {
+  const url = new URL(window.location.href);
+  url.searchParams.set(PARAMETER, language);
+  return url.toString();
+}
+
+/** What the visitor asked for, in the order their answers are worth: an address, a choice, then a preference. */
 function detect(): Language {
+  const named = asked();
+  if (named !== null) {
+    return named;
+  }
   try {
     const chosen = localStorage.getItem(STORAGE_KEY);
     if (isLanguage(chosen)) {
@@ -109,6 +132,8 @@ export function TranslationProvider({ children }: { readonly children: ReactNode
 
   const setLanguage = useCallback((next: Language) => {
     setLanguageState(next);
+    // The address names what is shown, as the switch's own link does, so a reload or a copied link keeps it.
+    window.history.replaceState(window.history.state, '', addressOf(next));
     try {
       localStorage.setItem(STORAGE_KEY, next);
     } catch {

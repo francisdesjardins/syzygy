@@ -1,4 +1,4 @@
-import { useTranslation } from '../i18n';
+import { addressOf, useTranslation } from '../i18n';
 
 /**
  * The language, and the one control that changes it.
@@ -8,11 +8,15 @@ import { useTranslation } from '../i18n';
  */
 export const useLanguage = () => {
   const { language, setLanguage } = useTranslation();
+  const other = language === 'en' ? 'fr' : 'en';
 
   return {
     isEnglish: language === 'en',
+    other,
+    /** The other language's address, a link a crawler follows as well as a reader. */
+    otherAddress: addressOf(other),
     toggle: () => {
-      setLanguage(language === 'en' ? 'fr' : 'en');
+      setLanguage(other);
     },
   };
 };
