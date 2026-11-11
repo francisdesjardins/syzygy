@@ -8,12 +8,12 @@ import { Link } from '@tanstack/react-router';
 import { useState } from 'react';
 import { Key, useMessageDialog } from 'antumbra/react';
 
-const REPO = 'https://github.com/francisdesjardins/antumbra';
+const REPO = 'https://github.com/francisdesjardins/syzygy/tree/main/packages/antumbra';
 
-const GETTING_IT = `git clone https://github.com/francisdesjardins/antumbra.git
-cd antumbra && yarn install && yarn dev
+const GETTING_IT = `git clone https://github.com/francisdesjardins/syzygy.git
+cd syzygy && yarn install && yarn workspace antumbra dev
 
-# Or lift what you need out of src/ — plain TypeScript, MIT, no ceremony.
+# Or lift what you need out of packages/antumbra/src/ — plain TypeScript, MIT, no ceremony.
 import { dialogManager } from 'antumbra';   // the root: no framework needed
 import { useDialog } from 'antumbra/react';  // the React binding
 import { useDialog } from 'antumbra/solid';  // …or the Solid one, same surface

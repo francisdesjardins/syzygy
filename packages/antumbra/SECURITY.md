@@ -10,7 +10,7 @@ repository itself.
 
 ## Reporting a vulnerability
 
-Use [GitHub's private vulnerability reporting](https://github.com/francisdesjardins/antumbra/security/advisories/new)
+Use [GitHub's private vulnerability reporting](https://github.com/francisdesjardins/syzygy/security/advisories/new)
 on this repository — not a public issue, so a fix can land before the report is readable.
 
 Worth reporting here: anything where the library's own code turns a caller's ordinary inputs into

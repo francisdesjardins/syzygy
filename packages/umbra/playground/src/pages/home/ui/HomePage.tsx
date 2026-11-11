@@ -5,11 +5,12 @@ import { appButtonClass } from 'corona/shell';
 import { CodeBlock } from 'corona/code';
 import styles from '@/pages/home/ui/HomePage.module.css';
 
-const REPO = 'https://github.com/francisdesjardins/umbra';
+const REPO = 'https://github.com/francisdesjardins/syzygy/tree/main/packages/umbra';
 
 const GETTING_IT = `# Not published. Lift the source, or point a dependency at the commit.
-git clone ${REPO}
-cd umbra && corepack enable && yarn install`;
+git clone https://github.com/francisdesjardins/syzygy.git
+cd syzygy && corepack enable && yarn install
+yarn workspace umbra dev`;
 
 const HELLO = `import { createBootstrap, defineStep } from 'umbra';
 
