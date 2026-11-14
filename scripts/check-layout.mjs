@@ -53,8 +53,9 @@ const TYPES = {
   '.webmanifest': 'application/manifest+json',
 };
 
-// The playgrounds are hash-router builds under their own directory, so an unknown path falls back
-// to the index.html of *that* directory rather than the site's — which is what Cloudflare does.
+// The playgrounds are hash-router builds under their own directory, `/playground/<capability>/`, so
+// an unknown path falls back to the index.html of *that* directory rather than the site's, which is
+// what Cloudflare does. Bead's demo is served at its own domain, from Bead's repository.
 const server = createServer((request, response) => {
   const url = decodeURIComponent((request.url ?? '/').split('?')[0].split('#')[0]);
   let file = join(DIST, url);
@@ -111,10 +112,6 @@ const ROUTES = [
   ['/playground/design/#/tokens', 'playground'],
   ['/playground/design/#/skins', 'playground'],
   ['/playground/design/#/rules', 'playground'],
-  // a page of its own, framework-free, so it wears no drawer: what is measured is its width. Its
-  // server runs in a shared worker, whose script Chromium's network idle never counts as done, so it
-  // is waited for to load, and given the time to connect and fill its panels
-  ['/playground/bead/#/', 'site', 'load'],
 ];
 
 let failures = 0;
@@ -123,6 +120,18 @@ const fail = (what, detail) => {
   failures += 1;
   console.error(`    FAIL ${what}${detail ? ` — ${detail}` : ''}`);
 };
+
+// A route whose folder the deploy left empty would be answered by the fallback above with the
+// site's own page, and measured green as if it were the playground.
+for (const folder of new Set(
+  ROUTES.map(([route]) => {
+    return /^(\/.+\/)#/.exec(route)?.[1];
+  }).filter(Boolean)
+)) {
+  if (!existsSync(join(DIST, folder, 'index.html'))) {
+    fail(`${folder} has no build in ${DIST}`, 'the deploy did not fill it');
+  }
+}
 
 /**
  * Every visible element whose box crosses the right edge, named well enough to find in the source.

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Every surface a reader can open, including the four playgrounds. They were disallowed in
+  Every surface a reader can open, including the three playgrounds. They were disallowed in
   robots.txt as "development and testing routes"; they are the work the landing page exists to
   point at, and each is a built, documented site of its own.
 
-  This site has one route of its own, `/`. Everything else listed here is a playground, or Bead's
-  page at `/bead/`, which the deploy brings built from Bead's repository; a URL added by hand that
-  nothing answers for falls through to the SPA and offers a crawler the landing page under a second
-  address. A page's English is its bare address and its French its `?lng=fr`, so a crawler reads each
-  language once.
+  This site has one route of its own, `/`. Everything else listed here is a playground; a URL added
+  by hand that nothing answers for falls through to the SPA and offers a crawler the landing page
+  under a second address. A page's English is its bare address and its French its `?lng=fr`, so a
+  crawler reads each language once. Bead, its page and its demo, is at https://beadproto.dev/,
+  whose own sitemap lists it.
 -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
@@ -31,24 +31,6 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://francisdesjardins.ca/"/>
   </url>
   <url>
-    <loc>https://francisdesjardins.ca/bead/</loc>
-    <lastmod>2026-11-03</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://francisdesjardins.ca/bead/"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://francisdesjardins.ca/bead/?lng=fr"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://francisdesjardins.ca/bead/"/>
-  </url>
-  <url>
-    <loc>https://francisdesjardins.ca/bead/?lng=fr</loc>
-    <lastmod>2026-11-03</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://francisdesjardins.ca/bead/"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://francisdesjardins.ca/bead/?lng=fr"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://francisdesjardins.ca/bead/"/>
-  </url>
-  <url>
     <loc>https://francisdesjardins.ca/playground/boot/</loc>
     <lastmod>2026-09-17</lastmod>
     <changefreq>monthly</changefreq>
@@ -63,12 +45,6 @@
   <url>
     <loc>https://francisdesjardins.ca/playground/design/</loc>
     <lastmod>2026-09-18</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://francisdesjardins.ca/playground/bead/</loc>
-    <lastmod>2026-10-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>

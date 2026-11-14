@@ -12,8 +12,9 @@ import { Home } from './pages/Home';
  * link, a typo or a crawler following either was answered with a blank white page that claimed to
  * be fine. Measured against arbitrary paths this site has never had: zero characters rendered.
  *
- * The three playgrounds are separate builds served from `/playground/`, so nothing here routes to
- * them — a link out of this application is how a visitor reaches one.
+ * The playgrounds are separate builds served from `/playground/`, and Bead's demo from its own
+ * domain, https://beadproto.dev/playground/, so nothing here routes to them — a link out of this
+ * application is how a visitor reaches one.
  */
 export function App(): JSX.Element {
   return (

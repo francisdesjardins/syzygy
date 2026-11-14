@@ -22,8 +22,6 @@ Thumbs.db
 
 # Assembled by the deploy: each playground is its own build, dropped in before the site is built.
 apps/home/public/playground/
-# and Bead's page, which Bead's repository commits built.
-apps/home/public/bead/
 
 # The deploy artifact.
 francisdesjardins.ca-dist.zip

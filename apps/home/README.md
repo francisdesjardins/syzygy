@@ -15,7 +15,7 @@ yarn check    # type-check, lint --deny-warnings, format:check
 
 ## It is deployed from the repository root, not from here
 
-`yarn deploy` at the root builds the three playgrounds, drops each into
+`yarn deploy` at the root builds the playgrounds, drops each into
 `public/playground/<capability>/`, builds this app over the top and leaves
 `francisdesjardins.ca-dist.zip`. That directory is build output and is not tracked; `yarn build`
 here alone produces the home with no playgrounds under it.
@@ -27,6 +27,8 @@ in both directions. Missing one does not give a 404: the SPA fallback answers wi
 document, and the sub-site quietly serves the wrong page under a URL that promised something else.
 
 This app has exactly one route of its own, `/`. Everything else it answers for is a playground.
+Bead, its page and its demo, lives at its own domain, https://beadproto.dev/; `public/_redirects`
+sends every path it had here there.
 
 ## What it takes from the packages
 

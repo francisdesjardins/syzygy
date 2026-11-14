@@ -24,9 +24,10 @@ type ShadowProps = {
  * numbered, because the page already lightens and darkens in the order the names do. The light
  * leads because it is the piece a visitor should meet on the first screen.
  *
- * Every playground is its own build served out of `public/playground/`, so the link is a plain
- * anchor: it leaves this application rather than being matched by a router, and this application
- * has no second page to route to.
+ * Every playground is its own build served out of `public/playground/`, and Bead, its page and its
+ * demo, at its own domain, https://beadproto.dev/, so the link is a plain anchor: it leaves this
+ * application rather than being matched by a router, and this application has no second page to
+ * route to.
  *
  * Each one lands on the page that answers what the piece does, not on its home. A reader who has
  * decided to look has already been sold; making them navigate is asking them to decide twice.
@@ -114,11 +115,11 @@ export const Home = memo(() => {
         <ul className={styles['shadows']}>
           <Shadow
             zone="bead"
-            href="/bead/"
+            href="https://beadproto.dev/"
             name={t('home.work.bead.name')}
             description={t('home.work.bead.description')}
             links={[
-              { href: '/playground/bead/', label: t('home.work.bead.demo') },
+              { href: 'https://beadproto.dev/playground/', label: t('home.work.bead.demo') },
               {
                 href: 'https://github.com/francisdesjardins/bead',
                 label: t('home.work.bead.source'),

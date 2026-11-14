@@ -35,12 +35,13 @@ component suite reuses a server that is already answering, the home is an SPA wh
 it. A coverage run takes its own port besides, because instrumentation is opt-in and a server
 started without it reports zero counters rather than a low number.
 
-`yarn deploy` at this root builds all four playgrounds, assembles them under the home at
-`/playground/dialog`, `/playground/boot`, `/playground/design` and `/playground/bead` — the demo
-of the Bead protocol, its server in a Web Worker, built from a checkout of Bead's repository
-beside this one — and leaves the Cloudflare zip. **Destinations are
-named after the capability, sources after the package** — a library gets renamed, and these two
-already have; a URL is a promise that should outlive that.
+`yarn deploy` at this root builds the three playgrounds, assembles them under the home at
+`/playground/dialog`, `/playground/boot` and `/playground/design`, and leaves the Cloudflare zip.
+**Destinations are named after the capability, sources after the package** — a library gets
+renamed, and these two already have; a URL is a promise that should outlive that. Bead, the
+protocol, its page and its demo, lives at its own domain, https://beadproto.dev/, deployed from
+Bead's repository; every path it had here, `/bead/…` and `/playground/bead/…`, answers with a
+permanent redirect there.
 
 Each name says what its package does, twice over. `umbra` is the root the other two derive from
 (_pen_·umbra, _ant_·umbra), so it names the package the others build on — everything boots. It is
