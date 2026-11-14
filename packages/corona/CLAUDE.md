@@ -78,6 +78,10 @@ fails when the two orders disagree.
 up, and a deployed URL that followed it would break every link anybody kept. Bead's slug is the one
 that is its name: it names a protocol, which its wire carries and no rename touches.
 
+**`href` is where a playground is served**, and the drawer links it: `/playground/<slug>/`, but for
+Bead's demo, served at its own domain, https://beadproto.dev/playground/. `check:capabilities` holds
+each on this site to the folder `deploy.mjs` fills, and Bead's to an `https://` address.
+
 ## Environment
 
 React 19 and `@tanstack/react-router` are **peers**, not dependencies: the playground owns the

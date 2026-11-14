@@ -12,14 +12,18 @@
  * the antumbra beyond the umbra's tip. Every listing reads off this one, so they cannot each pick an
  * order — and an order with a reason is what stops the next person from picking another.
  *
- * Bead's slug and name are both the protocol's: its playground is built in Bead's own repository,
- * beside this one, and the deploy brings it in.
+ * Bead's slug and name are both the protocol's: its demo is built and served from Bead's own
+ * repository, at its own domain.
+ *
+ * **`href` is where the playground is served**, which the drawer links to: `/playground/<slug>/`,
+ * but for Bead's demo, at https://beadproto.dev/playground/. The root's `check:capabilities` holds
+ * each one on this site to the folder `deploy.mjs` fills, and Bead's to an `https://` address.
  */
 export const PLAYGROUNDS = [
-  { slug: 'bead', name: 'Bead' },
-  { slug: 'boot', name: 'Umbra' },
-  { slug: 'design', name: 'Penumbra' },
-  { slug: 'dialog', name: 'Antumbra' },
+  { slug: 'bead', name: 'Bead', href: 'https://beadproto.dev/playground/' },
+  { slug: 'boot', name: 'Umbra', href: '/playground/boot/' },
+  { slug: 'design', name: 'Penumbra', href: '/playground/design/' },
+  { slug: 'dialog', name: 'Antumbra', href: '/playground/dialog/' },
 ] as const;
 
 export type PlaygroundSlug = (typeof PLAYGROUNDS)[number]['slug'];

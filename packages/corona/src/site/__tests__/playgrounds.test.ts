@@ -54,6 +54,18 @@ test('every slug is URL-safe, because it is spelled straight into a path', () =>
   }
 });
 
+test('every href is a folder of the site that names its slug, or an https:// address of its own', () => {
+  // A relative path would resolve against the playground the drawer is read from.
+  for (const playground of PLAYGROUNDS) {
+    if (playground.href.startsWith('/')) {
+      expect(playground.href).toMatch(/^\/(?:[a-z][a-z0-9-]*\/)+$/);
+      expect(playground.href.split('/')).toContain(playground.slug);
+    } else {
+      expect(new URL(playground.href).protocol).toBe('https:');
+    }
+  }
+});
+
 test('the site is the way out, and it is the root', () => {
   expect(SITE.href).toBe('/');
   expect(SITE.name).not.toBe('');

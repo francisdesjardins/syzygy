@@ -57,7 +57,7 @@ const Elsewhere = ({ current }: { readonly current: PlaygroundSlug }) => {
     }).map((playground) => {
       return {
         key: playground.slug,
-        href: `/playground/${playground.slug}/`,
+        href: playground.href,
         name: playground.name,
         Mark: MARKS[playground.slug],
       };
