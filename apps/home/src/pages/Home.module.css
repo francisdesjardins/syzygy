@@ -324,13 +324,17 @@
   box-shadow: inset 0 0 0 2px var(--app-antumbra-accent);
 }
 
-/* The disc's edge, and three beads of light breaking through just inside it. */
+/*
+ * Bead's own mark, its disc and the three beads at its edge, drawn by the SVG in the zone's ink. Its
+ * box holds the beads beyond the disc, so it is larger and pulled in, for its disc to stand as the
+ * other marks' 18px.
+ */
 .bead .mark {
-  background:
-    radial-gradient(circle at 83% 53%, var(--app-primary-ink) 0 1.8px, transparent 2.3px),
-    radial-gradient(circle at 74% 74%, var(--app-primary-ink) 0 1.8px, transparent 2.3px),
-    radial-gradient(circle at 53% 83%, var(--app-primary-ink) 0 1.8px, transparent 2.3px);
-  box-shadow: inset 0 0 0 1.5px var(--app-primary-ink);
+  width: 22px;
+  height: 22px;
+  margin: -2px;
+  border-radius: 0;
+  color: var(--app-primary-ink);
 }
 
 /* The zone lifts toward the light rather than moving: a shadow that slid would be a card. */

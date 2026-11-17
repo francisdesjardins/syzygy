@@ -37,7 +37,25 @@ const Shadow = ({ zone, href, name, description, links }: ShadowProps) => {
     <li className={[styles['zone'], styles[zone]].join(' ')}>
       <a className={styles['zoneLink']} href={href}>
         {/* How much of the disc the shadow covers: all of it, half of it, only its edge — or the light at it. */}
-        <span className={styles['mark']} aria-hidden="true" />
+        {zone === 'bead' ? (
+          // Bead's own mark, site/src/favicon.svg of its repository, drawn in the zone's ink: the
+          // disc, its lit rim, and the three beads breaking through at its edge
+          <svg className={styles['mark']} viewBox="2.6 4.7 25 25" aria-hidden="true">
+            <circle cx="14" cy="18" r="10.5" fill="none" stroke="currentColor" strokeWidth="1.6" />
+            <path
+              d="M 15.82 7.66 A 10.5 10.5 0 0 1 24.19 15.46"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="0.9"
+              strokeOpacity="0.6"
+            />
+            <circle cx="15.94" cy="6.97" r="1.8" fill="currentColor" />
+            <circle cx="21.64" cy="9.81" r="2.5" fill="currentColor" />
+            <circle cx="24.87" cy="15.29" r="1.5" fill="currentColor" />
+          </svg>
+        ) : (
+          <span className={styles['mark']} aria-hidden="true" />
+        )}
         <span className={styles['zoneName']}>{name}</span>
       </a>
       <p className={styles['zoneText']}>{description}</p>
