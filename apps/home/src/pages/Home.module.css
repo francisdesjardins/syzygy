@@ -1,5 +1,6 @@
 /*
- * The landing page: one screen, the three shadows an eclipse casts, and the light at its edge.
+ * The landing page: one screen, the three shadows an eclipse casts, and the light at its edge;
+ * how Bead is made sits under it, past the first screen.
  *
  * Every value is a token, so this file decides where things sit and never what colour they are —
  * the palette is `styles/tokens.skin.css`, which is also where the grounds are measured
@@ -151,6 +152,7 @@
   font-size: var(--app-text-lg);
   font-weight: 600;
   line-height: var(--app-lh-snug);
+  text-wrap: balance;
   color: var(--app-text);
 }
 
@@ -368,6 +370,43 @@
   color: var(--app-text-tertiary);
 }
 
+/* ── How Bead is made ─────────────────────────────────────────────────────── */
+
+/*
+ * How Bead is made, folded in Bead's zone: ranked above the zone's overlay, as its links are, or the
+ * overlay takes the click that opens it.
+ */
+.more {
+  position: relative;
+  z-index: 2;
+  max-width: 76ch;
+  font-size: var(--app-text-sm);
+  line-height: var(--app-lh-relaxed);
+  scroll-margin-top: var(--app-space-6);
+}
+
+.more summary {
+  cursor: pointer;
+  width: fit-content;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.more summary:focus-visible {
+  outline: 2px solid var(--app-ring);
+  outline-offset: 2px;
+}
+
+.more p {
+  margin: var(--app-space-3) 0 0;
+  opacity: 0.88;
+}
+
+.more a {
+  color: inherit;
+  text-underline-offset: 0.2em;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .zone {
     transition: none;
@@ -446,6 +485,11 @@
   .identity,
   .bio {
     max-width: 34rem;
+  }
+
+  /* Under the language and theme switches, fixed in the top corners. */
+  .more {
+    scroll-margin-top: var(--app-space-14);
   }
 
   .bio {

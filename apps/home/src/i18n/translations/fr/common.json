@@ -5,21 +5,21 @@
     "expiry": "... toujours en développement actif",
     "skills": {
       "title": "Ce que je fais",
-      "description": "J’écris du code depuis le secondaire, et j’en vis depuis 2000. La couche à laquelle je reviens toujours se tient entre un client et un serveur : un protocole de communication propriétaire, une couche client-serveur en temps réel, des interfaces entre processus, et les bancs d’essai qui les tiennent.",
-      "habits": "Deux habitudes en sont sorties. Des cores qui ne touchent aucun framework, avec des bindings minces par-dessus : du TypeScript ordinaire qui tourne dans un navigateur, un worker ou un service, et un test qui échoue si le core touche un framework. Et des protocoles écrits d’abord, puis construits à la lettre dans chaque langage qui les parle.",
-      "thinking": "Une bibliothèque d’état et un moteur de drafts, pour quelques objets simples, c’est un canon pour tuer une mouche : des écouteurs et une comparaison de surface font le même travail, neuf kilo-octets plus léger. Certains problèmes sont l’inverse — les fuseaux horaires, la cryptographie, tout ce dont le plus dur est ce qu’on n’a pas vu venir. Entre les deux, une bibliothèque gagne sa place le jour où les besoins dépassent ce qu’on a écrit.",
-      "secondary": "Aussi : amateur de chats autoproclamé. Les chats n’ont pas encore objecté. Et je délègue à des agents IA ; l’un d’eux est là pour contredire les autres."
+      "description": "J’écris du code depuis le secondaire, et j’en vis depuis 2000. La couche à laquelle je reviens toujours se tient entre un client et un serveur : un protocole de communication propriétaire, une couche client-serveur en temps réel, des interfaces entre processus, et les bancs d’essai qui les tiennent.",
+      "habits": "Deux habitudes en sont sorties. Des noyaux qui ne touchent à aucun framework, avec de minces couches de liaison par-dessus : du TypeScript ordinaire qui tourne dans un navigateur, un worker ou un service, et un test qui échoue si le noyau touche un framework. Et des protocoles écrits d’abord, puis construits à la lettre dans chaque langage qui les parle.",
+      "thinking": "Une bibliothèque d’état et un moteur de brouillons, pour quelques objets simples, c’est démesuré : des écouteurs et une comparaison de surface font le même travail, neuf kilo-octets plus léger. Certains problèmes sont l’inverse — les fuseaux horaires, la cryptographie, tout ce dont le plus dur est ce qu’on n’a pas vu venir. Entre les deux, une bibliothèque gagne sa place le jour où les besoins dépassent ce qu’on a écrit.",
+      "secondary": "Aussi : amateur de chats autoproclamé. Les chats n’ont pas encore objecté."
     },
     "work": {
       "title": "Ce qui tourne",
-      "description": "Quatre pièces, chacune avec une surface à essayer. Les noms viennent d’une éclipse : les grains de lumière qui percent à son bord, et les trois ombres qu’elle projette. Ce qu’elles refusent de faire est documenté aussi soigneusement que le reste.",
+      "description": "Quatre pièces, chacune avec une surface à essayer. Les noms viennent d’une éclipse : les grains de lumière qui percent à son bord, et les trois ombres qu’elle projette. Ce qu’elles refusent de faire est documenté aussi soigneusement que le reste.",
       "dialog": {
         "name": "antumbra",
-        "description": "Gestionnaire de dialogues sur le top layer natif. Zéro UI livrée : le renderer reste le vôtre. Bindings React, Solid et vanilla."
+        "description": "Gestionnaire de dialogues sur le top layer natif. Zéro UI livrée : le renderer reste le vôtre. Bindings React, Solid et vanilla."
       },
       "boot": {
         "name": "umbra",
-        "description": "Orchestration de démarrage, et pas du genre front-end : le core n’a besoin d’aucun DOM, alors un seul graphe déclaré démarre une page, un worker ou un service. Vous dites ce dont chaque étape a besoin ; le parallélisme en est dérivé — aucun drapeau, aucun plafond de concurrence."
+        "description": "Orchestration de démarrage, et pas du genre front-end : le noyau n’a besoin d’aucun DOM, alors un seul graphe déclaré démarre une page, un worker ou un service. Vous dites ce dont chaque étape a besoin ; le parallélisme en est dérivé — aucun drapeau, aucun plafond de concurrence."
       },
       "designSystem": {
         "name": "penumbra",
@@ -27,10 +27,19 @@
       },
       "bead": {
         "name": "Bead",
-        "description": "Un protocole d’appels binaire, la spécification d’abord. TypeScript et C# à parité, Rust en chemin : chacun joue les mêmes fichiers de conformance, et ils s’appellent l’un l’autre dans la CI sur WebSocket, HTTP, MQTT 5 et AMQP 1.0. Un builder génère un serveur typé et son client depuis un .proto. Ici, le serveur tourne dans un Web Worker de la page.",
+        "description": "Un protocole d’appels binaire, la spécification d’abord. TypeScript, C# et Rust jouent les mêmes fichiers de conformance et s’appellent l’un l’autre dans la CI sur WebSocket, HTTP et MQTT 5, TypeScript et C# sur AMQP 1.0 aussi. Un builder génère un serveur typé et son client depuis un .proto. Sa démo fait tourner le serveur dans votre navigateur, dans un Web Worker.",
         "source": "Source sur GitHub",
         "demo": "Essayer la démo"
       }
+    },
+    "method": {
+      "title": "Comment Bead est fait : une expérience",
+      "gates": "Bead est écrit en bonne partie par des agents d’IA. Ce que j’y apporte, ce sont les idées, les valeurs du projet et les décisions : ce que le protocole doit faire, ce qu’il refuse, et ce qui est assez solide pour être publié. Des garde-fous tiennent le reste : une spécification que les trois implantations jouent, un agent chargé de contredire chaque changement qui touche les trois langages, et des revues avant chaque nouvelle version. Je voulais voir jusqu’où cette façon de travailler peut mener un protocole en trois langages.",
+      "sofar": "Jusqu’ici, ce sont les garde-fous qui rendent fiable le travail des agents, pas l’inverse. Ils attrapent beaucoup et en laissent encore passer, ils demandent de l’entretien, et rien ne montre encore que la méthode vaut ailleurs.",
+      "rust": "Rust, un langage que je n’écris pas moi-même, a renforcé l’ensemble. Son implantation, écrite par des agents à partir de la seule spécification, en est une troisième lecture : là où les trois divergeaient, la spécification était floue, et elle a été précisée. Son système de types a aussi fait ressortir des vérifications qui manquaient en TypeScript et en C#. Je ne peux pas relire ce code ligne par ligne ; je lui fais confiance parce qu’il passe la même spécification, les mêmes tests et les mêmes revues que les deux autres.",
+      "author": "Pendant des années, j’ai conçu et exploité des protocoles de communication dans mon travail, avec les simulateurs, les outils de débogage et les bancs d’essai qui les accompagnaient ; Bead, un projet personnel, me ramène à ce travail. Mon expérience porte surtout sur TypeScript et JavaScript, puis sur C#, des langages appris en les pratiquant dans des projets réels. Je n’ai pas de formation formelle en conception de protocoles ni en sécurité.",
+      "page": "La page de Bead",
+      "pageRest": " dit ce qu’il est et où il en est."
     },
     "location": {
       "place": "Québec, Canada",
@@ -40,10 +49,10 @@
   },
   "seo": {
     "home": {
-      "title": "Francis Desjardins : des bibliothèques sans framework, et Bead, un protocole d’appels binaire",
-      "description": "Des cores sans framework, avec des bindings minces par-dessus : le core est du TypeScript ordinaire qui tourne dans un navigateur, un worker ou un service, et le binding est la seule partie qui sait lequel. Trois bibliothèques sans dépendance d’exécution entre elles, et Bead, un protocole d’appels binaire en TypeScript et en C#.",
-      "ogTitle": "Francis Desjardins : des bibliothèques sans framework, et Bead, un protocole d’appels binaire",
-      "ogDescription": "Une dépendance s’ajoute facilement et se retire mal, et la plus grande part de ce qu’elle fait ne sert jamais. Trois bibliothèques qui n’en livrent aucune, un protocole d’appels binaire en deux langages, et la raison mesurée."
+      "title": "Francis Desjardins : des bibliothèques sans framework, et Bead, un protocole d’appels binaire",
+      "description": "Des noyaux sans framework, avec de minces couches de liaison par-dessus : le noyau est du TypeScript ordinaire qui tourne dans un navigateur, un worker ou un service, et la liaison est la seule partie qui sait lequel. Trois bibliothèques sans dépendance d’exécution entre elles, et Bead, un protocole d’appels binaire en TypeScript, en C# et en Rust.",
+      "ogTitle": "Francis Desjardins : des bibliothèques sans framework, et Bead, un protocole d’appels binaire",
+      "ogDescription": "Une dépendance s’ajoute facilement et se retire mal, et la plus grande part de ce qu’elle fait ne sert jamais. Trois bibliothèques qui n’en livrent aucune, un protocole d’appels binaire en trois langages, et la raison mesurée."
     }
   }
 }

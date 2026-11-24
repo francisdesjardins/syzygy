@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useEffect, type ReactNode } from 'react';
 import { useTranslation } from '../i18n';
 
 import { useDocumentHead } from '../hooks/useDocumentHead';
@@ -13,6 +13,8 @@ type ShadowProps = {
   readonly description: string;
   /** Further ways in beside the zone's own: its demo, its code. */
   readonly links?: readonly { readonly href: string; readonly label: string }[];
+  /** What the zone tells besides, folded under its links. */
+  readonly more?: ReactNode;
 };
 
 /**
@@ -32,7 +34,7 @@ type ShadowProps = {
  * Each one lands on the page that answers what the piece does, not on its home. A reader who has
  * decided to look has already been sold; making them navigate is asking them to decide twice.
  */
-const Shadow = ({ zone, href, name, description, links }: ShadowProps) => {
+const Shadow = ({ zone, href, name, description, links, more }: ShadowProps) => {
   return (
     <li className={[styles['zone'], styles[zone]].join(' ')}>
       <a className={styles['zoneLink']} href={href}>
@@ -70,12 +72,15 @@ const Shadow = ({ zone, href, name, description, links }: ShadowProps) => {
           })}
         </p>
       )}
+      {more}
     </li>
   );
 };
 
 export const Home = memo(() => {
   const { t, language } = useTranslation();
+  // Bead's page in the language chosen here: its own choice reads `?lng=` before the browser's
+  const beadPage = `https://beadproto.dev/?lng=${language}`;
 
   useDocumentHead({
     title: t('seo.home.title'),
@@ -88,6 +93,19 @@ export const Home = memo(() => {
     ogDescription: t('seo.home.ogDescription'),
     ogType: 'website',
   });
+
+  // `#root` is empty when the browser looks for the fragment, so the page goes to it once it exists.
+  useEffect(() => {
+    const target = window.location.hash.slice(1);
+    if (target !== '') {
+      const element = document.getElementById(target);
+      // a fold the fragment names opens before the page goes to it
+      if (element instanceof HTMLDetailsElement) {
+        element.open = true;
+      }
+      element?.scrollIntoView();
+    }
+  }, []);
 
   return (
     <main className={styles['page']}>
@@ -133,8 +151,22 @@ export const Home = memo(() => {
         <ul className={styles['shadows']}>
           <Shadow
             zone="bead"
-            href="https://beadproto.dev/"
+            href={beadPage}
             name={t('home.work.bead.name')}
+            more={
+              // How Bead is made, folded in the zone it is about. Bead's page links here by `#method`,
+              // in both languages, so the id is an address and does not move.
+              <details className={styles['more']} id="method">
+                <summary>{t('home.method.title')}</summary>
+                <p>{t('home.method.gates')}</p>
+                <p>{t('home.method.sofar')}</p>
+                <p>{t('home.method.rust')}</p>
+                <p>
+                  {t('home.method.author')} <a href={beadPage}>{t('home.method.page')}</a>
+                  {t('home.method.pageRest')}
+                </p>
+              </details>
+            }
             description={t('home.work.bead.description')}
             links={[
               { href: 'https://beadproto.dev/playground/', label: t('home.work.bead.demo') },

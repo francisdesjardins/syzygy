@@ -7,8 +7,8 @@
       "title": "What I build",
       "description": "Writing code since high school, for a living since 2000. The layer I keep coming back to sits between a client and a server: a proprietary communication protocol, a real-time client-server layer, interfaces between processes, and the test benches that hold them.",
       "habits": "Two habits came out of it. Cores that reach no framework, with thin bindings over them: plain TypeScript that runs in a browser, a worker or a service, and a test that fails if the core ever reaches a framework. And protocols written down first, then built to the letter in every language that speaks them.",
-      "thinking": "A state library and a draft engine, to hold a few plain objects, is a cannon aimed at a fly: a set of listeners and a shallow compare do the same work, nine kilobytes lighter. Some problems are the other way round — time zones, cryptography, anything whose hard part is the one you have not met yet. Between the two, a library earns its place the day the requirements outgrow what you wrote.",
-      "secondary": "Also: a self-declared cat person. The cats have yet to object. And I delegate to AI agents; one of them is there to disagree with the others."
+      "thinking": "A state library and a draft engine, to hold a few plain objects, is far more than the job needs: a set of listeners and a shallow compare do the same work, nine kilobytes lighter. Some problems are the other way round — time zones, cryptography, anything whose hard part is the one you have not met yet. Between the two, a library earns its place the day the requirements outgrow what you wrote.",
+      "secondary": "Also: a self-declared cat person. The cats have yet to object."
     },
     "work": {
       "title": "What's running",
@@ -27,10 +27,19 @@
       },
       "bead": {
         "name": "Bead",
-        "description": "A binary call protocol, specification first. TypeScript and C# at parity, with Rust on the way: each plays the same conformance files, and they call each other in CI over WebSocket, HTTP, MQTT 5 and AMQP 1.0. A builder generates a typed server and its client from a .proto. Here the server runs in a Web Worker of the page.",
+        "description": "A binary call protocol, specification first. TypeScript, C# and Rust play the same conformance files and call each other in CI over WebSocket, HTTP and MQTT 5, TypeScript and C# over AMQP 1.0 too. A builder generates a typed server and its client from a .proto. Its demo runs the server in your browser, in a Web Worker.",
         "source": "Source on GitHub",
         "demo": "Try the demo"
       }
+    },
+    "method": {
+      "title": "How Bead is made: an experiment",
+      "gates": "Much of Bead is written by AI agents. What I bring is the ideas, the project’s values and the decisions: what the protocol should do, what it refuses, and what is solid enough to publish. Gates hold the rest: a specification all three implementations play, an agent whose job is to argue against every change that reaches across the languages, and reviews before each release. I wanted to see how far this way of working can carry a protocol in three languages.",
+      "sofar": "So far, the gates make the agents’ output trustworthy, not the reverse. They catch much and still miss things, they need upkeep, and whether the method works elsewhere is not shown.",
+      "rust": "Rust, a language I do not write myself, made the whole stronger. Its implementation, written by agents from the specification alone, is a third reading of it: where the three disagreed, the specification was unclear, and it was made precise. Its type system also turned up checks the TypeScript and C# sides were missing. I cannot review that code line by line; I trust it because it passes the same specification, the same tests and the same reviews as the other two.",
+      "author": "For years I designed and ran communication protocols in my work, with the simulators, debugging tools and test benches around them; Bead, a personal project, brings me back to that work. Most of my experience is in TypeScript and JavaScript, then C#, learned by practising them on real projects. I have no formal training in protocol design or security.",
+      "page": "Bead’s page",
+      "pageRest": " says what it is and where it stands."
     },
     "location": {
       "place": "Quebec, Canada",
@@ -41,9 +50,9 @@
   "seo": {
     "home": {
       "title": "Francis Desjardins: framework-free libraries, and Bead, a binary call protocol",
-      "description": "Framework-free cores with thin bindings over them: the core is plain TypeScript that runs in a browser, a worker or a service, and the binding is the only part that knows which. Three libraries with no runtime dependencies between them, and Bead, a binary call protocol in TypeScript and C#.",
+      "description": "Framework-free cores with thin bindings over them: the core is plain TypeScript that runs in a browser, a worker or a service, and the binding is the only part that knows which. Three libraries with no runtime dependencies between them, and Bead, a binary call protocol in TypeScript, C# and Rust.",
       "ogTitle": "Francis Desjardins: framework-free libraries, and Bead, a binary call protocol",
-      "ogDescription": "A dependency is easy to add and hard to remove, and most of what one does goes unused. Three libraries that ship none, a binary call protocol in two languages, and the measured reason why."
+      "ogDescription": "A dependency is easy to add and hard to remove, and most of what one does goes unused. Three libraries that ship none, a binary call protocol in three languages, and the measured reason why."
     }
   }
 }
